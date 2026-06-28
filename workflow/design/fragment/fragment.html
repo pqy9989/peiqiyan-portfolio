@@ -1,0 +1,1753 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>CSES 布局容器文档</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../fonts/cses-icons.css?v=101">
+  <link rel="stylesheet" href="fragment.css">
+  <link rel="stylesheet" href="../components/window-control/window-control.css?v=2">
+  <link rel="stylesheet" href="../components/search-input/search-input.css">
+  <link rel="stylesheet" href="../components/tab/tab.css?v=2">
+  <link rel="stylesheet" href="../components/avatar/avatar.css">
+  <link rel="stylesheet" href="../components/badge/badge.css">
+  <link rel="stylesheet" href="../components/button/button.css">
+  <link rel="stylesheet" href="../components/nav-item/nav-item.css">
+  <link rel="stylesheet" href="../components/nav-action-btn/nav-action-btn.css">
+  <link rel="stylesheet" href="../components/nav-group/nav-group.css">
+  <link rel="stylesheet" href="../components/storage-info/storage-info.css">
+  <link rel="stylesheet" href="../components/search-trigger/search-trigger.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Inter", "PingFang SC", -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #FFFFFF;
+      color: #0A0A0A;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ========== 全局顶栏（与其他页面一致） ========== */
+    .page-topbar {
+      height: 52px;
+      background: #FFFFFF;
+      border-bottom: 0.5px solid #ECECEC;
+      display: flex;
+      align-items: center;
+      padding: 0 28px;
+      flex-shrink: 0;
+      gap: 14px;
+    }
+    .page-topbar-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 14px; color: #0A0A0A;
+      font-weight: 500; letter-spacing: -0.2px; text-decoration: none;
+    }
+    .page-topbar-logo-dot {
+      width: 20px; height: 20px; border-radius: 5px;
+      background: #0A0A0A;
+      display: flex; align-items: center; justify-content: center;
+      color: #FFFFFF; font-size: 10px; font-weight: 500;
+    }
+    .page-topbar-divider { width: 1px; height: 14px; background: #ECECEC; }
+    .page-topbar-subtitle { font-size: 12px; color: #666666; }
+    .page-topbar-count {
+      margin-left: auto;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #999999;
+      letter-spacing: 0.8px; text-transform: uppercase;
+    }
+
+    /* ========== 主体布局 ========== */
+    .page-layout {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ========== 左侧面板 ========== */
+    .doc-sidebar {
+      width: 240px;
+      background: #FFFFFF;
+      border-right: 0.5px solid #ECECEC;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      overflow-y: auto;
+    }
+    .doc-sidebar::-webkit-scrollbar { width: 4px; }
+    .doc-sidebar::-webkit-scrollbar-thumb { background: #ECECEC; border-radius: 0; }
+    .doc-sidebar .doc-title {
+      padding: 24px 24px 6px;
+      font-size: 16px;
+      font-weight: 500;
+      color: #0A0A0A;
+      letter-spacing: -0.3px;
+    }
+    .doc-sidebar .doc-subtitle {
+      padding: 0 24px 20px;
+      font-size: 12px;
+      color: #999999;
+      line-height: 1.5;
+      border-bottom: 0.5px solid #ECECEC;
+    }
+    .doc-group-title {
+      padding: 18px 24px 8px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px;
+      font-weight: 400;
+      color: #999999;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+    }
+    .doc-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 24px;
+      font-size: 12.5px;
+      color: #666666;
+      cursor: pointer;
+      transition: color .12s;
+      user-select: none;
+    }
+    .doc-item:hover { color: #0A0A0A; background: transparent; }
+    .doc-item.active {
+      background: transparent;
+      color: #0A0A0A;
+      font-weight: 500;
+      letter-spacing: -0.1px;
+    }
+    .doc-item .dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+    .dot-main { background: #4857E2; }
+    .dot-overlay { background: #B45309; }
+    .dot-special { background: #047857; }
+
+    /* ========== 右侧内容 ========== */
+    .doc-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .view-label {
+      height: 44px;
+      background: #FFFFFF;
+      border-bottom: 0.5px solid #ECECEC;
+      display: flex;
+      align-items: center;
+      padding: 0 28px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px;
+      font-weight: 400;
+      color: #0A0A0A;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+    .doc-main {
+      flex: 1;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 24px;
+      overflow: auto;
+      background: #FAFAFA;
+    }
+    .doc-main::-webkit-scrollbar { width: 6px; }
+    .doc-main::-webkit-scrollbar-thumb { background: #ECECEC; border-radius: 0; }
+
+    /* ========== 布局预览容器 ========== */
+    .preview-wrapper {
+      position: relative;
+    }
+
+    /* 容器高亮闪烁 */
+    @keyframes highlight-flash {
+      0%, 100% { background-color: transparent; }
+      25%, 75% { background-color: rgba(245,63,63,0.12); }
+    }
+    .highlight {
+      animation: highlight-flash 1s ease 2;
+      position: relative;
+    }
+
+    /* 浮动标签 — 固定在视口层，通过 JS 定位到容器上方 */
+    #floatLabel {
+      position: fixed;
+      background: #0A0A0A;
+      color: #FFFFFF;
+      padding: 10px 14px;
+      border-radius: 2px;
+      font-family: "Inter", "PingFang SC", sans-serif;
+      font-size: 12px;
+      white-space: pre-line;
+      text-align: left;
+      pointer-events: none;
+      z-index: 9999;
+      max-width: 300px;
+      line-height: 1.7;
+      display: none;
+      letter-spacing: 0.1px;
+    }
+    #floatLabel.show { display: block; }
+
+    /* 容器占位 */
+    .c-slot {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+      transition: all 0.2s;
+      position: relative;
+    }
+    .c-slot-light {
+      color: rgba(0,0,0,0.15);
+    }
+
+    /* 蒙层 */
+    .overlay-mask {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.3);
+      z-index: 150;
+      display: none;
+      border-radius: inherit;
+      pointer-events: auto;
+    }
+    .overlay-mask.show { display: block; }
+
+    /* 信息面板 */
+    .info-panel {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #FFFFFF;
+      border: 0.5px solid #E5E5E5;
+      border-radius: 4px;
+      padding: 16px 20px;
+      font-size: 12px;
+      color: #0A0A0A;
+      max-width: 320px;
+      z-index: 999;
+      display: none;
+      line-height: 1.7;
+    }
+    .info-panel.show { display: block; }
+    .info-panel .info-title {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px;
+      font-weight: 400;
+      margin-bottom: 10px;
+      color: #0A0A0A;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+    .info-panel .info-rule { color: #666666; }
+    .info-panel .info-tag {
+      display: inline-block;
+      background: transparent;
+      color: #0A0A0A;
+      border: 0.5px solid #E5E5E5;
+      padding: 1px 6px;
+      border-radius: 2px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px;
+      letter-spacing: -0.1px;
+    }
+  </style>
+
+  <!-- ============================================================
+       任务抽屉 (drawer-task) 样式 — 完全复刻 pd/pages/task/index.html
+       ============================================================ -->
+  <style>
+    /* 本片区补充令牌 */
+    :root {
+      --td-required: #ff4d4f;
+      --td-source-bg: var(--cs-color-fill-light);
+      --td-source-border: #ebebeb;
+      --td-placeholder: rgba(153, 153, 153, 0.5);
+      --td-muted: #cccccc;
+      --td-divider: #e6e6e6;
+    }
+
+    /* 上半部：可滚动内容 */
+    .td-scroll {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .td-scroll::-webkit-scrollbar { width: 6px; }
+    .td-scroll::-webkit-scrollbar-thumb { background: #d8d8d8; border-radius: 3px; }
+
+    /* 头部工具栏 */
+    .td-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 58px;
+    }
+    .td-toolbar__collapse { font-size: 18px; color: var(--cs-color-text); cursor: pointer; line-height: 1; }
+    .td-toolbar__actions { display: flex; align-items: center; gap: 24px; }
+    .td-toolbar__actions i {
+      font-size: 20px;
+      color: var(--cs-color-text-light);
+      cursor: pointer;
+      transition: color .15s ease;
+    }
+    .td-toolbar__actions i:hover { color: var(--cs-color-primary); }
+    .td-toolbar__actions i.is-active { color: var(--cs-color-primary); }
+
+    /* 任务名称 */
+    .td-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 20px 58px;
+      border-bottom: 1px solid var(--cs-color-border);
+      position: relative;
+    }
+    .td-title__icon { font-size: 16px; color: var(--cs-color-text-light2); flex-shrink: 0; }
+    .td-required { color: var(--td-required); font-size: 14px; line-height: 1; }
+    .td-title .td-required,
+    .td-field__label .td-required,
+    .td-desc__head .td-required {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--td-required);
+    }
+    .td-title .td-required,
+    .td-desc__head .td-required { left: 40px; }
+    .td-field__label .td-required { left: -16px; }
+    .td-title__input {
+      flex: 1; height: 24px; padding: 0; margin: 0;
+      border: none; outline: none;
+      font-family: var(--font-family-cn);
+      font-weight: 600; font-size: 18px; line-height: 1.4;
+      color: var(--cs-color-text);
+      background: transparent;
+    }
+    .td-title__input::placeholder { color: var(--cs-color-text-light2); font-weight: 600; }
+
+    /* 内容外层 */
+    .td-detail-wrap { display: flex; flex-direction: column; gap: 16px; }
+    .td-content { display: flex; flex-direction: column; gap: 40px; }
+
+    /* 详情卡 / 字段 */
+    .td-detail { display: flex; flex-direction: column; gap: 9px; padding: 0 58px; }
+    .td-section-title { font-weight: 600; font-size: 16px; color: var(--cs-color-text); }
+
+    .td-field {
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+      background-image: linear-gradient(to right, transparent 150px, transparent 150px);
+      background-size: 100% 1px;
+      background-position: 0 100%;
+      background-repeat: no-repeat;
+      transition: background-image .15s ease;
+    }
+    .td-field:hover {
+      background-image: linear-gradient(to right, transparent 150px, var(--cs-color-border) 150px, var(--cs-color-border) 100%);
+    }
+    .td-field:focus-within {
+      background-image: linear-gradient(to right, transparent 150px, var(--cs-color-primary) 150px, var(--cs-color-primary) 100%);
+    }
+    .td-field--static:hover,
+    .td-field--static:focus-within { background-image: none; }
+    .td-field--static .td-field__value { padding: 0; }
+    .td-field__label {
+      width: 150px; flex-shrink: 0;
+      display: flex; align-items: center; gap: 8px;
+      position: relative;
+    }
+    .td-field__label i { font-size: 16px; color: var(--cs-color-text-light2); }
+    .td-field__label span {
+      font-weight: 600; font-size: 14px;
+      color: var(--cs-color-text-light2);
+      white-space: nowrap;
+    }
+    .td-field__value {
+      width: 378px;
+      display: flex; align-items: center;
+      padding: 12px 0;
+    }
+    .td-field__placeholder {
+      font-size: 14px; line-height: 20px;
+      color: var(--td-placeholder);
+      cursor: pointer;
+    }
+    .td-field__text { font-size: 14px; line-height: 20px; color: var(--cs-color-text); }
+    .td-field__value:hover .td-field__placeholder { color: var(--cs-color-text-light2); }
+    .td-field__input {
+      flex: 1; width: 100%;
+      border: none; outline: none;
+      background: transparent;
+      font-family: var(--font-family-cn);
+      font-size: 14px; line-height: 20px; height: 20px;
+      color: var(--cs-color-text);
+      padding: 0;
+    }
+    .td-field__input::placeholder { color: var(--td-placeholder); }
+    .td-field__action {
+      margin-left: auto;
+      padding-left: 8px;
+      font-size: 14px;
+      color: var(--cs-color-primary);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .td-field__action:hover { color: var(--cs-color-primary-hover); }
+    .td-field--wide .td-field__value { width: auto; flex: 1; }
+
+    .td-divider-v { width: 1px; height: 10px; background: var(--td-divider); flex-shrink: 0; }
+
+    .td-time-range {
+      width: 378px;
+      display: flex; align-items: center;
+      padding: 12px 0;
+    }
+    .td-time-range__start { width: 45%; flex-shrink: 0; }
+    .td-time-range__mid {
+      flex: 1;
+      display: flex; align-items: center; gap: 8px;
+      min-width: 0;
+    }
+    .td-time-range__arrow { font-size: 14px; color: var(--td-placeholder); flex-shrink: 0; }
+    .td-time-range__cal {
+      font-size: 16px;
+      color: var(--cs-color-text-light2);
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .td-time-range__cal:hover { color: var(--cs-color-primary); }
+
+    /* 折叠分组 */
+    .td-group { display: flex; flex-direction: column; padding: 0 58px; }
+    .td-group__head {
+      position: relative;
+      display: flex; align-items: center;
+      padding: 12px 0 8px;
+      cursor: pointer; user-select: none;
+    }
+    .td-group__caret {
+      position: absolute;
+      left: -16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 12px; color: var(--cs-color-text);
+      transition: transform .2s ease;
+    }
+    .td-group.is-collapsed .td-group__caret { transform: translateY(-50%) rotate(-90deg); }
+    .td-group__title { font-weight: 600; font-size: 16px; color: var(--cs-color-text); }
+    .td-group__sub { font-size: 13px; color: var(--cs-color-text-light2); padding: 0 0 12px 0; }
+    .td-group__body { display: flex; flex-direction: column; gap: 2px; }
+    .td-group.is-collapsed .td-group__body { display: none; }
+
+    /* 分段控件 */
+    .td-seg {
+      display: inline-flex; align-items: center;
+      background: var(--cs-color-bg-light);
+      border-radius: 4px;
+      padding: 2px;
+      gap: 2px;
+    }
+    .td-seg__item {
+      padding: 2px 12px;
+      font-size: 13px; line-height: 20px;
+      color: var(--cs-color-text-light);
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all .15s ease;
+    }
+    .td-seg__item.is-active {
+      background: var(--cs-color-white);
+      color: var(--cs-color-text);
+      font-weight: 500;
+      box-shadow: 0 1px 2px rgba(0,0,0,.06);
+    }
+
+    /* 描述区 */
+    .td-desc { display: flex; flex-direction: column; gap: 16px; }
+    .td-desc__head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 58px;
+      position: relative;
+    }
+    .td-desc__head .td-section-title { display: flex; align-items: center; gap: 6px; }
+    .td-desc__expand { font-size: 16px; color: var(--cs-color-text-light); cursor: pointer; }
+    .td-desc__expand:hover { color: var(--cs-color-primary); }
+    .td-desc__editor {
+      display: flex; align-items: center; gap: 9px;
+      padding: 0 58px;
+    }
+    .td-desc__input-wrap { display: flex; align-items: center; gap: 6px; flex: 1; }
+    .td-desc__input {
+      flex: 1;
+      border: none; outline: none;
+      background: transparent;
+      font-family: var(--font-family-cn);
+      font-size: 14px;
+      color: var(--cs-color-text);
+    }
+    .td-desc__input::placeholder { color: var(--td-placeholder); }
+
+    /* 底部固定区 */
+    .td-bottom { flex-shrink: 0; }
+    .td-quickbar {
+      position: relative;
+      border-top: 1px solid var(--cs-color-border);
+      padding: 6px 24px;
+    }
+    .td-handle {
+      position: absolute;
+      top: -16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 69px;
+      height: 16px;
+      background: var(--cs-color-white);
+      border: 1px solid var(--cs-color-border);
+      border-bottom: none;
+      border-radius: 8px 8px 0 0;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: var(--cs-color-text-light2);
+    }
+    .td-handle i { font-size: 14px; transition: transform .2s ease; }
+    .td-handle.is-collapsed i { transform: rotate(180deg); }
+    .td-quick-items { display: flex; align-items: center; gap: 32px; }
+    .td-quick { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+    .td-quick i { font-size: 16px; color: var(--cs-color-text-light2); }
+    .td-quick span { font-weight: 600; font-size: 14px; color: var(--cs-color-text-light2); }
+    .td-quick:hover i,
+    .td-quick:hover span { color: var(--cs-color-primary); }
+
+    .td-footer {
+      display: flex; align-items: center; justify-content: flex-end;
+      gap: 16px;
+      padding: 24px;
+      background: var(--cs-color-white);
+      border-top: 1px solid var(--cs-color-border);
+    }
+    .td-btn {
+      padding: 12px 32px;
+      border-radius: 4px;
+      font-size: 14px; line-height: 16px;
+      cursor: pointer;
+      border: 1px solid var(--cs-color-border);
+      background: var(--cs-color-white);
+      color: var(--cs-color-text);
+      box-shadow: 0 0 2px rgba(0, 0, 0, .1);
+      font-family: var(--font-family-cn);
+      transition: all .15s ease;
+    }
+    .td-btn:hover { background: var(--cs-color-bg-light); }
+    .td-btn--primary {
+      background: var(--cs-color-primary);
+      color: var(--cs-color-white);
+      border-color: var(--cs-color-primary);
+      box-shadow: 0 0 1px rgba(0, 0, 0, .1);
+    }
+    .td-btn--primary:hover { background: var(--cs-color-primary-hover); }
+
+    /* ============================================================
+       人员选择控件 (picker + tags)
+       ============================================================ */
+    .td-picker {
+      position: fixed;
+      z-index: 300;
+      width: 460px;
+      max-height: 420px;
+      background: var(--cs-color-white);
+      border-radius: 8px;
+      border: 1px solid var(--cs-color-border);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, .14);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .td-picker.is-open { display: flex; }
+
+    .td-picker__head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px 6px;
+      font-size: 13px;
+      color: var(--cs-color-text-light2);
+      flex-shrink: 0;
+    }
+    .td-picker__hint {
+      color: var(--cs-color-primary);
+      cursor: pointer; user-select: none;
+      font-size: 13px;
+    }
+    .td-picker__hint:hover { color: var(--cs-color-primary-hover); }
+    .td-picker__hint.is-static { color: var(--cs-color-text-light2); cursor: default; }
+    .td-picker__hint.is-static:hover { color: var(--cs-color-text-light2); }
+
+    .td-picker__item.is-disabled { cursor: not-allowed; opacity: 0.5; }
+    .td-picker__item.is-disabled:hover { background: transparent; }
+
+    .td-picker__footer {
+      display: none;
+      justify-content: flex-end; gap: 8px;
+      padding: 10px 16px;
+      border-top: 1px solid var(--cs-color-border);
+      flex-shrink: 0;
+    }
+    .td-picker.is-batch .td-picker__footer { display: flex; }
+    .td-picker__btn {
+      padding: 6px 18px;
+      border: 1px solid var(--cs-color-border);
+      background: var(--cs-color-white);
+      border-radius: 999px;
+      font-size: 13px;
+      color: var(--cs-color-text);
+      cursor: pointer;
+      font-family: var(--font-family-cn);
+    }
+    .td-picker__btn:hover { background: var(--cs-color-bg-light); }
+    .td-picker__btn--primary {
+      background: var(--cs-color-primary);
+      color: var(--cs-color-white);
+      border-color: var(--cs-color-primary);
+    }
+    .td-picker__btn--primary:hover {
+      background: var(--cs-color-primary-hover);
+      color: var(--cs-color-white);
+    }
+
+    .td-picker__check {
+      width: 16px; height: 16px;
+      border-radius: 4px;
+      border: 1.5px solid #d9d9d9;
+      background: transparent;
+      display: none;
+      align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: all .15s ease;
+      position: relative;
+    }
+    .td-picker__check svg {
+      width: 11px; height: 11px;
+      stroke: var(--cs-color-white);
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      opacity: 0;
+      transition: opacity .12s ease;
+    }
+    .td-picker.is-batch .td-picker__check { display: flex; }
+    .td-picker__item.is-checked .td-picker__check {
+      background: var(--cs-color-primary);
+      border-color: var(--cs-color-primary);
+    }
+    .td-picker__item.is-checked .td-picker__check svg { opacity: 1; }
+    .td-picker__item:hover .td-picker__check { border-color: var(--cs-color-primary); }
+    .td-picker__item.is-checked:hover .td-picker__check {
+      border-color: var(--cs-color-primary);
+      background: var(--cs-color-primary-hover);
+    }
+
+    .td-picker__list { flex: 1; overflow-y: auto; padding: 6px 0 10px; }
+    .td-picker__list::-webkit-scrollbar { width: 6px; }
+    .td-picker__list::-webkit-scrollbar-thumb { background: #d8d8d8; border-radius: 3px; }
+
+    .td-picker__item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: background .12s ease;
+    }
+    .td-picker__item.is-active { background: var(--cs-color-bg-light); }
+    .td-picker__item.is-selected { background: transparent; }
+    .td-picker__item.is-selected .td-picker__name,
+    .td-picker__item.is-selected .td-picker__meta { color: var(--cs-color-text-light2); }
+    .td-picker__item.is-selected .td-picker__avatar { opacity: 0.5; }
+    .td-picker__item.is-selected:hover,
+    .td-picker__item.is-selected.is-active { background: var(--cs-color-bg-light); }
+
+    .td-picker__avatar {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--cs-color-white);
+      font-size: 15px; font-weight: 600;
+      flex-shrink: 0;
+      background-size: cover;
+      background-position: center;
+    }
+    .td-picker__main { flex: 1; min-width: 0; }
+    .td-picker__name { font-size: 16px; color: var(--cs-color-text); font-weight: 500; line-height: 1.3; }
+    .td-picker__meta { font-size: 13px; color: var(--cs-color-text-light2); margin-top: 2px; }
+    .td-picker__empty {
+      padding: 32px 16px;
+      text-align: center;
+      color: var(--cs-color-text-light2);
+      font-size: 14px;
+    }
+
+    /* 已选人员 tag */
+    .td-people-tags {
+      display: flex; flex-wrap: wrap;
+      align-items: center; align-content: flex-start;
+      gap: 6px; width: 100%;
+      max-height: 64px;
+      overflow-y: auto;
+    }
+    .td-people-tags::-webkit-scrollbar { width: 4px; }
+    .td-people-tags::-webkit-scrollbar-thumb { background: #d8d8d8; border-radius: 2px; }
+    .td-people-tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 4px 2px 2px;
+      background: var(--cs-color-bg-light);
+      border-radius: 14px;
+      font-size: 13px;
+      color: var(--cs-color-text);
+      cursor: default;
+    }
+    .td-people-tag__avatar {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--cs-color-white);
+      font-size: 11px; font-weight: 600;
+      flex-shrink: 0;
+      background-size: cover;
+      background-position: center;
+    }
+    .td-people-tag__remove {
+      width: 16px; height: 16px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: var(--cs-color-text-light2);
+      border-radius: 50%;
+    }
+    .td-people-tag__remove:hover {
+      background: var(--cs-color-bg-lighter);
+      color: var(--cs-color-text);
+    }
+    .td-people-tag__remove i { font-size: 12px; }
+
+    .td-field__value[data-people] { cursor: text; }
+
+    /* 人员字段：顶部对齐 */
+    .td-field[data-people-field] { align-items: flex-start; position: relative; }
+    .td-field[data-people-field] .td-field__label,
+    .td-field[data-people-field] .td-field__action { min-height: 44px; }
+    .td-field[data-people-field] .td-field__action {
+      display: flex; align-items: center;
+    }
+
+    .td-people-input {
+      flex: 1; min-width: 80px;
+      border: none; outline: none;
+      background: transparent;
+      font-family: var(--font-family-cn);
+      font-size: 14px; line-height: 20px; height: 20px;
+      color: var(--cs-color-text);
+      padding: 0;
+    }
+    .td-people-input::placeholder { color: var(--td-placeholder); }
+  </style>
+</head>
+<body>
+
+<!-- 全局顶栏 -->
+<div class="page-topbar">
+  <a class="page-topbar-logo" href="#">
+    <div class="page-topbar-logo-dot">C</div>
+    CSES Design
+  </a>
+  <div class="page-topbar-divider"></div>
+  <span class="page-topbar-subtitle">布局容器文档</span>
+  <span class="page-topbar-count">fragment.html</span>
+</div>
+
+<div class="page-layout">
+
+<!-- 左侧面板 -->
+<div class="doc-sidebar">
+  <div class="doc-group-title">主要布局</div>
+  <div class="doc-item active" data-target="layout" data-type="main"><span class="dot dot-main"></span>完整布局</div>
+  <div class="doc-item" data-target="tab-bar" data-type="main"><span class="dot dot-main"></span>标签栏 tab-bar</div>
+  <div class="doc-item" data-target="sidebar" data-type="main"><span class="dot dot-main"></span>一级导航 sidebar</div>
+  <div class="doc-item" data-target="navbar" data-type="main"><span class="dot dot-main"></span>二级导航 navbar</div>
+  <div class="doc-item" data-target="content-header" data-type="main"><span class="dot dot-main"></span>内容区头部</div>
+  <div class="doc-item" data-target="filter-bar" data-type="main"><span class="dot dot-main"></span>筛选区 filter-bar</div>
+  <div class="doc-item" data-target="content-area" data-type="main"><span class="dot dot-main"></span>内容区（自适应）</div>
+
+  <div class="doc-group-title">覆盖层布局</div>
+  <div class="doc-item" data-target="drawer-task" data-type="overlay"><span class="dot dot-overlay"></span>抽屉（任务详情）</div>
+  <div class="doc-item" data-target="drawer-doc" data-type="overlay"><span class="dot dot-overlay"></span>抽屉（文档预览）</div>
+  <div class="doc-item" data-target="modal-sm" data-type="overlay"><span class="dot dot-overlay"></span>弹窗（小 480px）</div>
+  <div class="doc-item" data-target="modal-md" data-type="overlay"><span class="dot dot-overlay"></span>弹窗（中 640px）</div>
+  <div class="doc-item" data-target="modal-lg" data-type="overlay"><span class="dot dot-overlay"></span>弹窗（大 800px）</div>
+
+  <div class="doc-group-title">特殊布局</div>
+  <div class="doc-item" data-target="filter-double" data-type="special"><span class="dot dot-special"></span>筛选区（双行变体）</div>
+  <div class="doc-item" data-target="bottom-bar" data-type="special"><span class="dot dot-special"></span>底部栏</div>
+</div>
+
+<!-- 右侧内容 -->
+<div class="doc-content">
+  <div class="doc-main">
+    <div class="preview-wrapper" style="width:100%;display:flex;justify-content:center;" style="">
+
+      <!-- 完整布局 -->
+      <cs-layout id="preview-layout" style="width:100%;max-width:1440px;">
+
+        <!-- 标签栏 Figma: 15-61496 -->
+        <div class="tabbar" id="c-tab-bar" style="cursor:pointer;">
+          <div class="tabbar-left">
+            <cs-window-control class="tabbar-window-control">
+              <span class="ctrl-close"></span>
+              <span class="ctrl-minimize"></span>
+              <span class="ctrl-maximize"></span>
+            </cs-window-control>
+            <cs-search-input class="tabbar-search" data-variant="gray" data-size="sm" style="border-radius:var(--radius-lg);">
+              <i class="search-icon cses-stratis-search-01"></i>
+              <input class="search-field" type="text" placeholder="搜索">
+            </cs-search-input>
+            <cs-tab data-active>
+              <span class="tab-label">标签 1</span>
+              <i class="tab-close cses-stratis-x-01"></i>
+            </cs-tab>
+            <cs-tab>
+              <span class="tab-label">标签 2</span>
+              <i class="tab-close cses-stratis-x-01"></i>
+            </cs-tab>
+          </div>
+          <div class="tabbar-right">
+            <span class="tabbar-notice">
+              <i class="cses-stratis-bell-01 notice-icon"></i>
+              <span class="notice-badge">2</span>
+            </span>
+            <cs-avatar data-size="xs" data-shape="circle" data-color="blue">张</cs-avatar>
+          </div>
+        </div>
+
+        <!-- 主体 -->
+        <div class="body">
+
+          <!-- 一级导航 -->
+          <cs-sidebar id="c-sidebar" style="cursor:pointer;">
+            <span class="logo">
+              <img src="../assets/logo.png" alt="CSES">
+            </span>
+            <nav class="nav">
+              <div class="nav-group">
+                <a class="nav-item">
+                  <span class="nav-icon"><i class="cses-stratis-home-01"></i></span>
+                  <span class="nav-label">工作台</span>
+                </a>
+                <a class="nav-item">
+                  <span class="nav-icon"><i class="cses-stratis-compass"></i></span>
+                  <span class="nav-label">导向</span>
+                </a>
+                <a class="nav-item">
+                  <span class="nav-icon"><i class="cses-stratis-message-circle"></i></span>
+                  <span class="nav-label">消息</span>
+                </a>
+                <a class="nav-item">
+                  <span class="nav-icon"><i class="cses-stratis-check-square-broken"></i></span>
+                  <span class="nav-label">任务</span>
+                </a>
+                <a class="nav-item">
+                  <span class="nav-icon"><i class="cses-stratis-video-on"></i></span>
+                  <span class="nav-label">会议</span>
+                </a>
+                <a class="nav-item">
+                  <span class="nav-icon"><i class="cses-stratis-book-01"></i></span>
+                  <span class="nav-label">文档</span>
+                </a>
+                <a class="nav-item">
+                  <span class="nav-icon"><i class="cses-stratis-file-edit-01"></i></span>
+                  <span class="nav-label">表单</span>
+                </a>
+                <a class="nav-item">
+                  <span class="nav-icon"><i class="cses-stratis-file-check-01"></i></span>
+                  <span class="nav-label">审批</span>
+                </a>
+              </div>
+            </nav>
+          </cs-sidebar>
+
+          <!-- 内容包裹 -->
+          <div class="content-wrapper" style="position:relative;">
+            <!-- 蒙层 -->
+            <div class="overlay-mask" id="overlayMask"></div>
+
+            <!-- 抽屉 -->
+            <cs-drawer id="demoDrawer" style="z-index:200;">
+              <!-- 上半部：可滚动内容 -->
+              <div class="td-scroll">
+                <!-- 任务名称 -->
+                <div class="td-title">
+                  <span class="td-required">*</span>
+                  <svg class="td-title__icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                       stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 19 L8 5 L14 19 M4.2 14 L11.8 14"></path>
+                    <path d="M16 9 H22"></path>
+                    <path d="M16 13 H22"></path>
+                    <path d="M16 17 H22"></path>
+                  </svg>
+                  <input class="td-title__input" type="text" placeholder="请输入标题">
+                </div>
+
+                <div class="td-detail-wrap">
+                  <div class="td-content">
+
+                    <!-- 分组：基础信息 -->
+                    <div class="td-group" id="groupBasic">
+                      <div class="td-group__head">
+                        <i class="cses-stratis-chevron-down td-group__caret"></i>
+                        <span class="td-group__title">基础信息</span>
+                      </div>
+                      <div class="td-group__body">
+                        <!-- 会议类型 -->
+                        <div class="td-field td-field--wide td-field--static">
+                          <div class="td-field__label">
+                            <i class="cses-stratis-grid-01"></i>
+                            <span>会议类型</span>
+                          </div>
+                          <div class="td-field__value">
+                            <div class="td-seg" id="meetingType">
+                              <span class="td-seg__item is-active">普通会议</span>
+                              <span class="td-seg__item">协同共创会</span>
+                              <span class="td-seg__item">成果导向会</span>
+                            </div>
+                          </div>
+                          <span class="td-field__action">会议设置</span>
+                        </div>
+                        <!-- 会议导向 -->
+                        <div class="td-field td-field--wide">
+                          <div class="td-field__label">
+                            <i class="cses-stratis-target-01"></i>
+                            <span>会议导向</span>
+                          </div>
+                          <div class="td-field__value">
+                            <input class="td-field__input" type="text" placeholder="请填写会议导向">
+                          </div>
+                        </div>
+                        <!-- 主持人（单选） -->
+                        <div class="td-field td-field--wide" data-people-field="host" data-multi="false">
+                          <div class="td-field__label">
+                            <span class="td-required">*</span>
+                            <i class="cses-stratis-user-profile-01"></i>
+                            <span>主持人</span>
+                          </div>
+                          <div class="td-field__value" data-people>
+                            <span class="td-field__placeholder">请选择人员</span>
+                          </div>
+                          <span class="td-field__action">添加</span>
+                        </div>
+                        <!-- 参会人（多选） -->
+                        <div class="td-field td-field--wide" data-people-field="attendees" data-multi="true">
+                          <div class="td-field__label">
+                            <i class="cses-stratis-users-profiles-01"></i>
+                            <span>参会人</span>
+                          </div>
+                          <div class="td-field__value" data-people>
+                            <span class="td-field__placeholder">请选择人员</span>
+                          </div>
+                          <span class="td-field__action">添加</span>
+                        </div>
+                        <!-- 起止时间 -->
+                        <div class="td-field td-field--wide">
+                          <div class="td-field__label">
+                            <span class="td-required">*</span>
+                            <i class="cses-stratis-calendar-01"></i>
+                            <span>起止时间</span>
+                          </div>
+                          <div class="td-time-range" style="width:auto; flex:1;">
+                            <span class="td-field__placeholder td-time-range__start">开始时间</span>
+                            <div class="td-time-range__mid">
+                              <i class="cses-stratis-arrow-right td-time-range__arrow"></i>
+                              <span class="td-field__placeholder">结束时间</span>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- 会议地点 -->
+                        <div class="td-field td-field--wide">
+                          <div class="td-field__label">
+                            <i class="cses-stratis-marker-01"></i>
+                            <span>会议地点</span>
+                          </div>
+                          <div class="td-field__value">
+                            <span class="td-field__text">线上</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 分组：附加信息（默认折叠） -->
+                    <div class="td-group is-collapsed" id="groupExtra">
+                      <div class="td-group__head">
+                        <i class="cses-stratis-chevron-down td-group__caret"></i>
+                        <span class="td-group__title">附加信息</span>
+                      </div>
+                      <div class="td-group__sub">包含联席主持人、语音宣导、提醒</div>
+                      <div class="td-group__body"></div>
+                    </div>
+
+                    <!-- 描述 -->
+                    <div class="td-desc">
+                      <div class="td-desc__head">
+                        <div class="td-section-title"><span>描述</span></div>
+                        <i class="cses-stratis-arrow-expand-04 td-desc__expand" title="展开"></i>
+                      </div>
+                      <div class="td-desc__editor">
+                        <div class="td-desc__input-wrap">
+                          <input class="td-desc__input" type="text" placeholder="添加描述">
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+              <!-- 底部固定区 -->
+              <div class="td-bottom">
+                <div class="td-quickbar">
+                  <div class="td-handle" id="handleBtn" title="折叠/展开">
+                    <i class="cses-stratis-chevron-up"></i>
+                  </div>
+                  <div class="td-quick-items">
+                    <div class="td-quick">
+                      <i class="cses-stratis-link"></i>
+                      <span>附件</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="td-footer">
+                  <button class="td-btn">关闭</button>
+                  <button class="td-btn td-btn--primary">新建会议</button>
+                </div>
+              </div>
+            </cs-drawer>
+
+            <!-- 人员选择 Popover (与抽屉同级，固定到视口) -->
+            <div class="td-picker" id="picker">
+              <div class="td-picker__head">
+                <span>你可能想找</span>
+                <span class="td-picker__hint" id="pickerHint">多选(⌘↩)</span>
+              </div>
+              <div class="td-picker__list" id="pickerList"></div>
+              <div class="td-picker__footer">
+                <button class="td-picker__btn" id="pickerCancel">取消</button>
+                <button class="td-picker__btn td-picker__btn--primary" id="pickerConfirm">确定</button>
+              </div>
+            </div>
+
+            <!-- 弹窗 -->
+            <cs-modal id="demoModal" style="z-index:200;">
+              <div class="dialog" id="modalDialog">
+                <div class="slot-header" style="padding:20px 24px;border-bottom:1px solid #eee;">
+                  <div class="c-slot c-slot-light" style="height:24px;">头部（标题+关闭按钮）</div>
+                </div>
+                <div class="slot-body" style="padding:20px 24px;min-height:120px;">
+                  <div class="c-slot c-slot-light" style="height:100%;">内容区</div>
+                </div>
+                <div class="slot-footer" style="padding:12px 24px;border-top:1px solid #eee;display:flex;justify-content:flex-end;gap:8px;">
+                  <div class="c-slot c-slot-light" style="padding:6px 24px;border-radius:4px;border:1px solid #ddd;">取消</div>
+                  <div class="c-slot" style="padding:6px 24px;border-radius:4px;background:#4857e2;color:rgba(255,255,255,0.6);">确定</div>
+                </div>
+              </div>
+            </cs-modal>
+
+            <!-- 二级导航 -->
+            <cs-navbar id="c-navbar" style="cursor:pointer;">
+              <div class="inner">
+                <!-- ① 标题区 -->
+                <div class="slot-header" style="display:flex;flex-direction:column;gap:4px;">
+                  <div style="display:flex;align-items:center;justify-content:space-between;">
+                    <span style="font-size:16px;font-weight:600;color:#333333;font-family:var(--font-family-cn);">一级标题</span>
+                    <img src="../assets/icon-nav-collapse.svg" width="16" height="16" alt="收起" style="cursor:pointer;">
+                  </div>
+                  <span style="font-size:12px;font-weight:400;color:#999999;font-family:var(--font-family-cn);">副标题描述</span>
+                </div>
+                <!-- ② 按钮区 -->
+                <div class="slot-action">
+                  <cs-button data-variant="primary" style="width:100%;">
+                    <i class="btn-icon cses-stratis-plus-01"></i>
+                    <span class="btn-label">新建</span>
+                  </cs-button>
+                </div>
+                <!-- ③ 主菜单区 -->
+                <div class="slot-nav" style="display:flex;flex-direction:column;gap:8px;padding-top:8px;border-top:1px solid #EBEDEF;flex:none;">
+                  <!-- 首页（选中） -->
+                  <div style="display:flex;align-items:center;gap:4px;padding:8px;border-radius:8px;cursor:pointer;background:rgba(72,87,226,0.08);">
+                    <img src="../assets/icon-nav-home-active.svg" width="14" height="14" alt="首页">
+                    <span style="font-size:14px;color:#4857E2;font-family:var(--font-family-cn);">二级标题 1</span>
+                  </div>
+                  <!-- 控制中心（展开组） -->
+                  <div style="display:flex;flex-direction:column;gap:4px;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px;border-radius:4px;cursor:pointer;">
+                      <div style="display:flex;align-items:center;gap:4px;">
+                        <img src="../assets/icon-nav-control.svg" width="14" height="14" alt="控制中心">
+                        <span style="font-size:14px;color:#333;font-family:var(--font-family-cn);">二级标题 2</span>
+                      </div>
+                      <img src="../assets/icon-nav-chevron-down.svg" width="16" height="16" alt="展开">
+                    </div>
+                    <div style="padding:8px 8px 8px 26px;border-radius:4px;font-size:14px;color:#333;font-family:var(--font-family-cn);cursor:pointer;">三级标题 1</div>
+                    <div style="padding:8px 8px 8px 26px;border-radius:4px;font-size:14px;color:#333;font-family:var(--font-family-cn);cursor:pointer;">三级标题 2</div>
+                  </div>
+                  <!-- 共享 -->
+                  <div style="display:flex;align-items:center;gap:4px;padding:8px;border-radius:8px;cursor:pointer;">
+                    <img src="../assets/icon-nav-share.svg" width="14" height="14" alt="共享">
+                    <span style="font-size:14px;color:#333;font-family:var(--font-family-cn);">二级标题 3</span>
+                  </div>
+                </div>
+                <!-- ④ 副菜单区 -->
+                <div class="slot-sub" style="display:flex;flex-direction:column;gap:8px;border-top:1px solid #EBEDEF;flex:1;min-height:0;overflow-y:auto;">
+                  <!-- 空间组 -->
+                  <div style="display:flex;flex-direction:column;gap:4px;">
+                    <!-- 组头 -->
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px;border-radius:8px;cursor:pointer;">
+                      <div style="display:flex;align-items:center;gap:4px;">
+                        <img src="../assets/icon-nav-triangle-down.svg" width="10" height="10" alt="展开">
+                        <span style="font-size:14px;color:#999;font-family:var(--font-family-cn);">二级标题 4</span>
+                      </div>
+                      <img src="../assets/icon-nav-add-circle.svg" width="14" height="14" alt="添加" style="cursor:pointer;">
+                    </div>
+                    <!-- 空间项 -->
+                    <div style="display:flex;align-items:center;gap:4px;padding:8px 8px 8px 20px;cursor:pointer;">
+                      <img src="../assets/icon-nav-space.svg" width="14" height="14" alt="空间">
+                      <span style="font-size:14px;color:#333;font-family:var(--font-family-cn);">三级标题 3</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:4px;padding:8px 8px 8px 20px;cursor:pointer;">
+                      <img src="../assets/icon-nav-space.svg" width="14" height="14" alt="空间">
+                      <span style="font-size:14px;color:#333;font-family:var(--font-family-cn);">三级标题 4</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:4px;padding:8px 8px 8px 20px;cursor:pointer;">
+                      <img src="../assets/icon-nav-space.svg" width="14" height="14" alt="空间">
+                      <span style="font-size:14px;color:#333;font-family:var(--font-family-cn);">三级标题 5</span>
+                      <span style="font-size:12px;color:#4857E2;background:rgba(72,87,226,0.08);padding:1px 6px;border-radius:4px;font-family:var(--font-family-cn);">外部</span>
+                    </div>
+                  </div>
+                  <!-- 知识库组 -->
+                  <div style="display:flex;flex-direction:column;gap:4px;">
+                    <!-- 组头 -->
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px;border-radius:8px;cursor:pointer;">
+                      <div style="display:flex;align-items:center;gap:4px;">
+                        <img src="../assets/icon-nav-triangle-down.svg" width="10" height="10" alt="展开">
+                        <span style="font-size:14px;color:#999;font-family:var(--font-family-cn);">二级标题 5</span>
+                      </div>
+                      <img src="../assets/icon-nav-add-circle.svg" width="14" height="14" alt="添加" style="cursor:pointer;">
+                    </div>
+                    <!-- 知识库项 -->
+                    <div style="display:flex;align-items:center;gap:4px;padding:8px 8px 8px 20px;cursor:pointer;">
+                      <img src="../assets/icon-nav-knowledge.svg" width="14" height="14" alt="知识库">
+                      <span style="font-size:14px;color:#333;font-family:var(--font-family-cn);">三级标题 6</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:4px;padding:8px 8px 8px 20px;cursor:pointer;">
+                      <img src="../assets/icon-nav-knowledge.svg" width="14" height="14" alt="知识库">
+                      <span style="font-size:14px;color:#333;font-family:var(--font-family-cn);">三级标题 7</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:4px;padding:8px 8px 8px 20px;cursor:pointer;">
+                      <img src="../assets/icon-nav-knowledge.svg" width="14" height="14" alt="知识库">
+                      <span style="font-size:14px;color:#333;font-family:var(--font-family-cn);">三级标题 8</span>
+                      <span style="font-size:12px;color:#4857E2;background:rgba(72,87,226,0.08);padding:1px 6px;border-radius:4px;font-family:var(--font-family-cn);">外部</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- ⑤⑥ 底部区域 -->
+                <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">
+                <!-- ⑤ 管理后台 -->
+                <div class="slot-admin" style="display:flex;align-items:center;gap:4px;padding:8px;cursor:pointer;">
+                  <i class="cses-stratis-home-01" style="font-size:14px;color:#333;"></i>
+                  <span style="font-size:14px;color:#333;font-family:var(--font-family-cn);">管理后台</span>
+                </div>
+                <!-- ⑥ 存储空间 -->
+                <div class="slot-bottom" style="display:flex;flex-direction:column;gap:4px;padding:8px;border-top:1px solid #EBEDEF;">
+                  <div style="display:flex;align-items:center;justify-content:space-between;">
+                    <span style="font-size:10px;color:#333;font-family:var(--font-family-cn);">云空间：480GB/500GB</span>
+                    <span style="font-size:10px;color:#4857E2;font-family:var(--font-family-cn);cursor:pointer;">升级</span>
+                  </div>
+                  <div style="width:100%;height:4px;background:#DCDEE0;border-radius:2px;overflow:hidden;">
+                    <div style="width:96%;height:100%;background:#D63D3D;border-radius:2px;"></div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:4px;">
+                    <i class="cses-stratis-bell-01" style="font-size:10px;color:#C32020;"></i>
+                    <span style="font-size:10px;color:#C32020;font-family:var(--font-family-cn);">空间将满，影响云储存</span>
+                  </div>
+                </div>
+                </div>
+              </div>
+            </cs-navbar>
+
+            <!-- 主内容区 -->
+            <main class="main-content" id="c-main" style="position:relative;">
+
+              
+
+              <!-- 内容区头部 Figma:72-1267 -->
+              <div id="c-content-header" style="display:flex;align-items:center;justify-content:space-between;height:64px;padding:0 16px;flex-shrink:0;cursor:pointer;border-bottom:1px solid #E6E6E6;background:#fff;box-sizing:border-box;">
+                <span style="font-size:18px;font-weight:600;color:#333;font-family:var(--font-family-cn);">一级标题</span>
+                <cs-search-trigger>
+                  <span class="trigger-text">搜索</span>
+                  <i class="trigger-icon cses-stratis-search-01"></i>
+                </cs-search-trigger>
+              </div>
+
+              <!-- 筛选区 -->
+              <div class="c-slot c-slot-light" id="c-filter-bar" style="height:40px;flex-shrink:0;cursor:pointer;padding:0 16px;">
+                筛选区 40px
+              </div>
+
+              <!-- 内容区 -->
+              <div class="c-slot c-slot-light" id="c-content-area" style="flex:1;cursor:pointer;margin:0 16px;border-radius:8px;">
+                内容区 FILL×FILL<br>（自适应）
+              </div>
+
+              <!-- 底部 -->
+              <div class="c-slot c-slot-light" id="c-bottom-bar" style="height:18px;flex-shrink:0;cursor:pointer;">
+                底部 18px
+              </div>
+
+
+
+
+
+            </main>
+          </div>
+
+        </div>
+      </cs-layout>
+
+    </div>
+  </div>
+</div>
+
+</div><!-- /.page-layout -->
+
+<!-- 信息面板 -->
+<div class="info-panel" id="infoPanel">
+  <div class="info-title" id="infoTitle"></div>
+  <div class="info-rule" id="infoRule"></div>
+</div>
+
+<div id="floatLabel"></div>
+
+<script>
+(function() {
+  var items = document.querySelectorAll('.doc-item');
+  var topbar = document.getElementById('docTopbar'); // 可能已移除，使用前判空
+  var infoPanel = document.getElementById('infoPanel');
+  var infoTitle = document.getElementById('infoTitle');
+  var infoRule = document.getElementById('infoRule');
+  var overlayMask = document.getElementById('overlayMask');
+  var drawer = document.getElementById('demoDrawer');
+  var modal = document.getElementById('demoModal');
+  var modalDialog = document.getElementById('modalDialog');
+
+  // 容器信息
+  var containerInfo = {
+    'layout': { el: 'preview-layout', title: '完整布局 cs-layout', rule: '100vw×100vh (min:1024×600) r:0\nVERTICAL 垂直排列\n自适应网页宽高\n所有前台业务共用同一套 layout' },
+    'tab-bar': { el: 'c-tab-bar', title: '标签栏 cs-tabbar', rule: 'W:FILL H:FIXED(56) SPACE_BETWEEN\nbg(#2C2A3A) p(6,16) g:8 align:CENTER\n左侧：窗口控制 | 搜索框(232) | 标签区\n右侧：通知(badge) + 头像' },
+    'sidebar': { el: 'c-sidebar', title: '一级导航 cs-sidebar', rule: 'W:FIXED(97)\np(12,16,16,16) g:24\n图标 24×24：线性(常态) / 面型(点亮)\n导航项 65×48 g:4 r:8' },
+    'navbar': { el: 'c-navbar', title: '二级导航 cs-navbar', rule: 'W:FIXED(232) H:FILL\n灰底 bg(247,249,252)\n白卡 p(8,8,0,8) g:16 r:12\n槽位：① 标题 | ② slot-action（主 CTA，"+新建/+上传"，只此一处）| ③ 主菜单 | ④ 副菜单(FILL) | ⑤ 后台 | ⑥ 底部' },
+    'content-header': { el: 'c-content-header', title: '内容区头部 cs-content-header', rule: 'W:FILL H:HUG(~64)\np(0,16) g:10\n左 slot-left：标题/面包屑 (flex:1)\n右 slot-right：只放搜索 cs-search-trigger / cs-search-input (shrink:0)\n禁止放视图切换/筛选/新建/其他二级操作按钮' },
+    'filter-bar': { el: 'c-filter-bar', title: '筛选区 cs-filter-bar', rule: '四个变体（data-variant）：\n• tabs（默认）：标签切换 + 视图切换\n• dropdowns：多下拉筛选\n• filters：计数标签 + 下拉混合\n• search：搜索 + 工具\n承担：筛选/视图切换/标签切换/排序\n禁止放新建（应在 navbar slot-action）；若 variant=search 则 content-header.slot-right 留空' },
+    'content-area': { el: 'c-content-area', title: '内容区', rule: 'W:FILL H:FILL grow:1\n★ 唯一完全自适应的区域\n撑满主内容区剩余空间\n放列表/卡片/聊天等业务内容\n内部可滚动' },
+    'bottom-bar': { el: 'c-bottom-bar', title: '底部栏', rule: 'H:FIXED(18)\n放分页控件或滚动条指示器' },
+  };
+
+  // 抽屉信息
+  var drawerInfo = {
+    'drawer-task': { width: 'task', title: '抽屉 — 任务详情', rule: 'data-width="task" (633px)\n左侧圆角 16px + 左侧投影\n顶部工具栏 → 标题 → 基础信息 → 描述\n底部：折叠把手 + 快捷入口 + 关闭/新建' },
+    'drawer-doc': { width: 'md', title: '抽屉 — 文档预览', rule: 'data-width="md" (560px)\n内部：文档渲染区\n头部：文档名+关闭 | 底部：操作按钮' },
+  };
+
+  // 弹窗信息
+  var modalInfo = {
+    'modal-sm': { size: 'sm', title: '弹窗（小 480px）', rule: 'data-size="sm"\n确认提示、简单表单\n头部：标题+关闭\n内容区\n底部：取消+确定（右对齐）' },
+    'modal-md': { size: 'md', title: '弹窗（中 640px）', rule: 'data-size="md"（默认）\n表单填写、配置面板\n头部+内容(可滚动)+底部' },
+    'modal-lg': { size: 'lg', title: '弹窗（大 800px）', rule: 'data-size="lg"\n复杂表单、新建任务、选择面板\n头部+内容(可滚动)+底部' },
+  };
+
+  function clearAll() {
+    document.querySelectorAll('.highlight').forEach(function(el) { el.classList.remove('highlight'); });
+    overlayMask.classList.remove('show');
+    drawer.removeAttribute('data-open');
+    modal.removeAttribute('data-open');
+    infoPanel.classList.remove('show');
+    floatLabel.classList.remove('show');
+  }
+
+  var floatLabel = document.getElementById('floatLabel');
+
+  function positionFloat(el, title, rule) {
+    var rect = el.getBoundingClientRect();
+    floatLabel.textContent = title + '\n' + rule;
+    floatLabel.classList.add('show');
+    // 放在容器上方居中
+    var labelW = 280;
+    var left = rect.left + rect.width / 2 - labelW / 2;
+    var top = rect.top - 10;
+    // 如果上方放不下就放下方
+    floatLabel.style.maxWidth = labelW + 'px';
+    floatLabel.style.left = Math.max(270, left) + 'px';
+    // 先渲染获取高度
+    floatLabel.style.top = '0px';
+    floatLabel.style.visibility = 'hidden';
+    floatLabel.classList.add('show');
+    var labelH = floatLabel.offsetHeight;
+    floatLabel.style.visibility = '';
+    if (top - labelH < 10) {
+      floatLabel.style.top = (rect.bottom + 10) + 'px';
+    } else {
+      floatLabel.style.top = (top - labelH) + 'px';
+    }
+  }
+
+  function showContainer(target) {
+    clearAll();
+    var info = containerInfo[target];
+    if (info) {
+      var el = document.getElementById(info.el);
+      if (el) {
+        el.classList.add('highlight');
+        if (topbar) topbar.textContent = info.title;
+        positionFloat(el, info.title, info.rule);
+      }
+    }
+  }
+
+  function showDrawer(target) {
+    clearAll();
+    var info = drawerInfo[target];
+    if (info) {
+      overlayMask.classList.add('show');
+      drawer.setAttribute('data-width', info.width);
+      drawer.setAttribute('data-open', '');
+      if (topbar) topbar.textContent = info.title;
+      setTimeout(function() { positionFloat(drawer, info.title, info.rule); }, 300);
+    }
+  }
+
+  function showModal(target) {
+    clearAll();
+    var info = modalInfo[target];
+    if (info) {
+      modalDialog.style.width = info.size === 'sm' ? '480px' : info.size === 'lg' ? '800px' : '640px';
+      modal.setAttribute('data-open', '');
+      if (topbar) topbar.textContent = info.title;
+      setTimeout(function() { positionFloat(modalDialog, info.title, info.rule); }, 100);
+      infoPanel.classList.add('show');
+    }
+  }
+
+  items.forEach(function(item) {
+    item.addEventListener('click', function() {
+      items.forEach(function(i) { i.classList.remove('active'); });
+      item.classList.add('active');
+      var target = item.getAttribute('data-target');
+      var type = item.getAttribute('data-type');
+      if (type === 'overlay' && target.startsWith('drawer')) showDrawer(target);
+      else if (type === 'overlay' && target.startsWith('modal')) showModal(target);
+      else showContainer(target);
+    });
+  });
+
+  // 点击布局内的容器也触发
+  Object.keys(containerInfo).forEach(function(key) {
+    var info = containerInfo[key];
+    var el = document.getElementById(info.el);
+    if (el) {
+      el.addEventListener('click', function(e) {
+        // 抽屉 / 弹窗 / picker 内部的点击不应触发"容器演示高亮"
+        if (e.target.closest('cs-drawer, cs-modal, .td-picker, .overlay-mask')) return;
+        e.stopPropagation();
+        items.forEach(function(i) { i.classList.remove('active'); });
+        var menuItem = document.querySelector('.doc-item[data-target="' + key + '"]');
+        if (menuItem) menuItem.classList.add('active');
+        showContainer(key);
+      });
+    }
+  });
+
+  // 点击蒙层关闭
+  overlayMask.addEventListener('click', clearAll);
+  modal.addEventListener('click', function(e) { if (e.target === modal) clearAll(); });
+
+  /* ============================================================
+     任务抽屉内部交互（分段切换 / 分组折叠 / 底部把手）
+     ============================================================ */
+  // 会议类型 分段切换
+  var meetingTypeEl = document.getElementById('meetingType');
+  if (meetingTypeEl) {
+    meetingTypeEl.addEventListener('click', function(e) {
+      var item = e.target.closest('.td-seg__item');
+      if (!item) return;
+      meetingTypeEl.querySelectorAll('.td-seg__item').forEach(function(i) {
+        i.classList.remove('is-active');
+      });
+      item.classList.add('is-active');
+    });
+  }
+
+  // 折叠分组（基础信息 / 附加信息）
+  document.querySelectorAll('.td-group__head').forEach(function(head) {
+    head.addEventListener('click', function() {
+      head.closest('.td-group').classList.toggle('is-collapsed');
+    });
+  });
+
+  // 折叠把手
+  var handleBtn = document.getElementById('handleBtn');
+  if (handleBtn) {
+    handleBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      handleBtn.classList.toggle('is-collapsed');
+    });
+  }
+
+  /* ============================================================
+     人员选择控件（搜索 / 多选 / 键盘 / batch 模式）
+     ============================================================ */
+  var PEOPLE = [
+    { id: 1, name: '王利伟', role: '后端开发', dept: '技术部', color: '#7c8eee' },
+    { id: 2, name: '王超乐', role: '后端开发', dept: '技术部', color: '#4857e2' },
+    { id: 3, name: '王俊虎', role: '测试员',   dept: '测试部', color: '#32bd79' },
+    { id: 4, name: '王晨宇', role: 'UI设计师', dept: '产品部', color: '#a4aeff' },
+    { id: 5, name: '王永泽', role: '运维',     dept: '运维部', color: '#ff9333' },
+    { id: 6, name: '李明',   role: '前端开发', dept: '技术部', color: '#fa4e4e' },
+    { id: 7, name: '张三',   role: '产品经理', dept: '产品部', color: '#576a95' },
+    { id: 8, name: '赵四',   role: '销售',     dept: '销售部', color: '#f6ad00' },
+    { id: 9, name: '钱五',   role: '财务',     dept: '财务部', color: '#8289ad' },
+    { id: 10, name: '孙六',  role: '人事',     dept: '人事部', color: '#f16c00' },
+    { id: 11, name: '姜乐乐', role: '运营',    dept: '运营部', color: '#7c8eee' },
+    { id: 12, name: '陈晨',  role: '运营',     dept: '运营部', color: '#32bd79' },
+  ];
+  var picker = document.getElementById('picker');
+  if (picker) {
+    var selectionMap = new Map();
+    var pickerList = document.getElementById('pickerList');
+    var pickerHint = document.getElementById('pickerHint');
+    var pickerCancel = document.getElementById('pickerCancel');
+    var pickerConfirm = document.getElementById('pickerConfirm');
+    var activeField = null;
+    var highlightIdx = 0;
+    var filtered = [];
+    var batchMode = false;
+    var stagedSet = null;
+    var suppressNextFocus = false;
+
+    function findPerson(id) { return PEOPLE.find(function(p) { return p.id === id; }); }
+    function getSelectedSet(fieldEl) {
+      if (!selectionMap.has(fieldEl)) selectionMap.set(fieldEl, new Set());
+      return selectionMap.get(fieldEl);
+    }
+    function getFieldInput(fieldEl) { return fieldEl.querySelector('.td-people-input'); }
+
+    function renderFieldTags(fieldEl) {
+      var valueEl = fieldEl.querySelector('.td-field__value');
+      var set = getSelectedSet(fieldEl);
+      var tagsHtml = Array.from(set).map(function(id) {
+        var p = findPerson(id); if (!p) return '';
+        return '<span class="td-people-tag">' +
+          '<span class="td-people-tag__avatar" style="background:' + p.color + '">' + p.name[0] + '</span>' +
+          '<span>' + p.name + '</span>' +
+          '<span class="td-people-tag__remove" data-remove="' + p.id + '">' +
+          '<i class="cses-stratis-x-01"></i></span></span>';
+      }).join('');
+      var isMulti = fieldEl.dataset.multi === 'true';
+      var placeholder = set.size === 0 ? '请选择人员' : (isMulti ? '添加参会人' : '');
+      valueEl.innerHTML =
+        '<div class="td-people-tags">' + tagsHtml +
+        '<input class="td-people-input" type="text" placeholder="' + placeholder + '"></div>';
+      var tagsEl = valueEl.querySelector('.td-people-tags');
+      tagsEl.scrollTop = tagsEl.scrollHeight;
+      bindFieldInput(fieldEl);
+    }
+
+    function renderPickerList() {
+      if (!activeField) return;
+      var currentSet = batchMode ? stagedSet : getSelectedSet(activeField);
+      var input = getFieldInput(activeField);
+      var q = (input ? input.value : '').trim().toLowerCase();
+      filtered = PEOPLE.filter(function(p) {
+        return !q ||
+          p.name.toLowerCase().includes(q) ||
+          p.role.toLowerCase().includes(q) ||
+          p.dept.toLowerCase().includes(q);
+      });
+      if (filtered.length === 0) {
+        pickerList.innerHTML = '<div class="td-picker__empty">未找到匹配成员</div>';
+        return;
+      }
+      if (highlightIdx >= filtered.length) highlightIdx = 0;
+      var max = parseInt(activeField.dataset.max || '0');
+      var limitReached = max > 0 && currentSet.size >= max;
+      pickerList.innerHTML = filtered.map(function(p, i) {
+        var selected = currentSet.has(p.id);
+        var disabled = limitReached && !selected;
+        var cls = [
+          'td-picker__item',
+          i === highlightIdx ? 'is-active' : '',
+          selected && !batchMode ? 'is-selected' : '',
+          selected && batchMode ? 'is-checked' : '',
+          disabled ? 'is-disabled' : ''
+        ].filter(Boolean).join(' ');
+        var titleAttr = disabled ? ' title="最多选 ' + max + ' 个"' : '';
+        return '<div class="' + cls + '" data-id="' + p.id + '"' + titleAttr + '>' +
+          '<div class="td-picker__check"><svg viewBox="0 0 16 16"><polyline points="3.5 8.5 6.5 11.5 12.5 5"/></svg></div>' +
+          '<div class="td-picker__avatar" style="background:' + p.color + '">' + p.name[0] + '</div>' +
+          '<div class="td-picker__main">' +
+          '<div class="td-picker__name">' + p.name + '</div>' +
+          '<div class="td-picker__meta">' + p.role + ' / ' + p.dept + '</div>' +
+          '</div></div>';
+      }).join('');
+    }
+
+    function openPicker(fieldEl) {
+      activeField = fieldEl;
+      var valueEl = fieldEl.querySelector('.td-field__value');
+      var valueRect = valueEl.getBoundingClientRect();
+      var fieldRect = fieldEl.getBoundingClientRect();
+      picker.style.left = valueRect.left + 'px';
+      picker.style.top = (fieldRect.bottom + 2) + 'px';
+      picker.style.width = Math.max(valueRect.width, 360) + 'px';
+      picker.classList.add('is-open');
+      var isMulti = fieldEl.dataset.multi === 'true';
+      var max = parseInt(fieldEl.dataset.max || '0');
+      pickerHint.style.display = '';
+      if (isMulti) {
+        pickerHint.textContent = max > 0 ? '多选(⌘↩) · 最多 ' + max + ' 个' : '多选(⌘↩)';
+        pickerHint.classList.remove('is-static');
+      } else {
+        pickerHint.textContent = '单选';
+        pickerHint.classList.add('is-static');
+      }
+      highlightIdx = 0;
+      renderPickerList();
+    }
+
+    function closePicker() {
+      picker.classList.remove('is-open');
+      if (batchMode) {
+        batchMode = false; stagedSet = null;
+        picker.classList.remove('is-batch');
+        pickerHint.textContent = '多选(⌘↩)';
+      }
+      activeField = null;
+    }
+
+    function enterBatchMode() {
+      if (!activeField) return;
+      batchMode = true;
+      stagedSet = new Set(getSelectedSet(activeField));
+      picker.classList.add('is-batch');
+      pickerHint.textContent = '完成(⌘↩)';
+      renderPickerList();
+      var inp = getFieldInput(activeField);
+      if (inp) inp.focus();
+    }
+
+    function exitBatchMode(commit) {
+      if (!batchMode) return;
+      var fieldEl = activeField;
+      if (commit && stagedSet) {
+        var isMulti = fieldEl.dataset.multi === 'true';
+        var finalSet = isMulti ? stagedSet : new Set([Array.from(stagedSet).pop()].filter(Boolean));
+        selectionMap.set(fieldEl, finalSet);
+        renderFieldTags(fieldEl);
+      }
+      batchMode = false; stagedSet = null;
+      picker.classList.remove('is-batch');
+      pickerHint.textContent = '多选(⌘↩)';
+      if (commit) {
+        closePicker();
+        var inp = getFieldInput(fieldEl);
+        if (inp) { suppressNextFocus = true; inp.focus(); }
+      } else {
+        renderPickerList();
+        var inp2 = getFieldInput(fieldEl);
+        if (inp2) inp2.focus();
+      }
+    }
+
+    function toggleSelect(id) {
+      if (!activeField) return;
+      var fieldEl = activeField;
+      var max = parseInt(fieldEl.dataset.max || '0');
+      if (batchMode) {
+        if (stagedSet.has(id)) stagedSet.delete(id);
+        else {
+          if (max > 0 && stagedSet.size >= max) return;
+          stagedSet.add(id);
+        }
+        renderPickerList();
+        return;
+      }
+      var multi = fieldEl.dataset.multi === 'true';
+      var set = getSelectedSet(fieldEl);
+      if (set.has(id)) {
+        set.delete(id);
+        renderFieldTags(fieldEl);
+        getFieldInput(fieldEl).focus();
+        renderPickerList();
+      } else {
+        if (!multi) set.clear();
+        else if (max > 0 && set.size >= max) return;
+        set.add(id);
+        renderFieldTags(fieldEl);
+        if (!multi) {
+          closePicker();
+        } else {
+          var inp = getFieldInput(fieldEl);
+          inp.value = '';
+          inp.focus();
+          openPicker(fieldEl);
+        }
+      }
+    }
+
+    function bindFieldInput(fieldEl) {
+      var inp = getFieldInput(fieldEl);
+      if (!inp) return;
+      inp.addEventListener('focus', function() {
+        if (suppressNextFocus) { suppressNextFocus = false; return; }
+        openPicker(fieldEl);
+      });
+      inp.addEventListener('input', function() {
+        if (activeField !== fieldEl) openPicker(fieldEl);
+        highlightIdx = 0;
+        renderPickerList();
+      });
+      inp.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace' && inp.value === '') {
+          var set = getSelectedSet(fieldEl);
+          if (set.size > 0) {
+            e.preventDefault();
+            var last = Array.from(set).pop();
+            set.delete(last);
+            renderFieldTags(fieldEl);
+            getFieldInput(fieldEl).focus();
+            if (picker.classList.contains('is-open')) renderPickerList();
+            return;
+          }
+        }
+        if (!picker.classList.contains('is-open')) return;
+        if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+          if (fieldEl.dataset.multi !== 'true') return;
+          e.preventDefault();
+          if (batchMode) exitBatchMode(true);
+          else enterBatchMode();
+          return;
+        }
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          if (filtered.length === 0) return;
+          highlightIdx = (highlightIdx + 1) % filtered.length;
+          renderPickerList();
+          scrollHighlightedIntoView();
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          if (filtered.length === 0) return;
+          highlightIdx = (highlightIdx - 1 + filtered.length) % filtered.length;
+          renderPickerList();
+          scrollHighlightedIntoView();
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          if (filtered.length === 0) return;
+          toggleSelect(filtered[highlightIdx].id);
+        } else if (e.key === 'Escape') {
+          e.preventDefault(); e.stopPropagation();
+          if (batchMode) exitBatchMode(false);
+          else closePicker();
+        }
+      });
+    }
+
+    function scrollHighlightedIntoView() {
+      var el = pickerList.children[highlightIdx];
+      if (el) el.scrollIntoView({ block: 'nearest' });
+    }
+
+    document.querySelectorAll('[data-people-field]').forEach(function(fieldEl) {
+      renderFieldTags(fieldEl);
+      fieldEl.addEventListener('click', function(e) {
+        var removeBtn = e.target.closest('.td-people-tag__remove');
+        if (removeBtn) {
+          e.stopPropagation();
+          var id = +removeBtn.dataset.remove;
+          getSelectedSet(fieldEl).delete(id);
+          renderFieldTags(fieldEl);
+          getFieldInput(fieldEl).focus();
+          return;
+        }
+        if (e.target.closest('.td-people-tag')) return;
+        var inp = getFieldInput(fieldEl);
+        if (inp && document.activeElement !== inp) inp.focus();
+      });
+    });
+
+    pickerList.addEventListener('click', function(e) {
+      var item = e.target.closest('.td-picker__item');
+      if (!item) return;
+      e.preventDefault();
+      if (item.classList.contains('is-disabled')) return;
+      toggleSelect(+item.dataset.id);
+    });
+    pickerList.addEventListener('mousedown', function(e) {
+      if (e.target.closest('.td-picker__item')) e.preventDefault();
+    });
+    pickerList.addEventListener('mousemove', function(e) {
+      var item = e.target.closest('.td-picker__item');
+      if (!item) return;
+      var idx = Array.from(pickerList.children).indexOf(item);
+      if (idx >= 0 && idx !== highlightIdx) {
+        highlightIdx = idx;
+        Array.from(pickerList.children).forEach(function(el, i) {
+          el.classList.toggle('is-active', i === highlightIdx);
+        });
+      }
+    });
+
+    pickerHint.addEventListener('mousedown', function(e) { e.preventDefault(); e.stopPropagation(); });
+    pickerHint.addEventListener('click', function(e) {
+      e.preventDefault(); e.stopPropagation();
+      if (activeField && activeField.dataset.multi !== 'true') return;
+      if (batchMode) exitBatchMode(true);
+      else enterBatchMode();
+    });
+    pickerCancel.addEventListener('mousedown', function(e) { e.preventDefault(); });
+    pickerCancel.addEventListener('click', function(e) { e.preventDefault(); exitBatchMode(false); });
+    pickerConfirm.addEventListener('mousedown', function(e) { e.preventDefault(); });
+    pickerConfirm.addEventListener('click', function(e) { e.preventDefault(); exitBatchMode(true); });
+
+    // 点外部关闭
+    document.addEventListener('mousedown', function(e) {
+      if (!picker.classList.contains('is-open')) return;
+      if (picker.contains(e.target)) return;
+      if (e.target.closest('[data-people-field]')) return;
+      if (batchMode) exitBatchMode(false);
+      else closePicker();
+    });
+
+    // 抽屉被关闭时同时关掉 picker
+    var drawerForPicker = document.getElementById('demoDrawer');
+    if (drawerForPicker) {
+      new MutationObserver(function() {
+        if (!drawerForPicker.hasAttribute('data-open')) closePicker();
+      }).observe(drawerForPicker, { attributes: true, attributeFilter: ['data-open'] });
+    }
+  }
+})();
+</script>
+
+</body>
+</html>

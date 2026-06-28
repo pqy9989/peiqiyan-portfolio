@@ -1,0 +1,59 @@
+/*
+ * 搜索触发按钮 (Search Trigger)
+ * 标签：<cs-search-trigger>
+ * 数据来源：Figma 节点 82:1450
+ *
+ * 点击后触发搜索面板，非输入框
+ * 150x32 bg(#F5F5F5) r:8 p(6,12) gap:4
+ * 文字左侧 + 图标右侧
+ *
+ * data 属性：
+ *   data-size="sm"   — 小尺寸 28px
+ *   data-size="md"   — 中尺寸 32px（默认）
+ */
+
+cs-search-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 150px;
+  height: var(--cs-sem-size-interactive-sm);
+  padding: var(--spacing-6) var(--space-sm);
+  background: var(--cs-color-bg-light);
+  border: none;
+  border-radius: var(--radius-lg);
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: background 0.2s;
+  gap: var(--space-2xs);
+}
+
+cs-search-trigger:hover {
+  background: var(--cs-color-bg-hover);
+}
+
+/* 占位文字 */
+cs-search-trigger .trigger-text {
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text-light2);
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+/* 搜索图标（右侧） */
+cs-search-trigger .trigger-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 12px;
+  color: var(--cs-color-text-light2);
+  line-height: 1;
+}
+
+/* 小尺寸 */
+cs-search-trigger[data-size="sm"] {
+  height: var(--spacing-28);
+  padding: var(--space-2xs) var(--space-xs);
+}

@@ -1,0 +1,985 @@
+/* ============================================================
+ * pages/meeting-room/find-rooms.css
+ *
+ * 「找会议室」页私有样式（前缀 --meeting-room-find-rooms-*）
+ * 仅覆盖本页业务私有 class 几何，不动 fragment / page-shell / shell.css
+ *
+ * 结构：
+ *   .meet-find                 主区根
+ *     .meet-find__controls     顶部控制条（左 view 切换 + 右 filter-bar）
+ *     .meet-find__chips        设备 chip 行
+ *     .meet-find__view         视图容器（list / timeline）
+ *     .meet-find__list / __row 列表视图
+ *     .meet-find__axis         时间轴视图
+ *     .meet-find__empty        空态（默认 hidden）
+ *
+ *   .booking-drawer            右侧抽屉（inline overlay）
+ * ============================================================ */
+
+:root {
+  --meeting-room-find-rooms-row-gap:        var(--spacing-12);
+  --meeting-room-find-rooms-chip-radius:    var(--radius-md);
+  --meeting-room-find-rooms-row-radius:     var(--radius-md);
+  --meeting-room-find-rooms-axis-cell-w:    44px;   /* 30 分钟一格 */
+  --meeting-room-find-rooms-axis-room-w:    200px;
+  --meeting-room-find-rooms-axis-row-h:     56px;
+  --meeting-room-find-rooms-drawer-w:       520px;
+}
+
+/* ─────────────────────────────────────────────────
+ * 主区根
+ * ───────────────────────────────────────────────── */
+.meet-find {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+  padding: var(--spacing-20) var(--spacing-24) var(--spacing-24);
+  overflow: hidden;
+  background: var(--cs-color-bg-app-light);
+}
+
+/* ─────────────────────────────────────────────────
+ * 顶部控制条
+ * ───────────────────────────────────────────────── */
+/* 顶部 filter-bar 去掉默认左右 padding，让 dropdowns 贴左 */
+.meet-find__filter-bar {
+  padding: 0;
+  margin: 0;
+}
+
+/* content-header 横向 padding 对齐到 24px（match 下方 .meet-find 容器）*/
+.main-content > cs-content-header {
+  padding-left: var(--spacing-24);
+  padding-right: var(--spacing-24);
+}
+
+/* view 切换 — 段控按钮（外壳高度 = cs-select 32px）*/
+.meet-find__view-switch {
+  display: inline-flex;
+  height: 32px;
+  padding: 2px;
+  box-sizing: border-box;
+  background: var(--cs-color-bg-secondary);
+  border: 1px solid var(--cs-color-border);
+  border-radius: var(--radius-lg);
+}
+.meet-find__view-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  height: 100%;
+  padding: 0 var(--spacing-12);
+  font: var(--typo-cn-13-regular);
+  color: var(--cs-color-text-light2);
+  background: transparent;
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 1px);
+  cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.meet-find__view-btn i {
+  font-size: var(--cs-sem-size-icon-sm);
+}
+.meet-find__view-btn:hover {
+  color: var(--cs-color-text);
+}
+.meet-find__view-btn.is-active {
+  background: var(--cs-color-bg);
+  color: var(--cs-color-primary);
+  font-weight: var(--font-weight-medium);
+  box-shadow: 0 1px 2px rgba(0,0,0,.06);
+}
+
+/* filter 行 */
+.meet-find__filters {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  flex-wrap: wrap;
+}
+.meet-find__filter {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  height: 36px;
+  padding: 0 var(--spacing-12);
+  background: var(--cs-color-bg);
+  border: 1px solid var(--cs-color-border);
+  border-radius: var(--radius-md);
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text);
+  cursor: pointer;
+  transition: border-color .15s;
+}
+.meet-find__filter:hover {
+  border-color: var(--cs-color-primary);
+}
+.meet-find__filter > i {
+  color: var(--cs-color-text-light2);
+  font-size: var(--cs-sem-size-icon-sm);
+}
+.meet-find__filter input,
+.meet-find__filter select {
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  outline: none;
+  cursor: pointer;
+  min-width: 96px;
+}
+.meet-find__filter-caret {
+  color: var(--cs-color-text-light3) !important;
+}
+
+/* ─────────────────────────────────────────────────
+ * 设备 chip 行
+ * ───────────────────────────────────────────────── */
+.meet-find__chips {
+  display: flex;
+  gap: var(--spacing-8);
+  flex-wrap: wrap;
+}
+.meet-find__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  height: 32px;
+  box-sizing: border-box;
+  padding: 0 var(--spacing-12);
+  font: var(--typo-cn-13-regular);
+  color: var(--cs-color-text-light2);
+  background: var(--cs-color-bg);
+  border: 1px solid var(--cs-color-border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: border-color .15s, background .15s, color .15s;
+}
+.meet-find__chip i {
+  font-size: 14px;
+}
+.meet-find__chip:hover {
+  border-color: var(--cs-color-primary);
+  color: var(--cs-color-text);
+}
+.meet-find__chip.is-active {
+  background: var(--cs-color-primary-a2);
+  border-color: var(--cs-color-primary);
+  color: var(--cs-color-primary);
+}
+
+/* ─────────────────────────────────────────────────
+ * 视图容器
+ * ───────────────────────────────────────────────── */
+.meet-find__view {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* ─────────────────────────────────────────────────
+ * 列表视图
+ * ───────────────────────────────────────────────── */
+.meet-find__list-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+  margin-bottom: var(--spacing-16);
+  font: var(--typo-cn-13-regular);
+  color: var(--cs-color-text-light2);
+}
+.meet-find__list-count b {
+  color: var(--cs-color-text);
+  font-weight: var(--font-weight-medium);
+  margin: 0 2px;
+}
+.meet-find__list-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-4);
+}
+.meet-find__list-sort select {
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: var(--cs-color-text);
+  cursor: pointer;
+  outline: none;
+}
+
+.meet-find__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+}
+.meet-find__row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: var(--spacing-16);
+  padding: var(--spacing-12) var(--spacing-16);
+  background: var(--cs-color-white);
+  border: 1px solid var(--cs-color-border);
+  border-radius: var(--radius-lg);
+  transition: background .12s ease, box-shadow .12s ease;
+}
+.meet-find__row:hover {
+  background: var(--cs-color-bg-light);
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+}
+
+.meet-find__row-main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+}
+.meet-find__row-title-line {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-16);
+  flex-wrap: wrap;
+}
+.meet-find__row-name {
+  font: var(--typo-cn-15-medium);
+  font-weight: var(--font-weight-medium);
+  color: var(--cs-color-text);
+}
+.meet-find__row-cap {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font: var(--typo-cn-13-regular);
+  color: var(--cs-color-text-light2);
+}
+.meet-find__row-cap i {
+  font-size: 13px;
+}
+
+.meet-find__row-meta-line {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-16);
+  flex-wrap: wrap;
+}
+.meet-find__row-loc {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font: var(--typo-cn-13-regular);
+  color: var(--cs-color-text-light2);
+}
+.meet-find__row-loc i {
+  font-size: 13px;
+}
+
+.meet-find__row-devices {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.meet-find__row-devices li {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  background: var(--cs-color-bg-secondary);
+  color: var(--cs-color-text-light2);
+  cursor: help;
+}
+.meet-find__row-devices li i {
+  font-size: 14px;
+}
+
+/* 当前时段状态 + 可不可预订原因 */
+.meet-find__row-status {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  align-items: flex-end;
+}
+.meet-find__status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding: 0 var(--spacing-8);
+  border-radius: var(--radius-sm);
+  font: var(--typo-cn-12-medium);
+  font-weight: var(--font-weight-medium);
+}
+.meet-find__status-badge i {
+  font-size: 12px;
+}
+.meet-find__status-badge.is-free {
+  color: #00875a;
+  background: rgba(0, 180, 42, .12);
+}
+.meet-find__status-badge.is-busy {
+  color: var(--cs-color-text-light2);
+  background: var(--cs-color-bg-secondary);
+}
+.meet-find__status-reason {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font: var(--typo-cn-12-regular);
+  color: #d4380d;
+}
+.meet-find__status-reason i {
+  font-size: 12px;
+}
+
+/* 行内操作 */
+.meet-find__row-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+.meet-find__btn-primary,
+.meet-find__btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  box-sizing: border-box;
+  padding: 0 var(--spacing-16);
+  font: var(--typo-cn-14-regular);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: background .15s, border-color .15s, color .15s, opacity .15s;
+}
+
+/* 顶部筛选 dropdown 圆角加大 */
+.meet-find__filter-bar cs-select {
+  border-radius: var(--radius-lg);
+}
+.meet-find__btn-primary {
+  font-weight: var(--font-weight-medium);
+  color: #fff;
+  background: var(--cs-color-primary);
+  border: 1px solid var(--cs-color-primary);
+}
+.meet-find__btn-primary:hover {
+  background: var(--cs-color-primary-hover, #0e4cdb);
+  border-color: var(--cs-color-primary-hover, #0e4cdb);
+}
+.meet-find__btn-primary.is-disabled,
+.meet-find__btn-primary[disabled] {
+  background: var(--cs-color-bg-secondary);
+  border-color: var(--cs-color-border);
+  color: var(--cs-color-text-light3);
+  cursor: not-allowed;
+}
+.meet-find__btn-secondary {
+  color: var(--cs-color-text);
+  background: var(--cs-color-bg);
+  border: 1px solid var(--cs-color-border);
+}
+.meet-find__btn-secondary:hover {
+  border-color: var(--cs-color-primary);
+  color: var(--cs-color-primary);
+}
+
+/* ─────────────────────────────────────────────────
+ * 时间轴视图
+ *   每格 30 分钟 = var(--axis-cell-w)
+ *   总格数 = 20（08:00 – 18:00）
+ * ───────────────────────────────────────────────── */
+.meet-find__axis {
+  min-width: max-content;
+}
+.meet-find__axis-header,
+.meet-find__axis-row {
+  display: grid;
+  grid-template-columns: var(--meeting-room-find-rooms-axis-room-w) 1fr;
+  align-items: stretch;
+}
+.meet-find__axis-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--cs-color-bg-secondary);
+  border-bottom: 1px solid var(--cs-color-border);
+}
+.meet-find__axis-room-col {
+  display: flex;
+  align-items: center;
+  padding: 0 var(--spacing-16);
+  font: var(--typo-cn-13-medium);
+  font-weight: var(--font-weight-medium);
+  color: var(--cs-color-text-light2);
+  border-right: 1px solid var(--cs-color-border);
+  height: 40px;
+}
+.meet-find__axis-scale {
+  display: grid;
+  grid-template-columns: repeat(20, var(--meeting-room-find-rooms-axis-cell-w));
+  height: 40px;
+  align-items: center;
+}
+.meet-find__axis-tick {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light3);
+  text-align: left;
+  padding-left: 4px;
+  border-left: 1px dashed var(--cs-color-border);
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.meet-find__axis-tick[data-major] {
+  color: var(--cs-color-text-light2);
+  border-left: 1px solid var(--cs-color-border);
+  font-weight: var(--font-weight-medium);
+}
+
+.meet-find__axis-row {
+  border-bottom: 1px solid var(--cs-color-border);
+}
+.meet-find__axis-row:last-child {
+  border-bottom: 0;
+}
+.meet-find__axis-room {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  padding: 0 var(--spacing-16);
+  border-right: 1px solid var(--cs-color-border);
+  height: var(--meeting-room-find-rooms-axis-row-h);
+}
+.meet-find__axis-room-name {
+  font: var(--typo-cn-14-medium);
+  font-weight: var(--font-weight-medium);
+  color: var(--cs-color-text);
+}
+.meet-find__axis-room-loc {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+
+.meet-find__axis-track {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(20, var(--meeting-room-find-rooms-axis-cell-w));
+  height: var(--meeting-room-find-rooms-axis-row-h);
+  background-image:
+    linear-gradient(to right,
+      var(--cs-color-border) 0,
+      var(--cs-color-border) 1px,
+      transparent 1px,
+      transparent var(--meeting-room-find-rooms-axis-cell-w));
+  background-size: calc(var(--meeting-room-find-rooms-axis-cell-w) * 2) 100%;
+}
+.meet-find__axis-block {
+  margin: 6px 2px;
+  border-radius: var(--radius-sm);
+  background: var(--cs-color-primary);
+  color: #fff;
+  font: var(--typo-cn-12-medium);
+  font-weight: var(--font-weight-medium);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--spacing-8);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+.meet-find__axis-block.is-busy {
+  background: var(--cs-color-primary);
+}
+
+.meet-find__axis-legend {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-16);
+  padding: var(--spacing-12) var(--spacing-16);
+  border-top: 1px solid var(--cs-color-border);
+  background: var(--cs-color-bg-secondary);
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+  position: sticky;
+  bottom: 0;
+}
+.meet-find__axis-legend-swatch {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+.meet-find__axis-legend-swatch.is-free {
+  background: var(--cs-color-bg);
+  border: 1px solid var(--cs-color-border);
+}
+.meet-find__axis-legend-swatch.is-busy {
+  background: var(--cs-color-primary);
+}
+
+/* ─────────────────────────────────────────────────
+ * 空态
+ * ───────────────────────────────────────────────── */
+.meet-find__empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-12);
+  background: var(--cs-color-bg);
+  border: 1px dashed var(--cs-color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-24);
+  min-height: 320px;
+}
+.meet-find__empty[hidden] {
+  display: none;
+}
+.meet-find__empty-icon {
+  font-size: 48px;
+  color: var(--cs-color-text-light3);
+}
+.meet-find__empty-title {
+  font: var(--typo-cn-16-medium);
+  font-weight: var(--font-weight-medium);
+  color: var(--cs-color-text);
+}
+.meet-find__empty-desc {
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text-light2);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+ * 抽屉 booking-drawer（inline overlay）
+ * ════════════════════════════════════════════════════════════════ */
+.booking-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: flex-end;
+}
+.booking-drawer[hidden] { display: none; }
+
+.booking-drawer__scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, .35);
+  opacity: 0;
+  transition: opacity .24s ease;
+}
+.booking-drawer.is-open .booking-drawer__scrim { opacity: 1; }
+
+.booking-drawer__panel {
+  position: relative;
+  width: var(--meeting-room-find-rooms-drawer-w);
+  max-width: 92vw;
+  height: 100vh;
+  background: var(--cs-color-bg);
+  display: flex;
+  flex-direction: column;
+  box-shadow: -8px 0 24px rgba(0, 0, 0, .12);
+  transform: translateX(100%);
+  transition: transform .24s ease;
+}
+.booking-drawer.is-open .booking-drawer__panel {
+  transform: translateX(0);
+}
+
+.booking-drawer__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-16);
+  padding: var(--spacing-20) var(--spacing-24);
+  border-bottom: 1px solid var(--cs-color-border);
+  flex-shrink: 0;
+}
+.booking-drawer__title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.booking-drawer__title {
+  margin: 0;
+  font: var(--typo-cn-18-medium);
+  font-weight: var(--font-weight-semibold);
+  color: var(--cs-color-text);
+}
+.booking-drawer__subtitle {
+  margin: 0;
+  font: var(--typo-cn-13-regular);
+  color: var(--cs-color-text-light2);
+}
+.booking-drawer__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--cs-color-text-light2);
+  transition: background .15s, color .15s;
+}
+.booking-drawer__close:hover {
+  background: var(--cs-color-bg-secondary);
+  color: var(--cs-color-text);
+}
+.booking-drawer__close i {
+  font-size: 18px;
+}
+
+.booking-drawer__body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--spacing-20) var(--spacing-24);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+}
+
+.booking-drawer__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+}
+.booking-drawer__field-label {
+  font: var(--typo-cn-13-medium);
+  font-weight: var(--font-weight-medium);
+  color: var(--cs-color-text);
+}
+.booking-drawer__field-label em {
+  color: #d4380d;
+  font-style: normal;
+  margin-left: 2px;
+}
+.booking-drawer__input {
+  width: 100%;
+  height: 36px;
+  padding: 0 var(--spacing-12);
+  border: 1px solid var(--cs-color-border);
+  border-radius: var(--radius-md);
+  background: var(--cs-color-bg);
+  color: var(--cs-color-text);
+  font: var(--typo-cn-14-regular);
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color .15s;
+}
+.booking-drawer__input:focus {
+  border-color: var(--cs-color-primary);
+}
+textarea.booking-drawer__input {
+  height: auto;
+  padding: var(--spacing-8) var(--spacing-12);
+  resize: vertical;
+  font: var(--typo-cn-14-regular);
+  font-family: var(--font-family-cn);
+}
+
+.booking-drawer__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-12);
+}
+
+/* 参会人 pill */
+.booking-drawer__people {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-8);
+  padding: var(--spacing-8);
+  border: 1px solid var(--cs-color-border);
+  border-radius: var(--radius-md);
+  background: var(--cs-color-bg);
+  min-height: 44px;
+}
+.booking-drawer__people-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  height: 26px;
+  padding: 0 var(--spacing-8) 0 4px;
+  background: var(--cs-color-bg-secondary);
+  border-radius: 13px;
+  font: var(--typo-cn-13-regular);
+  color: var(--cs-color-text);
+}
+.booking-drawer__people-pill i {
+  font-size: 12px;
+  color: var(--cs-color-text-light3);
+  cursor: pointer;
+}
+.booking-drawer__people-pill i:hover {
+  color: var(--cs-color-text);
+}
+.booking-drawer__people-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 11px;
+  font-weight: var(--font-weight-medium);
+}
+.booking-drawer__people-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 26px;
+  padding: 0 var(--spacing-8);
+  background: transparent;
+  border: 1px dashed var(--cs-color-border);
+  border-radius: 13px;
+  font: var(--typo-cn-13-regular);
+  color: var(--cs-color-primary);
+  cursor: pointer;
+}
+.booking-drawer__people-add i { font-size: 12px; }
+
+/* 已选会议室 */
+.booking-drawer__room-picked {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-12);
+  padding: var(--spacing-12);
+  border: 1px solid var(--cs-color-border);
+  border-radius: var(--radius-md);
+  background: var(--cs-color-bg-secondary);
+}
+.booking-drawer__room-picked > i {
+  color: var(--cs-color-primary);
+  font-size: 18px;
+}
+.booking-drawer__room-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.booking-drawer__room-name {
+  font: var(--typo-cn-14-medium);
+  font-weight: var(--font-weight-medium);
+  color: var(--cs-color-text);
+}
+.booking-drawer__room-meta {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+.booking-drawer__room-change {
+  height: 28px;
+  padding: 0 var(--spacing-12);
+  background: var(--cs-color-bg);
+  border: 1px solid var(--cs-color-border);
+  border-radius: var(--radius-sm);
+  font: var(--typo-cn-13-regular);
+  color: var(--cs-color-text);
+  cursor: pointer;
+}
+
+.booking-drawer__divider {
+  height: 1px;
+  background: var(--cs-color-border);
+  margin: var(--spacing-4) 0;
+}
+
+/* toggle 行 */
+.booking-drawer__toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-12);
+  padding: var(--spacing-8) 0;
+}
+.booking-drawer__toggle-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-12);
+}
+.booking-drawer__toggle-label > i {
+  color: var(--cs-color-text-light2);
+  font-size: 18px;
+}
+.booking-drawer__toggle-name {
+  font: var(--typo-cn-14-medium);
+  font-weight: var(--font-weight-medium);
+  color: var(--cs-color-text);
+}
+.booking-drawer__toggle-desc {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+
+.booking-drawer__switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+}
+.booking-drawer__switch input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+.booking-drawer__switch-track {
+  position: absolute;
+  inset: 0;
+  background: var(--cs-color-border-strong, #c9cdd4);
+  border-radius: 999px;
+  transition: background .2s;
+}
+.booking-drawer__switch-track::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform .2s;
+  box-shadow: 0 1px 2px rgba(0,0,0,.2);
+}
+.booking-drawer__switch input:checked + .booking-drawer__switch-track {
+  background: var(--cs-color-primary);
+}
+.booking-drawer__switch input:checked + .booking-drawer__switch-track::after {
+  transform: translateX(16px);
+}
+
+/* 折叠区 */
+.booking-drawer__details {
+  border: 1px solid var(--cs-color-border);
+  border-radius: var(--radius-md);
+  background: var(--cs-color-bg);
+}
+.booking-drawer__details > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: var(--spacing-12);
+  font: var(--typo-cn-14-medium);
+  font-weight: var(--font-weight-medium);
+  color: var(--cs-color-text);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+  user-select: none;
+}
+.booking-drawer__details > summary::-webkit-details-marker { display: none; }
+.booking-drawer__details > summary > i {
+  transition: transform .2s;
+  font-size: 14px;
+  color: var(--cs-color-text-light2);
+}
+.booking-drawer__details[open] > summary > i {
+  transform: rotate(90deg);
+}
+.booking-drawer__details[open] {
+  padding-bottom: var(--spacing-12);
+}
+.booking-drawer__details .booking-drawer__field {
+  padding: 0 var(--spacing-12);
+  margin-bottom: var(--spacing-12);
+}
+.booking-drawer__details .booking-drawer__field:last-child {
+  margin-bottom: 0;
+}
+.booking-drawer__attach {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  height: 32px;
+  padding: 0 var(--spacing-12);
+  background: var(--cs-color-bg);
+  border: 1px dashed var(--cs-color-border);
+  border-radius: var(--radius-md);
+  font: var(--typo-cn-13-regular);
+  color: var(--cs-color-text-light2);
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+/* 冲突区 */
+.booking-drawer__conflict {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-12);
+  padding: var(--spacing-12);
+  background: rgba(247, 186, 30, .1);
+  border: 1px solid rgba(247, 186, 30, .4);
+  border-radius: var(--radius-md);
+}
+.booking-drawer__conflict > i {
+  color: #f7ba1e;
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.booking-drawer__conflict-title {
+  font: var(--typo-cn-14-medium);
+  font-weight: var(--font-weight-medium);
+  color: var(--cs-color-text);
+  margin-bottom: 2px;
+}
+.booking-drawer__conflict-desc {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+
+/* footer */
+.booking-drawer__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-8);
+  padding: var(--spacing-16) var(--spacing-24);
+  border-top: 1px solid var(--cs-color-border);
+  background: var(--cs-color-bg);
+  flex-shrink: 0;
+}
+.booking-drawer__btn-secondary {
+  height: 36px;
+  padding: 0 var(--spacing-20);
+  background: var(--cs-color-bg);
+  border: 1px solid var(--cs-color-border);
+  border-radius: var(--radius-md);
+  font: var(--typo-cn-14-medium);
+  color: var(--cs-color-text);
+  cursor: pointer;
+}
+.booking-drawer__btn-primary {
+  height: 36px;
+  padding: 0 var(--spacing-24);
+  background: var(--cs-color-primary);
+  border: 0;
+  border-radius: var(--radius-md);
+  font: var(--typo-cn-14-medium);
+  font-weight: var(--font-weight-medium);
+  color: #fff;
+  cursor: pointer;
+}

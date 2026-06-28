@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>任务工作台 · CSES</title>
+
+  <!-- 设计令牌与重置 -->
+  <link rel="stylesheet" href="../../design/css/base.css">
+
+  <!-- 图标字体 -->
+  <link rel="stylesheet" href="../../design/fonts/cses-icons.css">
+
+  <!-- 布局骨架 + 桥接补丁 -->
+  <link rel="stylesheet" href="../../design/fragment/fragment.css">
+  <link rel="stylesheet" href="../../design/css/page-shell.css">
+
+  <!-- 用到的组件样式 -->
+  <link rel="stylesheet" href="../../design/components/avatar/avatar.css">
+  <link rel="stylesheet" href="../../design/components/button/button.css">
+  <link rel="stylesheet" href="../../design/components/search-trigger/search-trigger.css">
+  <link rel="stylesheet" href="../../design/components/select/select.css">
+  <link rel="stylesheet" href="../../design/components/status-badge/status-badge.css">
+  <link rel="stylesheet" href="../../design/components/tag/tag.css">
+  <link rel="stylesheet" href="../../design/components/task-row/task-row.css">
+  <link rel="stylesheet" href="../../design/components/checkbox/checkbox.css">
+  <link rel="stylesheet" href="../../design/components/view-switcher/view-switcher.css">
+
+  <!-- 页面私有样式 -->
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+<cs-layout>
+
+  <!-- ========== 标签栏（原样复刻 baseline） ========== -->
+  <div class="tabbar">
+    <div class="tabbar-left">
+      <span class="win-ctrl">
+        <span class="ctrl-dot" data-c="close"></span>
+        <span class="ctrl-dot" data-c="min"></span>
+        <span class="ctrl-dot" data-c="max"></span>
+      </span>
+      <cs-search-input class="ah-top-search" data-variant="gray" data-size="sm">
+        <i class="search-icon cses-stratis-search-01"></i>
+        <input class="search-field" type="text" placeholder="搜索任务、项目、文档...">
+      </cs-search-input>
+      <span class="page-tab is-active">
+        <span class="tab-label">任务工作台</span>
+        <i class="tab-close cses-stratis-x-01"></i>
+      </span>
+      <span class="page-tab">
+        <span class="tab-label">产品周会纪要</span>
+        <i class="tab-close cses-stratis-x-01"></i>
+      </span>
+    </div>
+    <div class="tabbar-right">
+      <span class="notice-wrap">
+        <i class="cses-stratis-bell-01 notice-icon"></i>
+        <span class="notice-badge">5</span>
+      </span>
+      <cs-avatar data-size="xs" data-shape="circle" data-color="blue">
+        <span class="avatar-text">李</span>
+      </cs-avatar>
+    </div>
+  </div>
+
+  <!-- ========== 主体 ========== -->
+  <div class="body">
+
+    <!-- ----- 一级导航 ----- -->
+    <cs-sidebar>
+      <span class="logo">
+        <img src="../../design/assets/logo.png" alt="CSES">
+      </span>
+      <nav class="nav">
+        <div class="nav-group">
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-home-01"></i></span>
+            <span class="nav-label">工作台</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-compass"></i></span>
+            <span class="nav-label">导向</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-message-circle"></i></span>
+            <span class="nav-label">消息</span>
+          </a>
+          <a class="nav-item" data-active>
+            <span class="nav-icon"><i class="cses-stratis-check-square-broken"></i></span>
+            <span class="nav-label">任务</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-video-on"></i></span>
+            <span class="nav-label">会议</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-book-01"></i></span>
+            <span class="nav-label">文档</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-file-edit-01"></i></span>
+            <span class="nav-label">表单</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-file-check-01"></i></span>
+            <span class="nav-label">审批</span>
+          </a>
+        </div>
+      </nav>
+    </cs-sidebar>
+
+    <!-- ----- 内容包裹 ----- -->
+    <div class="content-wrapper">
+
+      <!-- 二级导航 -->
+      <cs-navbar>
+        <div class="inner">
+
+          <!-- ① 标题区 -->
+          <div class="slot-header">
+            <div class="navbar-title-row">
+              <span class="navbar-title">任务管理</span>
+              <i class="navbar-collapse cses-stratis-layout-left"></i>
+            </div>
+            <span class="navbar-subtitle">把每一件要做的事，安排到位</span>
+          </div>
+
+          <!-- ② 主 CTA：新建任务（唯一） -->
+          <div class="slot-action">
+            <cs-button data-variant="primary" data-size="lg">
+              <i class="btn-icon cses-stratis-plus-01"></i>
+              <span class="btn-label">新建任务</span>
+            </cs-button>
+          </div>
+
+          <!-- ③ 主菜单 -->
+          <div class="slot-nav">
+            <a class="nav-item" data-active>
+              <span class="nav-icon"><i class="cses-stratis-home-01"></i></span>
+              <span class="nav-label">任务工作台</span>
+            </a>
+            <a class="nav-item">
+              <span class="nav-icon"><i class="cses-stratis-check-square-broken"></i></span>
+              <span class="nav-label">我的任务</span>
+              <span class="nav-suffix"><span class="nav-count">12</span></span>
+            </a>
+            <a class="nav-item">
+              <span class="nav-icon"><i class="cses-stratis-send-01"></i></span>
+              <span class="nav-label">我发起的</span>
+            </a>
+            <a class="nav-item">
+              <span class="nav-icon"><i class="cses-stratis-users-profiles-01"></i></span>
+              <span class="nav-label">协作中</span>
+            </a>
+            <a class="nav-item">
+              <span class="nav-icon"><i class="cses-stratis-star-01"></i></span>
+              <span class="nav-label">我的收藏</span>
+            </a>
+            <a class="nav-item">
+              <span class="nav-icon"><i class="cses-stratis-check-contained"></i></span>
+              <span class="nav-label">已完成</span>
+            </a>
+          </div>
+
+          <!-- ④ 副菜单：项目分组 -->
+          <div class="slot-sub">
+            <div class="navbar-group">
+              <div class="navbar-group__head">
+                <i class="cses-stratis-chevron-down navbar-group__caret"></i>
+                <span class="navbar-group__title">我的项目</span>
+                <i class="cses-stratis-plus-01 navbar-group__add"></i>
+              </div>
+              <div class="navbar-group__body">
+                <a class="nav-item">
+                  <span class="nav-dot" data-color="primary"></span>
+                  <span class="nav-label">2026 Q3 增长项目</span>
+                </a>
+                <a class="nav-item">
+                  <span class="nav-dot" data-color="warning"></span>
+                  <span class="nav-label">新用户引导优化</span>
+                </a>
+                <a class="nav-item">
+                  <span class="nav-dot" data-color="success"></span>
+                  <span class="nav-label">客户支持工单梳理</span>
+                </a>
+                <a class="nav-item">
+                  <span class="nav-dot" data-color="purple"></span>
+                  <span class="nav-label">设计系统升级</span>
+                </a>
+              </div>
+            </div>
+
+            <div class="navbar-group">
+              <div class="navbar-group__head">
+                <i class="cses-stratis-chevron-down navbar-group__caret"></i>
+                <span class="navbar-group__title">任务合集</span>
+                <i class="cses-stratis-plus-01 navbar-group__add"></i>
+              </div>
+              <div class="navbar-group__body">
+                <a class="nav-item">
+                  <span class="nav-icon"><i class="cses-stratis-flame-01"></i></span>
+                  <span class="nav-label">本周冲刺</span>
+                </a>
+                <a class="nav-item">
+                  <span class="nav-icon"><i class="cses-stratis-alarm-01"></i></span>
+                  <span class="nav-label">客户跟进</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- ⑤ 管理后台 -->
+          <div class="slot-admin">
+            <a class="nav-item">
+              <span class="nav-icon"><i class="cses-stratis-settings"></i></span>
+              <span class="nav-label">任务设置</span>
+            </a>
+          </div>
+
+          <!-- ⑥ 底部空间提示（保留默认结构占位） -->
+          <div class="slot-bottom">
+            <div class="storage-row">
+              <span class="storage-label">回收站</span>
+              <span class="storage-extra">28 项</span>
+            </div>
+          </div>
+
+        </div>
+      </cs-navbar>
+
+      <!-- ============== 主内容区 ============== -->
+      <main class="main-content">
+
+        <!-- ① 内容头部：标题 + 副标题 + 搜索 -->
+        <cs-content-header>
+          <div class="slot-left">
+            <span class="page-title">任务工作台</span>
+            <span class="page-subtitle">6 月 25 日 · 周三 · 你今天还有 <b>4</b> 项要处理</span>
+          </div>
+          <div class="slot-right">
+            <cs-search-trigger>
+              <span class="trigger-text">搜索任务</span>
+              <i class="trigger-icon cses-stratis-search-01"></i>
+            </cs-search-trigger>
+          </div>
+        </cs-content-header>
+
+        <!-- ② 筛选区：filters 变体 — 计数标签 + 下拉筛选 / 右侧视图+排序 -->
+        <cs-filter-bar data-variant="filters">
+          <div class="filter-left">
+            <button class="filter-count" data-active type="button">
+              <span class="count-label">概览</span>
+            </button>
+            <button class="filter-count" type="button">
+              <span class="count-label">今日</span>
+              <span class="count-num">8</span>
+            </button>
+            <button class="filter-count" type="button">
+              <span class="count-label">临期</span>
+              <span class="count-num task-num-warning">5</span>
+            </button>
+            <button class="filter-count" type="button">
+              <span class="count-label">已逾期</span>
+              <span class="count-num task-num-danger">3</span>
+            </button>
+            <button class="filter-count" type="button">
+              <span class="count-label">已完成</span>
+              <span class="count-num">42</span>
+            </button>
+
+            <span class="filter-divider"></span>
+
+            <cs-select data-size="sm" class="task-filter-select">
+              <span class="select-value">本周</span>
+              <i class="select-arrow cses-stratis-chevron-down"></i>
+            </cs-select>
+            <cs-select data-size="sm" class="task-filter-select">
+              <span class="select-placeholder">优先级</span>
+              <i class="select-arrow cses-stratis-chevron-down"></i>
+            </cs-select>
+            <cs-select data-size="sm" class="task-filter-select">
+              <span class="select-placeholder">项目</span>
+              <i class="select-arrow cses-stratis-chevron-down"></i>
+            </cs-select>
+            <cs-select data-size="sm" class="task-filter-select">
+              <span class="select-placeholder">负责人</span>
+              <i class="select-arrow cses-stratis-chevron-down"></i>
+            </cs-select>
+          </div>
+          <div class="filter-right">
+            <cs-view-switcher>
+              <span class="view-item" data-active title="列表"><i class="cses-stratis-list"></i></span>
+              <span class="view-item" title="看板"><i class="cses-stratis-grid-01"></i></span>
+              <span class="view-item" title="日历"><i class="cses-stratis-calendar-01"></i></span>
+            </cs-view-switcher>
+            <span class="filter-tool" title="排序">
+              <i class="cses-stratis-sort-vertical-01"></i>
+            </span>
+            <span class="filter-tool" title="筛选">
+              <i class="cses-stratis-filter"></i>
+            </span>
+          </div>
+        </cs-filter-bar>
+
+        <!-- ③ 业务内容区：可滚动 -->
+        <div class="task-scroll">
+
+          <!-- ─── KPI 行 ─── -->
+          <section class="task-kpi-row">
+            <div class="task-kpi-card" data-kind="in-progress">
+              <div class="task-kpi-head">
+                <span class="task-kpi-icon"><i class="cses-stratis-progress"></i></span>
+                <span class="task-kpi-label">进行中</span>
+              </div>
+              <div class="task-kpi-value">14</div>
+              <div class="task-kpi-foot">
+                <i class="cses-stratis-trend-up-01"></i>
+                <span>较上周 +3</span>
+              </div>
+            </div>
+
+            <div class="task-kpi-card" data-kind="not-started">
+              <div class="task-kpi-head">
+                <span class="task-kpi-icon"><i class="cses-stratis-clock-01"></i></span>
+                <span class="task-kpi-label">待开始</span>
+              </div>
+              <div class="task-kpi-value">7</div>
+              <div class="task-kpi-foot">
+                <span>计划本周启动 5 项</span>
+              </div>
+            </div>
+
+            <div class="task-kpi-card" data-kind="overdue">
+              <div class="task-kpi-head">
+                <span class="task-kpi-icon"><i class="cses-stratis-alert-triangle"></i></span>
+                <span class="task-kpi-label">已逾期</span>
+              </div>
+              <div class="task-kpi-value">3</div>
+              <div class="task-kpi-foot task-foot-danger">
+                <i class="cses-stratis-arrow-up-right"></i>
+                <span>请尽快处理</span>
+              </div>
+            </div>
+
+            <div class="task-kpi-card" data-kind="completed">
+              <div class="task-kpi-head">
+                <span class="task-kpi-icon"><i class="cses-stratis-check-contained"></i></span>
+                <span class="task-kpi-label">今日完成</span>
+              </div>
+              <div class="task-kpi-value">5<span class="task-kpi-unit">/ 9</span></div>
+              <div class="task-kpi-foot">
+                <div class="task-kpi-bar">
+                  <span class="task-kpi-bar__fill" style="width: 56%;"></span>
+                </div>
+                <span class="task-kpi-bar__text">56%</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- ─── 第二行：今日任务 + 临期/逾期红区 ─── -->
+          <section class="task-grid-2col">
+
+            <!-- 左：今日任务（按时间段） -->
+            <div class="task-card task-card--today">
+              <div class="task-card__head">
+                <div class="task-card__head-left">
+                  <span class="task-card__title">今日任务</span>
+                  <span class="task-card__sub">按计划时间排序 · 共 8 项</span>
+                </div>
+                <a class="task-card__link">查看全部 <i class="cses-stratis-chevron-right"></i></a>
+              </div>
+
+              <div class="task-card__body">
+
+                <!-- 时段：上午 -->
+                <div class="task-timegroup">
+                  <div class="task-timegroup__head">
+                    <i class="cses-stratis-sun-up"></i>
+                    <span class="task-timegroup__name">上午</span>
+                    <span class="task-timegroup__count">3 项</span>
+                  </div>
+
+                  <cs-task-row>
+                    <span class="task-checkbox">
+                      <cs-checkbox>
+                        <span class="checkbox-inner">
+                          <i class="checkbox-icon cses-stratis-check-contained"></i>
+                        </span>
+                      </cs-checkbox>
+                    </span>
+                    <span class="task-info">
+                      <span class="task-title-row">
+                        <span class="task-title">梳理 Q3 OKR 草稿</span>
+                        <cs-tag data-variant="text" data-color="danger">
+                          <span class="tag-label">紧急</span>
+                        </cs-tag>
+                      </span>
+                      <span class="task-activity">
+                        <span class="activity-avatars">
+                          <cs-avatar data-size="xs" data-color="blue"><span class="avatar-text">李</span></cs-avatar>
+                        </span>
+                        <span class="activity-text">2026 Q3 增长项目 · 10:00 前提交</span>
+                      </span>
+                    </span>
+                    <span class="task-status">
+                      <cs-status-badge data-status="in-progress">
+                        <span class="status-dot"></span>
+                        <span class="status-text">进行中</span>
+                      </cs-status-badge>
+                    </span>
+                    <span class="task-date">今日 10:00</span>
+                  </cs-task-row>
+
+                  <cs-task-row>
+                    <span class="task-checkbox">
+                      <cs-checkbox>
+                        <span class="checkbox-inner">
+                          <i class="checkbox-icon cses-stratis-check-contained"></i>
+                        </span>
+                      </cs-checkbox>
+                    </span>
+                    <span class="task-info">
+                      <span class="task-title-row">
+                        <span class="task-title">回复客户 A 的方案修改意见</span>
+                      </span>
+                      <span class="task-activity">
+                        <span class="activity-avatars">
+                          <cs-avatar data-size="xs" data-color="orange"><span class="avatar-text">王</span></cs-avatar>
+                        </span>
+                        <span class="activity-text">王雪 · 昨日 17:42 留言了 3 条评论</span>
+                      </span>
+                    </span>
+                    <span class="task-status">
+                      <cs-status-badge data-status="not-started">
+                        <span class="status-dot"></span>
+                        <span class="status-text">未开始</span>
+                      </cs-status-badge>
+                    </span>
+                    <span class="task-date">今日 11:30</span>
+                  </cs-task-row>
+
+                  <cs-task-row>
+                    <span class="task-checkbox">
+                      <cs-checkbox>
+                        <span class="checkbox-inner">
+                          <i class="checkbox-icon cses-stratis-check-contained"></i>
+                        </span>
+                      </cs-checkbox>
+                    </span>
+                    <span class="task-info">
+                      <span class="task-title-row">
+                        <span class="task-title">和设计同步登录页改版细节</span>
+                      </span>
+                      <span class="task-activity">
+                        <span class="activity-avatars">
+                          <cs-avatar data-size="xs" data-color="purple"><span class="avatar-text">陈</span></cs-avatar>
+                        </span>
+                        <span class="activity-text">设计系统升级 · 30 min 会议</span>
+                      </span>
+                    </span>
+                    <span class="task-status">
+                      <cs-status-badge data-status="not-started">
+                        <span class="status-dot"></span>
+                        <span class="status-text">未开始</span>
+                      </cs-status-badge>
+                    </span>
+                    <span class="task-date">今日 11:45</span>
+                  </cs-task-row>
+                </div>
+
+                <!-- 时段：下午 -->
+                <div class="task-timegroup">
+                  <div class="task-timegroup__head">
+                    <i class="cses-stratis-sun-02"></i>
+                    <span class="task-timegroup__name">下午</span>
+                    <span class="task-timegroup__count">3 项</span>
+                  </div>
+
+                  <cs-task-row>
+                    <span class="task-checkbox">
+                      <cs-checkbox>
+                        <span class="checkbox-inner">
+                          <i class="checkbox-icon cses-stratis-check-contained"></i>
+                        </span>
+                      </cs-checkbox>
+                    </span>
+                    <span class="task-info">
+                      <span class="task-title-row">
+                        <span class="task-title">审阅新用户引导文案 V3 稿</span>
+                        <cs-tag data-color="warning">
+                          <span class="tag-label">即将过期</span>
+                        </cs-tag>
+                      </span>
+                      <span class="task-activity">
+                        <span class="activity-avatars">
+                          <cs-avatar data-size="xs" data-color="green"><span class="avatar-text">林</span></cs-avatar>
+                        </span>
+                        <span class="activity-text">新用户引导优化 · 林夕指派给你</span>
+                      </span>
+                    </span>
+                    <span class="task-status">
+                      <cs-status-badge data-status="in-progress">
+                        <span class="status-dot"></span>
+                        <span class="status-text">进行中</span>
+                      </cs-status-badge>
+                    </span>
+                    <span class="task-date">今日 15:00</span>
+                  </cs-task-row>
+
+                  <cs-task-row>
+                    <span class="task-checkbox">
+                      <cs-checkbox>
+                        <span class="checkbox-inner">
+                          <i class="checkbox-icon cses-stratis-check-contained"></i>
+                        </span>
+                      </cs-checkbox>
+                    </span>
+                    <span class="task-info">
+                      <span class="task-title-row">
+                        <span class="task-title">准备产品周会同步材料</span>
+                      </span>
+                      <span class="task-activity">
+                        <span class="activity-avatars">
+                          <cs-avatar data-size="xs" data-color="blue"><span class="avatar-text">李</span></cs-avatar>
+                        </span>
+                        <span class="activity-text">本周冲刺 · 5 张幻灯片</span>
+                      </span>
+                    </span>
+                    <span class="task-status">
+                      <cs-status-badge data-status="not-started">
+                        <span class="status-dot"></span>
+                        <span class="status-text">未开始</span>
+                      </cs-status-badge>
+                    </span>
+                    <span class="task-date">今日 16:30</span>
+                  </cs-task-row>
+
+                  <cs-task-row>
+                    <span class="task-checkbox">
+                      <cs-checkbox>
+                        <span class="checkbox-inner">
+                          <i class="checkbox-icon cses-stratis-check-contained"></i>
+                        </span>
+                      </cs-checkbox>
+                    </span>
+                    <span class="task-info">
+                      <span class="task-title-row">
+                        <span class="task-title">跟进客户 B 的合同条款反馈</span>
+                        <cs-tag data-variant="text" data-color="warning">
+                          <span class="tag-label">重要</span>
+                        </cs-tag>
+                      </span>
+                      <span class="task-activity">
+                        <span class="activity-avatars">
+                          <cs-avatar data-size="xs" data-color="sky"><span class="avatar-text">周</span></cs-avatar>
+                        </span>
+                        <span class="activity-text">客户跟进 · 周明 等待你的回复</span>
+                      </span>
+                    </span>
+                    <span class="task-status">
+                      <cs-status-badge data-status="in-progress">
+                        <span class="status-dot"></span>
+                        <span class="status-text">进行中</span>
+                      </cs-status-badge>
+                    </span>
+                    <span class="task-date">今日 17:30</span>
+                  </cs-task-row>
+                </div>
+
+                <!-- 时段：晚些时候 -->
+                <div class="task-timegroup">
+                  <div class="task-timegroup__head">
+                    <i class="cses-stratis-moon-01"></i>
+                    <span class="task-timegroup__name">晚些时候</span>
+                    <span class="task-timegroup__count">2 项</span>
+                  </div>
+
+                  <cs-task-row>
+                    <span class="task-checkbox">
+                      <cs-checkbox>
+                        <span class="checkbox-inner">
+                          <i class="checkbox-icon cses-stratis-check-contained"></i>
+                        </span>
+                      </cs-checkbox>
+                    </span>
+                    <span class="task-info">
+                      <span class="task-title-row">
+                        <span class="task-title">整理本周已完成事项并写周报</span>
+                      </span>
+                      <span class="task-activity">
+                        <span class="activity-avatars">
+                          <cs-avatar data-size="xs" data-color="blue"><span class="avatar-text">李</span></cs-avatar>
+                        </span>
+                        <span class="activity-text">个人 · 截止前提交至团队空间</span>
+                      </span>
+                    </span>
+                    <span class="task-status">
+                      <cs-status-badge data-status="not-started">
+                        <span class="status-dot"></span>
+                        <span class="status-text">未开始</span>
+                      </cs-status-badge>
+                    </span>
+                    <span class="task-date">今日 22:00</span>
+                  </cs-task-row>
+
+                  <cs-task-row>
+                    <span class="task-checkbox">
+                      <cs-checkbox>
+                        <span class="checkbox-inner">
+                          <i class="checkbox-icon cses-stratis-check-contained"></i>
+                        </span>
+                      </cs-checkbox>
+                    </span>
+                    <span class="task-info">
+                      <span class="task-title-row">
+                        <span class="task-title">读一篇竞品分析文章并做笔记</span>
+                      </span>
+                      <span class="task-activity">
+                        <span class="activity-avatars">
+                          <cs-avatar data-size="xs" data-color="pink"><span class="avatar-text">私</span></cs-avatar>
+                        </span>
+                        <span class="activity-text">个人学习 · 约 25 分钟</span>
+                      </span>
+                    </span>
+                    <span class="task-status">
+                      <cs-status-badge data-status="not-started">
+                        <span class="status-dot"></span>
+                        <span class="status-text">未开始</span>
+                      </cs-status-badge>
+                    </span>
+                    <span class="task-date">今日 23:00</span>
+                  </cs-task-row>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- 右：临期 / 逾期红区 -->
+            <div class="task-card task-card--alert">
+              <div class="task-card__head">
+                <div class="task-card__head-left">
+                  <span class="task-card__title">需要尽快处理</span>
+                  <span class="task-card__sub">逾期 3 项 · 临期 5 项</span>
+                </div>
+                <a class="task-card__link">展开全部 <i class="cses-stratis-chevron-right"></i></a>
+              </div>
+
+              <div class="task-card__body task-alert-list">
+
+                <div class="task-alert-row task-alert-row--danger">
+                  <span class="task-alert-rule"></span>
+                  <div class="task-alert-main">
+                    <div class="task-alert-line1">
+                      <span class="task-alert-title">提交 H1 财务复核材料</span>
+                      <cs-tag data-color="danger">
+                        <span class="tag-label">已逾期 2 天</span>
+                      </cs-tag>
+                    </div>
+                    <div class="task-alert-line2">
+                      <i class="cses-stratis-calendar-01"></i>
+                      <span>原截止 06月23日 18:00</span>
+                      <span class="task-alert-dot">·</span>
+                      <span>财务支持</span>
+                    </div>
+                  </div>
+                  <a class="task-alert-cta">处理</a>
+                </div>
+
+                <div class="task-alert-row task-alert-row--danger">
+                  <span class="task-alert-rule"></span>
+                  <div class="task-alert-main">
+                    <div class="task-alert-line1">
+                      <span class="task-alert-title">回复供应商合同变更确认</span>
+                      <cs-tag data-color="danger">
+                        <span class="tag-label">已逾期 1 天</span>
+                      </cs-tag>
+                    </div>
+                    <div class="task-alert-line2">
+                      <i class="cses-stratis-calendar-01"></i>
+                      <span>原截止 06月24日 17:00</span>
+                      <span class="task-alert-dot">·</span>
+                      <span>采购协作</span>
+                    </div>
+                  </div>
+                  <a class="task-alert-cta">处理</a>
+                </div>
+
+                <div class="task-alert-row task-alert-row--danger">
+                  <span class="task-alert-rule"></span>
+                  <div class="task-alert-main">
+                    <div class="task-alert-line1">
+                      <span class="task-alert-title">归档上月用户调研录音</span>
+                      <cs-tag data-color="danger">
+                        <span class="tag-label">已逾期 5 天</span>
+                      </cs-tag>
+                    </div>
+                    <div class="task-alert-line2">
+                      <i class="cses-stratis-calendar-01"></i>
+                      <span>原截止 06月20日 12:00</span>
+                      <span class="task-alert-dot">·</span>
+                      <span>新用户引导优化</span>
+                    </div>
+                  </div>
+                  <a class="task-alert-cta">处理</a>
+                </div>
+
+                <div class="task-alert-divider">
+                  <span class="task-alert-divider__line"></span>
+                  <span class="task-alert-divider__text">3 天内临期</span>
+                  <span class="task-alert-divider__line"></span>
+                </div>
+
+                <div class="task-alert-row task-alert-row--warning">
+                  <span class="task-alert-rule"></span>
+                  <div class="task-alert-main">
+                    <div class="task-alert-line1">
+                      <span class="task-alert-title">审阅新用户引导文案 V3 稿</span>
+                      <cs-tag data-color="warning">
+                        <span class="tag-label">今日到期</span>
+                      </cs-tag>
+                    </div>
+                    <div class="task-alert-line2">
+                      <i class="cses-stratis-clock-01"></i>
+                      <span>剩余 6 小时</span>
+                      <span class="task-alert-dot">·</span>
+                      <span>新用户引导优化</span>
+                    </div>
+                  </div>
+                  <a class="task-alert-cta">处理</a>
+                </div>
+
+                <div class="task-alert-row task-alert-row--warning">
+                  <span class="task-alert-rule"></span>
+                  <div class="task-alert-main">
+                    <div class="task-alert-line1">
+                      <span class="task-alert-title">完成新人 Buddy 面谈记录</span>
+                      <cs-tag data-color="warning">
+                        <span class="tag-label">明日到期</span>
+                      </cs-tag>
+                    </div>
+                    <div class="task-alert-line2">
+                      <i class="cses-stratis-clock-01"></i>
+                      <span>剩余 1 天 2 小时</span>
+                      <span class="task-alert-dot">·</span>
+                      <span>团队管理</span>
+                    </div>
+                  </div>
+                  <a class="task-alert-cta">处理</a>
+                </div>
+
+                <div class="task-alert-row task-alert-row--warning">
+                  <span class="task-alert-rule"></span>
+                  <div class="task-alert-main">
+                    <div class="task-alert-line1">
+                      <span class="task-alert-title">输出客户支持工单分类规则 v2</span>
+                      <cs-tag data-color="warning">
+                        <span class="tag-label">3 天后到期</span>
+                      </cs-tag>
+                    </div>
+                    <div class="task-alert-line2">
+                      <i class="cses-stratis-clock-01"></i>
+                      <span>剩余 2 天 18 小时</span>
+                      <span class="task-alert-dot">·</span>
+                      <span>客户支持工单梳理</span>
+                    </div>
+                  </div>
+                  <a class="task-alert-cta">处理</a>
+                </div>
+
+              </div>
+            </div>
+
+          </section>
+
+          <!-- ─── 第三行：项目分组 + 协作动态 ─── -->
+          <section class="task-grid-2col">
+
+            <!-- 左：我负责的项目 -->
+            <div class="task-card">
+              <div class="task-card__head">
+                <div class="task-card__head-left">
+                  <span class="task-card__title">我负责的项目</span>
+                  <span class="task-card__sub">4 个项目 · 共 53 项任务</span>
+                </div>
+                <a class="task-card__link">所有项目 <i class="cses-stratis-chevron-right"></i></a>
+              </div>
+
+              <div class="task-card__body task-project-grid">
+
+                <div class="task-project">
+                  <div class="task-project__head">
+                    <span class="task-project__dot" data-color="primary"></span>
+                    <span class="task-project__name">2026 Q3 增长项目</span>
+                    <span class="task-project__meta">12 / 24</span>
+                  </div>
+                  <div class="task-project__bar">
+                    <span class="task-project__bar-fill" style="width: 50%;"></span>
+                  </div>
+                  <div class="task-project__foot">
+                    <div class="task-project__members">
+                      <cs-avatar data-size="xs" data-color="blue"><span class="avatar-text">李</span></cs-avatar>
+                      <cs-avatar data-size="xs" data-color="orange"><span class="avatar-text">王</span></cs-avatar>
+                      <cs-avatar data-size="xs" data-color="green"><span class="avatar-text">林</span></cs-avatar>
+                      <span class="task-project__more">+5</span>
+                    </div>
+                    <span class="task-project__progress">50%</span>
+                  </div>
+                </div>
+
+                <div class="task-project">
+                  <div class="task-project__head">
+                    <span class="task-project__dot" data-color="warning"></span>
+                    <span class="task-project__name">新用户引导优化</span>
+                    <span class="task-project__meta">9 / 14</span>
+                  </div>
+                  <div class="task-project__bar">
+                    <span class="task-project__bar-fill" style="width: 64%;"></span>
+                  </div>
+                  <div class="task-project__foot">
+                    <div class="task-project__members">
+                      <cs-avatar data-size="xs" data-color="green"><span class="avatar-text">林</span></cs-avatar>
+                      <cs-avatar data-size="xs" data-color="purple"><span class="avatar-text">陈</span></cs-avatar>
+                      <cs-avatar data-size="xs" data-color="blue"><span class="avatar-text">李</span></cs-avatar>
+                    </div>
+                    <span class="task-project__progress">64%</span>
+                  </div>
+                </div>
+
+                <div class="task-project">
+                  <div class="task-project__head">
+                    <span class="task-project__dot" data-color="success"></span>
+                    <span class="task-project__name">客户支持工单梳理</span>
+                    <span class="task-project__meta">7 / 10</span>
+                  </div>
+                  <div class="task-project__bar">
+                    <span class="task-project__bar-fill" style="width: 70%;"></span>
+                  </div>
+                  <div class="task-project__foot">
+                    <div class="task-project__members">
+                      <cs-avatar data-size="xs" data-color="sky"><span class="avatar-text">周</span></cs-avatar>
+                      <cs-avatar data-size="xs" data-color="orange"><span class="avatar-text">王</span></cs-avatar>
+                    </div>
+                    <span class="task-project__progress">70%</span>
+                  </div>
+                </div>
+
+                <div class="task-project">
+                  <div class="task-project__head">
+                    <span class="task-project__dot" data-color="purple"></span>
+                    <span class="task-project__name">设计系统升级</span>
+                    <span class="task-project__meta">2 / 5</span>
+                  </div>
+                  <div class="task-project__bar">
+                    <span class="task-project__bar-fill" style="width: 40%;"></span>
+                  </div>
+                  <div class="task-project__foot">
+                    <div class="task-project__members">
+                      <cs-avatar data-size="xs" data-color="purple"><span class="avatar-text">陈</span></cs-avatar>
+                      <cs-avatar data-size="xs" data-color="pink"><span class="avatar-text">何</span></cs-avatar>
+                    </div>
+                    <span class="task-project__progress">40%</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- 右：最近协作动态 -->
+            <div class="task-card">
+              <div class="task-card__head">
+                <div class="task-card__head-left">
+                  <span class="task-card__title">最近动态</span>
+                  <span class="task-card__sub">@我 7 条 · 状态变更 12 条</span>
+                </div>
+                <a class="task-card__link">全部动态 <i class="cses-stratis-chevron-right"></i></a>
+              </div>
+
+              <div class="task-card__body task-activity-list">
+
+                <div class="task-activity-item">
+                  <span class="task-activity-stamp">
+                    <cs-avatar data-size="xs" data-color="orange"><span class="avatar-text">王</span></cs-avatar>
+                  </span>
+                  <div class="task-activity-main">
+                    <div class="task-activity-text">
+                      <b>王雪</b> 在 <a class="task-activity-link">回复客户 A 的方案修改意见</a> 中
+                      <span class="task-activity-mention">@我</span>：希望今天能给到回复
+                    </div>
+                    <div class="task-activity-meta">
+                      <i class="cses-stratis-message-circle"></i>
+                      <span>5 分钟前 · 客户跟进</span>
+                    </div>
+                  </div>
+                  <a class="task-activity-cta">查看</a>
+                </div>
+
+                <div class="task-activity-item">
+                  <span class="task-activity-stamp">
+                    <cs-avatar data-size="xs" data-color="green"><span class="avatar-text">林</span></cs-avatar>
+                  </span>
+                  <div class="task-activity-main">
+                    <div class="task-activity-text">
+                      <b>林夕</b> 把任务 <a class="task-activity-link">审阅新用户引导文案 V3 稿</a> 指派给了你
+                    </div>
+                    <div class="task-activity-meta">
+                      <i class="cses-stratis-user-profile-check"></i>
+                      <span>32 分钟前 · 新用户引导优化</span>
+                    </div>
+                  </div>
+                  <a class="task-activity-cta">查看</a>
+                </div>
+
+                <div class="task-activity-item">
+                  <span class="task-activity-stamp">
+                    <cs-avatar data-size="xs" data-color="purple"><span class="avatar-text">陈</span></cs-avatar>
+                  </span>
+                  <div class="task-activity-main">
+                    <div class="task-activity-text">
+                      <b>陈一鸣</b> 完成了 <a class="task-activity-link">设计登录页 v2 主视觉</a>
+                    </div>
+                    <div class="task-activity-meta">
+                      <i class="cses-stratis-check-contained"></i>
+                      <span>1 小时前 · 设计系统升级</span>
+                    </div>
+                  </div>
+                  <a class="task-activity-cta">查看</a>
+                </div>
+
+                <div class="task-activity-item">
+                  <span class="task-activity-stamp">
+                    <cs-avatar data-size="xs" data-color="sky"><span class="avatar-text">周</span></cs-avatar>
+                  </span>
+                  <div class="task-activity-main">
+                    <div class="task-activity-text">
+                      <b>周明</b> 修改了 <a class="task-activity-link">跟进客户 B 的合同条款反馈</a> 的截止时间为 今日 17:30
+                    </div>
+                    <div class="task-activity-meta">
+                      <i class="cses-stratis-edit-01"></i>
+                      <span>2 小时前 · 客户跟进</span>
+                    </div>
+                  </div>
+                  <a class="task-activity-cta">查看</a>
+                </div>
+
+                <div class="task-activity-item">
+                  <span class="task-activity-stamp">
+                    <cs-avatar data-size="xs" data-color="blue"><span class="avatar-text">李</span></cs-avatar>
+                  </span>
+                  <div class="task-activity-main">
+                    <div class="task-activity-text">
+                      <b>李航</b> 在 <a class="task-activity-link">梳理 Q3 OKR 草稿</a> 中添加了 2 个子任务
+                    </div>
+                    <div class="task-activity-meta">
+                      <i class="cses-stratis-add-square-01"></i>
+                      <span>昨日 22:08 · 2026 Q3 增长项目</span>
+                    </div>
+                  </div>
+                  <a class="task-activity-cta">查看</a>
+                </div>
+
+              </div>
+            </div>
+
+          </section>
+
+          <!-- ─── 底部：次级快捷入口（非主 CTA） ─── -->
+          <section class="task-shortcut-bar">
+            <div class="task-shortcut-head">
+              <i class="cses-stratis-lightning-01"></i>
+              <span>快捷创建</span>
+            </div>
+            <div class="task-shortcut-list">
+              <a class="task-shortcut">
+                <span class="task-shortcut__icon"><i class="cses-stratis-file-multiple"></i></span>
+                <span class="task-shortcut__body">
+                  <span class="task-shortcut__title">用模板新建任务</span>
+                  <span class="task-shortcut__sub">从 12 个常用模板中挑一个</span>
+                </span>
+              </a>
+              <a class="task-shortcut">
+                <span class="task-shortcut__icon"><i class="cses-stratis-mail-01"></i></span>
+                <span class="task-shortcut__body">
+                  <span class="task-shortcut__title">从邮件转为任务</span>
+                  <span class="task-shortcut__sub">转发邮件到 task@cses.app</span>
+                </span>
+              </a>
+              <a class="task-shortcut">
+                <span class="task-shortcut__icon"><i class="cses-stratis-scan"></i></span>
+                <span class="task-shortcut__body">
+                  <span class="task-shortcut__title">扫码加入项目</span>
+                  <span class="task-shortcut__sub">协作者邀请你时使用</span>
+                </span>
+              </a>
+              <a class="task-shortcut">
+                <span class="task-shortcut__icon"><i class="cses-stratis-arrow-refresh-02"></i></span>
+                <span class="task-shortcut__body">
+                  <span class="task-shortcut__title">同步日历到任务</span>
+                  <span class="task-shortcut__sub">把日程一键转成任务</span>
+                </span>
+              </a>
+            </div>
+          </section>
+
+        </div>
+
+        <!-- 底部状态栏（fragment 规范：H:18 固定） -->
+        <div class="task-statusbar">
+          <span>共 53 项任务 · 已加载 全部</span>
+          <span class="task-statusbar__right">
+            <i class="cses-stratis-arrow-refresh-01"></i>
+            <span>1 分钟前同步</span>
+          </span>
+        </div>
+
+      </main>
+    </div>
+  </div>
+</cs-layout>
+
+</body>
+</html>

@@ -1,0 +1,499 @@
+/* ============================================================
+ * meeting-home / index.css
+ *
+ * 模块前缀：--mh-* （meeting-home 私有）
+ * 仅放本页私有的 chrome 样式（content-header / 卡片 / 列表 / 网格）
+ * 颜色 / 字号 / 间距 / 圆角 / 阴影 一律走 var(--cs-*) 或 raw token
+ * 所有图标走 cses-* class（不在此处内联 SVG）
+ * ============================================================ */
+
+
+/* ============================================================
+ * 1. 主内容区 chrome — content-header / 滚动容器
+ *    注意：不动 fragment.css 中 .main-content 的几何（flex:1 / column）
+ * ============================================================ */
+
+.main-content > .mh-content-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* 与 fragment.css cs-content-header 高度对齐，复用语义令牌 */
+  height: var(--cs-sem-size-header-height);
+  padding: 0 var(--space-md);
+  background: var(--cs-color-white);
+  border-bottom: var(--line-width) solid var(--cs-color-border);
+  box-sizing: border-box;
+}
+
+.mh-content-header__left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-3xs);
+  flex: 1;
+  min-width: 0;
+}
+
+.mh-content-header__title {
+  font: var(--typo-cn-18-medium);
+  color: var(--cs-color-text);
+}
+
+.mh-content-header__subtitle {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+
+.mh-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--spacing-24) var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-32);
+  box-sizing: border-box;
+}
+
+
+/* ============================================================
+ * 2. 章节通用样式
+ * ============================================================ */
+
+.mh-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.mh-section--cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-24);
+}
+
+.mh-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  min-width: 0;
+}
+
+.mh-section__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mh-section__title {
+  font: var(--typo-cn-16-medium);
+  color: var(--cs-color-text);
+}
+
+.mh-section__more {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3xs);
+  font: var(--typo-cn-13-regular);
+  color: var(--cs-color-text-light);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.mh-section__more:hover {
+  color: var(--cs-color-primary);
+}
+
+.mh-section__more i {
+  font-size: var(--cs-sem-size-icon-sm);
+}
+
+
+/* ============================================================
+ * 3. navbar 内：会议菜单链接 / 分组标题
+ *    沿用 fragment.css 官方槽位（.slot-nav / .slot-sub），
+ *    内部使用本页私有 chrome 类（--mh- 前缀）
+ * ============================================================ */
+
+.mh-nav-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  padding: var(--space-xs);
+  border-radius: var(--radius-lg);
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.mh-nav-link:hover {
+  background: var(--cs-color-bg-hover);
+}
+
+.mh-nav-link.is-active {
+  background: var(--cs-color-primary-a2);
+  color: var(--cs-color-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.mh-nav-link__icon {
+  font-size: var(--cs-sem-size-icon-sm);
+  flex-shrink: 0;
+}
+
+.mh-nav-link__label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mh-nav-group-title {
+  padding: var(--space-xs) var(--space-xs) var(--space-2xs);
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+
+
+/* ============================================================
+ * 4. 主操作区 — 四列快捷卡片
+ * ============================================================ */
+
+.mh-quick-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-md);
+}
+
+.mh-action-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-xs);
+  padding: var(--spacing-20);
+  background: var(--cs-color-white);
+  border: var(--line-width) solid var(--cs-color-border);
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  text-decoration: none;
+  transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+
+.mh-action-card:hover {
+  border-color: var(--cs-color-primary);
+  box-shadow: var(--cs-shadow);
+  transform: translateY(-2px);
+}
+
+.mh-action-card__icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-xl);
+  background: var(--cs-color-primary-a2);
+  color: var(--cs-color-primary);
+  flex-shrink: 0;
+}
+
+.mh-action-card__icon-wrap[data-tone="success"] {
+  background: var(--cs-sem-bg-success);
+  color: var(--cs-sem-text-success);
+}
+
+.mh-action-card__icon-wrap[data-tone="warning"] {
+  background: var(--cs-sem-bg-warning);
+  color: var(--cs-sem-text-warning);
+}
+
+.mh-action-card__icon-wrap[data-tone="info"] {
+  background: var(--cs-sem-status-info-light);
+  color: var(--cs-sem-status-info);
+}
+
+.mh-action-card--primary .mh-action-card__icon-wrap {
+  background: var(--cs-color-primary);
+  color: var(--cs-color-text-inverse);
+}
+
+.mh-action-card__icon {
+  font-size: var(--cs-sem-size-icon-xl);
+}
+
+.mh-action-card__title {
+  font: var(--typo-cn-16-medium);
+  color: var(--cs-color-text);
+}
+
+.mh-action-card__desc {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+
+
+/* ============================================================
+ * 5. 今日会议列表 — 会议卡片
+ * ============================================================ */
+
+.mh-meeting-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.mh-meeting-card {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: var(--cs-color-white);
+  border: var(--line-width) solid var(--cs-color-border);
+  border-radius: var(--radius-xl);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.mh-meeting-card:hover {
+  border-color: var(--cs-color-primary);
+  box-shadow: var(--cs-shadow);
+}
+
+.mh-meeting-card--live {
+  border-color: var(--cs-color-primary);
+  background: linear-gradient(180deg, var(--cs-color-primary-a2) 0%, var(--cs-color-white) 30%);
+}
+
+.mh-meeting-card__time-col {
+  flex-shrink: 0;
+  width: 72px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: var(--space-3xs);
+}
+
+.mh-meeting-card__time {
+  font: var(--typo-cn-20-medium);
+  color: var(--cs-color-text);
+}
+
+.mh-meeting-card__duration {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+
+.mh-meeting-card__divider {
+  width: var(--line-width);
+  background: var(--cs-color-border);
+  flex-shrink: 0;
+}
+
+.mh-meeting-card__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.mh-meeting-card__title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.mh-meeting-card__title {
+  font: var(--typo-cn-16-medium);
+  color: var(--cs-color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.mh-meeting-card__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.mh-meeting-card__meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3xs);
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light);
+}
+
+.mh-meeting-card__meta-item i {
+  font-size: var(--cs-sem-size-icon-sm);
+  color: var(--cs-color-text-light2);
+}
+
+.mh-meeting-card__participants {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3xs);
+  margin-top: var(--space-3xs);
+}
+
+.mh-meeting-card__participants cs-avatar {
+  border: 2px solid var(--cs-color-white);
+  margin-left: -6px;
+}
+
+.mh-meeting-card__participants cs-avatar:first-child {
+  margin-left: 0;
+}
+
+.mh-meeting-card__actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  gap: var(--space-2xs);
+  flex-shrink: 0;
+}
+
+
+/* ============================================================
+ * 6. 历史会议列表
+ * ============================================================ */
+
+.mh-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.mh-history-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--cs-color-white);
+  border: var(--line-width) solid var(--cs-color-border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.mh-history-item:hover {
+  border-color: var(--cs-color-primary);
+  background: var(--cs-color-primary-a2);
+}
+
+.mh-history-item__thumb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: var(--cs-color-primary-a2);
+  color: var(--cs-color-primary);
+  border-radius: var(--radius-lg);
+  flex-shrink: 0;
+}
+
+.mh-history-item__thumb[data-tone="muted"] {
+  background: var(--cs-color-bg-light);
+  color: var(--cs-color-text-light2);
+}
+
+.mh-history-item__thumb i {
+  font-size: var(--cs-sem-size-icon-lg);
+}
+
+.mh-history-item__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+}
+
+.mh-history-item__title {
+  font: var(--typo-cn-14-medium);
+  color: var(--cs-color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mh-history-item__meta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+
+.mh-history-item__dot {
+  width: 3px;
+  height: 3px;
+  border-radius: var(--radius-full);
+  background: var(--cs-color-text-light2);
+  display: inline-block;
+}
+
+
+/* ============================================================
+ * 7. 快捷功能 — 网格
+ * ============================================================ */
+
+.mh-shortcut-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-sm);
+}
+
+.mh-shortcut {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  padding: var(--space-md);
+  background: var(--cs-color-white);
+  border: var(--line-width) solid var(--cs-color-border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.mh-shortcut:hover {
+  border-color: var(--cs-color-primary);
+  background: var(--cs-color-primary-a2);
+  transform: translateY(-2px);
+}
+
+.mh-shortcut__icon {
+  font-size: var(--cs-sem-size-icon-xl);
+  color: var(--cs-color-primary);
+}
+
+.mh-shortcut__label {
+  font: var(--typo-cn-13-regular);
+  color: var(--cs-color-text);
+}
+
+
+/* ============================================================
+ * 8. 响应式（窄视口降级）
+ * ============================================================ */
+
+@media (max-width: 1200px) {
+  .mh-quick-actions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .mh-section--cols {
+    grid-template-columns: 1fr;
+  }
+}

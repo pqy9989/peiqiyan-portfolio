@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>cs-search-trigger 组件预览</title>
+  <link rel="stylesheet" href="../../css/base.css">
+  <link rel="stylesheet" href="../../fonts/cses-icons.css">
+  <link rel="stylesheet" href="search-trigger.css">
+  <style>
+    body { padding: 32px; background: #f5f5f5; }
+    .section { background: #fff; border-radius: 8px; padding: 24px; margin-bottom: 24px; }
+    .section-title { font: var(--typo-cn-16-medium); color: var(--cs-color-text); margin-bottom: 16px; }
+    .row { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+    .label { font: var(--typo-cn-12-regular); color: var(--cs-color-text-light2); width: 80px; }
+  </style>
+</head>
+<body>
+
+<div class="section">
+  <div class="section-title">搜索触发按钮</div>
+
+  <div class="row">
+    <span class="label">默认 (md)</span>
+    <cs-search-trigger>
+      <span class="trigger-text">搜索</span>
+      <i class="trigger-icon cses-sousuo"></i>
+    </cs-search-trigger>
+  </div>
+
+  <div class="row">
+    <span class="label">小尺寸 (sm)</span>
+    <cs-search-trigger data-size="sm">
+      <span class="trigger-text">搜索</span>
+      <i class="trigger-icon cses-sousuo"></i>
+    </cs-search-trigger>
+  </div>
+
+  <div class="row">
+    <span class="label">深色背景</span>
+    <div style="background:#2C2A3A;padding:16px;border-radius:8px;">
+      <cs-search-trigger>
+        <span class="trigger-text">搜索</span>
+        <i class="trigger-icon cses-sousuo"></i>
+      </cs-search-trigger>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

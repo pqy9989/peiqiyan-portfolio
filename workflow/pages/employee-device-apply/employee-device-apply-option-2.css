@@ -1,0 +1,694 @@
+/* ============================================================
+   员工设备申请 · option-2 工作台 3 卡块（私有前缀 --eda-* / .eda-*）
+   ============================================================ */
+
+:root {
+  /* 卡块色板：A 推荐主色 / B 进行中橙 / C 物流跟踪青 */
+  --eda-block-recommend-bg:  linear-gradient(180deg, #f3f5ff 0%, #ffffff 60%);
+  --eda-block-recommend-bd:  #dee3ff;
+  --eda-block-progress-bg:   linear-gradient(180deg, #fff7ee 0%, #ffffff 60%);
+  --eda-block-progress-bd:   #ffe2c2;
+  --eda-block-shipping-bg:   linear-gradient(180deg, #ecf7ff 0%, #ffffff 60%);
+  --eda-block-shipping-bd:   #c9e4ff;
+
+  /* 工作台轨道宽度（推荐区更宽） */
+  --eda-track-recommend: 1.25fr;
+  --eda-track-progress:  1fr;
+  --eda-track-shipping:  1fr;
+
+  --eda-card-radius:     12px;
+  --eda-card-shadow:     0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 12px rgba(15, 23, 42, 0.04);
+  --eda-divider:         #eef0f4;
+}
+
+/* ============================================================
+   navbar 内业务私有：侧栏副菜单（最近申请）
+   ============================================================ */
+.eda-side-group { display: flex; flex-direction: column; gap: var(--space-2xs); padding-top: var(--space-xs); }
+.eda-side-group__title {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+  padding: 0 var(--space-xs);
+}
+.eda-side-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.eda-side-item:hover { background: var(--cs-color-primary-a2); }
+.eda-side-item__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.eda-side-item__main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.eda-side-item__name { font: var(--typo-cn-13-regular); color: var(--cs-color-text); }
+.eda-side-item__time { font: var(--typo-cn-12-regular); color: var(--cs-color-text-light2); }
+
+/* navbar slot-action 主 CTA 全宽 */
+cs-navbar .slot-action cs-button { width: 100%; }
+
+/* ============================================================
+   工作台 3 卡块容器：横排 grid
+   ============================================================ */
+.eda-workbench {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: var(--eda-track-recommend) var(--eda-track-progress) var(--eda-track-shipping);
+  gap: var(--space-md);
+  padding: var(--space-md);
+  overflow-y: auto;
+  background: var(--cs-color-bg-secondary);
+}
+
+/* ============================================================
+   通用卡块外壳（A/B/C 共用）
+   ============================================================ */
+.eda-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: var(--cs-color-white);
+  border: 1px solid var(--cs-color-border);
+  border-radius: var(--eda-card-radius);
+  box-shadow: var(--eda-card-shadow);
+  min-height: 0;
+}
+.eda-block--recommend { background: var(--eda-block-recommend-bg); border-color: var(--eda-block-recommend-bd); }
+.eda-block--progress  { background: var(--eda-block-progress-bg);  border-color: var(--eda-block-progress-bd);  }
+.eda-block--shipping  { background: var(--eda-block-shipping-bg);  border-color: var(--eda-block-shipping-bd);  }
+
+.eda-block__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+.eda-block__title-wrap { display: flex; flex-direction: column; gap: var(--space-2xs); }
+.eda-block__kicker {
+  font: var(--typo-cn-12-medium);
+  color: var(--cs-color-text-light2);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.eda-block__title {
+  font: var(--typo-cn-16-medium);
+  font-weight: 600;
+  color: var(--cs-color-text);
+  margin: 0;
+}
+
+/* ============================================================
+   卡块 A · 推荐套餐列表
+   ============================================================ */
+.eda-package-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+.eda-package {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background: var(--cs-color-white);
+  border: 1px solid var(--cs-color-border);
+  border-radius: var(--radius-lg);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+  cursor: pointer;
+}
+.eda-package:hover {
+  border-color: var(--cs-color-primary);
+  box-shadow: 0 4px 16px rgba(72, 87, 226, 0.10);
+  transform: translateY(-1px);
+}
+.eda-package--featured {
+  border-color: var(--cs-color-primary);
+  background: linear-gradient(180deg, #fbfcff 0%, #ffffff 100%);
+  box-shadow: 0 6px 20px rgba(72, 87, 226, 0.08);
+}
+
+.eda-package__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+.eda-package__head { display: flex; flex-direction: column; gap: var(--space-2xs); min-width: 0; }
+.eda-package__name {
+  margin: 0;
+  font: var(--typo-cn-16-medium);
+  font-weight: 600;
+  color: var(--cs-color-text);
+}
+.eda-package__sub { font: var(--typo-cn-12-regular); color: var(--cs-color-text-light2); }
+
+/* 套餐设备清单 */
+.eda-items {
+  list-style: none;
+  margin: 0;
+  padding: var(--space-sm) 0;
+  border-top: 1px dashed var(--eda-divider);
+  border-bottom: 1px dashed var(--eda-divider);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+.eda-item { display: flex; align-items: center; gap: var(--space-xs); }
+.eda-item__icon {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--cs-color-bg-light);
+  color: var(--cs-color-text-light);
+  flex-shrink: 0;
+}
+.eda-item__icon i { font-size: 16px; }
+.eda-item__main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.eda-item__name { font: var(--typo-cn-13-medium); color: var(--cs-color-text); }
+.eda-item__spec { font: var(--typo-cn-12-regular); color: var(--cs-color-text-light2); }
+
+/* 套餐底部价格 + 领取 */
+.eda-package__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+.eda-package__price-wrap { display: flex; flex-direction: column; gap: var(--space-3xs); min-width: 0; }
+.eda-package__price {
+  font: var(--typo-cn-18-medium);
+  font-weight: 600;
+  color: var(--cs-color-text);
+  font-variant-numeric: tabular-nums;
+}
+.eda-package__eta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light);
+}
+.eda-package__eta i { font-size: 12px; color: var(--cs-color-text-light2); }
+
+/* ============================================================
+   卡块 B · 进行中（含步进进度条）
+   ============================================================ */
+.eda-progress-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+.eda-progress-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background: var(--cs-color-white);
+  border: 1px solid var(--cs-color-border);
+  border-radius: var(--radius-lg);
+}
+
+.eda-progress-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+.eda-progress-card__title-wrap { display: flex; flex-direction: column; gap: var(--space-3xs); min-width: 0; }
+.eda-progress-card__title {
+  margin: 0;
+  font: var(--typo-cn-14-medium);
+  font-weight: 600;
+  color: var(--cs-color-text);
+}
+.eda-progress-card__id {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 步进条 */
+.eda-stepbar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-sm);
+  background: var(--cs-color-bg-secondary);
+  border-radius: var(--radius-sm);
+}
+.eda-stepbar__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.eda-stepbar__label { font: var(--typo-cn-12-regular); color: var(--cs-color-text-light); }
+.eda-stepbar__count {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light);
+  font-variant-numeric: tabular-nums;
+}
+.eda-stepbar__count strong {
+  color: var(--cs-color-primary);
+  font-weight: 600;
+}
+.eda-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2xs);
+  position: relative;
+}
+.eda-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2xs);
+  flex: 1;
+  position: relative;
+}
+.eda-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: calc(50% + 12px);
+  right: calc(-50% + 12px);
+  height: 2px;
+  background: var(--cs-color-border);
+  z-index: 0;
+}
+.eda-step--done:not(:last-child)::after,
+.eda-step--current:not(:last-child)::after { /* current 之后保持灰色 */ }
+.eda-step--done:not(:last-child)::after { background: var(--cs-color-success); }
+
+.eda-step__dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cs-color-white);
+  border: 1.5px solid var(--cs-color-border);
+  color: var(--cs-color-text-light2);
+  font: var(--typo-cn-12-medium);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  z-index: 1;
+  position: relative;
+}
+.eda-step__dot i { font-size: 10px; }
+.eda-step--done .eda-step__dot {
+  background: var(--cs-color-success);
+  border-color: var(--cs-color-success);
+  color: var(--cs-color-white);
+}
+.eda-step--current .eda-step__dot {
+  background: var(--cs-color-primary);
+  border-color: var(--cs-color-primary);
+  color: var(--cs-color-white);
+  box-shadow: 0 0 0 4px var(--cs-color-primary-a2);
+}
+.eda-step__label {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+  text-align: center;
+  white-space: nowrap;
+}
+.eda-step--done .eda-step__label,
+.eda-step--current .eda-step__label { color: var(--cs-color-text); }
+.eda-step--current .eda-step__label { font-weight: 600; }
+
+.eda-progress-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+.eda-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light);
+}
+.eda-meta-item i { font-size: 12px; color: var(--cs-color-text-light2); }
+
+.eda-progress-card__foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-xs);
+  padding-top: var(--space-xs);
+  border-top: 1px solid var(--eda-divider);
+}
+
+/* ============================================================
+   卡块 C · 物流跟踪
+   ============================================================ */
+.eda-shipping-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+.eda-shipping-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background: var(--cs-color-white);
+  border: 1px solid var(--cs-color-border);
+  border-radius: var(--radius-lg);
+}
+.eda-shipping-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+.eda-shipping-card__title-wrap { display: flex; flex-direction: column; gap: var(--space-3xs); min-width: 0; }
+.eda-shipping-card__title {
+  margin: 0;
+  font: var(--typo-cn-14-medium);
+  font-weight: 600;
+  color: var(--cs-color-text);
+}
+.eda-shipping-card__id {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 物流主视觉 */
+.eda-ship-status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+  background: linear-gradient(135deg, #e6f4ff 0%, #d6ebff 100%);
+  border-radius: var(--radius-sm);
+}
+.eda-ship-status__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cs-color-white);
+  color: var(--cs-color-primary);
+  flex-shrink: 0;
+}
+.eda-ship-status__icon i { font-size: 18px; }
+.eda-ship-status__main { display: flex; flex-direction: column; gap: var(--space-3xs); min-width: 0; }
+.eda-ship-status__carrier {
+  font: var(--typo-cn-13-medium);
+  color: var(--cs-color-text);
+  font-variant-numeric: tabular-nums;
+}
+.eda-ship-status__eta {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light);
+}
+.eda-ship-status__eta strong {
+  color: var(--cs-color-primary);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 物流时间线 */
+.eda-ship-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  position: relative;
+}
+.eda-ship-step {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-xs);
+  position: relative;
+  padding-left: var(--space-md);
+}
+.eda-ship-step::before {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 14px;
+  bottom: calc(-1 * var(--space-sm));
+  width: 1px;
+  background: var(--cs-color-border);
+}
+.eda-ship-step:last-child::before { display: none; }
+.eda-ship-step__dot {
+  position: absolute;
+  left: 0;
+  top: 5px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--cs-color-white);
+  border: 2px solid var(--cs-color-border);
+}
+.eda-ship-step--current .eda-ship-step__dot {
+  background: var(--cs-color-primary);
+  border-color: var(--cs-color-primary);
+  box-shadow: 0 0 0 4px var(--cs-color-primary-a2);
+}
+.eda-ship-step--done .eda-ship-step__dot {
+  background: var(--cs-color-success);
+  border-color: var(--cs-color-success);
+}
+.eda-ship-step__main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.eda-ship-step__text { font: var(--typo-cn-13-regular); color: var(--cs-color-text-light); }
+.eda-ship-step--current .eda-ship-step__text {
+  color: var(--cs-color-text);
+  font-weight: 500;
+}
+.eda-ship-step__time {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 送达地址 */
+.eda-shipping-card__addr {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--cs-color-bg-secondary);
+  border-radius: var(--radius-sm);
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light);
+}
+.eda-shipping-card__addr i { font-size: 14px; color: var(--cs-color-text-light2); }
+
+.eda-shipping-card__foot {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding-top: var(--space-xs);
+  border-top: 1px solid var(--eda-divider);
+}
+.eda-shipping-card__foot cs-button { flex: 1; }
+
+/* 提示条 */
+.eda-shipping-tip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  padding: var(--space-sm);
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px dashed var(--cs-color-border);
+  border-radius: var(--radius-sm);
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light);
+}
+.eda-shipping-tip i { font-size: 14px; color: var(--cs-color-text-light2); }
+
+/* ============================================================
+   抽屉：新建申请表单
+   ============================================================ */
+cs-drawer#edaDrawer {
+  display: flex;
+  flex-direction: column;
+}
+.eda-drawer__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--spacing-20);
+  border-bottom: 1px solid var(--cs-color-border);
+}
+.eda-drawer__title-wrap { display: flex; flex-direction: column; gap: var(--space-2xs); }
+.eda-drawer__title {
+  margin: 0;
+  font: var(--typo-cn-18-medium);
+  font-weight: 600;
+  color: var(--cs-color-text);
+}
+.eda-drawer__sub { font: var(--typo-cn-12-regular); color: var(--cs-color-text-light2); }
+.eda-drawer__close {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: transparent;
+  color: var(--cs-color-text-light);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.eda-drawer__close:hover {
+  background: var(--cs-color-bg-light);
+  color: var(--cs-color-text);
+}
+.eda-drawer__close i { font-size: 16px; }
+
+.eda-drawer__body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--spacing-20);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-20);
+}
+
+.eda-form-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+.eda-form-section__title {
+  font: var(--typo-cn-13-medium);
+  font-weight: 600;
+  color: var(--cs-color-text-light);
+}
+
+/* 抽屉内表单控件铺满 */
+.eda-drawer__body cs-form-group { width: 100%; }
+.eda-drawer__body .form-field { width: 100%; display: block; }
+.eda-drawer__body .form-field cs-input,
+.eda-drawer__body .form-field cs-select,
+.eda-drawer__body .form-field cs-textarea {
+  display: flex;
+  width: 100%;
+  height: var(--cs-sem-size-interactive-md);
+}
+.eda-drawer__body .form-field cs-textarea { height: auto; min-height: 88px; align-items: flex-start; }
+
+/* 已选套餐预览 */
+.eda-selected-pkg {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background: var(--cs-color-bg-secondary);
+  border-radius: var(--radius-lg);
+}
+.eda-selected-pkg__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xs);
+}
+.eda-selected-pkg__name {
+  margin: 0;
+  font: var(--typo-cn-14-medium);
+  font-weight: 600;
+  color: var(--cs-color-text);
+}
+.eda-selected-pkg__items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+.eda-selected-pkg__items li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font: var(--typo-cn-13-regular);
+  color: var(--cs-color-text);
+}
+.eda-selected-pkg__items i {
+  font-size: 14px;
+  color: var(--cs-color-text-light2);
+  flex-shrink: 0;
+}
+.eda-selected-pkg__price {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--space-xs);
+  border-top: 1px dashed var(--cs-color-border);
+}
+.eda-selected-pkg__price-label { font: var(--typo-cn-13-regular); color: var(--cs-color-text-light); }
+.eda-selected-pkg__price-value {
+  font: var(--typo-cn-16-medium);
+  font-weight: 600;
+  color: var(--cs-color-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 联系方式只读区 */
+.eda-contact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--cs-color-bg-light);
+  border-radius: var(--radius-sm);
+}
+.eda-contact__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.eda-contact__label { font: var(--typo-cn-12-regular); color: var(--cs-color-text-light); }
+.eda-contact__value {
+  font: var(--typo-cn-13-medium);
+  color: var(--cs-color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.eda-drawer__foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--spacing-20);
+  border-top: 1px solid var(--cs-color-border);
+  background: var(--cs-color-white);
+}

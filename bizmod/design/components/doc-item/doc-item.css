@@ -1,0 +1,227 @@
+/*
+ * 文档列表项组件 (Doc Item) — 图标 + 两行布局
+ * 标签：<cs-doc-item>
+ * 用途：工作台「最近文档」「分享给我的文档」列表中的单条文档项
+ *
+ * data 属性：
+ *   data-new                                  — 新文件标记（标题加粗 + 显示未读圆点）
+ *   data-type="doc|sheet|image|pdf|folder|ppt" — 文件类型（决定图标颜色）
+ *
+ * 子元素结构：
+ *   .doc-icon                 — 文件图标（固定 32px 方块）
+ *     i.cses-*                — 图标字体
+ *   .doc-body                 — 文字区（flex:1, 两行布局）
+ *     .doc-title-row          — 第一行：标题 + 未读圆点
+ *       .doc-dot              — 未读圆点（data-new 时显示）
+ *       .doc-title            — 文件名（溢出省略）
+ *     .doc-meta               — 第二行：修改时间 + 修改者
+ *       .doc-date             — 最后修改时间
+ *       .doc-author           — 修改者名称
+ *   .doc-tag                  — 可选状态标签（已分享 / 待我审批 等）
+ *   .doc-actions              — hover 显示的操作图标
+ */
+
+/* ========== 行基础样式 ========== */
+cs-doc-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-sm);
+  width: 100%;
+  min-height: var(--spacing-64);
+  padding: var(--space-xs) var(--space-md);
+  border-bottom: var(--line-width) solid var(--cs-color-border);
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: background var(--cs-transition-fast);
+}
+
+cs-doc-item:last-child {
+  border-bottom: none;
+}
+
+/* ========== 悬停态 ========== */
+cs-doc-item:hover {
+  background: var(--cs-color-bg-hover);
+}
+
+/* ========== 文件图标 ========== */
+cs-doc-item .doc-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--spacing-32);
+  height: var(--spacing-32);
+  border-radius: var(--radius-sm);
+  background: var(--cs-color-bg-light);
+  color: var(--cs-color-filetype-unknown);
+}
+
+cs-doc-item .doc-icon i {
+  font-size: var(--cs-sem-size-icon-lg);
+}
+
+/* --- 文件类型图标配色 --- */
+cs-doc-item[data-type="doc"] .doc-icon {
+  color: var(--cs-color-filetype-word);
+}
+
+cs-doc-item[data-type="sheet"] .doc-icon {
+  color: var(--cs-color-filetype-excel);
+}
+
+cs-doc-item[data-type="ppt"] .doc-icon {
+  color: var(--cs-color-filetype-ppt);
+}
+
+cs-doc-item[data-type="pdf"] .doc-icon {
+  color: var(--cs-color-filetype-pdf);
+}
+
+cs-doc-item[data-type="image"] .doc-icon {
+  color: var(--cs-color-filetype-image);
+}
+
+cs-doc-item[data-type="folder"] .doc-icon {
+  color: var(--cs-color-primary);
+}
+
+/* ========== 文字区（两行布局） ========== */
+cs-doc-item .doc-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+}
+
+/* --- 第一行：标题行 --- */
+cs-doc-item .doc-title-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-2xs);
+  min-width: 0;
+}
+
+/* --- 未读圆点 --- */
+cs-doc-item .doc-dot {
+  width: var(--spacing-6);
+  height: var(--spacing-6);
+  border-radius: var(--radius-full);
+  background: var(--cs-color-primary);
+  flex-shrink: 0;
+  display: none;
+}
+
+cs-doc-item[data-new] .doc-dot {
+  display: block;
+}
+
+/* --- 文件名 --- */
+cs-doc-item .doc-title {
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  transition: color var(--cs-transition-fast);
+}
+
+cs-doc-item:hover .doc-title {
+  color: var(--cs-color-primary);
+}
+
+/* 新文件：标题加粗 */
+cs-doc-item[data-new] .doc-title {
+  font: var(--typo-cn-14-medium);
+  color: var(--cs-color-font-gy1-90);
+}
+
+/* --- 第二行：元信息 --- */
+cs-doc-item .doc-meta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-xs);
+  min-width: 0;
+}
+
+cs-doc-item .doc-date,
+cs-doc-item .doc-author {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+cs-doc-item .doc-author {
+  flex-shrink: 0;
+}
+
+/* ========== 状态标签 ========== */
+cs-doc-item .doc-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  height: var(--spacing-24);
+  padding: 0 var(--space-xs);
+  border-radius: var(--radius);
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+  background: var(--cs-color-bg-light);
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* 已分享 — 主色 */
+cs-doc-item .doc-tag[data-status="shared"] {
+  color: var(--cs-color-primary);
+  background: var(--cs-color-selected);
+}
+
+/* 待我审批 — 警告色 */
+cs-doc-item .doc-tag[data-status="pending"] {
+  color: var(--cs-color-warning);
+  background: var(--cs-sem-bg-warning);
+}
+
+/* 已完成 — 成功色 */
+cs-doc-item .doc-tag[data-status="done"] {
+  color: var(--cs-color-success);
+  background: var(--cs-sem-bg-success);
+}
+
+/* ========== hover 操作区 ========== */
+cs-doc-item .doc-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  flex-shrink: 0;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity var(--cs-transition-fast);
+}
+
+cs-doc-item .doc-actions i {
+  font-size: var(--font-size-md);
+  color: var(--cs-color-text-light2);
+  padding: var(--space-3xs);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: color var(--cs-transition-fast), background var(--cs-transition-fast);
+}
+
+cs-doc-item .doc-actions i:hover {
+  color: var(--cs-color-text);
+  background: var(--cs-color-bg-light);
+}
+
+cs-doc-item:hover .doc-actions {
+  visibility: visible;
+  opacity: 1;
+}

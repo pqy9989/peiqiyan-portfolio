@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>发起审批 — CSES</title>
+
+  <link rel="stylesheet" href="../../design/css/base.css">
+  <link rel="stylesheet" href="../../design/css/token.css">
+  <link rel="stylesheet" href="../../design/css/variable.css">
+  <link rel="stylesheet" href="../../design/fonts/cses-icons.css?v=101">
+  <link rel="stylesheet" href="../../design/fragment/fragment.css">
+  <link rel="stylesheet" href="../../design/css/page-shell.css?v=2">
+
+  <link rel="stylesheet" href="../../design/components/search-input/search-input.css">
+  <link rel="stylesheet" href="../../design/components/avatar/avatar.css">
+  <link rel="stylesheet" href="../../design/components/button/button.css">
+
+  <link rel="stylesheet" href="./index.css">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: var(--font-family-cn), -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--cs-color-bg-app-dark);
+      color: var(--cs-color-text);
+      height: 100vh;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+</head>
+<body data-module="approval">
+
+<cs-layout>
+
+  <!-- 标签栏 -->
+  <div class="tabbar">
+    <div class="tabbar-left">
+      <span class="win-ctrl tabbar-window-control">
+        <span class="ctrl-dot" data-c="close"></span>
+        <span class="ctrl-dot" data-c="min"></span>
+        <span class="ctrl-dot" data-c="max"></span>
+      </span>
+      <cs-search-input class="tabbar-search ah-top-search" data-variant="gray" data-size="sm">
+        <i class="search-icon cses-stratis-search-01"></i>
+        <input class="search-field" type="text" placeholder="搜索">
+      </cs-search-input>
+      <div class="tabbar-tabs"></div>
+    </div>
+    <div class="tabbar-right">
+      <span class="tabbar-notice">
+        <i class="cses-stratis-bell-01 notice-icon"></i>
+        <span class="notice-badge">2</span>
+      </span>
+      <cs-avatar data-size="xs" data-shape="circle" data-color="blue">张</cs-avatar>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- 一级导航 -->
+    <cs-sidebar>
+      <span class="logo">
+        <img src="../../design/assets/logo.png" alt="CSES">
+      </span>
+      <nav class="nav">
+        <div class="nav-group">
+          <a class="nav-item" data-module="workspace">
+            <span class="nav-icon"><i class="cses-stratis-home-01"></i></span>
+            <span class="nav-label">工作台</span>
+          </a>
+          <a class="nav-item" data-module="guide">
+            <span class="nav-icon"><i class="cses-stratis-compass"></i></span>
+            <span class="nav-label">导向</span>
+          </a>
+          <a class="nav-item" data-module="message">
+            <span class="nav-icon"><i class="cses-stratis-message-circle"></i></span>
+            <span class="nav-label">消息</span>
+          </a>
+          <a class="nav-item" data-module="task-list">
+            <span class="nav-icon"><i class="cses-stratis-check-square-broken"></i></span>
+            <span class="nav-label">任务</span>
+          </a>
+          <a class="nav-item" data-module="meeting">
+            <span class="nav-icon"><i class="cses-stratis-video-on"></i></span>
+            <span class="nav-label">会议</span>
+          </a>
+          <a class="nav-item" data-module="doc">
+            <span class="nav-icon"><i class="cses-stratis-book-01"></i></span>
+            <span class="nav-label">文档</span>
+          </a>
+          <a class="nav-item" data-module="form">
+            <span class="nav-icon"><i class="cses-stratis-file-edit-01"></i></span>
+            <span class="nav-label">表单</span>
+          </a>
+          <a class="nav-item" data-active data-module="approval">
+            <span class="nav-icon"><i class="cses-stratis-file-check-01"></i></span>
+            <span class="nav-label">审批</span>
+          </a>
+        </div>
+      </nav>
+    </cs-sidebar>
+
+    <!-- 内容包裹 -->
+    <div class="content-wrapper" style="position:relative;">
+
+      <!-- 二级导航：审批 (232px 同任务页) -->
+      <cs-navbar>
+        <div class="inner">
+
+          <div class="slot-nav">
+            <a class="ac-side-item" href="../approval/index.html">
+              <i class="ac-side-item__icon cses-stratis-home-01"></i>
+              <span class="ac-side-item__label">首页</span>
+            </a>
+            <a class="ac-side-item" data-active>
+              <i class="ac-side-item__icon cses-stratis-arrow-up-right"></i>
+              <span class="ac-side-item__label">发起审批</span>
+            </a>
+
+            <div class="ac-group">
+              <div class="ac-side-item">
+                <i class="ac-side-item__icon cses-stratis-user-profile-01"></i>
+                <span class="ac-side-item__label">审批中心</span>
+                <i class="ac-side-item__caret cses-stratis-chevron-down"></i>
+              </div>
+              <div class="ac-sub-list">
+                <a class="ac-sub-item" href="../approval-center/index.html">待处理的</a>
+                <a class="ac-sub-item" href="../approval-center/index.html">已处理的</a>
+                <a class="ac-sub-item" href="../approval-center/index.html">我发起的</a>
+                <a class="ac-sub-item" href="../approval-center/index.html">抄送我的</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="slot-bottom">
+            <div class="ac-admin">
+              <i class="cses-stratis-settings"></i>
+              <span>后台管理</span>
+            </div>
+          </div>
+
+        </div>
+      </cs-navbar>
+
+      <!-- 主内容区 -->
+      <main class="main-content">
+
+        <!-- 顶栏：发起审批 + 搜索 -->
+        <cs-content-header>
+          <div class="slot-left">
+            <span class="page-title">发起审批</span>
+          </div>
+          <div class="slot-right">
+            <cs-search-input data-variant="gray" data-size="sm">
+              <i class="search-icon cses-stratis-search-01"></i>
+              <input class="search-field" type="text" placeholder="搜索">
+            </cs-search-input>
+          </div>
+        </cs-content-header>
+
+        <!-- 分类 tab 横条 -->
+        <cs-filter-bar data-variant="tabs">
+          <div class="filter-left">
+            <button class="ap-cat-tab" data-active type="button">假勤管理</button>
+            <button class="ap-cat-tab" type="button">财务管理</button>
+            <button class="ap-cat-tab" type="button">人事管理</button>
+            <button class="ap-cat-tab" type="button">法务管理</button>
+            <button class="ap-cat-tab" type="button">业务管理</button>
+            <button class="ap-cat-tab" type="button">安全复工</button>
+            <button class="ap-cat-tab" type="button">其他</button>
+          </div>
+        </cs-filter-bar>
+
+        <!-- 分组区域 -->
+        <div class="ap-content">
+
+          <!-- 假勤管理 -->
+          <div class="ap-group">
+            <div class="ap-group__head">
+              <i class="ap-group__caret cses-stratis-chevron-down"></i>
+              <span class="ap-group__title">假勤管理</span>
+              <span class="ap-group__count">10</span>
+            </div>
+            <div class="ap-group__body">
+              <div class="ap-item" data-active>
+                <span class="ap-item__icon" data-color="green"><i class="cses-stratis-alarm-01"></i></span>
+                <span class="ap-item__name">请假</span>
+              </div>
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="blue"><i class="cses-stratis-arrow-up-right"></i></span>
+                <span class="ap-item__name">出差</span>
+              </div>
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="orange"><i class="cses-stratis-calendar-plus"></i></span>
+                <span class="ap-item__name">补卡</span>
+              </div>
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="green"><i class="cses-stratis-marker-01"></i></span>
+                <span class="ap-item__name">外出打卡</span>
+              </div>
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="red"><i class="cses-stratis-trash-01"></i></span>
+                <span class="ap-item__name">年假</span>
+              </div>
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="blue"><i class="cses-stratis-share"></i></span>
+                <span class="ap-item__name">外出</span>
+              </div>
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="orange"><i class="cses-stratis-lightbulb-01"></i></span>
+                <span class="ap-item__name">加班</span>
+              </div>
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="yellow"><i class="cses-stratis-file-01"></i></span>
+                <span class="ap-item__name">事假</span>
+              </div>
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="blue"><i class="cses-stratis-user-profile-01"></i></span>
+                <span class="ap-item__name">产假</span>
+              </div>
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="orange"><i class="cses-stratis-users-profiles-01"></i></span>
+                <span class="ap-item__name">婚假</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 财务管理 -->
+          <div class="ap-group">
+            <div class="ap-group__head">
+              <i class="ap-group__caret cses-stratis-chevron-down"></i>
+              <span class="ap-group__title">财务管理</span>
+              <span class="ap-group__count">7</span>
+            </div>
+            <div class="ap-group__body">
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="orange"><i class="cses-stratis-file-01"></i></span>
+                <span class="ap-item__name">日常报销</span>
+              </div>
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="orange"><i class="cses-stratis-bag-01"></i></span>
+                <span class="ap-item__name">奖金池申请</span>
+              </div>
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="sky"><i class="cses-stratis-bag-02"></i></span>
+                <span class="ap-item__name">差旅报销</span>
+              </div>
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="orange"><i class="cses-stratis-bank-note-01"></i></span>
+                <span class="ap-item__name">调薪申请</span>
+              </div>
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="blue"><i class="cses-stratis-arrow-down-contained-01"></i></span>
+                <span class="ap-item__name">收款单</span>
+              </div>
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="blue"><i class="cses-stratis-bank-note-02"></i></span>
+                <span class="ap-item__name">开票申请</span>
+              </div>
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="green"><i class="cses-stratis-bank-note-03"></i></span>
+                <span class="ap-item__name">转账申请</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 人事管理 -->
+          <div class="ap-group">
+            <div class="ap-group__head">
+              <i class="ap-group__caret cses-stratis-chevron-down"></i>
+              <span class="ap-group__title">人事管理</span>
+              <span class="ap-group__count">7</span>
+            </div>
+            <div class="ap-group__body">
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="green"><i class="cses-stratis-bag-03"></i></span>
+                <span class="ap-item__name">招聘</span>
+              </div>
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="blue"><i class="cses-stratis-user-profile-01"></i></span>
+                <span class="ap-item__name">权限申请</span>
+              </div>
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="orange"><i class="cses-stratis-user-profile-square"></i></span>
+                <span class="ap-item__name">入职</span>
+              </div>
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="orange"><i class="cses-stratis-user-profile-right"></i></span>
+                <span class="ap-item__name">调动</span>
+              </div>
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="red"><i class="cses-stratis-user-profile-check"></i></span>
+                <span class="ap-item__name">转正</span>
+              </div>
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="green"><i class="cses-stratis-user-profile-minus"></i></span>
+                <span class="ap-item__name">离职</span>
+              </div>
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="blue"><i class="cses-stratis-file-plus-01"></i></span>
+                <span class="ap-item__name">合同续签</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 法务管理 -->
+          <div class="ap-group is-collapsed">
+            <div class="ap-group__head">
+              <i class="ap-group__caret cses-stratis-chevron-down"></i>
+              <span class="ap-group__title">法务管理</span>
+              <span class="ap-group__count">4</span>
+            </div>
+            <div class="ap-group__body">
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="blue"><i class="cses-stratis-file-shield-01"></i></span>
+                <span class="ap-item__name">合同审批</span>
+              </div>
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="red"><i class="cses-stratis-file-question-01"></i></span>
+                <span class="ap-item__name">法律咨询</span>
+              </div>
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="orange"><i class="cses-stratis-annotation-information"></i></span>
+                <span class="ap-item__name">合规申报</span>
+              </div>
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="teal"><i class="cses-stratis-file-check-01"></i></span>
+                <span class="ap-item__name">印章使用</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 业务管理 -->
+          <div class="ap-group is-collapsed">
+            <div class="ap-group__head">
+              <i class="ap-group__caret cses-stratis-chevron-down"></i>
+              <span class="ap-group__title">业务管理</span>
+              <span class="ap-group__count">3</span>
+            </div>
+            <div class="ap-group__body">
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="blue"><i class="cses-stratis-grid-01"></i></span>
+                <span class="ap-item__name">立项申请</span>
+              </div>
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="green"><i class="cses-stratis-target-01"></i></span>
+                <span class="ap-item__name">项目变更</span>
+              </div>
+              <div class="ap-item">
+                <span class="ap-item__icon" data-color="orange"><i class="cses-stratis-bag-04"></i></span>
+                <span class="ap-item__name">采购申请</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+
+    </div>
+
+  </div>
+</cs-layout>
+
+<script>
+  // 审批中心组折叠
+  document.querySelectorAll('.ac-group .ac-side-item').forEach(function (head) {
+    head.addEventListener('click', function () {
+      head.closest('.ac-group').classList.toggle('ac-group--expanded');
+    });
+  });
+  // 分组折叠
+  document.querySelectorAll('.ap-group__head').forEach(function (head) {
+    head.addEventListener('click', function () {
+      head.closest('.ap-group').classList.toggle('is-collapsed');
+    });
+  });
+  // 分类 tab 切换（仅样式，无业务）
+  document.querySelectorAll('.ap-cat-tab').forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      document.querySelectorAll('.ap-cat-tab').forEach(function (t) { t.removeAttribute('data-active'); });
+      tab.setAttribute('data-active', '');
+    });
+  });
+  // 申请项点击：选中态切换
+  document.querySelectorAll('.ap-item').forEach(function (it) {
+    it.addEventListener('click', function () {
+      document.querySelectorAll('.ap-item').forEach(function (x) { x.removeAttribute('data-active'); });
+      it.setAttribute('data-active', '');
+    });
+  });
+</script>
+<script src="../shared.js"></script>
+</body>
+</html>

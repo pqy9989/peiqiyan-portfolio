@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>审批首页 — CSES Approval</title>
+
+  <!-- 1. 设计令牌（base = token + variable） -->
+  <link rel="stylesheet" href="../../design/css/base.css">
+  <!-- 2. 图标字体 -->
+  <link rel="stylesheet" href="../../design/fonts/cses-icons.css">
+  <!-- 3. 布局骨架（直引 fragment.css 标准） -->
+  <link rel="stylesheet" href="../../design/fragment/fragment.css">
+  <!-- 4. page-shell 桥接（tabbar 被删组件 + stratis 图标对齐） -->
+  <link rel="stylesheet" href="../../design/css/page-shell.css">
+
+  <!-- 5. 组件库（按需引入） -->
+  <link rel="stylesheet" href="../../design/components/window-control/window-control.css">
+  <link rel="stylesheet" href="../../design/components/search-input/search-input.css">
+  <link rel="stylesheet" href="../../design/components/tab/tab.css">
+  <link rel="stylesheet" href="../../design/components/avatar/avatar.css">
+  <link rel="stylesheet" href="../../design/components/badge/badge.css">
+  <link rel="stylesheet" href="../../design/components/button/button.css">
+  <link rel="stylesheet" href="../../design/components/tag/tag.css">
+  <link rel="stylesheet" href="../../design/components/status-badge/status-badge.css">
+  <link rel="stylesheet" href="../../design/components/search-trigger/search-trigger.css">
+
+  <!-- 6. 本页私有样式（按主 Agent 指令不生成 index.css，统一内联在此） -->
+  <style>
+    /* ============================================================
+     * approval-home 私有 chrome 样式
+     *  - 模块前缀 --ah-* （approval-home）
+     *  - 颜色 / 字号 / 间距 / 圆角 一律 var(--cs-*) 或 raw token
+     *  - 所有图标走 cses-stratis-* 已验证 class
+     * ============================================================ */
+
+    /* ---------- 主内容区 chrome ---------- */
+    .main-content > .ah-content-header {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: var(--cs-sem-size-header-height);
+      padding: 0 var(--space-md);
+      background: var(--cs-color-white);
+      border-bottom: var(--line-width) solid var(--cs-color-border);
+      box-sizing: border-box;
+    }
+    .ah-content-header__left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: var(--space-3xs);
+      flex: 1;
+      min-width: 0;
+    }
+    .ah-content-header__title {
+      font: var(--typo-cn-18-medium);
+      color: var(--cs-color-text);
+    }
+    .ah-content-header__subtitle {
+      font: var(--typo-cn-12-regular);
+      color: var(--cs-color-text-light2);
+    }
+
+    .ah-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: var(--spacing-24) var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-32);
+      box-sizing: border-box;
+    }
+
+    /* ---------- 章节通用 ---------- */
+    .ah-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+    .ah-section--cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-24);
+    }
+    .ah-col {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      min-width: 0;
+    }
+    .ah-section__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .ah-section__title {
+      font: var(--typo-cn-16-medium);
+      color: var(--cs-color-text);
+    }
+    .ah-section__more {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-3xs);
+      font: var(--typo-cn-13-regular);
+      color: var(--cs-color-text-light);
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .ah-section__more:hover { color: var(--cs-color-primary); }
+    .ah-section__more i { font-size: var(--cs-sem-size-icon-sm); }
+
+    /* ---------- navbar 内：链接 / 分组标题 ---------- */
+    .ah-nav-link {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2xs);
+      padding: var(--space-xs);
+      border-radius: var(--radius-lg);
+      font: var(--typo-cn-14-regular);
+      color: var(--cs-color-text);
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .ah-nav-link:hover { background: var(--cs-color-bg-hover); }
+    .ah-nav-link.is-active {
+      background: var(--cs-color-primary-a2);
+      color: var(--cs-color-primary);
+      font-weight: var(--font-weight-medium);
+    }
+    .ah-nav-link__icon {
+      font-size: var(--cs-sem-size-icon-sm);
+      flex-shrink: 0;
+    }
+    .ah-nav-link__label {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .ah-nav-group-title {
+      padding: var(--space-xs) var(--space-xs) var(--space-2xs);
+      font: var(--typo-cn-12-regular);
+      color: var(--cs-color-text-light2);
+    }
+
+    /* ---------- 主操作区四列卡片 ---------- */
+    .ah-quick-actions {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-md);
+    }
+    .ah-action-card {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-xs);
+      padding: var(--spacing-20);
+      background: var(--cs-color-white);
+      border: var(--line-width) solid var(--cs-color-border);
+      border-radius: var(--radius-xl);
+      cursor: pointer;
+      text-decoration: none;
+      transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+    }
+    .ah-action-card:hover {
+      border-color: var(--cs-color-primary);
+      box-shadow: var(--cs-shadow);
+      transform: translateY(-2px);
+    }
+    .ah-action-card__icon-wrap {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-xl);
+      background: var(--cs-color-primary-a2);
+      color: var(--cs-color-primary);
+      flex-shrink: 0;
+    }
+    .ah-action-card--primary .ah-action-card__icon-wrap {
+      background: var(--cs-color-primary);
+      color: var(--cs-color-text-inverse);
+    }
+    .ah-action-card__icon-wrap[data-tone="success"] {
+      background: var(--cs-sem-bg-success);
+      color: var(--cs-sem-text-success);
+    }
+    .ah-action-card__icon-wrap[data-tone="warning"] {
+      background: var(--cs-sem-bg-warning);
+      color: var(--cs-sem-text-warning);
+    }
+    .ah-action-card__icon-wrap[data-tone="info"] {
+      background: var(--cs-sem-status-info-light);
+      color: var(--cs-sem-status-info);
+    }
+    .ah-action-card__icon { font-size: var(--cs-sem-size-icon-xl); }
+    .ah-action-card__title {
+      font: var(--typo-cn-16-medium);
+      color: var(--cs-color-text);
+    }
+    .ah-action-card__desc {
+      font: var(--typo-cn-12-regular);
+      color: var(--cs-color-text-light2);
+    }
+
+    /* ---------- 待我审批列表 ---------- */
+    .ah-todo-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+    .ah-todo-card {
+      display: flex;
+      align-items: stretch;
+      gap: var(--space-md);
+      padding: var(--space-md);
+      background: var(--cs-color-white);
+      border: var(--line-width) solid var(--cs-color-border);
+      border-radius: var(--radius-xl);
+      transition: box-shadow 0.2s ease, border-color 0.2s ease;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .ah-todo-card:hover {
+      border-color: var(--cs-color-primary);
+      box-shadow: var(--cs-shadow);
+    }
+    .ah-todo-card--urgent {
+      border-color: var(--cs-color-error);
+      background: linear-gradient(180deg, rgba(245,63,63,0.06) 0%, var(--cs-color-white) 30%);
+    }
+    .ah-todo-card__avatar {
+      flex-shrink: 0;
+      display: flex;
+      align-items: flex-start;
+    }
+    .ah-todo-card__type {
+      flex-shrink: 0;
+      width: 56px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-3xs);
+      padding: var(--space-2xs) 0;
+      border-right: var(--line-width) solid var(--cs-color-border);
+    }
+    .ah-todo-card__type-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-lg);
+      background: var(--cs-color-primary-a2);
+      color: var(--cs-color-primary);
+      font-size: var(--cs-sem-size-icon-md);
+    }
+    .ah-todo-card__type-label {
+      font: var(--typo-cn-12-regular);
+      color: var(--cs-color-text-light);
+    }
+    .ah-todo-card__body {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2xs);
+    }
+    .ah-todo-card__title-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      flex-wrap: wrap;
+    }
+    .ah-todo-card__title {
+      font: var(--typo-cn-16-medium);
+      color: var(--cs-color-text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      min-width: 0;
+    }
+    .ah-todo-card__meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+    .ah-todo-card__meta-item {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-3xs);
+      font: var(--typo-cn-12-regular);
+      color: var(--cs-color-text-light);
+    }
+    .ah-todo-card__meta-item i {
+      font-size: var(--cs-sem-size-icon-sm);
+      color: var(--cs-color-text-light2);
+    }
+    .ah-todo-card__actions {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-end;
+      gap: var(--space-2xs);
+      flex-shrink: 0;
+    }
+
+    /* ---------- 我发起的 列表 ---------- */
+    .ah-sent-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+    .ah-sent-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+      background: var(--cs-color-white);
+      border: var(--line-width) solid var(--cs-color-border);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+    .ah-sent-item:hover {
+      border-color: var(--cs-color-primary);
+      background: var(--cs-color-primary-a2);
+    }
+    .ah-sent-item__thumb {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: var(--cs-color-primary-a2);
+      color: var(--cs-color-primary);
+      border-radius: var(--radius-lg);
+      flex-shrink: 0;
+    }
+    .ah-sent-item__thumb i { font-size: var(--cs-sem-size-icon-lg); }
+    .ah-sent-item__body {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3xs);
+    }
+    .ah-sent-item__title {
+      font: var(--typo-cn-14-medium);
+      color: var(--cs-color-text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .ah-sent-item__meta {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2xs);
+      font: var(--typo-cn-12-regular);
+      color: var(--cs-color-text-light2);
+    }
+    .ah-sent-item__dot {
+      width: 3px;
+      height: 3px;
+      border-radius: var(--radius-full);
+      background: var(--cs-color-text-light2);
+      display: inline-block;
+    }
+
+    /* ---------- 常用审批模板 ---------- */
+    .ah-template-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-sm);
+    }
+    .ah-template {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+      background: var(--cs-color-white);
+      border: var(--line-width) solid var(--cs-color-border);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+    }
+    .ah-template:hover {
+      border-color: var(--cs-color-primary);
+      background: var(--cs-color-primary-a2);
+      transform: translateY(-1px);
+    }
+    .ah-template__icon-wrap {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-lg);
+      background: var(--cs-color-primary-a2);
+      color: var(--cs-color-primary);
+      font-size: var(--cs-sem-size-icon-md);
+      flex-shrink: 0;
+    }
+    .ah-template__icon-wrap[data-tone="success"] {
+      background: var(--cs-sem-bg-success);
+      color: var(--cs-sem-text-success);
+    }
+    .ah-template__icon-wrap[data-tone="warning"] {
+      background: var(--cs-sem-bg-warning);
+      color: var(--cs-sem-text-warning);
+    }
+    .ah-template__icon-wrap[data-tone="info"] {
+      background: var(--cs-sem-status-info-light);
+      color: var(--cs-sem-status-info);
+    }
+    .ah-template__body {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .ah-template__name {
+      font: var(--typo-cn-14-medium);
+      color: var(--cs-color-text);
+    }
+    .ah-template__desc {
+      font: var(--typo-cn-12-regular);
+      color: var(--cs-color-text-light2);
+    }
+
+    /* ---------- navbar 角标右侧对齐微调 ---------- */
+    .ah-nav-link cs-badge { margin-left: auto; }
+
+    /* ---------- 响应式 ---------- */
+    @media (max-width: 1200px) {
+      .ah-quick-actions { grid-template-columns: repeat(2, 1fr); }
+      .ah-section--cols { grid-template-columns: 1fr; }
+      .ah-template-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============================================================
+     完整布局 — 直引 fragment.html 标准骨架
+     <cs-layout>
+       <div class="tabbar">          顶部标签栏
+       <div class="body">
+         <cs-sidebar>                一级导航
+         <div class="content-wrapper">
+           <cs-navbar>               二级导航
+           <main class="main-content">  主内容区
+============================================================ -->
+<cs-layout>
+
+  <!-- ============================================================
+       (1) tabbar — window-control + 搜索 + 通知 + 头像
+  ============================================================ -->
+  <div class="tabbar">
+    <div class="tabbar-left">
+      <cs-window-control class="tabbar-window-control">
+        <span class="ctrl-close"></span>
+        <span class="ctrl-minimize"></span>
+        <span class="ctrl-maximize"></span>
+      </cs-window-control>
+      <cs-search-input class="tabbar-search" data-variant="gray" data-size="sm" style="border-radius:var(--radius-lg);">
+        <i class="search-icon cses-stratis-search-01"></i>
+        <input class="search-field" type="text" placeholder="搜索审批、申请人、单号">
+      </cs-search-input>
+      <cs-tab data-active>
+        <span class="tab-label">审批</span>
+        <i class="tab-close cses-stratis-x-01"></i>
+      </cs-tab>
+    </div>
+    <div class="tabbar-right">
+      <span class="tabbar-notice">
+        <i class="cses-stratis-bell-01 notice-icon"></i>
+        <span class="notice-badge">5</span>
+      </span>
+      <cs-avatar data-size="xs" data-shape="circle" data-color="blue">
+        <span class="avatar-text">林</span>
+      </cs-avatar>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       (2) body — sidebar + content-wrapper
+  ============================================================ -->
+  <div class="body">
+
+    <!-- (2-1) sidebar — 一级导航，"审批" 项 data-active -->
+    <cs-sidebar>
+      <span class="logo">
+        <img src="../../design/assets/logo.png" alt="CSES">
+      </span>
+      <nav class="nav">
+        <div class="nav-group">
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-home-01"></i></span>
+            <span class="nav-label">工作台</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-message-circle"></i></span>
+            <span class="nav-label">消息</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-video-on"></i></span>
+            <span class="nav-label">会议</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-book-01"></i></span>
+            <span class="nav-label">文档</span>
+          </a>
+          <a class="nav-item" data-active>
+            <span class="nav-icon"><i class="cses-stratis-file-check-01"></i></span>
+            <span class="nav-label">审批</span>
+          </a>
+        </div>
+      </nav>
+    </cs-sidebar>
+
+    <div class="content-wrapper">
+
+      <!-- (2-2) navbar — 二级导航：审批首页 / 待我审批(角标) / 我发起的 / 抄送我的 / 已归档 -->
+      <cs-navbar>
+        <div class="inner">
+          <!-- 标题区 -->
+          <div class="slot-header" style="display:flex;flex-direction:column;gap:var(--space-3xs);">
+            <span style="font: var(--typo-cn-16-medium); color: var(--cs-color-text);">审批</span>
+            <span style="font: var(--typo-cn-12-regular); color: var(--cs-color-text-light2);">流程清晰，决策高效</span>
+          </div>
+
+          <!-- 主操作按钮（与 content-header 的搜索触发非同义，避免重复 CTA） -->
+          <div class="slot-action">
+            <cs-button data-variant="primary" style="width:100%;">
+              <i class="btn-icon cses-stratis-plus-01"></i>
+              <span class="btn-label">发起审批</span>
+            </cs-button>
+          </div>
+
+          <!-- 主菜单 -->
+          <div class="slot-nav" style="display:flex;flex-direction:column;gap:var(--space-2xs);padding-top:var(--space-xs);border-top:var(--line-width) solid var(--cs-color-border);">
+            <a class="ah-nav-link is-active">
+              <i class="cses-stratis-home-01 ah-nav-link__icon"></i>
+              <span class="ah-nav-link__label">审批首页</span>
+            </a>
+            <a class="ah-nav-link">
+              <i class="cses-stratis-inbox-01 ah-nav-link__icon"></i>
+              <span class="ah-nav-link__label">待我审批</span>
+              <cs-badge data-variant="count" data-color="danger">5</cs-badge>
+            </a>
+            <a class="ah-nav-link">
+              <i class="cses-stratis-send-01 ah-nav-link__icon"></i>
+              <span class="ah-nav-link__label">我发起的</span>
+            </a>
+            <a class="ah-nav-link">
+              <i class="cses-stratis-users-profiles-01 ah-nav-link__icon"></i>
+              <span class="ah-nav-link__label">抄送我的</span>
+            </a>
+            <a class="ah-nav-link">
+              <i class="cses-stratis-file-shield-01 ah-nav-link__icon"></i>
+              <span class="ah-nav-link__label">已归档</span>
+            </a>
+          </div>
+
+          <!-- 副菜单 -->
+          <div class="slot-sub" style="border-top:var(--line-width) solid var(--cs-color-border);padding-top:var(--space-xs);">
+            <div class="ah-nav-group-title">快速入口</div>
+            <a class="ah-nav-link">
+              <i class="cses-stratis-layout-01 ah-nav-link__icon"></i>
+              <span class="ah-nav-link__label">审批模板</span>
+            </a>
+            <a class="ah-nav-link">
+              <i class="cses-stratis-file-edit-01 ah-nav-link__icon"></i>
+              <span class="ah-nav-link__label">我的草稿</span>
+            </a>
+            <a class="ah-nav-link">
+              <i class="cses-stratis-bar-chart-01 ah-nav-link__icon"></i>
+              <span class="ah-nav-link__label">审批统计</span>
+            </a>
+          </div>
+
+          <!-- 底部 -->
+          <div class="slot-admin" style="display:flex;align-items:center;gap:var(--space-2xs);padding:var(--space-xs);cursor:pointer;">
+            <i class="cses-stratis-settings" style="font-size:var(--cs-sem-size-icon-sm);color:var(--cs-color-text);"></i>
+            <span style="font: var(--typo-cn-14-regular); color: var(--cs-color-text);">审批设置</span>
+          </div>
+        </div>
+      </cs-navbar>
+
+      <!-- (2-3) main-content -->
+      <main class="main-content">
+
+        <!-- 内容区头部：标题 + 日期 + 搜索触发 -->
+        <div class="ah-content-header">
+          <div class="ah-content-header__left">
+            <div class="ah-content-header__title">审批</div>
+            <div class="ah-content-header__subtitle">2026 年 6 月 25 日 星期四</div>
+          </div>
+          <cs-search-trigger>
+            <span class="trigger-text">搜索审批单</span>
+            <i class="trigger-icon cses-stratis-search-01"></i>
+          </cs-search-trigger>
+        </div>
+
+        <!-- 滚动内容 -->
+        <div class="ah-scroll">
+
+          <!-- ============================================
+               主操作卡片：发起审批 / 我的草稿 / 审批模板 / 审批统计
+          ============================================ -->
+          <section class="ah-section">
+            <div class="ah-quick-actions">
+              <a class="ah-action-card ah-action-card--primary">
+                <span class="ah-action-card__icon-wrap">
+                  <i class="ah-action-card__icon cses-stratis-file-plus-01"></i>
+                </span>
+                <span class="ah-action-card__title">发起审批</span>
+                <span class="ah-action-card__desc">选择模板新建申请</span>
+              </a>
+              <a class="ah-action-card">
+                <span class="ah-action-card__icon-wrap" data-tone="warning">
+                  <i class="ah-action-card__icon cses-stratis-file-edit-01"></i>
+                </span>
+                <span class="ah-action-card__title">我的草稿</span>
+                <span class="ah-action-card__desc">3 份待完善</span>
+              </a>
+              <a class="ah-action-card">
+                <span class="ah-action-card__icon-wrap" data-tone="info">
+                  <i class="ah-action-card__icon cses-stratis-layout-01"></i>
+                </span>
+                <span class="ah-action-card__title">审批模板</span>
+                <span class="ah-action-card__desc">浏览全部流程</span>
+              </a>
+              <a class="ah-action-card">
+                <span class="ah-action-card__icon-wrap" data-tone="success">
+                  <i class="ah-action-card__icon cses-stratis-bar-chart-01"></i>
+                </span>
+                <span class="ah-action-card__title">审批统计</span>
+                <span class="ah-action-card__desc">本月通过 12 单</span>
+              </a>
+            </div>
+          </section>
+
+          <!-- ============================================
+               待我审批列表
+          ============================================ -->
+          <section class="ah-section">
+            <div class="ah-section__head">
+              <div class="ah-section__title">待我审批</div>
+              <a class="ah-section__more">
+                查看全部 (5)
+                <i class="cses-stratis-chevron-right"></i>
+              </a>
+            </div>
+
+            <div class="ah-todo-list">
+
+              <!-- 1) 紧急 -->
+              <a class="ah-todo-card ah-todo-card--urgent">
+                <div class="ah-todo-card__avatar">
+                  <cs-avatar data-size="md" data-shape="circle" data-color="red">
+                    <span class="avatar-text">张</span>
+                  </cs-avatar>
+                </div>
+                <div class="ah-todo-card__type">
+                  <span class="ah-todo-card__type-icon" style="background:var(--cs-sem-bg-warning);color:var(--cs-sem-text-warning);">
+                    <i class="cses-stratis-receipt"></i>
+                  </span>
+                  <span class="ah-todo-card__type-label">报销</span>
+                </div>
+                <div class="ah-todo-card__body">
+                  <div class="ah-todo-card__title-row">
+                    <span class="ah-todo-card__title">差旅报销 · 上海客户拜访 ¥4,820</span>
+                    <cs-status-badge data-status="urgent">
+                      <span class="status-dot"></span>
+                      <span class="status-text">紧急</span>
+                    </cs-status-badge>
+                  </div>
+                  <div class="ah-todo-card__meta">
+                    <span class="ah-todo-card__meta-item">
+                      <i class="cses-stratis-user-profile-01"></i>
+                      张子璇 · 销售部
+                    </span>
+                    <span class="ah-todo-card__meta-item">
+                      <i class="cses-stratis-clock-01"></i>
+                      10 分钟前提交
+                    </span>
+                    <span class="ah-todo-card__meta-item">
+                      <i class="cses-stratis-layers-01"></i>
+                      流程第 2 / 3 步
+                    </span>
+                  </div>
+                </div>
+                <div class="ah-todo-card__actions">
+                  <cs-button data-variant="primary" data-size="sm">
+                    <i class="btn-icon cses-stratis-check-broken"></i>
+                    <span class="btn-label">同意</span>
+                  </cs-button>
+                  <cs-button data-variant="secondary" data-size="sm">
+                    <span class="btn-label">拒绝</span>
+                  </cs-button>
+                </div>
+              </a>
+
+              <!-- 2) 高 -->
+              <a class="ah-todo-card">
+                <div class="ah-todo-card__avatar">
+                  <cs-avatar data-size="md" data-shape="circle" data-color="orange">
+                    <span class="avatar-text">李</span>
+                  </cs-avatar>
+                </div>
+                <div class="ah-todo-card__type">
+                  <span class="ah-todo-card__type-icon" style="background:var(--cs-sem-status-info-light);color:var(--cs-sem-status-info);">
+                    <i class="cses-stratis-umbrella"></i>
+                  </span>
+                  <span class="ah-todo-card__type-label">请假</span>
+                </div>
+                <div class="ah-todo-card__body">
+                  <div class="ah-todo-card__title-row">
+                    <span class="ah-todo-card__title">事假申请 · 06-26 至 06-27（2 天）</span>
+                    <cs-tag data-color="warning" data-size="sm">
+                      <span class="tag-label">高</span>
+                    </cs-tag>
+                  </div>
+                  <div class="ah-todo-card__meta">
+                    <span class="ah-todo-card__meta-item">
+                      <i class="cses-stratis-user-profile-01"></i>
+                      李清泉 · 研发部
+                    </span>
+                    <span class="ah-todo-card__meta-item">
+                      <i class="cses-stratis-clock-01"></i>
+                      1 小时前提交
+                    </span>
+                    <span class="ah-todo-card__meta-item">
+                      <i class="cses-stratis-layers-01"></i>
+                      流程第 1 / 2 步
+                    </span>
+                  </div>
+                </div>
+                <div class="ah-todo-card__actions">
+                  <cs-button data-variant="primary" data-size="sm">
+                    <i class="btn-icon cses-stratis-check-broken"></i>
+                    <span class="btn-label">同意</span>
+                  </cs-button>
+                  <cs-button data-variant="secondary" data-size="sm">
+                    <span class="btn-label">拒绝</span>
+                  </cs-button>
+                </div>
+              </a>
+
+              <!-- 3) 普通 -->
+              <a class="ah-todo-card">
+                <div class="ah-todo-card__avatar">
+                  <cs-avatar data-size="md" data-shape="circle" data-color="green">
+                    <span class="avatar-text">王</span>
+                  </cs-avatar>
+                </div>
+                <div class="ah-todo-card__type">
+                  <span class="ah-todo-card__type-icon">
+                    <i class="cses-stratis-cart"></i>
+                  </span>
+                  <span class="ah-todo-card__type-label">采购</span>
+                </div>
+                <div class="ah-todo-card__body">
+                  <div class="ah-todo-card__title-row">
+                    <span class="ah-todo-card__title">设备采购 · 测试组工作站 ×3 ¥36,900</span>
+                    <cs-tag data-color="primary" data-size="sm">
+                      <span class="tag-label">普通</span>
+                    </cs-tag>
+                  </div>
+                  <div class="ah-todo-card__meta">
+                    <span class="ah-todo-card__meta-item">
+                      <i class="cses-stratis-user-profile-01"></i>
+                      王砚秋 · IT 支持
+                    </span>
+                    <span class="ah-todo-card__meta-item">
+                      <i class="cses-stratis-clock-01"></i>
+                      昨天 17:42
+                    </span>
+                    <span class="ah-todo-card__meta-item">
+                      <i class="cses-stratis-layers-01"></i>
+                      流程第 3 / 4 步
+                    </span>
+                  </div>
+                </div>
+                <div class="ah-todo-card__actions">
+                  <cs-button data-variant="primary" data-size="sm">
+                    <i class="btn-icon cses-stratis-check-broken"></i>
+                    <span class="btn-label">同意</span>
+                  </cs-button>
+                  <cs-button data-variant="secondary" data-size="sm">
+                    <span class="btn-label">拒绝</span>
+                  </cs-button>
+                </div>
+              </a>
+
+              <!-- 4) 普通 -->
+              <a class="ah-todo-card">
+                <div class="ah-todo-card__avatar">
+                  <cs-avatar data-size="md" data-shape="circle" data-color="purple">
+                    <span class="avatar-text">陈</span>
+                  </cs-avatar>
+                </div>
+                <div class="ah-todo-card__type">
+                  <span class="ah-todo-card__type-icon" style="background:var(--cs-sem-bg-success);color:var(--cs-sem-text-success);">
+                    <i class="cses-stratis-file-shield-02"></i>
+                  </span>
+                  <span class="ah-todo-card__type-label">用印</span>
+                </div>
+                <div class="ah-todo-card__body">
+                  <div class="ah-todo-card__title-row">
+                    <span class="ah-todo-card__title">合同用印 · B 公司年度服务协议</span>
+                    <cs-tag data-color="primary" data-size="sm">
+                      <span class="tag-label">普通</span>
+                    </cs-tag>
+                  </div>
+                  <div class="ah-todo-card__meta">
+                    <span class="ah-todo-card__meta-item">
+                      <i class="cses-stratis-user-profile-01"></i>
+                      陈知微 · 法务部
+                    </span>
+                    <span class="ah-todo-card__meta-item">
+                      <i class="cses-stratis-clock-01"></i>
+                      昨天 14:08
+                    </span>
+                    <span class="ah-todo-card__meta-item">
+                      <i class="cses-stratis-layers-01"></i>
+                      流程第 2 / 3 步
+                    </span>
+                  </div>
+                </div>
+                <div class="ah-todo-card__actions">
+                  <cs-button data-variant="primary" data-size="sm">
+                    <i class="btn-icon cses-stratis-check-broken"></i>
+                    <span class="btn-label">同意</span>
+                  </cs-button>
+                  <cs-button data-variant="secondary" data-size="sm">
+                    <span class="btn-label">拒绝</span>
+                  </cs-button>
+                </div>
+              </a>
+
+            </div>
+          </section>
+
+          <!-- ============================================
+               双栏：我发起的 + 常用审批模板
+          ============================================ -->
+          <section class="ah-section ah-section--cols">
+
+            <!-- 左：我发起的（最近 3 条） -->
+            <div class="ah-col">
+              <div class="ah-section__head">
+                <div class="ah-section__title">我发起的</div>
+                <a class="ah-section__more">
+                  全部记录
+                  <i class="cses-stratis-chevron-right"></i>
+                </a>
+              </div>
+
+              <div class="ah-sent-list">
+
+                <a class="ah-sent-item">
+                  <span class="ah-sent-item__thumb" style="background:var(--cs-sem-bg-warning);color:var(--cs-sem-text-warning);">
+                    <i class="cses-stratis-receipt"></i>
+                  </span>
+                  <div class="ah-sent-item__body">
+                    <div class="ah-sent-item__title">差旅报销 · 北京年中会议 ¥6,140</div>
+                    <div class="ah-sent-item__meta">
+                      <span>06-23 提交</span>
+                      <span class="ah-sent-item__dot"></span>
+                      <span>当前节点：财务复核</span>
+                    </div>
+                  </div>
+                  <cs-status-badge data-status="in-progress">
+                    <span class="status-dot"></span>
+                    <span class="status-text">审批中</span>
+                  </cs-status-badge>
+                </a>
+
+                <a class="ah-sent-item">
+                  <span class="ah-sent-item__thumb" style="background:var(--cs-sem-bg-success);color:var(--cs-sem-text-success);">
+                    <i class="cses-stratis-umbrella"></i>
+                  </span>
+                  <div class="ah-sent-item__body">
+                    <div class="ah-sent-item__title">年假申请 · 07-10 至 07-14（5 天）</div>
+                    <div class="ah-sent-item__meta">
+                      <span>06-20 提交</span>
+                      <span class="ah-sent-item__dot"></span>
+                      <span>已完结</span>
+                    </div>
+                  </div>
+                  <cs-status-badge data-status="done">
+                    <span class="status-dot"></span>
+                    <span class="status-text">已通过</span>
+                  </cs-status-badge>
+                </a>
+
+                <a class="ah-sent-item">
+                  <span class="ah-sent-item__thumb" style="background:var(--cs-color-bg-light);color:var(--cs-color-text-light);">
+                    <i class="cses-stratis-cart"></i>
+                  </span>
+                  <div class="ah-sent-item__body">
+                    <div class="ah-sent-item__title">物料采购 · 团队建设物资 ¥2,380</div>
+                    <div class="ah-sent-item__meta">
+                      <span>06-18 提交</span>
+                      <span class="ah-sent-item__dot"></span>
+                      <span>原因：金额超部门预算</span>
+                    </div>
+                  </div>
+                  <cs-status-badge data-status="rejected">
+                    <span class="status-dot"></span>
+                    <span class="status-text">已驳回</span>
+                  </cs-status-badge>
+                </a>
+
+              </div>
+            </div>
+
+            <!-- 右：常用审批模板 -->
+            <div class="ah-col">
+              <div class="ah-section__head">
+                <div class="ah-section__title">常用审批模板</div>
+                <a class="ah-section__more">
+                  全部模板
+                  <i class="cses-stratis-chevron-right"></i>
+                </a>
+              </div>
+
+              <div class="ah-template-grid">
+                <a class="ah-template">
+                  <span class="ah-template__icon-wrap" data-tone="info">
+                    <i class="cses-stratis-umbrella"></i>
+                  </span>
+                  <div class="ah-template__body">
+                    <span class="ah-template__name">请假</span>
+                    <span class="ah-template__desc">事假 / 病假 / 年假</span>
+                  </div>
+                </a>
+                <a class="ah-template">
+                  <span class="ah-template__icon-wrap" data-tone="warning">
+                    <i class="cses-stratis-receipt"></i>
+                  </span>
+                  <div class="ah-template__body">
+                    <span class="ah-template__name">报销</span>
+                    <span class="ah-template__desc">差旅 / 业务 / 招待</span>
+                  </div>
+                </a>
+                <a class="ah-template">
+                  <span class="ah-template__icon-wrap" data-tone="success">
+                    <i class="cses-stratis-file-shield-02"></i>
+                  </span>
+                  <div class="ah-template__body">
+                    <span class="ah-template__name">用印</span>
+                    <span class="ah-template__desc">合同 / 公章 / 法务</span>
+                  </div>
+                </a>
+                <a class="ah-template">
+                  <span class="ah-template__icon-wrap">
+                    <i class="cses-stratis-cart"></i>
+                  </span>
+                  <div class="ah-template__body">
+                    <span class="ah-template__name">采购</span>
+                    <span class="ah-template__desc">设备 / 物资 / 服务</span>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+          </section>
+
+        </div>
+
+      </main>
+    </div>
+
+  </div>
+</cs-layout>
+
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>cs-doc-item 文档列表项</title>
+  <link rel="stylesheet" href="../../css/base.css">
+  <link rel="stylesheet" href="../../fonts/cses-icons.css?v=101">
+  <link rel="stylesheet" href="doc-item.css">
+  <style>
+    body { padding: 32px; background: var(--cs-color-bg-light); }
+    .demo-section { margin-bottom: 32px; }
+    .demo-label { font: var(--typo-cn-12-medium); color: var(--cs-color-text-light2); margin-bottom: 12px; }
+    .demo-container { width: 420px; background: var(--cs-color-bg); padding: 8px 0; border-radius: 8px; box-shadow: var(--cs-shadow-card); }
+  </style>
+</head>
+<body>
+
+<div class="demo-section">
+  <div class="demo-label">最近文档（含新文件标记 data-new + 文件类型 data-type）</div>
+  <div class="demo-container">
+    <cs-doc-item data-type="doc" data-new>
+      <span class="doc-icon"><i class="cses-stratis-file-01"></i></span>
+      <span class="doc-body">
+        <span class="doc-title-row">
+          <span class="doc-dot"></span>
+          <span class="doc-title">Q2 季度总结.docx</span>
+        </span>
+        <span class="doc-meta">
+          <span class="doc-date">5月28日 16:45</span>
+          <span class="doc-author">张三</span>
+        </span>
+      </span>
+      <span class="doc-actions">
+        <i class="cses-stratis-dot-horizontal"></i>
+      </span>
+    </cs-doc-item>
+
+    <cs-doc-item data-type="sheet">
+      <span class="doc-icon"><i class="cses-stratis-file-01"></i></span>
+      <span class="doc-body">
+        <span class="doc-title-row">
+          <span class="doc-dot"></span>
+          <span class="doc-title">2026 预算明细表.xlsx</span>
+        </span>
+        <span class="doc-meta">
+          <span class="doc-date">5月27日 09:12</span>
+          <span class="doc-author">李四</span>
+        </span>
+      </span>
+      <span class="doc-actions">
+        <i class="cses-stratis-dot-horizontal"></i>
+      </span>
+    </cs-doc-item>
+
+    <cs-doc-item data-type="pdf">
+      <span class="doc-icon"><i class="cses-stratis-file-01"></i></span>
+      <span class="doc-body">
+        <span class="doc-title-row">
+          <span class="doc-dot"></span>
+          <span class="doc-title">产品需求评审报告_最终版_v3_确认稿.pdf</span>
+        </span>
+        <span class="doc-meta">
+          <span class="doc-date">5月26日 18:30</span>
+          <span class="doc-author">王五</span>
+        </span>
+      </span>
+      <span class="doc-actions">
+        <i class="cses-stratis-dot-horizontal"></i>
+      </span>
+    </cs-doc-item>
+
+    <cs-doc-item data-type="image">
+      <span class="doc-icon"><i class="cses-stratis-image"></i></span>
+      <span class="doc-body">
+        <span class="doc-title-row">
+          <span class="doc-dot"></span>
+          <span class="doc-title">首页设计稿_v2.png</span>
+        </span>
+        <span class="doc-meta">
+          <span class="doc-date">5月25日 14:08</span>
+          <span class="doc-author">赵六</span>
+        </span>
+      </span>
+      <span class="doc-actions">
+        <i class="cses-stratis-dot-horizontal"></i>
+      </span>
+    </cs-doc-item>
+
+    <cs-doc-item data-type="folder">
+      <span class="doc-icon"><i class="cses-stratis-folder"></i></span>
+      <span class="doc-body">
+        <span class="doc-title-row">
+          <span class="doc-dot"></span>
+          <span class="doc-title">市场部共享资料</span>
+        </span>
+        <span class="doc-meta">
+          <span class="doc-date">5月24日 10:00</span>
+          <span class="doc-author">孙七</span>
+        </span>
+      </span>
+      <span class="doc-actions">
+        <i class="cses-stratis-dot-horizontal"></i>
+      </span>
+    </cs-doc-item>
+  </div>
+</div>
+
+<div class="demo-section">
+  <div class="demo-label">分享给我的文档（含状态标签 doc-tag）</div>
+  <div class="demo-container">
+    <cs-doc-item data-type="doc" data-new>
+      <span class="doc-icon"><i class="cses-stratis-file-01"></i></span>
+      <span class="doc-body">
+        <span class="doc-title-row">
+          <span class="doc-dot"></span>
+          <span class="doc-title">合作协议草案.docx</span>
+        </span>
+        <span class="doc-meta">
+          <span class="doc-date">5月28日 11:20</span>
+          <span class="doc-author">陈经理</span>
+        </span>
+      </span>
+      <span class="doc-tag" data-status="pending">待我审批</span>
+    </cs-doc-item>
+
+    <cs-doc-item data-type="sheet">
+      <span class="doc-icon"><i class="cses-stratis-file-01"></i></span>
+      <span class="doc-body">
+        <span class="doc-title-row">
+          <span class="doc-dot"></span>
+          <span class="doc-title">销售数据汇总.xlsx</span>
+        </span>
+        <span class="doc-meta">
+          <span class="doc-date">5月27日 17:05</span>
+          <span class="doc-author">周主管</span>
+        </span>
+      </span>
+      <span class="doc-tag" data-status="shared">已分享</span>
+    </cs-doc-item>
+
+    <cs-doc-item data-type="ppt">
+      <span class="doc-icon"><i class="cses-stratis-file-01"></i></span>
+      <span class="doc-body">
+        <span class="doc-title-row">
+          <span class="doc-dot"></span>
+          <span class="doc-title">年度战略汇报.pptx</span>
+        </span>
+        <span class="doc-meta">
+          <span class="doc-date">5月26日 08:50</span>
+          <span class="doc-author">吴总监</span>
+        </span>
+      </span>
+      <span class="doc-tag" data-status="done">已完成</span>
+    </cs-doc-item>
+  </div>
+</div>
+
+</body>
+</html>

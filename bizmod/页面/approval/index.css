@@ -1,0 +1,236 @@
+/* ============================================================
+   approval / 审批中心 — 页面私有样式
+   ============================================================ */
+
+/* 把「后台管理」推到 navbar 底部（页面无 slot-sub 占满空间） */
+cs-navbar .slot-bottom { margin-top: auto; }
+
+
+/* ===== navbar 二级导航（与审批中心保持一致） ===== */
+
+.ac-side-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-lg);
+  color: var(--cs-color-text);
+  font: var(--typo-cn-14-regular);
+  cursor: pointer;
+  user-select: none;
+  text-decoration: none;
+  transition: background 0.18s ease, color 0.18s ease, padding-left 0.22s ease;
+}
+.ac-side-item:hover {
+  background: var(--cs-color-primary-a2);
+  color: var(--cs-color-primary);
+}
+.ac-side-item[data-active] {
+  background: var(--cs-color-primary-a2);
+  color: var(--cs-color-primary);
+  font-weight: var(--font-weight-medium);
+}
+.ac-side-item__icon {
+  font-size: 16px;
+  width: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.ac-side-item__label { flex: 1; white-space: nowrap; }
+.ac-side-item__caret {
+  font-size: 12px;
+  color: var(--cs-color-text-light2);
+  transition: transform 0.2s ease;
+}
+.ac-group--expanded .ac-side-item__caret { transform: rotate(180deg); }
+
+/* 二级菜单 */
+.ac-sub-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 2px;
+  padding-left: 24px;
+}
+.ac-group:not(.ac-group--expanded) .ac-sub-list { display: none; }
+.ac-sub-item {
+  display: flex;
+  align-items: center;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-lg);
+  color: var(--cs-color-text);
+  font: var(--typo-cn-14-regular);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+.ac-sub-item:hover {
+  background: var(--cs-color-primary-a2);
+  color: var(--cs-color-primary);
+  transform: translateX(2px);
+}
+.ac-sub-item[data-active] {
+  background: var(--cs-color-primary-a2);
+  color: var(--cs-color-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+/* 后台管理 */
+.ac-admin {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  color: var(--cs-color-text);
+  font: var(--typo-cn-14-regular);
+  cursor: pointer;
+  border-radius: var(--radius-lg);
+  transition: background 0.15s ease;
+}
+.ac-admin:hover { background: var(--cs-color-bg-light); }
+.ac-admin i { font-size: 16px; }
+
+
+/* ===== content-header 搜索 ===== */
+cs-content-header cs-search-input {
+  width: 240px;
+}
+
+
+/* ===== 分类 tab 横条 ===== */
+cs-filter-bar[data-variant="tabs"] .ap-cat-tab {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  height: 28px;
+  border-radius: var(--radius-pill);
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text);
+  cursor: pointer;
+  white-space: nowrap;
+  background: transparent;
+  border: none;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: background 0.15s ease;
+}
+cs-filter-bar[data-variant="tabs"] .ap-cat-tab:hover {
+  background: var(--cs-color-bg-light);
+}
+cs-filter-bar[data-variant="tabs"] .ap-cat-tab[data-active] {
+  background: var(--cs-color-primary-a2);
+  color: var(--cs-color-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+
+/* ===== 主要分组区 ===== */
+.ap-content {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 0 16px 16px;
+}
+.ap-content::-webkit-scrollbar { width: 6px; }
+.ap-content::-webkit-scrollbar-thumb { background: var(--cs-color-bg-lighter); border-radius: 3px; }
+
+.ap-group {
+  padding: 12px 0;
+}
+.ap-group + .ap-group {
+  border-top: 1px dashed var(--cs-color-border);
+}
+.ap-group__head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 4px;
+  cursor: pointer;
+  user-select: none;
+}
+.ap-group__caret {
+  font-size: 12px;
+  color: var(--cs-color-text);
+  transition: transform 0.15s ease;
+}
+.ap-group.is-collapsed .ap-group__caret { transform: rotate(-90deg); }
+.ap-group.is-collapsed .ap-group__body { display: none; }
+.ap-group__title {
+  font: var(--typo-cn-14-regular);
+  font-weight: var(--font-weight-semibold);
+  color: var(--cs-color-text);
+}
+.ap-group__count {
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text-light2);
+}
+
+/* 每个分组 4 列网格 */
+.ap-group__body {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  padding: 8px 0;
+}
+
+/* 申请项卡片 */
+.ap-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  background: transparent;
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.ap-item:hover {
+  background: var(--cs-color-white);
+  border-color: var(--cs-color-border);
+}
+.ap-item[data-active] {
+  background: var(--cs-color-white);
+  border-color: var(--cs-color-border);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.ap-item__icon {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cs-color-white);
+  font-size: 18px;
+}
+/* 浅色背景 + 深色图标 — 半透明效果 */
+.ap-item__icon[data-color="green"]   { background: #d6f5e2; color: #16a34a; }
+.ap-item__icon[data-color="blue"]    { background: #d5e6ff; color: #2563eb; }
+.ap-item__icon[data-color="orange"]  { background: #ffe2cf; color: #ea580c; }
+.ap-item__icon[data-color="red"]     { background: #ffd9d9; color: #dc2626; }
+.ap-item__icon[data-color="sky"]     { background: #d4ecff; color: #0284c7; }
+.ap-item__icon[data-color="yellow"]  { background: #fff0c2; color: #d97706; }
+.ap-item__icon[data-color="teal"]    { background: #cffbf1; color: #0d9488; }
+
+.ap-item__name {
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* 较窄屏幕：3 列 / 2 列 */
+@media (max-width: 1100px) {
+  .ap-group__body { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 820px) {
+  .ap-group__body { grid-template-columns: repeat(2, 1fr); }
+}

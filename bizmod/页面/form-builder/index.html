@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>表单配置 — 创建协同共创会议</title>
+
+  <link rel="stylesheet" href="../../design/css/base.css">
+  <link rel="stylesheet" href="../../design/css/token.css">
+  <link rel="stylesheet" href="../../design/css/variable.css">
+  <link rel="stylesheet" href="../../design/fonts/cses-icons.css?v=101">
+  <link rel="stylesheet" href="../../design/fragment/fragment.css">
+  <link rel="stylesheet" href="../../design/css/page-shell.css">
+
+  <link rel="stylesheet" href="../../design/components/search-input/search-input.css">
+  <link rel="stylesheet" href="../../design/components/avatar/avatar.css">
+  <link rel="stylesheet" href="../../design/components/button/button.css">
+
+  <link rel="stylesheet" href="./index.css">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: var(--font-family-cn), -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--cs-color-bg-app-dark);
+      color: var(--cs-color-text);
+      height: 100vh;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+</head>
+<body data-module="form">
+
+<cs-layout>
+
+  <!-- 标签栏 -->
+  <div class="tabbar">
+    <div class="tabbar-left">
+      <span class="win-ctrl tabbar-window-control">
+        <span class="ctrl-dot" data-c="close"></span>
+        <span class="ctrl-dot" data-c="min"></span>
+        <span class="ctrl-dot" data-c="max"></span>
+      </span>
+      <cs-search-input class="tabbar-search ah-top-search" data-variant="gray" data-size="sm">
+        <i class="search-icon cses-stratis-search-01"></i>
+        <input class="search-field" type="text" placeholder="搜索">
+      </cs-search-input>
+      <div class="tabbar-tabs"></div>
+    </div>
+    <div class="tabbar-right">
+      <span class="tabbar-notice">
+        <i class="cses-stratis-bell-01 notice-icon"></i>
+        <span class="notice-badge">2</span>
+      </span>
+      <cs-avatar data-size="xs" data-shape="circle" data-color="blue">张</cs-avatar>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- 一级导航 -->
+    <cs-sidebar>
+      <span class="logo">
+        <img src="../../design/assets/logo.png" alt="CSES">
+      </span>
+      <nav class="nav">
+        <div class="nav-group">
+          <a class="nav-item" data-module="workspace">
+            <span class="nav-icon"><i class="cses-stratis-home-01"></i></span>
+            <span class="nav-label">工作台</span>
+          </a>
+          <a class="nav-item" data-module="guide">
+            <span class="nav-icon"><i class="cses-stratis-compass"></i></span>
+            <span class="nav-label">导向</span>
+          </a>
+          <a class="nav-item" data-module="message">
+            <span class="nav-icon"><i class="cses-stratis-message-circle"></i></span>
+            <span class="nav-label">消息</span>
+          </a>
+          <a class="nav-item" data-module="task-list">
+            <span class="nav-icon"><i class="cses-stratis-check-square-broken"></i></span>
+            <span class="nav-label">任务</span>
+          </a>
+          <a class="nav-item" data-module="meeting">
+            <span class="nav-icon"><i class="cses-stratis-video-on"></i></span>
+            <span class="nav-label">会议</span>
+          </a>
+          <a class="nav-item" data-module="doc">
+            <span class="nav-icon"><i class="cses-stratis-book-01"></i></span>
+            <span class="nav-label">文档</span>
+          </a>
+          <a class="nav-item" data-active data-module="form">
+            <span class="nav-icon"><i class="cses-stratis-file-edit-01"></i></span>
+            <span class="nav-label">表单</span>
+          </a>
+          <a class="nav-item" data-module="approval">
+            <span class="nav-icon"><i class="cses-stratis-file-check-01"></i></span>
+            <span class="nav-label">审批</span>
+          </a>
+        </div>
+      </nav>
+    </cs-sidebar>
+
+    <!-- 内容包裹（无 navbar — 表单设计器占满全宽） -->
+    <div class="content-wrapper" style="position:relative;">
+
+      <main class="main-content">
+
+        <!-- ===== 顶栏 ===== -->
+        <div class="fb-topbar">
+          <div class="fb-topbar__left">
+            <div class="fb-topbar__title">
+              <span>表单配置 — 创建协同共创会议</span>
+              <i class="cses-stratis-edit-01" title="重命名"></i>
+            </div>
+            <div class="fb-topbar__version">
+              <span>V1.3</span>
+              <span>保存于 13:59</span>
+              <i class="cses-stratis-chevron-down" style="font-size:12px;"></i>
+            </div>
+          </div>
+
+          <div class="fb-topbar__center">
+            <button class="fb-topbar__preview-btn" data-active title="桌面端">
+              <i class="cses-stratis-laptop-01"></i>
+            </button>
+            <button class="fb-topbar__preview-btn" title="移动端">
+              <i class="cses-stratis-iphone-02"></i>
+            </button>
+          </div>
+
+          <div class="fb-topbar__right">
+            <button class="fb-btn">
+              <i class="cses-stratis-file-eye-01"></i>
+              <span>预览</span>
+            </button>
+            <button class="fb-btn" data-variant="primary">
+              <i class="cses-stratis-stars"></i>
+              <span>发布</span>
+            </button>
+            <span class="fb-topbar__more"><i class="cses-stratis-menu-04"></i></span>
+          </div>
+        </div>
+
+        <!-- ===== 三栏主体 ===== -->
+        <div class="fb-body">
+
+          <!-- 左：数据源/大纲 -->
+          <aside class="fb-left">
+            <div class="fb-left__head">
+              <div class="fb-left__tabs">
+                <span class="fb-left__tab" data-active>数据源</span>
+                <span class="fb-left__tab">大纲</span>
+              </div>
+              <div class="fb-left__tools">
+                <i class="cses-stratis-search-01" title="搜索"></i>
+                <i class="cses-stratis-plus-01" title="新增"></i>
+              </div>
+            </div>
+
+            <div class="fb-left__body">
+
+              <!-- 主表 -->
+              <div class="fb-ds-node">
+                <i class="fb-ds-node__caret cses-stratis-chevron-down"></i>
+                <span class="fb-ds-node__type" data-tone="key">主</span>
+                <span class="fb-ds-node__name">创建协同共创会议</span>
+                <span class="fb-ds-node__count">(14)</span>
+              </div>
+
+              <div class="fb-ds-children">
+                <div class="fb-ds-node">
+                  <span class="fb-ds-node__type" data-tone="key">autoID</span>
+                  <span class="fb-ds-node__name">会议ID</span>
+                </div>
+                <div class="fb-ds-node">
+                  <span class="fb-ds-node__type" data-tone="text">字符串</span>
+                  <span class="fb-ds-node__name">会议名称</span>
+                </div>
+                <div class="fb-ds-node">
+                  <span class="fb-ds-node__type" data-tone="text">字符串</span>
+                  <span class="fb-ds-node__name">会议人ID</span>
+                </div>
+                <div class="fb-ds-node">
+                  <span class="fb-ds-node__type">会议类型</span>
+                  <span class="fb-ds-node__name">会议类型</span>
+                </div>
+                <div class="fb-ds-node">
+                  <span class="fb-ds-node__type">文件</span>
+                  <span class="fb-ds-node__name">语音宣导</span>
+                </div>
+                <div class="fb-ds-node">
+                  <span class="fb-ds-node__type" data-tone="text">字符串</span>
+                  <span class="fb-ds-node__name">会议导向</span>
+                </div>
+                <div class="fb-ds-node">
+                  <span class="fb-ds-node__type">日期时间</span>
+                  <span class="fb-ds-node__name">开始时间</span>
+                </div>
+                <div class="fb-ds-node">
+                  <span class="fb-ds-node__type">日期时间</span>
+                  <span class="fb-ds-node__name">结束时间</span>
+                </div>
+                <div class="fb-ds-node">
+                  <span class="fb-ds-node__type">创建人</span>
+                  <span class="fb-ds-node__name">创建人</span>
+                </div>
+                <div class="fb-ds-node">
+                  <span class="fb-ds-node__type">修改日期</span>
+                  <span class="fb-ds-node__name">创建日期</span>
+                </div>
+                <div class="fb-ds-node">
+                  <span class="fb-ds-node__type">修改日期</span>
+                  <span class="fb-ds-node__name">最后修改日期</span>
+                </div>
+              </div>
+
+              <!-- 多对一 主持人（选中） -->
+              <div class="fb-ds-node fb-ds-node--collapsed" data-active>
+                <i class="fb-ds-node__caret cses-stratis-chevron-down"></i>
+                <span class="fb-ds-node__type" data-tone="link">多对一</span>
+                <span class="fb-ds-node__name">主持人</span>
+                <span class="fb-ds-node__count">(5)</span>
+                <span class="fb-ds-node__add"><i class="cses-stratis-plus-01"></i></span>
+              </div>
+              <div class="fb-ds-children"></div>
+
+              <!-- 多对一 KR -->
+              <div class="fb-ds-node">
+                <i class="fb-ds-node__caret cses-stratis-chevron-down"></i>
+                <span class="fb-ds-node__type" data-tone="link">多对一</span>
+                <span class="fb-ds-node__name">KR</span>
+                <span class="fb-ds-node__count">(4)</span>
+              </div>
+              <div class="fb-ds-children">
+                <div class="fb-ds-node">
+                  <span class="fb-ds-node__type" data-tone="text">字符串</span>
+                  <span class="fb-ds-node__name">主题</span>
+                </div>
+                <div class="fb-ds-node">
+                  <span class="fb-ds-node__type">整数</span>
+                  <span class="fb-ds-node__name">KR限制</span>
+                </div>
+                <div class="fb-ds-node">
+                  <span class="fb-ds-node__type">整数</span>
+                  <span class="fb-ds-node__name">投票限制</span>
+                </div>
+                <div class="fb-ds-node">
+                  <span class="fb-ds-node__type">整数</span>
+                  <span class="fb-ds-node__name">投票字数</span>
+                </div>
+              </div>
+
+            </div>
+          </aside>
+
+          <!-- 中：画布 -->
+          <section class="fb-center">
+            <div class="fb-canvas">
+
+              <!-- 标题 -->
+              <div class="fb-canvas__title">
+                <span class="fb-canvas__req">*</span>
+                <span class="fb-canvas__title-placeholder">请输入会议名称…</span>
+              </div>
+
+              <!-- 详情 -->
+              <div class="fb-section">
+                <div class="fb-section__title">详情</div>
+
+                <!-- 会议类型 -->
+                <div class="fb-field">
+                  <span class="fb-field__label">
+                    <span class="fb-field__req">*</span>
+                    <i class="cses-stratis-grid-01"></i>
+                    <span class="fb-field__label-text">会议类型</span>
+                  </span>
+                  <span class="fb-field__value">
+                    <span class="fb-segmented">
+                      <span class="fb-segmented__item" data-active>普通会议</span>
+                      <span class="fb-segmented__item">协同共创会</span>
+                      <span class="fb-segmented__item">成果导向会</span>
+                    </span>
+                  </span>
+                </div>
+
+                <!-- 语音宣导 -->
+                <div class="fb-field">
+                  <span class="fb-field__label">
+                    <i class="cses-stratis-microphone-01"></i>
+                    <span class="fb-field__label-text">语音宣导</span>
+                  </span>
+                  <span class="fb-field__value">
+                    <span class="fb-record">
+                      <i class="cses-stratis-circle"></i>
+                      <span>点击录制</span>
+                    </span>
+                  </span>
+                </div>
+
+                <!-- 会议导向 -->
+                <div class="fb-field">
+                  <span class="fb-field__label">
+                    <i class="cses-stratis-target-01"></i>
+                    <span class="fb-field__label-text">会议导向</span>
+                  </span>
+                  <span class="fb-field__value">
+                    <input class="fb-field__value-input" type="text" placeholder="请输入会议导向">
+                  </span>
+                </div>
+
+                <!-- 起止时间 -->
+                <div class="fb-field">
+                  <span class="fb-field__label">
+                    <span class="fb-field__req">*</span>
+                    <i class="cses-stratis-calendar-number"></i>
+                    <span class="fb-field__label-text">起止时间</span>
+                  </span>
+                  <span class="fb-field__value">
+                    <span class="fb-daterange">
+                      <span class="fb-daterange__input">开始时间</span>
+                      <span class="fb-daterange__sep">→</span>
+                      <span class="fb-daterange__input">结束时间</span>
+                    </span>
+                  </span>
+                </div>
+
+                <!-- 主持人（选中态） -->
+                <div class="fb-field" data-active>
+                  <span class="fb-field__label">
+                    <span class="fb-field__req">*</span>
+                    <i class="cses-stratis-user-profile-01"></i>
+                    <span class="fb-field__label-text">主持人</span>
+                  </span>
+                  <span class="fb-field__value">
+                    <span class="fb-user-pill">
+                      <span class="fb-user-pill__avatar">姓</span>
+                      <span class="fb-user-pill__name">
+                        <span>姓名</span>
+                        <span class="fb-user-pill__role">岗位 / 部门</span>
+                      </span>
+                      <i class="fb-user-pill__close cses-stratis-x-01"></i>
+                    </span>
+                  </span>
+                  <span class="fb-field__actions">
+                    <i class="cses-stratis-stars" title="AI"></i>
+                    <i class="cses-stratis-edit-01" title="复制"></i>
+                    <i class="cses-stratis-folder" title="数据源"></i>
+                    <i class="cses-stratis-trash-01" title="删除"></i>
+                  </span>
+                </div>
+
+                <!-- 参会人 -->
+                <div class="fb-field">
+                  <span class="fb-field__label">
+                    <i class="cses-stratis-users-profiles-01"></i>
+                    <span class="fb-field__label-text">参会人</span>
+                  </span>
+                  <span class="fb-field__value">
+                    <span class="fb-dropdown">
+                      <span>请选择参会人</span>
+                      <i class="cses-stratis-chevron-down"></i>
+                    </span>
+                  </span>
+                </div>
+
+                <!-- 会议地点 -->
+                <div class="fb-field">
+                  <span class="fb-field__label">
+                    <i class="cses-stratis-marker-01"></i>
+                    <span class="fb-field__label-text">会议地点</span>
+                  </span>
+                  <span class="fb-field__value">
+                    <span class="fb-dropzone-input">
+                      <span>请输入会议地点</span>
+                    </span>
+                  </span>
+                </div>
+              </div>
+
+              <!-- 会议KR -->
+              <div class="fb-section">
+                <div class="fb-section__title">会议KR</div>
+
+                <div class="fb-field">
+                  <span class="fb-field__label">
+                    <i class="cses-stratis-menu-04"></i>
+                    <span class="fb-field__label-text">KR主题</span>
+                  </span>
+                  <span class="fb-field__value">
+                    <input class="fb-field__value-input" type="text" placeholder="请填写KR主题">
+                  </span>
+                </div>
+
+                <div class="fb-field">
+                  <span class="fb-field__label">
+                    <span class="fb-field__req">*</span>
+                    <span class="fb-field__label-text" style="font-size:12px;color:var(--cs-color-text-light2);">KR</span>
+                    <span class="fb-field__label-text">每人KR限制</span>
+                  </span>
+                  <span class="fb-field__value">
+                    <input class="fb-field__value-input" type="text" value="3">
+                  </span>
+                </div>
+
+                <div class="fb-field">
+                  <span class="fb-field__label">
+                    <span class="fb-field__req">*</span>
+                    <i class="cses-stratis-check-square-contained"></i>
+                    <span class="fb-field__label-text">每人投票限制</span>
+                  </span>
+                  <span class="fb-field__value">
+                    <input class="fb-field__value-input" type="text" value="3">
+                  </span>
+                </div>
+
+                <div class="fb-field">
+                  <span class="fb-field__label">
+                    <i class="cses-stratis-hash-01"></i>
+                    <span class="fb-field__label-text">KR字数限制</span>
+                  </span>
+                  <span class="fb-field__value">
+                    <input class="fb-field__value-input" type="text" value="30">
+                  </span>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          <!-- 右：属性面板 -->
+          <aside class="fb-right">
+
+            <!-- 通用属性 -->
+            <div class="fb-prop-section">
+              <div class="fb-prop-section__head">
+                <span>通用属性</span>
+                <i class="cses-stratis-chevron-down"></i>
+              </div>
+              <div class="fb-prop-section__body">
+
+                <div class="fb-prop-row">
+                  <span class="fb-prop-row__label">字段标题</span>
+                  <span class="fb-prop-row__value">
+                    <span class="fb-input-wrap">
+                      <input class="fb-input" type="text" value="主持人">
+                      <span class="fb-input-wrap__count">4/50</span>
+                    </span>
+                  </span>
+                </div>
+
+                <div class="fb-prop-row fb-prop-row--col">
+                  <span class="fb-check-row">
+                    <span class="fb-check" data-checked>
+                      <span class="fb-check__box"></span>
+                      <span>显示标题</span>
+                    </span>
+                    <span class="fb-check" data-checked>
+                      <span class="fb-check__box"></span>
+                      <span>显示冒号</span>
+                    </span>
+                  </span>
+                  <span class="fb-check-row" style="margin-top:-4px;">
+                    <span class="fb-check" data-checked>
+                      <span class="fb-check__box"></span>
+                      <span>显示图标</span>
+                    </span>
+                    <span class="fb-check__action">更换</span>
+                  </span>
+                </div>
+
+                <div class="fb-prop-row fb-prop-row--col">
+                  <span class="fb-prop-row__label">字段类型</span>
+                  <span class="fb-type-grid">
+                    <span class="fb-type-btn">
+                      <i class="cses-stratis-chevron-down"></i>
+                      <span>下拉选择</span>
+                    </span>
+                    <span class="fb-type-btn">
+                      <i class="cses-stratis-menu-04"></i>
+                      <span>子表单</span>
+                    </span>
+                    <span class="fb-type-btn">
+                      <i class="cses-stratis-grid-01"></i>
+                      <span>子表格</span>
+                    </span>
+                    <span class="fb-type-btn" data-active>
+                      <i class="cses-stratis-file-01"></i>
+                      <span>弹窗选择</span>
+                    </span>
+                    <span class="fb-type-btn">
+                      <i class="cses-stratis-folder"></i>
+                      <span>抽屉选择</span>
+                    </span>
+                  </span>
+                </div>
+
+                <div class="fb-prop-row">
+                  <span class="fb-prop-row__label">默认提示</span>
+                  <span class="fb-prop-row__value">
+                    <input class="fb-input" type="text" value="请选择成员" style="padding-right:10px;">
+                  </span>
+                </div>
+
+                <div class="fb-prop-row">
+                  <span class="fb-prop-row__label">数据源</span>
+                  <span class="fb-prop-row__value">
+                    <span class="fb-select">
+                      <span>创建协同共创会议 / 主持人</span>
+                      <i class="cses-stratis-chevron-down"></i>
+                    </span>
+                  </span>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- 验证 -->
+            <div class="fb-prop-section">
+              <div class="fb-prop-section__head">
+                <span>验证</span>
+                <i class="cses-stratis-chevron-down"></i>
+              </div>
+              <div class="fb-prop-section__body">
+
+                <div class="fb-prop-row">
+                  <span class="fb-prop-row__label">是否必填</span>
+                  <span class="fb-prop-row__value">
+                    <span class="fb-toggle" data-on></span>
+                  </span>
+                </div>
+
+                <div class="fb-prop-row">
+                  <span class="fb-prop-row__label">模式</span>
+                  <span class="fb-radio-row">
+                    <span class="fb-radio" data-on>
+                      <span class="fb-radio__dot"></span>
+                      <span>可编辑</span>
+                    </span>
+                    <span class="fb-radio">
+                      <span class="fb-radio__dot"></span>
+                      <span>只读</span>
+                    </span>
+                  </span>
+                </div>
+
+                <div class="fb-prop-row">
+                  <span class="fb-prop-row__label">默认值</span>
+                  <span class="fb-radio-row">
+                    <span class="fb-radio" data-on>
+                      <span class="fb-radio__dot"></span>
+                      <span>本人</span>
+                    </span>
+                    <span class="fb-radio">
+                      <span class="fb-radio__dot"></span>
+                      <span>直属上级</span>
+                    </span>
+                  </span>
+                </div>
+
+                <div class="fb-prop-row">
+                  <span class="fb-prop-row__label">字数</span>
+                  <span class="fb-prop-row__value" style="display:flex;flex-direction:column;gap:8px;">
+                    <span class="fb-check" data-checked>
+                      <span class="fb-check__box"></span>
+                      <span>限定</span>
+                    </span>
+                    <span class="fb-range-inputs">
+                      <input class="fb-input" type="text" placeholder="最小">
+                      <span class="fb-range-inputs__sep">~</span>
+                      <input class="fb-input" type="text" placeholder="最大">
+                    </span>
+                  </span>
+                </div>
+
+                <div class="fb-prop-row">
+                  <span class="fb-prop-row__label">重复值</span>
+                  <span class="fb-prop-row__value" style="display:flex;flex-direction:column;gap:8px;">
+                    <span style="display:flex;align-items:center;gap:8px;">
+                      <span class="fb-check" data-checked>
+                        <span class="fb-check__box"></span>
+                        <span>不允许</span>
+                      </span>
+                      <span style="font:var(--typo-cn-12-regular);color:var(--cs-color-text-light2);display:inline-flex;align-items:center;gap:2px;">
+                        自定义提示内容
+                        <i class="cses-stratis-help-circle-contained" style="font-size:12px;"></i>
+                      </span>
+                    </span>
+                    <input class="fb-input" type="text" value="内容已存在，不允许重复提交" style="padding-right:10px;">
+                  </span>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- 特有属性 -->
+            <div class="fb-prop-section fb-prop-section--collapsed">
+              <div class="fb-prop-section__head">
+                <span>特有属性</span>
+                <i class="cses-stratis-chevron-down"></i>
+              </div>
+              <div class="fb-prop-section__body"></div>
+            </div>
+
+            <!-- 样式配置 -->
+            <div class="fb-prop-section fb-prop-section--collapsed">
+              <div class="fb-prop-section__head">
+                <span>样式配置</span>
+                <i class="cses-stratis-chevron-down"></i>
+              </div>
+              <div class="fb-prop-section__body"></div>
+            </div>
+
+          </aside>
+        </div>
+
+        <!-- 提示 -->
+        <div class="fb-hint-toast">提示：在右侧属性面板配置属性</div>
+
+      </main>
+
+    </div>
+
+  </div>
+</cs-layout>
+
+<script>
+  // 字段选中切换
+  document.querySelectorAll('.fb-field').forEach(function (f) {
+    f.addEventListener('click', function () {
+      document.querySelectorAll('.fb-field').forEach(function (x) { x.removeAttribute('data-active'); });
+      f.setAttribute('data-active', '');
+    });
+  });
+
+  // 字段类型 grid
+  document.querySelectorAll('.fb-type-btn').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('.fb-type-btn').forEach(function (x) { x.removeAttribute('data-active'); });
+      b.setAttribute('data-active', '');
+    });
+  });
+
+  // 数据源树 collapse
+  document.querySelectorAll('.fb-ds-node').forEach(function (n) {
+    var caret = n.querySelector('.fb-ds-node__caret');
+    if (!caret) return;
+    caret.addEventListener('click', function (e) {
+      e.stopPropagation();
+      n.classList.toggle('fb-ds-node--collapsed');
+    });
+  });
+
+  // toggle 开关
+  document.querySelectorAll('.fb-toggle').forEach(function (t) {
+    t.addEventListener('click', function () {
+      if (t.hasAttribute('data-on')) t.removeAttribute('data-on');
+      else t.setAttribute('data-on', '');
+    });
+  });
+
+  // checkbox
+  document.querySelectorAll('.fb-check').forEach(function (c) {
+    c.addEventListener('click', function () {
+      if (c.hasAttribute('data-checked')) c.removeAttribute('data-checked');
+      else c.setAttribute('data-checked', '');
+    });
+  });
+
+  // radio 组（同 parent 互斥）
+  document.querySelectorAll('.fb-radio-row').forEach(function (row) {
+    row.querySelectorAll('.fb-radio').forEach(function (r) {
+      r.addEventListener('click', function () {
+        row.querySelectorAll('.fb-radio').forEach(function (x) { x.removeAttribute('data-on'); });
+        r.setAttribute('data-on', '');
+      });
+    });
+  });
+
+  // segmented
+  document.querySelectorAll('.fb-segmented').forEach(function (seg) {
+    seg.querySelectorAll('.fb-segmented__item').forEach(function (it) {
+      it.addEventListener('click', function (e) {
+        e.stopPropagation();
+        seg.querySelectorAll('.fb-segmented__item').forEach(function (x) { x.removeAttribute('data-active'); });
+        it.setAttribute('data-active', '');
+      });
+    });
+  });
+
+  // 预览端切换
+  document.querySelectorAll('.fb-topbar__preview-btn').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('.fb-topbar__preview-btn').forEach(function (x) { x.removeAttribute('data-active'); });
+      b.setAttribute('data-active', '');
+    });
+  });
+
+  // 属性面板 collapse
+  document.querySelectorAll('.fb-prop-section__head').forEach(function (h) {
+    h.addEventListener('click', function () {
+      h.closest('.fb-prop-section').classList.toggle('fb-prop-section--collapsed');
+    });
+  });
+
+  // mode tabs
+  document.querySelectorAll('.fb-mode-tabs__item').forEach(function (t) {
+    t.addEventListener('click', function () {
+      document.querySelectorAll('.fb-mode-tabs__item').forEach(function (x) { x.removeAttribute('data-active'); });
+      t.setAttribute('data-active', '');
+    });
+  });
+
+  // 左侧 tab 切换
+  document.querySelectorAll('.fb-left__tab').forEach(function (t) {
+    t.addEventListener('click', function () {
+      document.querySelectorAll('.fb-left__tab').forEach(function (x) { x.removeAttribute('data-active'); });
+      t.setAttribute('data-active', '');
+    });
+  });
+
+  // 自动隐藏提示
+  setTimeout(function () {
+    var t = document.querySelector('.fb-hint-toast');
+    if (t) {
+      t.style.transition = 'opacity 0.4s ease';
+      t.style.opacity = '0';
+      setTimeout(function () { t.remove(); }, 500);
+    }
+  }, 3500);
+</script>
+<script src="../shared.js"></script>
+</body>
+</html>

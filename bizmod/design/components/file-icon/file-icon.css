@@ -1,0 +1,165 @@
+/* ============================================================
+   文件图标组件 (File Icon)
+   标签：<cs-file-icon data-type="pdf">
+   类名：.cs-file-icon[data-type]
+
+   设计：32×32 SVG, 折角白纸 + 类型徽标
+   类型：doc / docx / xls / xlsx / ppt / pptx / pdf / img / video
+        audio / zip / code / notebook / sheet / mindmap / kanban
+        folder / generic
+   ============================================================ */
+
+cs-file-icon,
+.cs-file-icon {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+/* ===== 文件类（折角纸 + 类型徽标） ===== */
+
+/* PDF — 红 */
+cs-file-icon[data-type="pdf"],
+.cs-file-icon[data-type="pdf"] {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M6 3 H21 L26 8 V28 Q26 29 25 29 H7 Q6 29 6 28 V4 Q6 3 7 3 Z' fill='%23fff' stroke='%23e5e7eb' stroke-width='1'/><path d='M21 3 V7 Q21 8 22 8 H26 Z' fill='%23f3f4f6' stroke='%23e5e7eb' stroke-width='1'/><rect x='5' y='18' width='15' height='8' rx='1.5' fill='%23fa4e4e'/><text x='12.5' y='24' fill='%23fff' font-size='5' font-weight='700' text-anchor='middle' font-family='Arial,sans-serif'>PDF</text></svg>");
+}
+
+/* Word / DOC — 蓝 */
+cs-file-icon[data-type="doc"],
+cs-file-icon[data-type="docx"],
+.cs-file-icon[data-type="doc"],
+.cs-file-icon[data-type="docx"] {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M6 3 H21 L26 8 V28 Q26 29 25 29 H7 Q6 29 6 28 V4 Q6 3 7 3 Z' fill='%23fff' stroke='%23e5e7eb' stroke-width='1'/><path d='M21 3 V7 Q21 8 22 8 H26 Z' fill='%23f3f4f6' stroke='%23e5e7eb' stroke-width='1'/><rect x='5' y='18' width='15' height='8' rx='1.5' fill='%234876f9'/><text x='12.5' y='24' fill='%23fff' font-size='5' font-weight='700' text-anchor='middle' font-family='Arial,sans-serif'>DOC</text></svg>");
+}
+
+/* Excel / XLS — 绿 */
+cs-file-icon[data-type="xls"],
+cs-file-icon[data-type="xlsx"],
+cs-file-icon[data-type="excel"],
+.cs-file-icon[data-type="xls"],
+.cs-file-icon[data-type="xlsx"],
+.cs-file-icon[data-type="excel"] {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M6 3 H21 L26 8 V28 Q26 29 25 29 H7 Q6 29 6 28 V4 Q6 3 7 3 Z' fill='%23fff' stroke='%23e5e7eb' stroke-width='1'/><path d='M21 3 V7 Q21 8 22 8 H26 Z' fill='%23f3f4f6' stroke='%23e5e7eb' stroke-width='1'/><rect x='5' y='18' width='15' height='8' rx='1.5' fill='%2332bd79'/><text x='12.5' y='24' fill='%23fff' font-size='5' font-weight='700' text-anchor='middle' font-family='Arial,sans-serif'>XLS</text></svg>");
+}
+
+/* PowerPoint / PPT — 橙 */
+cs-file-icon[data-type="ppt"],
+cs-file-icon[data-type="pptx"],
+.cs-file-icon[data-type="ppt"],
+.cs-file-icon[data-type="pptx"] {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M6 3 H21 L26 8 V28 Q26 29 25 29 H7 Q6 29 6 28 V4 Q6 3 7 3 Z' fill='%23fff' stroke='%23e5e7eb' stroke-width='1'/><path d='M21 3 V7 Q21 8 22 8 H26 Z' fill='%23f3f4f6' stroke='%23e5e7eb' stroke-width='1'/><rect x='5' y='18' width='15' height='8' rx='1.5' fill='%23f56b1f'/><text x='12.5' y='24' fill='%23fff' font-size='5' font-weight='700' text-anchor='middle' font-family='Arial,sans-serif'>PPT</text></svg>");
+}
+
+/* 图片 — 黄 + 山+太阳缩略 */
+cs-file-icon[data-type="img"],
+cs-file-icon[data-type="image"],
+cs-file-icon[data-type="png"],
+cs-file-icon[data-type="jpg"],
+cs-file-icon[data-type="jpeg"],
+.cs-file-icon[data-type="img"],
+.cs-file-icon[data-type="image"],
+.cs-file-icon[data-type="png"],
+.cs-file-icon[data-type="jpg"],
+.cs-file-icon[data-type="jpeg"] {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M6 3 H21 L26 8 V28 Q26 29 25 29 H7 Q6 29 6 28 V4 Q6 3 7 3 Z' fill='%23fff' stroke='%23e5e7eb' stroke-width='1'/><path d='M21 3 V7 Q21 8 22 8 H26 Z' fill='%23f3f4f6' stroke='%23e5e7eb' stroke-width='1'/><rect x='5' y='12' width='17' height='14' rx='1.5' fill='%23fff7e0' stroke='%23f6ad00' stroke-width='1'/><circle cx='9.5' cy='16' r='1.4' fill='%23f6ad00'/><path d='M6.5 24 L11 19 L14.5 22 L17.5 19.5 L21 24 Z' fill='%23f6ad00'/></svg>");
+}
+
+/* 视频 — 紫 */
+cs-file-icon[data-type="video"],
+cs-file-icon[data-type="mp4"],
+cs-file-icon[data-type="mov"],
+.cs-file-icon[data-type="video"],
+.cs-file-icon[data-type="mp4"],
+.cs-file-icon[data-type="mov"] {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M6 3 H21 L26 8 V28 Q26 29 25 29 H7 Q6 29 6 28 V4 Q6 3 7 3 Z' fill='%23fff' stroke='%23e5e7eb' stroke-width='1'/><path d='M21 3 V7 Q21 8 22 8 H26 Z' fill='%23f3f4f6' stroke='%23e5e7eb' stroke-width='1'/><rect x='5' y='14' width='17' height='12' rx='1.5' fill='%23ece7ff' stroke='%236c5ce7' stroke-width='1'/><polygon points='12,17 18,20 12,23' fill='%236c5ce7'/></svg>");
+}
+
+/* 音频 — 青 */
+cs-file-icon[data-type="audio"],
+cs-file-icon[data-type="mp3"],
+.cs-file-icon[data-type="audio"],
+.cs-file-icon[data-type="mp3"] {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M6 3 H21 L26 8 V28 Q26 29 25 29 H7 Q6 29 6 28 V4 Q6 3 7 3 Z' fill='%23fff' stroke='%23e5e7eb' stroke-width='1'/><path d='M21 3 V7 Q21 8 22 8 H26 Z' fill='%23f3f4f6' stroke='%23e5e7eb' stroke-width='1'/><circle cx='12.5' cy='22.5' r='2.2' fill='%230d9488'/><rect x='14' y='15' width='1.6' height='8' fill='%230d9488'/><path d='M14 15 Q18 13 21 15 V17 Q18 15.5 15.6 17 Z' fill='%230d9488'/></svg>");
+}
+
+/* 压缩 — 棕 */
+cs-file-icon[data-type="zip"],
+cs-file-icon[data-type="rar"],
+.cs-file-icon[data-type="zip"],
+.cs-file-icon[data-type="rar"] {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M6 3 H21 L26 8 V28 Q26 29 25 29 H7 Q6 29 6 28 V4 Q6 3 7 3 Z' fill='%23fff' stroke='%23e5e7eb' stroke-width='1'/><path d='M21 3 V7 Q21 8 22 8 H26 Z' fill='%23f3f4f6' stroke='%23e5e7eb' stroke-width='1'/><rect x='14' y='4' width='2' height='2' fill='%23a16207'/><rect x='14' y='8' width='2' height='2' fill='%23a16207'/><rect x='14' y='12' width='2' height='2' fill='%23a16207'/><rect x='12' y='16' width='6' height='8' rx='1' fill='%23fde68a' stroke='%23a16207' stroke-width='1'/><rect x='14' y='18' width='2' height='3' fill='%23a16207'/></svg>");
+}
+
+/* 代码 — 深灰 */
+cs-file-icon[data-type="code"],
+cs-file-icon[data-type="js"],
+cs-file-icon[data-type="html"],
+.cs-file-icon[data-type="code"],
+.cs-file-icon[data-type="js"],
+.cs-file-icon[data-type="html"] {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M6 3 H21 L26 8 V28 Q26 29 25 29 H7 Q6 29 6 28 V4 Q6 3 7 3 Z' fill='%23fff' stroke='%23e5e7eb' stroke-width='1'/><path d='M21 3 V7 Q21 8 22 8 H26 Z' fill='%23f3f4f6' stroke='%23e5e7eb' stroke-width='1'/><path d='M11 17 L8 20 L11 23' stroke='%23475569' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/><path d='M17 17 L20 20 L17 23' stroke='%23475569' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/><line x1='15' y1='15' x2='13' y2='25' stroke='%23475569' stroke-width='1.4' stroke-linecap='round'/></svg>");
+}
+
+/* 通用文件 — 灰 */
+cs-file-icon[data-type="generic"],
+cs-file-icon[data-type="file"],
+.cs-file-icon[data-type="generic"],
+.cs-file-icon[data-type="file"],
+cs-file-icon:not([data-type]),
+.cs-file-icon:not([data-type]) {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M6 3 H21 L26 8 V28 Q26 29 25 29 H7 Q6 29 6 28 V4 Q6 3 7 3 Z' fill='%23fff' stroke='%23cbd5e1' stroke-width='1.2'/><path d='M21 3 V7 Q21 8 22 8 H26 Z' fill='%23e2e8f0' stroke='%23cbd5e1' stroke-width='1.2'/><line x1='9' y1='15' x2='22' y2='15' stroke='%23cbd5e1' stroke-width='1.2' stroke-linecap='round'/><line x1='9' y1='19' x2='22' y2='19' stroke='%23cbd5e1' stroke-width='1.2' stroke-linecap='round'/><line x1='9' y1='23' x2='18' y2='23' stroke='%23cbd5e1' stroke-width='1.2' stroke-linecap='round'/></svg>");
+}
+
+
+/* ===== 协作文档类（无折角，整页纯色描边） ===== */
+
+/* 通用文档 / Wiki — 蓝 */
+cs-file-icon[data-type="notebook"],
+cs-file-icon[data-type="wiki"],
+.cs-file-icon[data-type="notebook"],
+.cs-file-icon[data-type="wiki"] {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='6' y='4' width='20' height='24' rx='3' fill='%23e6f0ff' stroke='%234876f9' stroke-width='1.5'/><line x1='10' y1='11' x2='22' y2='11' stroke='%234876f9' stroke-width='1.5' stroke-linecap='round'/><line x1='10' y1='16' x2='22' y2='16' stroke='%234876f9' stroke-width='1.5' stroke-linecap='round'/><line x1='10' y1='21' x2='18' y2='21' stroke='%234876f9' stroke-width='1.5' stroke-linecap='round'/></svg>");
+}
+
+/* 多维表格 / Sheet — 绿 */
+cs-file-icon[data-type="sheet"],
+cs-file-icon[data-type="multidim"],
+.cs-file-icon[data-type="sheet"],
+.cs-file-icon[data-type="multidim"] {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='5' y='5' width='22' height='22' rx='3' fill='%23e6f7ec' stroke='%2332bd79' stroke-width='1.5'/><line x1='5' y1='12' x2='27' y2='12' stroke='%2332bd79' stroke-width='1.5'/><line x1='5' y1='19' x2='27' y2='19' stroke='%2332bd79' stroke-width='1.5'/><line x1='14' y1='5' x2='14' y2='27' stroke='%2332bd79' stroke-width='1.5'/><line x1='21' y1='5' x2='21' y2='27' stroke='%2332bd79' stroke-width='1.5'/></svg>");
+}
+
+/* 思维导图 — 紫 */
+cs-file-icon[data-type="mindmap"],
+.cs-file-icon[data-type="mindmap"] {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='10' cy='16' r='3' fill='%236c5ce7'/><circle cx='23' cy='8' r='2.4' fill='%23a99cff'/><circle cx='23' cy='16' r='2.4' fill='%23a99cff'/><circle cx='23' cy='24' r='2.4' fill='%23a99cff'/><path d='M13 16 L20 8' stroke='%236c5ce7' stroke-width='1.4' fill='none'/><path d='M13 16 L20 16' stroke='%236c5ce7' stroke-width='1.4' fill='none'/><path d='M13 16 L20 24' stroke='%236c5ce7' stroke-width='1.4' fill='none'/></svg>");
+}
+
+/* 看板 / Kanban — 橙 */
+cs-file-icon[data-type="kanban"],
+cs-file-icon[data-type="board"],
+.cs-file-icon[data-type="kanban"],
+.cs-file-icon[data-type="board"] {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='5' y='5' width='22' height='22' rx='3' fill='%23fff3e8' stroke='%23f56b1f' stroke-width='1.5'/><rect x='8' y='9' width='4' height='10' rx='1' fill='%23f56b1f'/><rect x='14' y='9' width='4' height='14' rx='1' fill='%23f56b1f'/><rect x='20' y='9' width='4' height='7' rx='1' fill='%23f56b1f'/></svg>");
+}
+
+/* 文件夹 — 黄 */
+cs-file-icon[data-type="folder"],
+.cs-file-icon[data-type="folder"] {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M4 9 a2 2 0 0 1 2 -2 H12 L14 9 H26 a2 2 0 0 1 2 2 V24 a2 2 0 0 1 -2 2 H6 a2 2 0 0 1 -2 -2 Z' fill='%23fbbf24' stroke='%23d97706' stroke-width='0.8'/><path d='M4 12 H28 V24 a2 2 0 0 1 -2 2 H6 a2 2 0 0 1 -2 -2 Z' fill='%23fcd34d'/></svg>");
+}
+
+
+/* ===== 尺寸变体 ===== */
+cs-file-icon[data-size="sm"],
+.cs-file-icon[data-size="sm"] { width: 20px; height: 20px; }
+cs-file-icon[data-size="md"],
+.cs-file-icon[data-size="md"] { width: 24px; height: 24px; }
+cs-file-icon[data-size="lg"],
+.cs-file-icon[data-size="lg"] { width: 40px; height: 40px; }
+cs-file-icon[data-size="xl"],
+.cs-file-icon[data-size="xl"] { width: 56px; height: 56px; }

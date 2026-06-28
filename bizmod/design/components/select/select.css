@@ -1,0 +1,123 @@
+/*
+ * 选择器组件 (Select)
+ * 标签：<cs-select>
+ *
+ * data 属性：
+ *   data-size="sm"       — 小尺寸 24px
+ *   data-size="md"       — 中尺寸 32px（默认）
+ *   data-size="lg"       — 大尺寸 40px
+ *   data-disabled        — 禁用
+ *   data-error           — 错误状态
+ *   data-open            — 展开状态
+ */
+
+/* ========== 基础样式 ========== */
+cs-select {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  height: var(--cs-sem-size-interactive-sm);
+  padding: 0 var(--space-xs);
+  border: var(--line-width) solid var(--cs-color-border);
+  border-radius: var(--radius);
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text);
+  background: var(--cs-color-bg);
+  cursor: pointer;
+  box-sizing: border-box;
+  min-width: var(--spacing-128); /* closest var: 128px (Figma 原值 120px) */
+  transition: border-color 0.2s ease;
+}
+
+/* ========== 尺寸变体 ========== */
+cs-select[data-size="sm"] {
+  height: var(--cs-sem-size-interactive-xs);
+  padding: 0 var(--spacing-6);
+  font: var(--typo-cn-12-regular);
+}
+
+cs-select[data-size="lg"] {
+  height: var(--cs-sem-size-interactive-md);
+  padding: 0 var(--space-sm);
+}
+
+/* ========== 悬浮状态 ========== */
+cs-select:hover {
+  border-color: var(--cs-color-primary);
+}
+
+/* ========== 聚焦/展开状态 ========== */
+cs-select[data-open] {
+  border-color: var(--cs-color-primary);
+}
+
+/* ========== 错误状态 ========== */
+cs-select[data-error] {
+  border-color: var(--cs-sem-border-error);
+}
+
+cs-select[data-error]:hover {
+  border-color: var(--cs-sem-border-error);
+}
+
+/* ========== 禁用状态 ========== */
+cs-select[data-disabled] {
+  background: var(--cs-color-bg-disabled);
+  border-color: var(--cs-color-border);
+  color: var(--cs-color-text-light2);
+  cursor: not-allowed;
+  opacity: var(--cs-sem-opacity-disabled);
+}
+
+cs-select[data-disabled]:hover {
+  border-color: var(--cs-color-border);
+}
+
+/* ========== 值显示区域 ========== */
+cs-select .select-value {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ========== 占位符 ========== */
+cs-select .select-placeholder {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--cs-color-text-light2);
+}
+
+/* ========== 箭头图标 ========== */
+cs-select .select-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--cs-sem-size-icon-md);
+  height: var(--cs-sem-size-icon-md);
+  font-size: var(--font-size-sm);
+  color: var(--cs-color-text-light2);
+  margin-left: var(--space-2xs);
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+/* 展开时箭头旋转 */
+cs-select[data-open] .select-arrow {
+  transform: rotate(180deg);
+  color: var(--cs-color-primary);
+}
+
+/* 禁用时箭头颜色 */
+cs-select[data-disabled] .select-arrow {
+  color: var(--cs-color-text-light2);
+}
+
+/* ========== 尺寸变体箭头调整 ========== */
+cs-select[data-size="sm"] .select-arrow {
+  font-size: var(--font-size-xs);
+  width: var(--cs-sem-size-icon-xs);
+  height: var(--cs-sem-size-icon-xs);
+}

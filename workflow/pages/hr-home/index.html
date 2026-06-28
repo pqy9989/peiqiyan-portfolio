@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>人事中心 · 首页</title>
+
+  <!-- 基础令牌 + 语义变量 -->
+  <link rel="stylesheet" href="../../design/css/token.css">
+  <link rel="stylesheet" href="../../design/css/variable.css">
+  <link rel="stylesheet" href="../../design/css/base.css">
+
+  <!-- 图标字体 -->
+  <link rel="stylesheet" href="../../design/fonts/cses-icons.css?v=101">
+
+  <!-- 布局骨架 -->
+  <link rel="stylesheet" href="../../design/fragment/fragment.css">
+  <link rel="stylesheet" href="../../design/css/page-shell.css">
+
+  <!-- 组件 -->
+  <link rel="stylesheet" href="../../design/components/avatar/avatar.css">
+  <link rel="stylesheet" href="../../design/components/badge/badge.css">
+  <link rel="stylesheet" href="../../design/components/button/button.css">
+  <link rel="stylesheet" href="../../design/components/tag/tag.css">
+  <link rel="stylesheet" href="../../design/components/status-badge/status-badge.css">
+  <link rel="stylesheet" href="../../design/components/nav-item/nav-item.css">
+  <link rel="stylesheet" href="../../design/components/nav-group/nav-group.css">
+  <link rel="stylesheet" href="../../design/components/search-trigger/search-trigger.css">
+
+  <!-- 页面私有 -->
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+<cs-layout>
+
+  <!-- ========================================
+       Tab Bar
+       ======================================== -->
+  <div class="tabbar">
+    <div class="tabbar-left">
+      <span class="win-ctrl">
+        <span class="ctrl-dot" data-c="close"></span>
+        <span class="ctrl-dot" data-c="min"></span>
+        <span class="ctrl-dot" data-c="max"></span>
+      </span>
+      <cs-search-input class="ah-top-search" data-variant="gray" data-size="sm">
+        <i class="search-icon cses-stratis-search-01"></i>
+        <input class="search-field" type="text" placeholder="搜索员工 / 部门 / 流程">
+      </cs-search-input>
+      <span class="page-tab" data-active>
+        <span class="tab-label">人事中心</span>
+        <i class="tab-close cses-stratis-x-01"></i>
+      </span>
+      <span class="page-tab">
+        <span class="tab-label">入职审批 · 林晓彤</span>
+        <i class="tab-close cses-stratis-x-01"></i>
+      </span>
+    </div>
+    <div class="tabbar-right">
+      <span class="notice-wrap">
+        <i class="cses-stratis-bell-01 notice-icon"></i>
+        <span class="notice-badge">8</span>
+      </span>
+      <cs-avatar data-size="xs" data-shape="circle" data-color="purple">林</cs-avatar>
+    </div>
+  </div>
+
+  <!-- ========================================
+       Body — sidebar + content
+       ======================================== -->
+  <div class="body">
+
+    <!-- 一级导航 -->
+    <cs-sidebar>
+      <span class="logo">
+        <img src="../../design/assets/logo.png" alt="CSES">
+      </span>
+      <nav class="nav">
+        <div class="nav-group">
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-home-01"></i></span>
+            <span class="nav-label">工作台</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-message-square-information"></i></span>
+            <span class="nav-label">消息</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-calendar-01"></i></span>
+            <span class="nav-label">日历</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-book-01"></i></span>
+            <span class="nav-label">文档</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-file-check-01"></i></span>
+            <span class="nav-label">审批</span>
+          </a>
+          <a class="nav-item" data-active>
+            <span class="nav-icon"><i class="cses-stratis-users-profiles-01"></i></span>
+            <span class="nav-label">人事</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-bar-chart-04"></i></span>
+            <span class="nav-label">分析</span>
+          </a>
+        </div>
+      </nav>
+    </cs-sidebar>
+
+    <!-- 内容包裹 -->
+    <div class="content-wrapper">
+
+      <!-- 二级导航 -->
+      <cs-navbar>
+        <div class="inner">
+          <!-- ① 标题 -->
+          <div class="slot-header">
+            <div class="hr-navbar-title">
+              <span class="hr-navbar-title__text">人事中心</span>
+              <i class="cses-stratis-chevron-down hr-navbar-title__caret"></i>
+            </div>
+            <span class="hr-navbar-sub">Coreshine 集团 · HR System</span>
+          </div>
+
+          <!-- ② 主行动按钮 -->
+          <div class="slot-action">
+            <cs-button data-variant="primary" style="width:100%;">
+              <i class="btn-icon cses-stratis-plus-01"></i>
+              <span class="btn-label">新员工入职</span>
+            </cs-button>
+          </div>
+
+          <!-- ③ 主菜单 -->
+          <div class="slot-nav">
+            <cs-nav-item data-active>
+              <span class="nav-left">
+                <i class="nav-icon cses-stratis-home-01"></i>
+                <span class="nav-label">首页</span>
+              </span>
+            </cs-nav-item>
+            <cs-nav-item>
+              <span class="nav-left">
+                <i class="nav-icon cses-stratis-user-profile-01"></i>
+                <span class="nav-label">员工档案</span>
+              </span>
+              <span class="nav-count">1,284</span>
+            </cs-nav-item>
+            <cs-nav-item>
+              <span class="nav-left">
+                <i class="nav-icon cses-stratis-grid-01"></i>
+                <span class="nav-label">组织架构</span>
+              </span>
+            </cs-nav-item>
+            <cs-nav-item>
+              <span class="nav-left">
+                <i class="nav-icon cses-stratis-target-01"></i>
+                <span class="nav-label">招聘管理</span>
+              </span>
+              <span class="nav-count">23</span>
+            </cs-nav-item>
+          </div>
+
+          <!-- ④ 副菜单（分组） -->
+          <div class="slot-sub">
+            <cs-nav-group>
+              <div class="group-header">
+                <span class="group-title">人员流转</span>
+                <i class="group-arrow cses-stratis-chevron-down"></i>
+              </div>
+              <div class="group-body">
+                <cs-nav-item>
+                  <span class="nav-left">
+                    <i class="nav-icon cses-stratis-user-profile-check"></i>
+                    <span class="nav-label">入职办理</span>
+                  </span>
+                  <span class="nav-count">5</span>
+                </cs-nav-item>
+                <cs-nav-item>
+                  <span class="nav-left">
+                    <i class="nav-icon cses-stratis-arrow-switch-horizontal"></i>
+                    <span class="nav-label">转岗调动</span>
+                  </span>
+                  <span class="nav-count">2</span>
+                </cs-nav-item>
+                <cs-nav-item>
+                  <span class="nav-left">
+                    <i class="nav-icon cses-stratis-user-profile-x"></i>
+                    <span class="nav-label">离职办理</span>
+                  </span>
+                </cs-nav-item>
+                <cs-nav-item>
+                  <span class="nav-left">
+                    <i class="nav-icon cses-stratis-file-shield-01"></i>
+                    <span class="nav-label">合同续签</span>
+                  </span>
+                  <span class="nav-count">7</span>
+                </cs-nav-item>
+              </div>
+            </cs-nav-group>
+
+            <cs-nav-group>
+              <div class="group-header">
+                <span class="group-title">运营管理</span>
+                <i class="group-arrow cses-stratis-chevron-down"></i>
+              </div>
+              <div class="group-body">
+                <cs-nav-item>
+                  <span class="nav-left">
+                    <i class="nav-icon cses-stratis-coin-hand"></i>
+                    <span class="nav-label">薪酬考勤</span>
+                  </span>
+                </cs-nav-item>
+                <cs-nav-item>
+                  <span class="nav-left">
+                    <i class="nav-icon cses-stratis-graduation-cap-01"></i>
+                    <span class="nav-label">培训发展</span>
+                  </span>
+                </cs-nav-item>
+                <cs-nav-item>
+                  <span class="nav-left">
+                    <i class="nav-icon cses-stratis-bag-01"></i>
+                    <span class="nav-label">员工服务</span>
+                  </span>
+                </cs-nav-item>
+              </div>
+            </cs-nav-group>
+          </div>
+        </div>
+      </cs-navbar>
+
+      <!-- 主内容区 -->
+      <main class="main-content">
+
+        <!-- 内容区头部 -->
+        <cs-content-header>
+          <div class="slot-left">
+            <span class="page-title">人事中心</span>
+            <span class="page-subtitle">2026 年 6 月 · 集团人力资源管理总览</span>
+          </div>
+          <div class="slot-right">
+            <cs-search-trigger>
+              <span class="trigger-text">搜索员工</span>
+              <i class="trigger-icon cses-stratis-search-01"></i>
+            </cs-search-trigger>
+            <cs-button data-variant="secondary">
+              <i class="btn-icon cses-stratis-grid-01"></i>
+              <span class="btn-label">通讯录</span>
+            </cs-button>
+          </div>
+        </cs-content-header>
+
+        <!-- 内容主体（自适应可滚动） -->
+        <div class="hr-scroll">
+
+          <!-- ① KPI 数据条 -->
+          <section class="hr-kpi">
+            <div class="hr-kpi__item">
+              <div class="hr-kpi__head">
+                <span class="hr-kpi__label">在职员工</span>
+                <i class="hr-kpi__icon cses-stratis-users-profiles-01"></i>
+              </div>
+              <div class="hr-kpi__value">1,284<span class="hr-kpi__unit">人</span></div>
+              <div class="hr-kpi__delta hr-kpi__delta--up">
+                <i class="cses-stratis-arrow-up"></i><span>较上月 +18</span>
+              </div>
+            </div>
+            <div class="hr-kpi__item">
+              <div class="hr-kpi__head">
+                <span class="hr-kpi__label">本月入职</span>
+                <i class="hr-kpi__icon hr-kpi__icon--green cses-stratis-user-profile-check"></i>
+              </div>
+              <div class="hr-kpi__value">26<span class="hr-kpi__unit">人</span></div>
+              <div class="hr-kpi__delta hr-kpi__delta--up">
+                <i class="cses-stratis-arrow-up"></i><span>较上月 +9</span>
+              </div>
+            </div>
+            <div class="hr-kpi__item">
+              <div class="hr-kpi__head">
+                <span class="hr-kpi__label">本月离职</span>
+                <i class="hr-kpi__icon hr-kpi__icon--red cses-stratis-user-profile-x"></i>
+              </div>
+              <div class="hr-kpi__value">8<span class="hr-kpi__unit">人</span></div>
+              <div class="hr-kpi__delta hr-kpi__delta--down">
+                <i class="cses-stratis-down-arrow"></i><span>较上月 -3</span>
+              </div>
+            </div>
+            <div class="hr-kpi__item">
+              <div class="hr-kpi__head">
+                <span class="hr-kpi__label">待入职</span>
+                <i class="hr-kpi__icon hr-kpi__icon--orange cses-stratis-clock-01"></i>
+              </div>
+              <div class="hr-kpi__value">12<span class="hr-kpi__unit">人</span></div>
+              <div class="hr-kpi__delta hr-kpi__delta--muted">
+                <span>本周到岗 5 人</span>
+              </div>
+            </div>
+            <div class="hr-kpi__item">
+              <div class="hr-kpi__head">
+                <span class="hr-kpi__label">试用期到期</span>
+                <i class="hr-kpi__icon hr-kpi__icon--purple cses-stratis-calendar-check"></i>
+              </div>
+              <div class="hr-kpi__value">9<span class="hr-kpi__unit">人</span></div>
+              <div class="hr-kpi__delta hr-kpi__delta--alert">
+                <span>本周需评估 3 人</span>
+              </div>
+            </div>
+            <div class="hr-kpi__item">
+              <div class="hr-kpi__head">
+                <span class="hr-kpi__label">招聘中岗位</span>
+                <i class="hr-kpi__icon hr-kpi__icon--blue cses-stratis-target-01"></i>
+              </div>
+              <div class="hr-kpi__value">23<span class="hr-kpi__unit">个</span></div>
+              <div class="hr-kpi__delta hr-kpi__delta--up">
+                <i class="cses-stratis-arrow-up"></i><span>新增 4 个</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- ② 主体两栏 -->
+          <div class="hr-grid">
+
+            <!-- 左主列 -->
+            <div class="hr-col-main">
+
+              <!-- 入离调转工作台 -->
+              <section class="hr-card">
+                <header class="hr-card__head">
+                  <div class="hr-card__title">
+                    <span>入离调转工作台</span>
+                    <cs-tag data-size="sm" data-color="primary">HR 核心动作</cs-tag>
+                  </div>
+                  <a class="hr-link">
+                    <span>查看全部流程</span>
+                    <i class="cses-stratis-chevron-right"></i>
+                  </a>
+                </header>
+                <div class="hr-action-grid">
+                  <a class="hr-action hr-action--green">
+                    <span class="hr-action__icon"><i class="cses-stratis-user-profile-check"></i></span>
+                    <div class="hr-action__body">
+                      <div class="hr-action__title">入职办理</div>
+                      <div class="hr-action__sub">5 位新员工待办理</div>
+                    </div>
+                    <span class="hr-action__count">5</span>
+                  </a>
+                  <a class="hr-action hr-action--blue">
+                    <span class="hr-action__icon"><i class="cses-stratis-arrow-switch-horizontal"></i></span>
+                    <div class="hr-action__body">
+                      <div class="hr-action__title">转岗调动</div>
+                      <div class="hr-action__sub">2 项异动待审批</div>
+                    </div>
+                    <span class="hr-action__count">2</span>
+                  </a>
+                  <a class="hr-action hr-action--red">
+                    <span class="hr-action__icon"><i class="cses-stratis-user-profile-x"></i></span>
+                    <div class="hr-action__body">
+                      <div class="hr-action__title">离职办理</div>
+                      <div class="hr-action__sub">3 位员工流程进行中</div>
+                    </div>
+                    <span class="hr-action__count">3</span>
+                  </a>
+                  <a class="hr-action hr-action--purple">
+                    <span class="hr-action__icon"><i class="cses-stratis-file-shield-01"></i></span>
+                    <div class="hr-action__body">
+                      <div class="hr-action__title">合同续签</div>
+                      <div class="hr-action__sub">7 份合同 30 天内到期</div>
+                    </div>
+                    <span class="hr-action__count">7</span>
+                  </a>
+                </div>
+              </section>
+
+              <!-- HR 待办时间线 -->
+              <section class="hr-card">
+                <header class="hr-card__head">
+                  <div class="hr-card__title">
+                    <span>HR 待办时间线</span>
+                    <cs-tag data-size="sm" data-color="warning">11 项待处理</cs-tag>
+                  </div>
+                  <div class="hr-card__filters">
+                    <span class="hr-pill hr-pill--active">本周</span>
+                    <span class="hr-pill">本月</span>
+                    <span class="hr-pill">全部</span>
+                  </div>
+                </header>
+
+                <ol class="hr-timeline">
+                  <li class="hr-timeline__day">
+                    <div class="hr-timeline__date">
+                      <div class="hr-timeline__date-num">25</div>
+                      <div class="hr-timeline__date-day">今日 · 周四</div>
+                    </div>
+                    <ul class="hr-timeline__list">
+                      <li class="hr-timeline__item">
+                        <span class="hr-timeline__time">09:30</span>
+                        <span class="hr-timeline__dot hr-timeline__dot--green"></span>
+                        <div class="hr-timeline__body">
+                          <div class="hr-timeline__title">林晓彤 入职报到</div>
+                          <div class="hr-timeline__meta">设计中心 · 视觉设计师 · 主管：陈薇</div>
+                        </div>
+                        <cs-status-badge data-status="in-progress">进行中</cs-status-badge>
+                      </li>
+                      <li class="hr-timeline__item">
+                        <span class="hr-timeline__time">14:00</span>
+                        <span class="hr-timeline__dot hr-timeline__dot--blue"></span>
+                        <div class="hr-timeline__body">
+                          <div class="hr-timeline__title">试用期转正评估会议</div>
+                          <div class="hr-timeline__meta">3 位员工 · 工程院 8 层 803 会议室</div>
+                        </div>
+                        <cs-status-badge data-status="pending">待开始</cs-status-badge>
+                      </li>
+                      <li class="hr-timeline__item">
+                        <span class="hr-timeline__time">17:30</span>
+                        <span class="hr-timeline__dot hr-timeline__dot--orange"></span>
+                        <div class="hr-timeline__body">
+                          <div class="hr-timeline__title">月度社保数据复核</div>
+                          <div class="hr-timeline__meta">需提交至总公司 HRSSC</div>
+                        </div>
+                        <cs-status-badge data-status="overdue">超期 2h</cs-status-badge>
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li class="hr-timeline__day">
+                    <div class="hr-timeline__date">
+                      <div class="hr-timeline__date-num">26</div>
+                      <div class="hr-timeline__date-day">明日 · 周五</div>
+                    </div>
+                    <ul class="hr-timeline__list">
+                      <li class="hr-timeline__item">
+                        <span class="hr-timeline__time">10:00</span>
+                        <span class="hr-timeline__dot hr-timeline__dot--purple"></span>
+                        <div class="hr-timeline__body">
+                          <div class="hr-timeline__title">高级前端工程师 复试</div>
+                          <div class="hr-timeline__meta">候选人：周明远 · 面试官：王立 + 赵航</div>
+                        </div>
+                        <cs-status-badge data-status="not-started">计划中</cs-status-badge>
+                      </li>
+                      <li class="hr-timeline__item">
+                        <span class="hr-timeline__time">15:00</span>
+                        <span class="hr-timeline__dot hr-timeline__dot--blue"></span>
+                        <div class="hr-timeline__body">
+                          <div class="hr-timeline__title">薪酬调整方案宣讲</div>
+                          <div class="hr-timeline__meta">产品研发线 · 全员线上参与</div>
+                        </div>
+                        <cs-status-badge data-status="not-started">计划中</cs-status-badge>
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li class="hr-timeline__day">
+                    <div class="hr-timeline__date">
+                      <div class="hr-timeline__date-num">29</div>
+                      <div class="hr-timeline__date-day">下周一</div>
+                    </div>
+                    <ul class="hr-timeline__list">
+                      <li class="hr-timeline__item">
+                        <span class="hr-timeline__time">全天</span>
+                        <span class="hr-timeline__dot hr-timeline__dot--green"></span>
+                        <div class="hr-timeline__body">
+                          <div class="hr-timeline__title">2026 届校招 OnBoarding Day</div>
+                          <div class="hr-timeline__meta">17 位应届生集中入职 · 总部一楼大堂</div>
+                        </div>
+                        <cs-status-badge data-status="not-started">17 人</cs-status-badge>
+                      </li>
+                    </ul>
+                  </li>
+                </ol>
+              </section>
+
+            </div>
+
+            <!-- 右窄列 -->
+            <div class="hr-col-side">
+
+              <!-- 组织架构 / 部门分布 -->
+              <section class="hr-card hr-card--org">
+                <header class="hr-card__head">
+                  <div class="hr-card__title">
+                    <span>组织架构</span>
+                    <cs-tag data-size="sm">8 个一级部门</cs-tag>
+                  </div>
+                  <a class="hr-link">
+                    <span>展开</span>
+                    <i class="cses-stratis-arrow-up-right"></i>
+                  </a>
+                </header>
+
+                <!-- 部门可视化占位 -->
+                <div class="hr-org-canvas">
+                  <div class="hr-org-node hr-org-node--root">
+                    <i class="cses-stratis-grid-01"></i>
+                    <span>Coreshine 集团</span>
+                    <span class="hr-org-node__count">1,284</span>
+                  </div>
+                  <div class="hr-org-branches">
+                    <div class="hr-org-node hr-org-node--child"><span class="hr-dot hr-dot--blue"></span><span class="hr-org-node__name">产品研发</span><span class="hr-org-node__count">462</span></div>
+                    <div class="hr-org-node hr-org-node--child"><span class="hr-dot hr-dot--green"></span><span class="hr-org-node__name">商业增长</span><span class="hr-org-node__count">298</span></div>
+                    <div class="hr-org-node hr-org-node--child"><span class="hr-dot hr-dot--orange"></span><span class="hr-org-node__name">客户成功</span><span class="hr-org-node__count">214</span></div>
+                    <div class="hr-org-node hr-org-node--child"><span class="hr-dot hr-dot--purple"></span><span class="hr-org-node__name">设计中心</span><span class="hr-org-node__count">86</span></div>
+                  </div>
+                </div>
+
+                <!-- 部门人数横向条形 -->
+                <ul class="hr-dept-bars">
+                  <li class="hr-dept-bar">
+                    <span class="hr-dept-bar__name">产品研发</span>
+                    <span class="hr-dept-bar__track"><span class="hr-dept-bar__fill hr-dept-bar__fill--blue" style="width:92%;"></span></span>
+                    <span class="hr-dept-bar__value">462</span>
+                  </li>
+                  <li class="hr-dept-bar">
+                    <span class="hr-dept-bar__name">商业增长</span>
+                    <span class="hr-dept-bar__track"><span class="hr-dept-bar__fill hr-dept-bar__fill--green" style="width:62%;"></span></span>
+                    <span class="hr-dept-bar__value">298</span>
+                  </li>
+                  <li class="hr-dept-bar">
+                    <span class="hr-dept-bar__name">客户成功</span>
+                    <span class="hr-dept-bar__track"><span class="hr-dept-bar__fill hr-dept-bar__fill--orange" style="width:46%;"></span></span>
+                    <span class="hr-dept-bar__value">214</span>
+                  </li>
+                  <li class="hr-dept-bar">
+                    <span class="hr-dept-bar__name">设计中心</span>
+                    <span class="hr-dept-bar__track"><span class="hr-dept-bar__fill hr-dept-bar__fill--purple" style="width:22%;"></span></span>
+                    <span class="hr-dept-bar__value">86</span>
+                  </li>
+                  <li class="hr-dept-bar">
+                    <span class="hr-dept-bar__name">财务法务</span>
+                    <span class="hr-dept-bar__track"><span class="hr-dept-bar__fill hr-dept-bar__fill--blue" style="width:18%;"></span></span>
+                    <span class="hr-dept-bar__value">72</span>
+                  </li>
+                  <li class="hr-dept-bar">
+                    <span class="hr-dept-bar__name">人力行政</span>
+                    <span class="hr-dept-bar__track"><span class="hr-dept-bar__fill hr-dept-bar__fill--green" style="width:14%;"></span></span>
+                    <span class="hr-dept-bar__value">58</span>
+                  </li>
+                </ul>
+              </section>
+
+              <!-- 本月员工动态（信息流） -->
+              <section class="hr-card">
+                <header class="hr-card__head">
+                  <div class="hr-card__title">
+                    <span>本月员工动态</span>
+                  </div>
+                  <a class="hr-link">
+                    <span>全部</span>
+                    <i class="cses-stratis-chevron-right"></i>
+                  </a>
+                </header>
+
+                <ul class="hr-feed">
+                  <li class="hr-feed__item">
+                    <span class="hr-feed__badge hr-feed__badge--pink"><i class="cses-stratis-gift-01"></i></span>
+                    <div class="hr-feed__body">
+                      <div class="hr-feed__title">今日 3 位同事生日</div>
+                      <div class="hr-feed__people">
+                        <cs-avatar data-size="xs" data-color="blue">张</cs-avatar>
+                        <cs-avatar data-size="xs" data-color="orange">李</cs-avatar>
+                        <cs-avatar data-size="xs" data-color="green">王</cs-avatar>
+                        <span class="hr-feed__people-text">张萌、李文博、王婧仪</span>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="hr-feed__item">
+                    <span class="hr-feed__badge hr-feed__badge--purple"><i class="cses-stratis-discount-star-01"></i></span>
+                    <div class="hr-feed__body">
+                      <div class="hr-feed__title">2 位同事晋升通过</div>
+                      <div class="hr-feed__meta">
+                        <span>陈晓帆 → 高级产品经理</span>
+                        <span class="hr-feed__sep">·</span>
+                        <span>赵航 → 技术总监</span>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="hr-feed__item">
+                    <span class="hr-feed__badge hr-feed__badge--green"><i class="cses-stratis-user-profile-check"></i></span>
+                    <div class="hr-feed__body">
+                      <div class="hr-feed__title">本月 12 位员工成功转正</div>
+                      <div class="hr-feed__meta">
+                        <span>产品研发 5 人 · 设计中心 3 人 · 商业增长 4 人</span>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="hr-feed__item">
+                    <span class="hr-feed__badge hr-feed__badge--blue"><i class="cses-stratis-calendar-check"></i></span>
+                    <div class="hr-feed__body">
+                      <div class="hr-feed__title">入职周年纪念</div>
+                      <div class="hr-feed__meta">
+                        <span>本月有 8 位同事达成 1/3/5 年司龄</span>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </section>
+
+            </div>
+          </div>
+
+          <!-- ③ 员工自助服务 -->
+          <section class="hr-card hr-card--service">
+            <header class="hr-card__head">
+              <div class="hr-card__title">
+                <span>员工自助服务</span>
+                <cs-tag data-size="sm" data-color="info">面向全员</cs-tag>
+              </div>
+              <a class="hr-link">
+                <span>管理服务目录</span>
+                <i class="cses-stratis-edit-01"></i>
+              </a>
+            </header>
+
+            <div class="hr-service-grid">
+              <a class="hr-service">
+                <span class="hr-service__icon hr-service__icon--orange"><i class="cses-stratis-umbrella-02"></i></span>
+                <span class="hr-service__name">请假申请</span>
+                <span class="hr-service__hint">年假 / 病假 / 调休</span>
+              </a>
+              <a class="hr-service">
+                <span class="hr-service__icon hr-service__icon--green"><i class="cses-stratis-currency-dollar"></i></span>
+                <span class="hr-service__name">报销申请</span>
+                <span class="hr-service__hint">差旅 / 招待 / 物料</span>
+              </a>
+              <a class="hr-service">
+                <span class="hr-service__icon hr-service__icon--blue"><i class="cses-stratis-file-shield-01"></i></span>
+                <span class="hr-service__name">证明开具</span>
+                <span class="hr-service__hint">在职 / 收入 / 离职</span>
+              </a>
+              <a class="hr-service">
+                <span class="hr-service__icon hr-service__icon--purple"><i class="cses-stratis-clock-check"></i></span>
+                <span class="hr-service__name">加班调休</span>
+                <span class="hr-service__hint">登记加班 / 申请调休</span>
+              </a>
+              <a class="hr-service">
+                <span class="hr-service__icon hr-service__icon--red"><i class="cses-stratis-graduation-cap-01"></i></span>
+                <span class="hr-service__name">培训报名</span>
+                <span class="hr-service__hint">12 门课程开放</span>
+              </a>
+              <a class="hr-service">
+                <span class="hr-service__icon hr-service__icon--sky"><i class="cses-stratis-ticket-01"></i></span>
+                <span class="hr-service__name">福利兑换</span>
+                <span class="hr-service__hint">积分 4,820 可用</span>
+              </a>
+              <a class="hr-service">
+                <span class="hr-service__icon hr-service__icon--orange"><i class="cses-stratis-coins"></i></span>
+                <span class="hr-service__name">薪资查询</span>
+                <span class="hr-service__hint">本月明细 / 历史</span>
+              </a>
+              <a class="hr-service">
+                <span class="hr-service__icon hr-service__icon--green"><i class="cses-stratis-mail-01"></i></span>
+                <span class="hr-service__name">联系 HRBP</span>
+                <span class="hr-service__hint">部门人事顾问</span>
+              </a>
+            </div>
+          </section>
+
+        </div>
+      </main>
+
+    </div>
+  </div>
+</cs-layout>
+
+</body>
+</html>

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>表单管理 — CSES</title>
+
+  <link rel="stylesheet" href="../../design/css/base.css">
+  <link rel="stylesheet" href="../../design/css/token.css">
+  <link rel="stylesheet" href="../../design/css/variable.css">
+  <link rel="stylesheet" href="../../design/fonts/cses-icons.css?v=101">
+  <link rel="stylesheet" href="../../design/fragment/fragment.css">
+  <link rel="stylesheet" href="../../design/css/page-shell.css">
+
+  <link rel="stylesheet" href="../../design/components/search-input/search-input.css">
+  <link rel="stylesheet" href="../../design/components/avatar/avatar.css">
+  <link rel="stylesheet" href="../../design/components/button/button.css">
+  <link rel="stylesheet" href="../../design/components/status-badge/status-badge.css">
+  <link rel="stylesheet" href="../../design/components/switch/switch.css">
+
+  <link rel="stylesheet" href="./index.css">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: var(--font-family-cn), -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--cs-color-bg-app-dark);
+      color: var(--cs-color-text);
+      height: 100vh;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+</head>
+<body data-module="form">
+
+<cs-layout>
+
+  <!-- 标签栏 -->
+  <div class="tabbar">
+    <div class="tabbar-left">
+      <span class="win-ctrl tabbar-window-control">
+        <span class="ctrl-dot" data-c="close"></span>
+        <span class="ctrl-dot" data-c="min"></span>
+        <span class="ctrl-dot" data-c="max"></span>
+      </span>
+      <cs-search-input class="tabbar-search ah-top-search" data-variant="gray" data-size="sm">
+        <i class="search-icon cses-stratis-search-01"></i>
+        <input class="search-field" type="text" placeholder="搜索">
+      </cs-search-input>
+      <div class="tabbar-tabs"></div>
+    </div>
+    <div class="tabbar-right">
+      <span class="tabbar-notice">
+        <i class="cses-stratis-bell-01 notice-icon"></i>
+        <span class="notice-badge">2</span>
+      </span>
+      <cs-avatar data-size="xs" data-shape="circle" data-color="blue">张</cs-avatar>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- 一级导航 -->
+    <cs-sidebar>
+      <span class="logo">
+        <img src="../../design/assets/logo.png" alt="CSES">
+      </span>
+      <nav class="nav">
+        <div class="nav-group">
+          <a class="nav-item" data-module="workspace">
+            <span class="nav-icon"><i class="cses-stratis-home-01"></i></span>
+            <span class="nav-label">工作台</span>
+          </a>
+          <a class="nav-item" data-module="guide">
+            <span class="nav-icon"><i class="cses-stratis-compass"></i></span>
+            <span class="nav-label">导向</span>
+          </a>
+          <a class="nav-item" data-module="message">
+            <span class="nav-icon"><i class="cses-stratis-message-circle"></i></span>
+            <span class="nav-label">消息</span>
+          </a>
+          <a class="nav-item" data-module="task-list">
+            <span class="nav-icon"><i class="cses-stratis-check-square-broken"></i></span>
+            <span class="nav-label">任务</span>
+          </a>
+          <a class="nav-item" data-module="meeting">
+            <span class="nav-icon"><i class="cses-stratis-video-on"></i></span>
+            <span class="nav-label">会议</span>
+          </a>
+          <a class="nav-item" data-module="doc">
+            <span class="nav-icon"><i class="cses-stratis-book-01"></i></span>
+            <span class="nav-label">文档</span>
+          </a>
+          <a class="nav-item" data-active data-module="form">
+            <span class="nav-icon"><i class="cses-stratis-file-edit-01"></i></span>
+            <span class="nav-label">表单</span>
+          </a>
+          <a class="nav-item" data-module="approval">
+            <span class="nav-icon"><i class="cses-stratis-file-check-01"></i></span>
+            <span class="nav-label">审批</span>
+          </a>
+        </div>
+      </nav>
+    </cs-sidebar>
+
+    <!-- 内容包裹 -->
+    <div class="content-wrapper" style="position:relative;">
+
+      <!-- 二级导航：表单 (232px，同任务页) -->
+      <cs-navbar>
+        <div class="inner">
+
+          <!-- ② 主 CTA -->
+          <div class="slot-action">
+            <a href="../form-builder/index.html" style="text-decoration:none;display:block;">
+              <cs-button data-variant="primary" data-size="lg">
+                <i class="btn-icon cses-stratis-plus-01"></i>
+                <span class="btn-label">新建表单</span>
+              </cs-button>
+            </a>
+          </div>
+
+          <!-- ③ 主菜单 -->
+          <div class="slot-nav">
+            <div class="ac-group ac-group--expanded">
+              <div class="ac-side-item">
+                <i class="ac-side-item__icon cses-stratis-file-edit-01"></i>
+                <span class="ac-side-item__label">表单</span>
+                <i class="ac-side-item__caret cses-stratis-chevron-down"></i>
+              </div>
+              <div class="ac-sub-list">
+                <div class="ac-sub-item" data-active>业务表单</div>
+                <div class="ac-sub-item">工作流表单</div>
+                <div class="ac-sub-item">问卷表单</div>
+                <div class="ac-sub-item">AI表单</div>
+              </div>
+            </div>
+
+            <div class="ac-group">
+              <div class="ac-side-item">
+                <i class="ac-side-item__icon cses-stratis-share"></i>
+                <span class="ac-side-item__label">流程管理</span>
+                <i class="ac-side-item__caret cses-stratis-chevron-down"></i>
+              </div>
+              <div class="ac-sub-list">
+                <!-- 流程管理子项暂留空 -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </cs-navbar>
+
+      <!-- 主内容区 -->
+      <main class="main-content">
+
+        <!-- 内容头部 -->
+        <cs-content-header>
+          <div class="slot-left">
+            <span class="page-title">表单管理</span>
+          </div>
+        </cs-content-header>
+
+        <!-- 搜索 + 筛选 -->
+        <div class="fm-search-bar">
+          <span class="fm-search-box">
+            <input class="fm-search-box__input" type="text" placeholder="搜索">
+            <i class="fm-search-box__icon cses-stratis-search-01"></i>
+          </span>
+          <button class="fm-filter-btn">
+            <i class="cses-stratis-filter"></i>
+            <span>筛选</span>
+          </button>
+        </div>
+
+        <!-- 表单分组区 -->
+        <div class="fm-content">
+
+          <!-- 分组：未分类 -->
+          <div class="fm-group" id="groupUncategorized">
+            <div class="fm-group__head">
+              <div class="fm-group__head-left">
+                <i class="fm-group__caret cses-stratis-chevron-down"></i>
+                <span class="fm-group__title">未分类</span>
+                <span class="fm-group__count">23</span>
+              </div>
+              <div class="fm-group__actions">
+                <span class="fm-group__action"><i class="cses-stratis-sort-vertical-01"></i>排序</span>
+                <span class="fm-group__action"><i class="cses-stratis-settings"></i>分组管理</span>
+              </div>
+            </div>
+            <div class="fm-group__body">
+              <div class="fm-table">
+                <div class="fm-row fm-row--head">
+                  <div class="fm-cell">表单名称</div>
+                  <div class="fm-cell">数据表</div>
+                  <div class="fm-cell">可见范围</div>
+                  <div class="fm-cell">最后更新</div>
+                  <div class="fm-cell">版本</div>
+                  <div class="fm-cell">表单状态</div>
+                  <div class="fm-cell">是否发布</div>
+                  <div class="fm-cell">操作</div>
+                </div>
+
+                <div class="fm-row fm-row--body">
+                  <div class="fm-cell">
+                    <div class="fm-name">
+                      <span class="fm-name__icon" data-color="yellow"><i class="cses-stratis-grid-01"></i></span>
+                      <span class="fm-name__text">任务管理</span>
+                    </div>
+                  </div>
+                  <div class="fm-cell">CSES/任务管理</div>
+                  <div class="fm-cell">全部可见</div>
+                  <div class="fm-cell">03-06 13:23</div>
+                  <div class="fm-cell">V1.2</div>
+                  <div class="fm-cell"><cs-status-badge data-status="in-progress">已发布</cs-status-badge></div>
+                  <div class="fm-cell"><cs-switch data-checked><div class="switch-track"><div class="switch-knob"></div></div></cs-switch></div>
+                  <div class="fm-cell"><span class="fm-row-actions">
+                    <span class="fm-row-action">编辑</span>
+                    <span class="fm-row-action">配置</span>
+                    <span class="fm-row-action">更多</span>
+                  </span></div>
+                </div>
+              </div>
+              <a href="../form-builder/index.html" class="fm-create-row" style="text-decoration:none;">
+                <span class="fm-create-row__icon">+</span>
+                <span>创建新表单</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- 分组：假勤管理 -->
+          <div class="fm-group" id="groupLeave">
+            <div class="fm-group__head">
+              <div class="fm-group__head-left">
+                <i class="fm-group__caret cses-stratis-chevron-down"></i>
+                <span class="fm-group__title">假勤管理</span>
+                <span class="fm-group__count">23</span>
+              </div>
+              <div class="fm-group__actions">
+                <span class="fm-group__action"><i class="cses-stratis-sort-vertical-01"></i>排序</span>
+                <span class="fm-group__action"><i class="cses-stratis-settings"></i>分组管理</span>
+              </div>
+            </div>
+            <div class="fm-group__body">
+              <div class="fm-table">
+                <div class="fm-row fm-row--head">
+                  <div class="fm-cell">表单名称</div>
+                  <div class="fm-cell">数据表</div>
+                  <div class="fm-cell">可见范围</div>
+                  <div class="fm-cell">最后更新</div>
+                  <div class="fm-cell">版本</div>
+                  <div class="fm-cell">表单状态</div>
+                  <div class="fm-cell">是否发布</div>
+                  <div class="fm-cell">操作</div>
+                </div>
+
+                <div class="fm-row fm-row--body">
+                  <div class="fm-cell">
+                    <div class="fm-name">
+                      <span class="fm-name__icon" data-color="orange"><i class="cses-stratis-alarm-01"></i></span>
+                      <span class="fm-name__text">员工请假</span>
+                    </div>
+                  </div>
+                  <div class="fm-cell">CSES/员工请假</div>
+                  <div class="fm-cell">全部可见</div>
+                  <div class="fm-cell">03-06 13:23</div>
+                  <div class="fm-cell">V1.2</div>
+                  <div class="fm-cell"><cs-status-badge data-status="in-progress">已发布</cs-status-badge></div>
+                  <div class="fm-cell"><cs-switch data-checked><div class="switch-track"><div class="switch-knob"></div></div></cs-switch></div>
+                  <div class="fm-cell"><span class="fm-row-actions">
+                    <span class="fm-row-action">编辑</span>
+                    <span class="fm-row-action">配置</span>
+                    <span class="fm-row-action">更多</span>
+                  </span></div>
+                </div>
+
+                <div class="fm-row fm-row--body">
+                  <div class="fm-cell">
+                    <div class="fm-name">
+                      <span class="fm-name__icon" data-color="sky"><i class="cses-stratis-share"></i></span>
+                      <span class="fm-name__text">外出</span>
+                    </div>
+                  </div>
+                  <div class="fm-cell">CSES/外出</div>
+                  <div class="fm-cell">全部可见</div>
+                  <div class="fm-cell">03-06 13:23</div>
+                  <div class="fm-cell">V1.2</div>
+                  <div class="fm-cell"><cs-status-badge data-status="withdrawn">已停用</cs-status-badge></div>
+                  <div class="fm-cell"><cs-switch><div class="switch-track"><div class="switch-knob"></div></div></cs-switch></div>
+                  <div class="fm-cell"><span class="fm-row-actions">
+                    <span class="fm-row-action">编辑</span>
+                    <span class="fm-row-action">配置</span>
+                    <span class="fm-row-action">更多</span>
+                  </span></div>
+                </div>
+
+                <div class="fm-row fm-row--body">
+                  <div class="fm-cell">
+                    <div class="fm-name">
+                      <span class="fm-name__icon" data-color="gray"><i class="cses-stratis-bag-01"></i></span>
+                      <span class="fm-name__text">差旅</span>
+                    </div>
+                  </div>
+                  <div class="fm-cell">CSES/差旅</div>
+                  <div class="fm-cell">全部可见</div>
+                  <div class="fm-cell">03-06 13:23</div>
+                  <div class="fm-cell">V1.2</div>
+                  <div class="fm-cell"><cs-status-badge data-status="rejected">已废弃</cs-status-badge></div>
+                  <div class="fm-cell"><cs-switch data-checked><div class="switch-track"><div class="switch-knob"></div></div></cs-switch></div>
+                  <div class="fm-cell"><span class="fm-row-actions">
+                    <span class="fm-row-action">编辑</span>
+                    <span class="fm-row-action">配置</span>
+                    <span class="fm-row-action">更多</span>
+                  </span></div>
+                </div>
+
+                <div class="fm-row fm-row--body">
+                  <div class="fm-cell">
+                    <div class="fm-name">
+                      <span class="fm-name__icon" data-color="blue"><i class="cses-stratis-lightbulb-01"></i></span>
+                      <span class="fm-name__text">加班申请</span>
+                    </div>
+                  </div>
+                  <div class="fm-cell">CSES/加班申请</div>
+                  <div class="fm-cell">全部可见</div>
+                  <div class="fm-cell">03-06 13:23</div>
+                  <div class="fm-cell">V1.2</div>
+                  <div class="fm-cell"><cs-status-badge data-status="in-progress">已发布</cs-status-badge></div>
+                  <div class="fm-cell"><cs-switch data-checked><div class="switch-track"><div class="switch-knob"></div></div></cs-switch></div>
+                  <div class="fm-cell"><span class="fm-row-actions">
+                    <span class="fm-row-action">编辑</span>
+                    <span class="fm-row-action">配置</span>
+                    <span class="fm-row-action">更多</span>
+                  </span></div>
+                </div>
+              </div>
+              <a href="../form-builder/index.html" class="fm-create-row" style="text-decoration:none;">
+                <span class="fm-create-row__icon">+</span>
+                <span>创建新表单</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- 分组：人事管理 -->
+          <div class="fm-group" id="groupHR">
+            <div class="fm-group__head">
+              <div class="fm-group__head-left">
+                <i class="fm-group__caret cses-stratis-chevron-down"></i>
+                <span class="fm-group__title">人事管理</span>
+                <span class="fm-group__count">23</span>
+              </div>
+              <div class="fm-group__actions">
+                <span class="fm-group__action"><i class="cses-stratis-sort-vertical-01"></i>排序</span>
+                <span class="fm-group__action"><i class="cses-stratis-settings"></i>分组管理</span>
+              </div>
+            </div>
+            <div class="fm-group__body">
+              <div class="fm-table">
+                <div class="fm-row fm-row--head">
+                  <div class="fm-cell">表单名称</div>
+                  <div class="fm-cell">数据表</div>
+                  <div class="fm-cell">可见范围</div>
+                  <div class="fm-cell">最后更新</div>
+                  <div class="fm-cell">版本</div>
+                  <div class="fm-cell">表单状态</div>
+                  <div class="fm-cell">是否发布</div>
+                  <div class="fm-cell">操作</div>
+                </div>
+
+                <div class="fm-row fm-row--body">
+                  <div class="fm-cell">
+                    <div class="fm-name">
+                      <span class="fm-name__icon" data-color="orange"><i class="cses-stratis-user-profile-square"></i></span>
+                      <span class="fm-name__text">人员档案</span>
+                    </div>
+                  </div>
+                  <div class="fm-cell">CSES/人员档案</div>
+                  <div class="fm-cell">全部可见</div>
+                  <div class="fm-cell">03-06 13:23</div>
+                  <div class="fm-cell">V1.2</div>
+                  <div class="fm-cell"><cs-status-badge data-status="in-progress">已发布</cs-status-badge></div>
+                  <div class="fm-cell"><cs-switch data-checked><div class="switch-track"><div class="switch-knob"></div></div></cs-switch></div>
+                  <div class="fm-cell"><span class="fm-row-actions">
+                    <span class="fm-row-action">编辑</span>
+                    <span class="fm-row-action">配置</span>
+                    <span class="fm-row-action">更多</span>
+                  </span></div>
+                </div>
+
+                <div class="fm-row fm-row--body">
+                  <div class="fm-cell">
+                    <div class="fm-name">
+                      <span class="fm-name__icon" data-color="green"><i class="cses-stratis-user-profile-check"></i></span>
+                      <span class="fm-name__text">入职</span>
+                    </div>
+                  </div>
+                  <div class="fm-cell">CSES/入职</div>
+                  <div class="fm-cell">全部可见</div>
+                  <div class="fm-cell">03-06 13:23</div>
+                  <div class="fm-cell">V1.2</div>
+                  <div class="fm-cell"><cs-status-badge data-status="in-progress">已发布</cs-status-badge></div>
+                  <div class="fm-cell"><cs-switch data-checked><div class="switch-track"><div class="switch-knob"></div></div></cs-switch></div>
+                  <div class="fm-cell"><span class="fm-row-actions">
+                    <span class="fm-row-action">编辑</span>
+                    <span class="fm-row-action">配置</span>
+                    <span class="fm-row-action">更多</span>
+                  </span></div>
+                </div>
+
+                <div class="fm-row fm-row--body">
+                  <div class="fm-cell">
+                    <div class="fm-name">
+                      <span class="fm-name__icon" data-color="red"><i class="cses-stratis-user-profile-minus"></i></span>
+                      <span class="fm-name__text">离职</span>
+                    </div>
+                  </div>
+                  <div class="fm-cell">CSES/离职</div>
+                  <div class="fm-cell">全部可见</div>
+                  <div class="fm-cell">03-06 13:23</div>
+                  <div class="fm-cell">V1.2</div>
+                  <div class="fm-cell"><cs-status-badge data-status="withdrawn">已停用</cs-status-badge></div>
+                  <div class="fm-cell"><cs-switch><div class="switch-track"><div class="switch-knob"></div></div></cs-switch></div>
+                  <div class="fm-cell"><span class="fm-row-actions">
+                    <span class="fm-row-action">编辑</span>
+                    <span class="fm-row-action">配置</span>
+                    <span class="fm-row-action">更多</span>
+                  </span></div>
+                </div>
+              </div>
+              <a href="../form-builder/index.html" class="fm-create-row" style="text-decoration:none;">
+                <span class="fm-create-row__icon">+</span>
+                <span>创建新表单</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+
+    </div>
+
+  </div>
+</cs-layout>
+
+<script>
+  // 分组 / 表单组折叠
+  document.querySelectorAll('.fm-group__head').forEach(function (head) {
+    head.addEventListener('click', function () {
+      head.closest('.fm-group').classList.toggle('is-collapsed');
+    });
+  });
+  // navbar 中"表单"/"流程管理"折叠
+  document.querySelectorAll('.ac-group .ac-side-item').forEach(function (head) {
+    head.addEventListener('click', function () {
+      head.closest('.ac-group').classList.toggle('ac-group--expanded');
+    });
+  });
+  // 行内 switch 切换（仅样式，无业务）
+  document.querySelectorAll('cs-switch').forEach(function (sw) {
+    sw.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (sw.hasAttribute('data-checked')) sw.removeAttribute('data-checked');
+      else sw.setAttribute('data-checked', '');
+    });
+  });
+</script>
+<script src="../shared.js"></script>
+</body>
+</html>

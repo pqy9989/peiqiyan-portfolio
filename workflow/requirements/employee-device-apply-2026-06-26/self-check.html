@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>员工设备申请 · 主会话自检流程</title>
+  <meta http-equiv="Cache-Control" content="no-cache">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #FFFFFF;
+      font-family: "Inter", "PingFang SC", -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #0A0A0A;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== 顶部栏 ===== */
+    .doc-topbar {
+      position: sticky; top: 0; z-index: 10;
+      height: 52px;
+      background: #FFFFFF;
+      border-bottom: 0.5px solid #ECECEC;
+      display: flex; align-items: center;
+      padding: 0 28px;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+    .doc-topbar-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 14px; font-weight: 500; color: #0A0A0A;
+      letter-spacing: -0.2px; text-decoration: none;
+    }
+    .doc-topbar-logo-dot {
+      width: 20px; height: 20px; border-radius: 5px;
+      background: #0A0A0A;
+      display: flex; align-items: center; justify-content: center;
+      color: #FFFFFF; font-size: 10px; font-weight: 500;
+    }
+    .doc-topbar-divider { width: 1px; height: 14px; background: #ECECEC; }
+    .doc-topbar-subtitle { font-size: 12px; color: #666666; }
+    .doc-topbar-count {
+      margin-left: auto;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #999999;
+      letter-spacing: 0.8px; text-transform: uppercase;
+    }
+    .doc-topbar-link {
+      font-size: 11px; color: #666666; text-decoration: none;
+      padding: 5px 10px; border: 0.5px solid #E5E5E5; border-radius: 4px;
+      letter-spacing: 0.3px; text-transform: uppercase;
+      transition: all .15s;
+    }
+    .doc-topbar-link:hover { border-color: #0A0A0A; color: #0A0A0A; }
+
+    /* ===== 主体 ===== */
+    .doc-layout { flex: 1; display: flex; min-height: 0; }
+
+    /* 侧栏 */
+    .doc-sidebar {
+      width: 260px; flex-shrink: 0;
+      background: #FFFFFF;
+      border-right: 0.5px solid #ECECEC;
+      position: sticky; top: 52px;
+      align-self: flex-start;
+      height: calc(100vh - 52px);
+      overflow-y: auto;
+    }
+    .doc-sidebar::-webkit-scrollbar { width: 4px; }
+    .doc-sidebar::-webkit-scrollbar-thumb { background: #ECECEC; }
+
+    .doc-nav-scroll { padding: 6px 0 24px; }
+    .doc-nav-group { padding: 16px 0 4px; }
+    .doc-nav-group:first-child { padding-top: 12px; }
+    .doc-nav-group-label {
+      padding: 4px 22px 10px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px; font-weight: 400; color: #999999;
+      letter-spacing: 1.2px; text-transform: uppercase;
+    }
+    .doc-nav-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 7px 22px;
+      font-size: 12.5px; color: #666666;
+      cursor: pointer; transition: color .12s;
+      text-decoration: none;
+      gap: 8px;
+    }
+    .doc-nav-item .nav-tag {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px; color: #BBBBBB;
+      letter-spacing: 0.6px;
+      flex-shrink: 0;
+    }
+    .doc-nav-item .nav-tag.fired { color: #B58B1E; }
+    .doc-nav-item:hover { color: #0A0A0A; }
+    .doc-nav-item.active { color: #0A0A0A; font-weight: 500; }
+    .doc-nav-item.active .nav-tag { color: #4857E2; }
+
+    /* 内容 */
+    .doc-content { flex: 1; min-width: 0; background: #FFFFFF; }
+    .page { padding: 44px 56px; max-width: 920px; }
+
+    /* 章节 */
+    .section-block { padding-top: 56px; margin-top: 56px; border-top: 0.5px solid #ECECEC; }
+    .section-block:first-of-type { padding-top: 0; margin-top: 0; border-top: none; }
+
+    .page-title {
+      font-size: 32px; font-weight: 500; color: #0A0A0A;
+      display: flex; align-items: baseline; gap: 14px;
+      margin: 0 0 10px;
+      letter-spacing: -0.8px; line-height: 1.1;
+    }
+    .page-title-tag {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #999999;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      font-weight: 400;
+    }
+    .page-subtitle {
+      font-size: 13px; color: #666666;
+      line-height: 1.7; max-width: 620px;
+      margin: 0 0 28px;
+    }
+
+    .section-label {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #999999;
+      letter-spacing: 1.4px; text-transform: uppercase;
+      margin-bottom: 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-label .label-dot { width: 5px; height: 5px; border-radius: 50%; background: #999; }
+    .section-label.accent { color: #4857E2; }
+    .section-label.accent .label-dot { background: #4857E2; }
+    .section-label.warn { color: #B58B1E; }
+    .section-label.warn .label-dot { background: #B58B1E; }
+    .section-label.summary { color: #1E7A2E; }
+    .section-label.summary .label-dot { background: #1E7A2E; }
+
+    h2.section-title {
+      font-size: 22px; font-weight: 500; color: #0A0A0A;
+      margin: 0 0 8px;
+      letter-spacing: -0.4px; line-height: 1.25;
+    }
+    .section-hint {
+      font-size: 12.5px; color: #666; line-height: 1.6;
+      margin: 0 0 20px;
+    }
+
+    /* ===== 概览 stats ===== */
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 0;
+      margin: 28px 0 12px;
+    }
+    .stat-card {
+      border-left: 0.5px solid #ECECEC;
+      padding: 4px 22px;
+    }
+    .stat-card:first-child { border-left: none; padding-left: 0; }
+    .stat-card-label {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px; color: #999999;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .stat-card-value {
+      font-size: 38px; font-weight: 500; color: #0A0A0A;
+      line-height: 1; letter-spacing: -1.4px;
+    }
+    .stat-card-value.warn { color: #B58B1E; }
+    .stat-card-unit { font-size: 14px; color: #999999; margin-left: 4px; }
+    .stat-card-hint {
+      margin-top: 10px;
+      font-size: 10px; color: #999999;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      letter-spacing: 0.4px;
+    }
+
+    /* ===== 自检项列表 ===== */
+    .check-list {
+      border: 0.5px solid #ECECEC;
+      margin: 14px 0 8px;
+    }
+    .check-row {
+      display: grid;
+      grid-template-columns: 36px 1fr 110px;
+      align-items: center;
+      padding: 12px 18px;
+      border-bottom: 0.5px solid #ECECEC;
+      font-size: 13px;
+      color: #0A0A0A;
+      line-height: 1.55;
+    }
+    .check-row:last-child { border-bottom: none; }
+    .check-row.sub {
+      grid-template-columns: 36px 36px 1fr 110px;
+      color: #666;
+      font-size: 12.5px;
+      padding-left: 18px;
+    }
+    .check-row.sub::before {
+      content: '';
+      grid-column: 1 / 2;
+    }
+    .check-row.sub .check-marker {
+      grid-column: 2 / 3;
+    }
+
+    .check-marker {
+      width: 20px; height: 20px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 600;
+      flex-shrink: 0;
+    }
+    .check-marker.pass {
+      background: #E8F4EA;
+      color: #1E7A2E;
+    }
+    .check-marker.pass::before { content: '✓'; }
+    .check-marker.fired {
+      background: #FFF9F0;
+      color: #B58B1E;
+      border: 0.5px solid #F0DCB0;
+    }
+    .check-marker.fired::before { content: '!'; }
+
+    .check-text { padding: 0 16px; }
+    .check-text strong { font-weight: 500; }
+
+    .check-result {
+      justify-self: end;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 3px;
+    }
+    .check-result.pass { background: transparent; color: #1E7A2E; }
+    .check-result.fired { background: #FFF9F0; color: #B58B1E; border: 0.5px solid #F0DCB0; }
+
+    .check-row.fired-row { background: #FFFCF5; }
+
+    /* 触发详情说明 */
+    .fired-detail {
+      padding: 10px 14px 12px 56px;
+      background: #FFF9F0;
+      border-bottom: 0.5px solid #F0DCB0;
+      font-size: 12px;
+      color: #6B5614;
+      line-height: 1.65;
+    }
+    .fired-detail::before {
+      content: '触发详情 ';
+      font-family: "JetBrains Mono", monospace;
+      font-size: 9px;
+      color: #B58B1E;
+      letter-spacing: 1px;
+      margin-right: 6px;
+      text-transform: uppercase;
+    }
+
+    /* ===== 表格 ===== */
+    table.simple {
+      width: 100%; border-collapse: collapse;
+      margin: 12px 0 0;
+    }
+    table.simple th, table.simple td {
+      text-align: left;
+      padding: 11px 14px;
+      border-bottom: 0.5px solid #ECECEC;
+      font-size: 12.5px;
+      vertical-align: top;
+      color: #0A0A0A;
+    }
+    table.simple th {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px; color: #999;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      font-weight: 400;
+      border-bottom: 0.5px solid #E5E5E5;
+    }
+    table.simple td.num { color: #999; font-family: "JetBrains Mono", monospace; font-size: 11px; width: 28px; }
+    table.simple td.muted { color: #666; }
+    table.simple td.warn { color: #B58B1E; font-weight: 500; }
+
+    /* badge */
+    .badge {
+      display: inline-block;
+      padding: 2px 7px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px; letter-spacing: 0.8px; text-transform: uppercase;
+      border: 0.5px solid #E5E5E5;
+      color: #666;
+      vertical-align: middle;
+    }
+    .badge.accent { color: #4857E2; border-color: #C3C9F1; }
+    .badge.ok { color: #1E7A2E; border-color: #BFE2C4; }
+    .badge.warn { color: #B58B1E; border-color: #F0DCB0; }
+
+    code {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 11.5px;
+      background: #F5F5F5; padding: 1px 5px; border-radius: 2px;
+      color: #4857E2;
+    }
+
+    /* 进度计 */
+    .progress-meter {
+      margin: 24px 0 12px;
+      display: grid;
+      grid-template-columns: 90px 1fr 60px;
+      gap: 16px;
+      align-items: center;
+    }
+    .progress-label {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #999;
+      letter-spacing: 1.2px; text-transform: uppercase;
+    }
+    .progress-bar {
+      height: 8px;
+      background: #F5F5F5;
+      position: relative;
+      overflow: hidden;
+    }
+    .progress-fill {
+      position: absolute; top: 0; left: 0; bottom: 0;
+      background: #B58B1E;
+    }
+    .progress-num {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 11px; color: #B58B1E;
+      letter-spacing: 0.6px; text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部栏 -->
+  <header class="doc-topbar">
+    <a class="doc-topbar-logo" href="index.html">
+      <span class="doc-topbar-logo-dot">C</span>
+      员工设备申请
+    </a>
+    <span class="doc-topbar-divider"></span>
+    <span class="doc-topbar-subtitle">主会话自检流程 · 2026-06-26</span>
+    <span class="doc-topbar-count">8 PHASES · 21 CHECKS · 7 FIRED · 33%</span>
+    <a class="doc-topbar-link" href="index.html">REQ</a>
+    <a class="doc-topbar-link" href="sop-questions.html" style="margin-left:8px;">Q&A</a>
+  </header>
+
+  <div class="doc-layout">
+    <!-- 侧栏 -->
+    <aside class="doc-sidebar">
+      <nav class="doc-nav-scroll">
+        <div class="doc-nav-group">
+          <div class="doc-nav-group-label">概览</div>
+          <a class="doc-nav-item active" href="#overview"><span>概览</span><span class="nav-tag">21</span></a>
+        </div>
+        <div class="doc-nav-group">
+          <div class="doc-nav-group-label">8 个 phase</div>
+          <a class="doc-nav-item" href="#p0"><span>Phase 0 · 准备</span><span class="nav-tag">4</span></a>
+          <a class="doc-nav-item" href="#p1"><span>Phase 1 · 对话中</span><span class="nav-tag">4 · <span class="fired">2!</span></span></a>
+          <a class="doc-nav-item" href="#p2"><span>Phase 2 · PROTO</span><span class="nav-tag">5 · <span class="fired">3!</span></span></a>
+          <a class="doc-nav-item" href="#p3"><span>Phase 3 · 落盘前</span><span class="nav-tag">5 · <span class="fired">1!</span></span></a>
+          <a class="doc-nav-item" href="#p4"><span>Phase 4 · 派单</span><span class="nav-tag">8 · <span class="fired">1!</span></span></a>
+          <a class="doc-nav-item" href="#p5"><span>Phase 5 · 报告 review</span><span class="nav-tag">4 · <span class="fired">1!</span></span></a>
+          <a class="doc-nav-item" href="#p6"><span>Phase 6 · 反馈 → SOP</span><span class="nav-tag">13</span></a>
+          <a class="doc-nav-item" href="#p7"><span>Phase 7 · 视觉化产物</span><span class="nav-tag">6</span></a>
+        </div>
+        <div class="doc-nav-group">
+          <div class="doc-nav-group-label">总结</div>
+          <a class="doc-nav-item" href="#summary"><span>触发项汇总</span><span class="nav-tag fired">7!</span></a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- 内容 -->
+    <main class="doc-content">
+      <div class="page">
+
+        <!-- 概览 -->
+        <section class="section-block" id="overview">
+          <h1 class="page-title">主会话自检流程 <span class="page-title-tag">SELF-CHECK · 2026-06-26</span></h1>
+          <p class="page-subtitle">这次员工设备申请 SOP 全流程中主会话实际跑过的自检清单，按时间顺序的 8 个 phase 组织。<strong>✓</strong> 表示自然通过，<strong>!</strong> 表示真的被触发并修正——后者是 SOP 进化的实际燃料。</p>
+
+          <div class="overview-grid">
+            <div class="stat-card">
+              <div class="stat-card-label">Phase 数</div>
+              <div class="stat-card-value">8</div>
+              <div class="stat-card-hint">PHASES</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">自检项总数</div>
+              <div class="stat-card-value">21</div>
+              <div class="stat-card-hint">CHECKS</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">实际触发</div>
+              <div class="stat-card-value warn">7</div>
+              <div class="stat-card-hint">FIRED</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">自然通过</div>
+              <div class="stat-card-value">14</div>
+              <div class="stat-card-hint">PASS</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">触发率</div>
+              <div class="stat-card-value">33<span class="stat-card-unit">%</span></div>
+              <div class="stat-card-hint">FIRE RATE</div>
+            </div>
+          </div>
+
+          <div class="progress-meter">
+            <span class="progress-label">触发率</span>
+            <div class="progress-bar"><div class="progress-fill" style="width:33%"></div></div>
+            <span class="progress-num">33% · 目标 <10%</span>
+          </div>
+          <p class="section-hint" style="margin-top:12px">SOP 还在年轻期，规则不断在补；触发率稳定降到 10% 以下时 SOP 算成熟。</p>
+        </section>
+
+        <!-- Phase 0 -->
+        <section class="section-block" id="p0">
+          <div class="section-label accent"><span class="label-dot"></span>PHASE 0 · 准备阶段</div>
+          <h2 class="section-title">接到用户请求时</h2>
+          <p class="section-hint">在 5 轮对话开始前，先判断要不要走 SOP、走哪个 SOP、有没有上下文要注入。</p>
+
+          <div class="check-list">
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text">用户请求是否触发 SOP？（模糊词 / 一句话描述 / 没完整定义 = 触发）</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text">是单页面还是多页面？决定用哪个 template（<code>single-page.md</code> / <code>multi-page.md</code>）</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text">用户是否明示跳过 SOP（"直接派单"）？</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text">是否要看 memory 里的相关 feedback？（如 <code>no_baseline_reuse</code> / <code>design_readonly</code>）</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Phase 1 -->
+        <section class="section-block" id="p1">
+          <div class="section-label accent"><span class="label-dot"></span>PHASE 1 · 5 轮对话进行中</div>
+          <h2 class="section-title">每轮答完触发</h2>
+          <p class="section-hint">每轮 AskUserQuestion 答完后立即过一遍：完整性 / 与前序冲突 / 选项数限制 / 核心约束激活。</p>
+
+          <div class="check-list">
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text">本轮答案是否完整？</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row fired-row">
+              <span class="check-marker fired"></span>
+              <span class="check-text">与前序所有轮答案有无冲突？</span>
+              <span class="check-result fired">FIRED</span>
+            </div>
+            <div class="fired-detail">轮 2 选了"右侧抽屉填表"，轮 3 SHOW 又选了"向导页 3 步"——两个互斥。主会话识别后抛 <strong>FORK 3.5</strong> 裁决题。</div>
+            <div class="check-row fired-row">
+              <span class="check-marker fired"></span>
+              <span class="check-text">AskUserQuestion 每题 ≤ 4 选项？多题数 ≤ 4？</span>
+              <span class="check-result fired">FIRED</span>
+            </div>
+            <div class="fired-detail">轮 3 F1 字段题第一版给了 8 个选项 → 系统硬限制拒绝 → 精简到 4 组（按字段类别合并）重发。</div>
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text">当前轮答案是否激活核心约束？</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Phase 2 -->
+        <section class="section-block" id="p2">
+          <div class="section-label accent"><span class="label-dot"></span>PHASE 2 · PROTO 阶段</div>
+          <h2 class="section-title">轮 4 专属自检</h2>
+          <p class="section-hint">PROTO 是 SOP 最易踩坑的环节：结构差异 / 主 CTA / 文案 hardcode 三大约束都在这里验证。</p>
+
+          <div class="check-list">
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text">单选 / 多选 N 在 1-4 范围？</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row fired-row">
+              <span class="check-marker fired"></span>
+              <span class="check-text">多选 N 个方案是否在<strong>结构层面</strong>有差异？</span>
+              <span class="check-result fired">FIRED</span>
+            </div>
+            <div class="fired-detail">我给的 A/B 都是"卡片墙"只换分类维度（按岗位 vs 按场景）→ 同质 → 主动拦截抛 <strong>FORK 4.5</strong> 重选 option-2 结构方向（工作台 / 表格 / 向导）。</div>
+            <div class="check-row fired-row">
+              <span class="check-marker fired"></span>
+              <span class="check-text">ASCII 只画 main-content 区？</span>
+              <span class="check-result fired">FIRED</span>
+            </div>
+            <div class="fired-detail">第一版在 content-header 右上画了 <code>[+ 新建申请]</code> 主 CTA → 用户截图反馈 → 删掉 + 写硬到 <code>template/single-page.md</code> 约束。</div>
+            <div class="check-row fired-row">
+              <span class="check-marker fired"></span>
+              <span class="check-text">是否 hardcode 业务文案？</span>
+              <span class="check-result fired">FIRED</span>
+            </div>
+            <div class="fired-detail">副标题写了"推荐 / 进行中 / 物流总览"（直接拼卡块名）→ 用户质疑 → <strong>FORK 4.6</strong> 决定改成 <code>&lt;占位&gt;</code> + 写硬到 template。</div>
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text">多张原型与 F1/F2、菜单、交互形态自洽？</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Phase 3 -->
+        <section class="section-block" id="p3">
+          <div class="section-label accent"><span class="label-dot"></span>PHASE 3 · 落盘前 review</div>
+          <h2 class="section-title">整体展示给用户确认</h2>
+
+          <div class="check-list">
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text">整体展示 + 提供 A/B/C 决策选项（全部确认 / 某段要改 / 暂停）</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text">REQ 文件名 = <code>&lt;slug&gt;-req.md</code>，路径 = <code>requirements/&lt;slug&gt;-YYYY-MM-DD/</code></span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row fired-row">
+              <span class="check-marker fired"></span>
+              <span class="check-text">PROTO 内嵌于 REQ（不另建 <code>proto/</code> 子目录）</span>
+              <span class="check-result fired">FIRED</span>
+            </div>
+            <div class="fired-detail">第一版分了 <code>proto/option-1.md</code> / <code>proto/option-2.md</code> → 用户反馈"原型一起输出到一个 md 里" → 改为内嵌 + 删 proto/ + 同步 template/agent.md/page-agent.md。</div>
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text">EDGE 段没列具体 cs-* 组件清单</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text">修订记录有日期 + 修订人</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Phase 4 -->
+        <section class="section-block" id="p4">
+          <div class="section-label accent"><span class="label-dot"></span>PHASE 4 · 派单</div>
+          <h2 class="section-title">并行派 N 个 page-agent</h2>
+
+          <div class="check-list">
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text">单选 → 1 agent / 多选 → N 个<strong>并行</strong></span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text">同一 message 多个 Agent 调用 + <code>run_in_background: true</code></span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text">prompt 包含 REQ 路径 + option 序号</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text">prompt 禁止 read 兄弟 option 文件</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text">prompt 禁止 read pages/ 下其他页面（<code>feedback_no_baseline_reuse</code>）</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row fired-row">
+              <span class="check-marker fired"></span>
+              <span class="check-text">装配目标路径明确且符合最新约定</span>
+              <span class="check-result fired">FIRED</span>
+            </div>
+            <div class="fired-detail">第一版派单用了旧路径 <code>pages/&lt;slug&gt;-option-N/</code>，后来用户反馈"两个方案放一个文件夹按 &lt;模块&gt;-option-N 命名" → 文件已生成则 mv + 改 link href + 同步 page-agent.md。</div>
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text">prompt 要求业务文案用 demo 数据（不要 <code>&lt;占位&gt;</code>）</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text">缺失组件由 page-agent 在报告中列出，不自行新建</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Phase 5 -->
+        <section class="section-block" id="p5">
+          <div class="section-label accent"><span class="label-dot"></span>PHASE 5 · 收到 page-agent 报告</div>
+          <h2 class="section-title">两份产物对比 + 决策下一步</h2>
+
+          <div class="check-list">
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text">装配状态对比（完成 / 部分 / 阻塞）</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row fired-row">
+              <span class="check-marker fired"></span>
+              <span class="check-text">缺失组件清单 — 同类组件命名是否统一？</span>
+              <span class="check-result fired">FIRED</span>
+            </div>
+            <div class="fired-detail">option-1 缺 <code>cs-step-tracker</code> / <code>cs-shipping-track</code>，option-2 缺 <code>cs-stepper</code> / <code>cs-timeline</code> — 同物异名。报告给用户决策"统一命名再派 component-agent"。</div>
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text">与 REQ 偏差点是否需要回退？</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text">多方案结构差异<strong>真的不同</strong>？还是只是文案换皮？</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Phase 6 -->
+        <section class="section-block" id="p6">
+          <div class="section-label accent"><span class="label-dot"></span>PHASE 6 · 用户反馈触发的 SOP 变更</div>
+          <h2 class="section-title">规则变更后的全量同步</h2>
+          <p class="section-hint">每条反馈 → 写硬到 template / agent.md → <strong>跨文件全量同步</strong>。这部分 13 项全过，但是工作量最重的一段。</p>
+
+          <div class="check-list">
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text">反馈是否要写硬到规则？（本次 6 次）</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row sub">
+              <span class="check-marker pass"></span>
+              <span class="check-text">同步 <code>requirement-agent.md</code> frontmatter description</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row sub">
+              <span class="check-marker pass"></span>
+              <span class="check-text">同步 <code>requirement-agent.md</code> 顶部介绍</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row sub">
+              <span class="check-marker pass"></span>
+              <span class="check-text">同步 <code>requirement-agent.md</code> 5 段表 / 6 段表</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row sub">
+              <span class="check-marker pass"></span>
+              <span class="check-text">同步 <code>requirement-agent.md</code> 5 轮对话流程</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row sub">
+              <span class="check-marker pass"></span>
+              <span class="check-text">同步 <code>requirement-agent.md</code> 完成后段</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row sub">
+              <span class="check-marker pass"></span>
+              <span class="check-text">同步 <code>requirement-agent.md</code> 路径与命名</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row sub">
+              <span class="check-marker pass"></span>
+              <span class="check-text">同步 <code>requirement-agent.md</code> 派单准备段</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row sub">
+              <span class="check-marker pass"></span>
+              <span class="check-text">同步 <code>requirement-agent.md</code> 流程图</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row sub">
+              <span class="check-marker pass"></span>
+              <span class="check-text">同步 <code>requirement-agent.md</code> 反模式表</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row sub">
+              <span class="check-marker pass"></span>
+              <span class="check-text">同步 <code>page-agent.md</code> 输出规则段</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row sub">
+              <span class="check-marker pass"></span>
+              <span class="check-text">同步 <code>page-agent.md</code> 禁止复用段</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text">已有产物按新结构 mv + 改 link href（employee-device-apply 同步迁移）</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text"><code>experience.md</code> 是否要补条目（24 条踩坑全量写入）</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Phase 7 -->
+        <section class="section-block" id="p7">
+          <div class="section-label accent"><span class="label-dot"></span>PHASE 7 · 视觉化产物生成</div>
+          <h2 class="section-title">HTML 输出自检</h2>
+          <p class="section-hint">本次额外加的：把 REQ / Q&A / self-check 都做成视觉版 HTML。生成前的自检。</p>
+
+          <div class="check-list">
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text">参考样式是否真的看过？（不能凭印象做）— Read 了 <code>design/fonts/index.html</code> 300 行</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text">HTML 字体回退是否包括中文（PingFang SC）</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text"><code>link href</code> 路径是否合理（自包含 inline CSS，没外链）</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text">等宽块（ASCII）字体是否专用 mono（JetBrains Mono / SF Mono）</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text">锚定跳转 + 滚动高亮是否生效（IntersectionObserver）</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+            <div class="check-row">
+              <span class="check-marker pass"></span>
+              <span class="check-text">多个 HTML 之间是否互相引用（顶部栏 SOURCE.MD / REQ / Q&A 互链）</span>
+              <span class="check-result pass">PASS</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 总结 -->
+        <section class="section-block" id="summary">
+          <div class="section-label summary"><span class="label-dot"></span>SUMMARY · 触发项汇总</div>
+          <h2 class="section-title">本次 7 个被触发的自检项</h2>
+          <p class="section-hint">21 个自检项里 7 个被真触发（标 <span class="badge warn">FIRED</span>），全是 SOP 改进规则的实际来源。</p>
+
+          <table class="simple">
+            <thead>
+              <tr><th>#</th><th>触发自检</th><th>触发场景</th><th>修正动作</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="num">1</td>
+                <td>轮答案冲突</td>
+                <td class="muted">轮 2 抽屉 vs 轮 3 向导</td>
+                <td class="warn">抛 FORK 3.5 裁决题</td>
+              </tr>
+              <tr>
+                <td class="num">2</td>
+                <td>AskUserQuestion 选项超限</td>
+                <td class="muted">轮 3 F1 给了 8 选项</td>
+                <td class="warn">精简到 4 组重发</td>
+              </tr>
+              <tr>
+                <td class="num">3</td>
+                <td>PROTO 多选同质</td>
+                <td class="muted">A/B 都是卡片墙</td>
+                <td class="warn">抛 FORK 4.5 重选 option-2 结构</td>
+              </tr>
+              <tr>
+                <td class="num">4</td>
+                <td>content-header 画主 CTA</td>
+                <td class="muted">用户截图反馈</td>
+                <td class="warn">删 + 加 template 约束 + 加 agent 反模式</td>
+              </tr>
+              <tr>
+                <td class="num">5</td>
+                <td>PROTO hardcode 文案</td>
+                <td class="muted">副标题写卡块名</td>
+                <td class="warn">FORK 4.6 → 改 <code>&lt;占位&gt;</code> + 加 template 约束</td>
+              </tr>
+              <tr>
+                <td class="num">6</td>
+                <td>派单路径用旧结构</td>
+                <td class="muted">用户反馈"放一个文件夹"</td>
+                <td class="warn">mv + 改 link href + 全文同步 page-agent.md</td>
+              </tr>
+              <tr>
+                <td class="num">7</td>
+                <td>缺失组件命名漂移</td>
+                <td class="muted">两个 page-agent 给同物异名</td>
+                <td class="warn">报告给用户决策统一命名</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const items = Array.from(document.querySelectorAll('.doc-nav-item'));
+    const sections = items.map(a => document.querySelector(a.getAttribute('href')));
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const id = '#' + e.target.id;
+          items.forEach(a => a.classList.toggle('active', a.getAttribute('href') === id));
+        }
+      });
+    }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
+    sections.forEach(s => s && observer.observe(s));
+  </script>
+</body>
+</html>

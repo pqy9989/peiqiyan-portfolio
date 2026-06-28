@@ -1,0 +1,2043 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>CSES 桌面端组件库</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../fonts/cses-icons.css">
+  <style>
+    /* ===== Editorial / Linear-Swiss tokens ===== */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #FFFFFF;
+      font-family: "Inter", "PingFang SC", -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #0A0A0A;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== 顶部栏 ===== */
+    .doc-topbar {
+      height: 52px;
+      background: #FFFFFF;
+      border-bottom: 0.5px solid #ECECEC;
+      display: flex;
+      align-items: center;
+      padding: 0 28px;
+      flex-shrink: 0;
+      gap: 14px;
+    }
+    .doc-topbar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #0A0A0A;
+      letter-spacing: -0.2px;
+      text-decoration: none;
+    }
+    .doc-topbar-logo-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 5px;
+      background: #0A0A0A;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      font-size: 10px;
+      font-weight: 500;
+    }
+    .doc-topbar-divider {
+      width: 1px;
+      height: 14px;
+      background: #ECECEC;
+    }
+    .doc-topbar-subtitle {
+      font-size: 12px;
+      color: #666666;
+    }
+    .doc-topbar-count {
+      margin-left: auto;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px;
+      color: #999999;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      background: transparent;
+      padding: 0;
+      border-radius: 0;
+    }
+
+    /* ===== 主体布局 ===== */
+    .doc-layout {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ===== 左侧导航 ===== */
+    .doc-sidebar {
+      width: 220px;
+      flex-shrink: 0;
+      background: #FFFFFF;
+      border-right: 0.5px solid #ECECEC;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .doc-search-wrap {
+      padding: 14px 20px 12px;
+      border-bottom: 0.5px solid #ECECEC;
+      flex-shrink: 0;
+    }
+    .doc-search {
+      width: 100%;
+      height: 28px;
+      border: none;
+      border-bottom: 0.5px solid #E5E5E5;
+      border-radius: 0;
+      background: transparent;
+      padding: 0 0 0 22px;
+      font-size: 12px;
+      color: #0A0A0A;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .doc-search::placeholder { color: #999999; }
+    .doc-search:focus { border-bottom-color: #0A0A0A; }
+    .doc-search-icon {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999999;
+      font-size: 12px;
+      pointer-events: none;
+    }
+    .doc-search-container { position: relative; }
+    .doc-nav-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 6px 0 16px;
+    }
+    .doc-nav-scroll::-webkit-scrollbar { width: 4px; }
+    .doc-nav-scroll::-webkit-scrollbar-thumb {
+      background: #ECECEC;
+      border-radius: 0;
+    }
+    .doc-nav-group { padding: 16px 0 4px; border-top: none; margin-top: 0; }
+    .doc-nav-group:first-child { padding-top: 12px; }
+    .doc-nav-group-label {
+      padding: 4px 20px 10px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px;
+      font-weight: 400;
+      color: #999999;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .doc-nav-group-count {
+      font-size: 9px;
+      background: transparent;
+      padding: 0;
+      border-radius: 0;
+      color: #BBBBBB;
+      font-weight: 400;
+      letter-spacing: 0.4px;
+      margin-left: auto;
+    }
+    .doc-nav-item {
+      display: flex;
+      align-items: center;
+      padding: 7px 20px;
+      font-size: 12.5px;
+      color: #666666;
+      cursor: pointer;
+      transition: color 0.12s;
+      gap: 8px;
+      user-select: none;
+    }
+    .doc-nav-item:hover {
+      color: #0A0A0A;
+      background: transparent;
+    }
+    .doc-nav-item.active {
+      background: transparent;
+      color: #0A0A0A;
+      font-weight: 500;
+      letter-spacing: -0.1px;
+    }
+    .doc-nav-item .nav-en {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 11px;
+      font-weight: 400;
+      color: #0A0A0A;
+      letter-spacing: -0.2px;
+    }
+    .doc-nav-item .nav-zh {
+      font-size: 11px;
+      color: #999999;
+    }
+    .doc-nav-item.active .nav-en { color: #0A0A0A; font-weight: 500; }
+    .doc-nav-item.active .nav-zh { color: #666666; opacity: 1; }
+    .doc-nav-item.hidden { display: none; }
+    .doc-nav-group.hidden { display: none; }
+    .doc-search-empty {
+      padding: 16px 20px;
+      text-align: center;
+      font-size: 12px;
+      color: #999999;
+      display: none;
+    }
+
+    /* 固定项（概览 / 更新日志）也用同一风格 */
+    .doc-nav-fixed { padding: 12px 0 6px; }
+    .doc-nav-fixed-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 20px;
+      font-size: 12.5px;
+      color: #666666;
+      cursor: pointer;
+      transition: color 0.12s;
+      user-select: none;
+      border-left: none;
+    }
+    .doc-nav-fixed-item:hover { color: #0A0A0A; background: transparent; }
+    .doc-nav-fixed-item.active {
+      background: transparent;
+      color: #0A0A0A;
+      font-weight: 500;
+      border-left: none;
+      letter-spacing: -0.1px;
+    }
+    .doc-nav-fixed-item i { font-size: 12px; opacity: .6; }
+
+    /* badges 转成 mono 小标 */
+    .nav-version, .nav-badge-new, .nav-badge-updated {
+      margin-left: auto;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px;
+      letter-spacing: 0.6px;
+      padding: 0;
+      border-radius: 0;
+      background: transparent;
+      flex-shrink: 0;
+    }
+    .nav-version { color: #BBBBBB; }
+    .nav-badge-new { color: #4857E2; }
+    .nav-badge-updated { color: #666666; }
+
+    /* ===== 右侧内容区 ===== */
+    .doc-content {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background: #FFFFFF;
+    }
+
+    /* ===== 组件头部 ===== */
+    .comp-header {
+      background: #FFFFFF;
+      border-bottom: 0.5px solid #ECECEC;
+      padding: 28px 36px 24px;
+      flex-shrink: 0;
+    }
+    .comp-header-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .comp-header-title-row {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .comp-title-en {
+      font-size: 28px;
+      font-weight: 500;
+      color: #0A0A0A;
+      line-height: 1.15;
+      letter-spacing: -0.7px;
+      font-family: "Inter", "PingFang SC", sans-serif;
+    }
+    .comp-title-tag {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px;
+      color: #999999;
+      background: transparent;
+      padding: 0;
+      border-radius: 0;
+      border: none;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+    .comp-title-zh {
+      font-size: 13px;
+      color: #999999;
+    }
+    .comp-desc {
+      margin-top: 10px;
+      font-size: 13px;
+      color: #666666;
+      line-height: 1.7;
+      max-width: 580px;
+    }
+    .comp-header-actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .comp-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border: 0.5px solid #E5E5E5;
+      border-radius: 4px;
+      font-size: 11px;
+      color: #666666;
+      background: #FFFFFF;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+    .comp-btn:hover {
+      border-color: #0A0A0A;
+      color: #0A0A0A;
+      background: #FFFFFF;
+    }
+
+    /* ===== Tabs ===== */
+    .comp-tabs {
+      display: flex;
+      gap: 0;
+      padding: 0 36px;
+      background: #FFFFFF;
+      border-bottom: 0.5px solid #ECECEC;
+      flex-shrink: 0;
+    }
+    .comp-tab {
+      padding: 12px 0;
+      margin-right: 28px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px;
+      color: #999999;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-bottom: 1px solid transparent;
+      margin-bottom: -0.5px;
+      transition: all 0.15s;
+      user-select: none;
+    }
+    .comp-tab:hover { color: #0A0A0A; }
+    .comp-tab.active {
+      color: #0A0A0A;
+      border-bottom-color: #0A0A0A;
+      font-weight: 500;
+    }
+
+    /* ===== Tab 面板 ===== */
+    .comp-tab-panels {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+    .comp-tab-panel {
+      display: none;
+      height: 100%;
+      overflow: hidden;
+    }
+    .comp-tab-panel.active { display: flex; flex-direction: column; }
+
+    /* ===== 预览面板 ===== */
+    .preview-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 36px;
+      background: #FFFFFF;
+      border-bottom: 0.5px solid #ECECEC;
+      flex-shrink: 0;
+    }
+    .preview-toolbar-label {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px;
+      color: #999999;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      margin-right: 6px;
+    }
+    .bg-switch-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border: 0.5px solid #E5E5E5;
+      border-radius: 2px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.4px;
+      color: #666666;
+      background: #FFFFFF;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .bg-switch-btn:hover { border-color: #0A0A0A; color: #0A0A0A; }
+    .bg-switch-btn.active {
+      border-color: #0A0A0A;
+      color: #FFFFFF;
+      background: #0A0A0A;
+    }
+    .bg-swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 0;
+      border: 0.5px solid rgba(0,0,0,0.15);
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .preview-demo-wrap {
+      flex: 1;
+      overflow: auto;
+      position: relative;
+    }
+
+    /* ===== Controls 面板 ===== */
+    .controls-panel {
+      margin: 0 36px 28px;
+      background: transparent;
+      border: none;
+      border-top: 0.5px solid #ECECEC;
+      border-radius: 0;
+      overflow: visible;
+    }
+    .controls-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 0;
+      border-bottom: 0.5px solid #ECECEC;
+      background: transparent;
+    }
+    .controls-title {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px;
+      font-weight: 400;
+      color: #0A0A0A;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+    .controls-hint {
+      font-size: 11px;
+      color: #999999;
+    }
+    .controls-rows { padding: 12px 0; display: flex; flex-direction: column; gap: 10px; }
+    .controls-row { display: flex; align-items: center; gap: 16px; }
+    .controls-attr {
+      width: 140px;
+      flex-shrink: 0;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 11px;
+      color: #666666;
+    }
+    .controls-chips { display: flex; flex-wrap: wrap; gap: 0; border: 0.5px solid #E5E5E5; border-radius: 2px; overflow: hidden; }
+    .ctrl-chip {
+      padding: 4px 10px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px;
+      letter-spacing: 0.4px;
+      border: none;
+      border-left: 0.5px solid #E5E5E5;
+      border-radius: 0;
+      background: #FFFFFF;
+      color: #666666;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .ctrl-chip:first-child { border-left: none; }
+    .ctrl-chip:hover { color: #0A0A0A; }
+    .ctrl-chip.active {
+      background: #0A0A0A;
+      border-color: #0A0A0A;
+      color: #FFFFFF;
+      font-weight: 500;
+    }
+
+    /* ===== preview sandbox ===== */
+    .preview-sandbox {
+      padding: var(--spacing-24);
+      min-height: 200px;
+    }
+    .preview-loading, .preview-fetch-error {
+      padding: var(--spacing-32);
+      text-align: center;
+      font: var(--typo-cn-13-regular);
+      color: var(--cs-color-text-light2);
+    }
+    .preview-fetch-error { color: var(--cs-color-warning); }
+
+    /* ===== 代码面板 ===== */
+    .code-panel {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background: #1e1e2e;
+    }
+    .code-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-xs) var(--space-md);
+      background: #181825;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      flex-shrink: 0;
+    }
+    .code-lang-badge {
+      font-size: 11px;
+      color: rgba(255,255,255,0.4);
+      font-family: "SF Mono", "Fira Mono", monospace;
+      letter-spacing: 0.5px;
+    }
+    .code-copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: var(--radius);
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .code-copy-btn:hover {
+      border-color: rgba(255,255,255,0.3);
+      color: rgba(255,255,255,0.8);
+    }
+    .code-copy-btn.copied {
+      border-color: #4ade80;
+      color: #4ade80;
+    }
+    .code-scroll {
+      flex: 1;
+      overflow: auto;
+      padding: var(--space-md) var(--spacing-20);
+    }
+    .code-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+    .code-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
+    .code-block {
+      margin: 0;
+      font-family: "SF Mono", "Fira Mono", "JetBrains Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: #cdd6f4;
+      white-space: pre;
+      tab-size: 2;
+    }
+    /* 语法高亮 token */
+    .hl-tag { color: #89b4fa; }
+    .hl-attr { color: #a6e3a1; }
+    .hl-val { color: #f9e2af; }
+    .hl-comment { color: #6c7086; font-style: italic; }
+    .hl-string { color: #f9e2af; }
+    .hl-text { color: #cdd6f4; }
+
+    .code-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      gap: var(--space-xs);
+    }
+    .code-empty-icon { font-size: 32px; opacity: 0.3; }
+    .code-empty-text { font-size: 13px; color: rgba(255,255,255,0.3); }
+    .code-empty-hint { font-size: 11px; color: rgba(255,255,255,0.2); }
+
+/* ===== Overview 总览页 ===== */
+.overview-page {
+  flex: 1;
+  overflow: auto;
+  padding: 36px 36px 28px;
+  background: #FFFFFF;
+}
+.overview-page::-webkit-scrollbar { width: 6px; }
+.overview-page::-webkit-scrollbar-thumb { background: #ECECEC; border-radius: 0; }
+.overview-section {
+  margin-bottom: 48px;
+}
+.overview-section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 0.5px solid #ECECEC;
+}
+.overview-section-title {
+  font-family: "JetBrains Mono", "SF Mono", monospace;
+  font-size: 10px;
+  font-weight: 400;
+  color: #0A0A0A;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+.overview-section-count {
+  font-family: "JetBrains Mono", "SF Mono", monospace;
+  font-size: 10px;
+  color: #999999;
+  background: transparent;
+  border: none;
+  padding: 0;
+  border-radius: 0;
+  letter-spacing: 0.4px;
+  margin-left: auto;
+}
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 0;
+  border-top: 0.5px solid #ECECEC;
+  border-left: 0.5px solid #ECECEC;
+}
+.overview-card {
+  background: #FFFFFF;
+  border: none;
+  border-right: 0.5px solid #ECECEC;
+  border-bottom: 0.5px solid #ECECEC;
+  border-radius: 0;
+  overflow: hidden;
+  cursor: pointer;
+  transition: background 0.15s;
+  display: flex;
+  flex-direction: column;
+}
+.overview-card:hover {
+  background: #FAFAFA;
+  box-shadow: none;
+  transform: none;
+}
+.card-preview-area {
+  height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #FFFFFF;
+  border-bottom: 0.5px solid #ECECEC;
+  padding: 24px;
+  overflow: hidden;
+  pointer-events: none;
+}
+.card-preview-area .preview-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+.card-meta {
+  padding: 14px 16px;
+}
+.card-title {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.card-name-en {
+  font-size: 14px;
+  font-weight: 500;
+  color: #0A0A0A;
+  text-transform: capitalize;
+  letter-spacing: -0.2px;
+}
+.card-name-zh {
+  font-size: 11px;
+  color: #999999;
+}
+.card-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.card-tag-name {
+  font-family: "JetBrains Mono", "SF Mono", monospace;
+  font-size: 10px;
+  color: #666666;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  letter-spacing: -0.2px;
+}
+.card-version {
+  font-family: "JetBrains Mono", "SF Mono", monospace;
+  font-size: 9px;
+  color: #BBBBBB;
+  letter-spacing: 0.4px;
+}
+.card-badge-new {
+  font-family: "JetBrains Mono", "SF Mono", monospace;
+  font-size: 9px;
+  background: transparent;
+  color: #4857E2;
+  padding: 0;
+  border-radius: 0;
+  font-weight: 500;
+  letter-spacing: 0.6px;
+}
+.card-badge-updated {
+  font-family: "JetBrains Mono", "SF Mono", monospace;
+  font-size: 9px;
+  background: transparent;
+  color: #666666;
+  padding: 0;
+  border-radius: 0;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+.overview-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 40px;
+  color: #999999;
+  font-size: 13px;
+}
+
+/* ===== Changelog 更新日志页 ===== */
+.changelog-page {
+  flex: 1;
+  overflow: auto;
+  padding: 36px 36px 28px;
+  background: #FFFFFF;
+}
+.changelog-page::-webkit-scrollbar { width: 6px; }
+.changelog-page::-webkit-scrollbar-thumb { background: #ECECEC; border-radius: 0; }
+.changelog-header {
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 0.5px solid #ECECEC;
+}
+.changelog-title {
+  font-size: 28px;
+  font-weight: 500;
+  color: #0A0A0A;
+  margin-bottom: 8px;
+  letter-spacing: -0.7px;
+  line-height: 1.15;
+}
+.changelog-subtitle {
+  font-size: 13px;
+  color: #666666;
+  line-height: 1.7;
+}
+.changelog-group {
+  margin-bottom: 32px;
+}
+.changelog-date {
+  font-family: "JetBrains Mono", "SF Mono", monospace;
+  font-size: 10px;
+  font-weight: 400;
+  color: #0A0A0A;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+.changelog-date::after {
+  content: '';
+  flex: 1;
+  height: 0.5px;
+  background: #ECECEC;
+}
+.changelog-entries {
+  background: transparent;
+  border-radius: 0;
+  border: none;
+  border-top: 0.5px solid #ECECEC;
+  overflow: hidden;
+}
+.changelog-entry {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 0.5px solid #ECECEC;
+}
+.changelog-entry:last-child { border-bottom: 0.5px solid #ECECEC; }
+.changelog-type {
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  border-radius: 0;
+  font-family: "JetBrains Mono", "SF Mono", monospace;
+  font-size: 9px;
+  font-weight: 400;
+  flex-shrink: 0;
+  min-width: 40px;
+  justify-content: flex-start;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+.changelog-type.new { background: transparent; color: #4857E2; border: none; }
+.changelog-type.update { background: transparent; color: #B45309; border: none; }
+.changelog-type.fix { background: transparent; color: #047857; border: none; }
+.changelog-comp-link {
+  font-family: "JetBrains Mono", "SF Mono", monospace;
+  font-size: 12px;
+  color: #0A0A0A;
+  cursor: pointer;
+  font-weight: 500;
+  letter-spacing: -0.2px;
+}
+.changelog-comp-link:hover { text-decoration: underline; }
+.changelog-note {
+  font-size: 13px;
+  color: #666666;
+  flex: 1;
+}
+.changelog-ver {
+  font-family: "JetBrains Mono", "SF Mono", monospace;
+  font-size: 9px;
+  color: #BBBBBB;
+  background: transparent;
+  border: none;
+  padding: 0;
+  border-radius: 0;
+  flex-shrink: 0;
+  letter-spacing: 0.4px;
+}
+
+    /* ===== API 面板 ===== */
+    .api-panel {
+      flex: 1;
+      overflow: auto;
+      padding: 24px 36px 28px;
+      background: #FFFFFF;
+    }
+    .api-panel::-webkit-scrollbar { width: 6px; }
+    .api-panel::-webkit-scrollbar-thumb { background: #ECECEC; border-radius: 0; }
+    .api-section-title {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px;
+      font-weight: 400;
+      color: #0A0A0A;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      margin: 0 0 10px;
+    }
+    .api-table-wrap {
+      background: transparent;
+      border-radius: 0;
+      border: none;
+      border-top: 0.5px solid #ECECEC;
+      overflow: hidden;
+      margin-bottom: 32px;
+    }
+    .api-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .api-table th {
+      background: transparent;
+      padding: 14px 0;
+      text-align: left;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-weight: 400;
+      color: #999999;
+      border-bottom: 0.5px solid #ECECEC;
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .api-table th:not(:first-child) { padding-left: 16px; }
+    .api-table td {
+      padding: 14px 0;
+      border-bottom: 0.5px solid #ECECEC;
+      color: #0A0A0A;
+      font-size: 13px;
+      vertical-align: top;
+    }
+    .api-table td:not(:first-child) { padding-left: 16px; }
+    .api-table tr:last-child td { border-bottom: 0.5px solid #ECECEC; }
+    .api-table tr:hover td { background: transparent; }
+    .api-attr-name {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 12px;
+      color: #0A0A0A;
+      background: transparent;
+      padding: 0;
+      border-radius: 0;
+      display: inline-block;
+      letter-spacing: -0.2px;
+    }
+    .api-type-badge {
+      display: inline-block;
+      padding: 1px 7px;
+      border-radius: 2px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px;
+      background: transparent;
+      color: #666666;
+      border: 0.5px solid #E5E5E5;
+      letter-spacing: 0.4px;
+    }
+    .api-vals {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      max-width: 360px;
+    }
+    .api-val-chip {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px;
+      background: transparent;
+      border: 0.5px solid #E5E5E5;
+      color: #666666;
+      padding: 1px 7px;
+      border-radius: 2px;
+      letter-spacing: -0.1px;
+    }
+    .api-empty {
+      text-align: center;
+      padding: 40px 24px;
+      color: #999999;
+      font-size: 13px;
+    }
+
+    /* ===== 欢迎页 ===== */
+    .doc-welcome {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 14px;
+      color: #999999;
+    }
+    .doc-welcome-icon { font-size: 36px; opacity: 0.3; color: #BBBBBB; }
+    .doc-welcome-text { font-size: 13px; letter-spacing: 0.2px; }
+  </style>
+</head>
+<body>
+
+<!-- 顶部栏 -->
+<div class="doc-topbar">
+  <div class="doc-topbar-logo">
+    <div class="doc-topbar-logo-dot">C</div>
+    CSES Design
+  </div>
+  <div class="doc-topbar-divider"></div>
+  <span class="doc-topbar-subtitle">桌面端组件库</span>
+  <span class="doc-topbar-count" id="compTotalCount">84 个组件</span>
+</div>
+
+<!-- 主体 -->
+<div class="doc-layout">
+
+  <!-- 左侧导航 -->
+  <aside class="doc-sidebar">
+    <div class="doc-search-wrap">
+      <div class="doc-search-container">
+        <i class="cses-stratis-search-01 doc-search-icon"></i>
+        <input class="doc-search" id="docSearch" type="search" placeholder="搜索组件..." autocomplete="off">
+      </div>
+    </div>
+    <div class="doc-nav-scroll" id="docNavScroll">
+      <div class="doc-nav-fixed">
+        <div class="doc-nav-fixed-item" id="navOverview" onclick="navigate('overview')">
+          <i class="cses-stratis-layout-01"></i> 组件总览
+        </div>
+        <div class="doc-nav-fixed-item" id="navChangelog" onclick="navigate('changelog')">
+          <i class="cses-stratis-clock-01"></i> 更新日志
+        </div>
+      </div>
+      <div class="doc-search-empty" id="searchEmpty">未找到匹配组件</div>
+
+      <!-- 左栏导航：由 JS 从 GROUPS + COMPONENTS 单一数据源动态渲染（不要再硬编码组件项） -->
+      <div id="docNavList"></div>
+
+
+    </div>
+  </aside>
+
+  <!-- 右侧内容 -->
+  <main class="doc-content" id="docContent">
+    <div class="doc-welcome">
+      <div class="doc-welcome-icon"><i class="cses-stratis-grid-01" style="font-size:48px;opacity:0.15;"></i></div>
+      <div class="doc-welcome-text">从左侧选择一个组件开始浏览</div>
+    </div>
+  </main>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ===================================================
+     file:// 协议自动重定向到 localhost:8090
+     ----
+     根因：file:// 下浏览器禁 fetch() 加载本地文件（CORS），
+     组件预览的 fetch(name + '/' + name + '.html') 必败。
+     csforge dev server 跑在 http://localhost:8090，无条件重定向。
+     服务器没起时浏览器会报 "无法连接"，比 file:// 静默失败更直观。
+  =================================================== */
+  if (location.protocol === 'file:') {
+    var match = location.pathname.match(/\/agent\/design-agent\/(.+)$/);
+    if (match) {
+      var localUrl = 'http://localhost:8090/design/' + match[1] + location.search + location.hash;
+      location.replace(localUrl);
+      return;
+    }
+  }
+
+
+  /* ===================================================
+     组件数据
+  =================================================== */
+  var COMPONENTS = {
+    'button':            { zh: '按钮',       desc: '基础操作按钮，支持多种变体和尺寸',      version:'1.0', isNew:false, isUpdated:false,
+                           preview:'<cs-button><span class="btn-label">按钮</span></cs-button><cs-button data-variant="secondary"><span class="btn-label">次要</span></cs-button>' },
+    'avatar':            { zh: '头像',       desc: '用户头像，支持图片、文字和图标形式',      version:'1.0', isNew:false, isUpdated:false,
+                           preview:'<cs-avatar data-color="blue"><span class="avatar-text">张</span></cs-avatar><cs-avatar data-size="sm" data-color="orange"><span class="avatar-text">李</span></cs-avatar><cs-avatar data-size="xs" data-color="green"><span class="avatar-text">王</span></cs-avatar>' },
+    'checkbox':          { zh: '复选框',     desc: '多选控件，支持选中、未选中和半选状态',    version:'1.0', isNew:false, isUpdated:false,
+                           preview:'<cs-checkbox data-checked></cs-checkbox>' },
+    'radio':             { zh: '单选框',     desc: '单选控件，用于一组互斥的选项',            version:'1.0', isNew:false, isUpdated:false,
+                           preview:'<cs-radio data-checked><span class="radio-inner"><span class="radio-dot"></span></span><span class="radio-label">选项 A</span></cs-radio>' },
+    'switch':            { zh: '开关',       desc: '切换开关，表示两种互斥的状态',            version:'1.0', isNew:false, isUpdated:false,
+                           preview:'<cs-switch data-checked><div class="switch-track"><div class="switch-knob"></div></div></cs-switch><cs-switch><div class="switch-track"><div class="switch-knob"></div></div></cs-switch>' },
+    'input':             { zh: '输入框',     desc: '单行文本输入框',          version:'1.0', isNew:false, isUpdated:false,
+                           preview:'<cs-input style="width:160px;"><input class="input-field" type="text" placeholder="请输入内容"></cs-input>' },
+    'textarea':          { zh: '多行输入',   desc: '多行文本输入区域',                        version:'1.0', isNew:false, isUpdated:false,
+                           preview:'<cs-textarea style="width:200px;"><textarea class="textarea-field" placeholder="请输入内容"></textarea></cs-textarea>' },
+    'select':            { zh: '下拉选择',   desc: '下拉选择器，用于从选项列表中选择值',      version:'1.0', isNew:false, isUpdated:false,
+                           preview:'<cs-select style="width:140px;"><span class="select-value">选项一</span><i class="select-arrow cses-stratis-chevron-down"></i></cs-select>' },
+    'tag':               { zh: '标签',       desc: '标签组件，用于标注和分类',                version:'1.0', isNew:false, isUpdated:false,
+                           preview:'<cs-tag><span class="tag-label">标签</span></cs-tag><cs-tag data-color="primary"><span class="tag-label">主要</span></cs-tag>' },
+    'link':              { zh: '链接',       desc: '超链接文字，支持多种颜色语义',            version:'1.0', isNew:false, isUpdated:false,
+                           preview:'<cs-link>链接文字</cs-link>' },
+    'thumbnail':         { zh: '缩略图',     desc: '文件或图片缩略图预览',                    version:'1.0', isNew:false, isUpdated:false,
+                           preview:'<cs-thumbnail data-type="file-icon" data-filetype="pdf" data-size="lg"><img src="../assets/filetype-pdf.svg" width="24" height="24" alt="PDF"></cs-thumbnail><cs-thumbnail data-type="file-icon" data-filetype="word" data-size="lg"><img src="../assets/filetype-word.svg" width="24" height="24" alt="Word"></cs-thumbnail>' },
+    'search-input':      { zh: '搜索框',     desc: '带搜索图标的输入框组合',                  version:'1.0', isNew:false, isUpdated:false,
+                           preview:'<cs-search-input style="width:160px;"><i class="search-icon cses-stratis-search-01"></i><input class="search-field" placeholder="搜索" /></cs-search-input>' },
+    'breadcrumb':        { zh: '面包屑',     desc: '路径导航，显示当前页面层级位置',          version:'1.0', isNew:false, isUpdated:false,
+                           preview:'<cs-breadcrumb><span class="breadcrumb-item">首页</span><span class="breadcrumb-separator"><i class="cses-stratis-chevron-right"></i></span><span class="breadcrumb-item" data-current>当前页</span></cs-breadcrumb>' },
+    'status-badge':      { zh: '状态标记',   desc: '带状态语义的文字徽章',                    version:'1.1', isNew:false, isUpdated:true,
+                           preview:'<cs-status-badge data-status="in-progress">进行中</cs-status-badge><cs-status-badge data-status="completed">已完成</cs-status-badge>' },
+    'user-pill':         { zh: '用户胶囊',   desc: '头像+用户名的组合胶囊控件',               version:'1.0', isNew:false, isUpdated:false,
+                           preview:'<cs-user-pill><cs-avatar data-size="sm" data-color="blue"><span class="avatar-text">张</span></cs-avatar><span class="pill-name">张三</span></cs-user-pill><cs-user-pill><cs-avatar data-size="sm" data-color="orange"><span class="avatar-text">李</span></cs-avatar><span class="pill-name">李四</span></cs-user-pill>' },
+    'view-switcher':     { zh: '视图切换',   desc: '列表/看板/日历等视图切换按钮组',          version:'1.0', isNew:false, isUpdated:false,
+                           preview:'<cs-view-switcher><span class="view-item" data-active><i class="cses-stratis-list"></i></span><span class="view-item"><i class="cses-lattice_view"></i></span></cs-view-switcher>' },
+    'form-group':        { zh: '表单组',     desc: '表单标签+控件的组合容器',                 version:'1.0', isNew:false, isUpdated:false,
+                           preview:'<cs-form-group><span class="form-label">用户名</span><div class="form-field"><cs-input style="width:180px;"><input class="input-field" placeholder="请输入"></cs-input></div></cs-form-group>' },
+    'tab-nav':           { zh: '标签导航',   desc: '水平标签页导航',                          version:'1.0', isNew:false, isUpdated:false,
+                           preview:'<cs-tab-nav><span class="tab-item" data-active>标签一</span><span class="tab-item">标签二</span><span class="tab-item">标签三</span></cs-tab-nav>' },
+    'file-upload':       { zh: '文件上传',   desc: '文件上传拖拽区域',                        version:'1.0', isNew:false, isUpdated:false,
+                           preview:'<cs-file-upload style="width:220px;"><cs-thumbnail class="upload-icon" data-type="file-icon" data-filetype="pdf" data-size="lg"><img src="../assets/filetype-pdf.svg" width="24" height="24" alt="PDF"></cs-thumbnail><div class="upload-info"><span class="upload-name">需求文档 v2.pdf</span><span class="upload-size">2.4 MB</span></div></cs-file-upload>' },
+    'task-row':          { zh: '任务行',     desc: '任务列表单行，包含多列信息',              version:'1.0', isNew:false, isUpdated:false,
+                           preview:'<cs-task-row style="width:280px;"><span class="task-checkbox"><cs-checkbox></cs-checkbox></span><span class="task-info"><span class="task-title-row"><span class="task-title">完成产品需求文档初稿</span></span></span><span class="task-status"><cs-status-badge data-status="in-progress">进行中</cs-status-badge></span></cs-task-row>' },
+    'kanban-card':       { zh: '看板卡片',   desc: '看板列中的任务卡片',                      version:'1.0', isNew:true,  isUpdated:false,
+                           preview:'<cs-kanban-card style="width:280px;"><div class="kanban-title-row"><span class="kanban-title">CSES_SJ_月度导向板块改版任务</span><span class="kanban-meta">CSES项目 / 设计模块</span></div><div class="kanban-tags"><span class="kanban-tag" data-type="urgent">紧急</span></div></cs-kanban-card>' },
+    'kanban-column':     { zh: '看板列',     desc: '看板视图中的列容器',                      version:'1.0', isNew:true,  isUpdated:false,
+                           preview:'<cs-kanban-column style="width:290px;"><div class="column-header"><span class="column-status">未开始</span><span class="column-count">12</span></div><div class="column-body"><cs-kanban-card><div class="kanban-title-row"><span class="kanban-title">CSES_SJ_月度导向板块改版任务</span><span class="kanban-meta">CSES项目 / 设计模块</span></div></cs-kanban-card></div></cs-kanban-column>' },
+
+  };
+
+  /* ===================================================
+     分组定义
+  =================================================== */
+  var GROUPS = [
+    { key: '原子',       label: '原子组件',    names: ['button','avatar','checkbox','radio','switch','input','textarea','select','tag','link','search-input'] },
+    { key: '分子',       label: '分子组件',    names: ['breadcrumb','status-badge','user-pill','view-switcher','form-group','tab-nav','thumbnail'] },
+    { key: '有机体',     label: '有机体',      names: ['file-upload'] },
+    { key: '桌面端业务', label: '桌面端业务',  names: ['task-row','kanban-card','kanban-column'] },
+  ];
+
+  /* ===================================================
+     左栏导航：从 GROUPS + COMPONENTS 渲染（单一数据源）
+     在 navItems / navGroups 选择器初始化前必须先跑
+  =================================================== */
+  function renderNavList() {
+    var listEl = document.getElementById('docNavList');
+    if (!listEl) return;
+    var html = '';
+    GROUPS.forEach(function(group) {
+      var validNames = group.names.filter(function(n){ return COMPONENTS[n]; });
+      html += '<div class="doc-nav-group" data-group="' + group.key + '">';
+      html += '<div class="doc-nav-group-label">' + group.key + ' <span class="doc-nav-group-count">' + validNames.length + '</span></div>';
+      validNames.forEach(function(name) {
+        var info = COMPONENTS[name];
+        html += '<div class="doc-nav-item" data-name="' + name + '" data-zh="' + info.zh + '">';
+        html +=   '<span class="nav-en">' + name + '</span>';
+        html +=   '<span class="nav-zh">' + info.zh + '</span>';
+        html += '</div>';
+      });
+      html += '</div>';
+    });
+    listEl.innerHTML = html;
+  }
+  renderNavList();
+
+  /* ===================================================
+     更新日志数据
+  =================================================== */
+  var CHANGELOG = [
+    {
+      date: '2026-03-31',
+      entries: [
+        { type: 'new',    comp: 'kanban-card',        note: '新增看板卡片组件',         version: '1.0' },
+        { type: 'new',    comp: 'kanban-column',       note: '新增看板列容器组件',       version: '1.0' },
+        { type: 'update', comp: 'status-badge',        note: '新增更多语义色变体',       version: '1.1' }
+      ]
+    },
+    {
+      date: '2026-03-15',
+      entries: [
+        { type: 'new',    comp: 'button',       note: '基础按钮组件首发',     version: '1.0' },
+        { type: 'new',    comp: 'avatar',       note: '头像组件首发',         version: '1.0' },
+        { type: 'new',    comp: 'checkbox',     note: '复选框组件首发',       version: '1.0' },
+        { type: 'new',    comp: 'radio',        note: '单选框组件首发',       version: '1.0' },
+        { type: 'new',    comp: 'switch',       note: '开关组件首发',         version: '1.0' },
+        { type: 'new',    comp: 'input',        note: '输入框组件首发',       version: '1.0' },
+        { type: 'new',    comp: 'tag',          note: '标签组件首发',         version: '1.0' },
+        { type: 'new',    comp: 'status-badge', note: '状态标记组件首发',     version: '1.0' }
+      ]
+    }
+  ];
+
+  /* ===================================================
+     状态
+  =================================================== */
+  var currentComp = null;
+  var currentView = null; // 'overview' | 'changelog' | comp name
+  var currentTab = 'preview';
+  var previewBg = 'white';
+  var fetchedCss = {};
+  var fetchedHtml = {};
+
+  /* ===================================================
+     DOM 引用
+  =================================================== */
+  var docContent = document.getElementById('docContent');
+  var docSearch = document.getElementById('docSearch');
+  var searchEmpty = document.getElementById('searchEmpty');
+  var navItems = document.querySelectorAll('.doc-nav-item');
+  var navGroups = document.querySelectorAll('.doc-nav-group');
+
+  /* ===================================================
+     导航点击
+  =================================================== */
+  navItems.forEach(function (item) {
+    item.addEventListener('click', function () {
+      var name = this.getAttribute('data-name');
+      navigate(name);
+    });
+  });
+
+  // 动态注入版本徽章（仅非当前版本才显示版本号）
+  var LIBRARY_VERSION = '1.0';
+  navItems.forEach(function(item) {
+    var name = item.getAttribute('data-name');
+    var info = COMPONENTS[name];
+    if (!info) return;
+    if (info.isNew) {
+      var badge = document.createElement('span');
+      badge.className = 'nav-badge-new';
+      badge.textContent = 'NEW';
+      item.appendChild(badge);
+    } else if (info.isUpdated) {
+      var uBadge = document.createElement('span');
+      uBadge.className = 'nav-badge-updated';
+      uBadge.textContent = '更新';
+      item.appendChild(uBadge);
+    } else if (info.version && info.version !== LIBRARY_VERSION) {
+      var vLabel = document.createElement('span');
+      vLabel.className = 'nav-version';
+      vLabel.textContent = 'v' + info.version;
+      item.appendChild(vLabel);
+    }
+  });
+
+  function navigate(target) {
+    if (currentView === target) return;
+    currentView = target;
+
+    // 清除所有高亮
+    navItems.forEach(function (i) { i.classList.remove('active'); });
+    var overviewBtn = document.getElementById('navOverview');
+    var changelogBtn = document.getElementById('navChangelog');
+    if (overviewBtn) overviewBtn.classList.remove('active');
+    if (changelogBtn) changelogBtn.classList.remove('active');
+
+    if (target === 'overview') {
+      if (overviewBtn) overviewBtn.classList.add('active');
+      location.hash = 'overview';
+      renderOverview();
+    } else if (target === 'changelog') {
+      if (changelogBtn) changelogBtn.classList.add('active');
+      location.hash = 'changelog';
+      renderChangelog();
+    } else {
+      // 组件详情
+      currentComp = target;
+      currentTab = 'preview';
+      var navTarget = document.querySelector('.doc-nav-item[data-name="' + target + '"]');
+      if (navTarget) {
+        navTarget.classList.add('active');
+        navTarget.scrollIntoView({ block: 'nearest' });
+      }
+      location.hash = target;
+      renderCompPage(target);
+    }
+  }
+
+  function selectComp(name) { navigate(name); }
+
+  // 暴露给全局，供 onclick 属性调用
+  window.navigate = navigate;
+
+  /* ===================================================
+     渲染：组件总览页
+  =================================================== */
+  function renderOverview() {
+    var q = (docSearch.value || '').trim().toLowerCase();
+
+    var html = '<div class="overview-page" id="overviewPage">';
+
+    // 统计过滤后的数量
+    var totalVisible = 0;
+
+    GROUPS.forEach(function(group) {
+      var filtered = group.names.filter(function(name) {
+        var info = COMPONENTS[name];
+        if (!info) return false;
+        if (!q) return true;
+        return name.toLowerCase().indexOf(q) >= 0 ||
+               info.zh.indexOf(q) >= 0 ||
+               (info.desc && info.desc.indexOf(q) >= 0);
+      });
+
+      if (filtered.length === 0) return;
+      totalVisible += filtered.length;
+
+      html += '<div class="overview-section" id="section-' + group.key + '">';
+      html += '<div class="overview-section-header">';
+      html += '<span class="overview-section-title">' + group.label + '</span>';
+      html += '<span class="overview-section-count">' + filtered.length + '</span>';
+      html += '</div>';
+      html += '<div class="overview-grid">';
+
+      filtered.forEach(function(name) {
+        var info = COMPONENTS[name] || { zh: name, desc: '', version: '1.0', isNew: false, isUpdated: false, preview: '' };
+        var displayName = name.replace(/-/g, ' ').replace(/\b\w/g, function(c){ return c.toUpperCase(); });
+
+        html += '<div class="overview-card" onclick="navigate(\'' + name + '\')" title="' + info.desc + '">';
+        html += '<div class="card-preview-area">';
+        html += '<div class="preview-inner">' + (info.preview || '<i class="cses-stratis-grid-01" style="font-size:24px;opacity:0.2;"></i>') + '</div>';
+        html += '</div>';
+        html += '<div class="card-meta">';
+        html += '<div class="card-title"><span class="card-name-en">' + displayName + '</span><span class="card-name-zh">' + info.zh + '</span></div>';
+        html += '<div class="card-footer">';
+        html += '<span class="card-tag-name">cs-' + name + '</span>';
+        if (info.version && info.version !== LIBRARY_VERSION) {
+          html += '<span class="card-version">v' + info.version + '</span>';
+        }
+        if (info.isNew) html += '<span class="card-badge-new">NEW</span>';
+        else if (info.isUpdated) html += '<span class="card-badge-updated">更新</span>';
+        html += '</div>';
+        html += '</div>';
+        html += '</div>';
+      });
+
+      html += '</div></div>'; // end grid + section
+    });
+
+    if (totalVisible === 0) {
+      html += '<div class="overview-empty">未找到匹配的组件</div>';
+    }
+
+    html += '</div>'; // end overview-page
+
+    docContent.innerHTML = html;
+
+    // 注入组件预览所需的 CSS（各组件 CSS 已通过 base.css + 单独文件加载，这里用默认样式兜底）
+    injectPreviewCssForOverview();
+  }
+
+  function injectPreviewCssForOverview() {
+    // 一次性加载所有组件 CSS，确保总览卡片预览正常显示
+    if (document.getElementById('injected-all-css-ov')) return;
+    Object.keys(COMPONENTS).forEach(function(n) {
+      if (!document.querySelector('link[data-comp-css="' + n + '"]')) {
+        var lk = document.createElement('link');
+        lk.rel = 'stylesheet';
+        lk.setAttribute('data-comp-css', n);
+        lk.href = n + '/' + n + '.css';
+        document.head.appendChild(lk);
+      }
+    });
+    var marker = document.createElement('span');
+    marker.id = 'injected-all-css-ov';
+    marker.style.display = 'none';
+    document.head.appendChild(marker);
+  }
+
+  /* ===================================================
+     渲染：更新日志页
+  =================================================== */
+  function renderChangelog() {
+    var typeLabel = { new: '新增', update: '更新', fix: '修复' };
+    var html = '<div class="changelog-page">';
+    html += '<div class="changelog-header">';
+    html += '<div class="changelog-title">更新日志</div>';
+    html += '<div class="changelog-subtitle">记录各组件的版本变更历史，与 pending/ 目录版本对应</div>';
+    html += '</div>';
+
+    CHANGELOG.forEach(function(group) {
+      html += '<div class="changelog-group">';
+      html += '<div class="changelog-date">' + group.date + '</div>';
+      html += '<div class="changelog-entries">';
+      group.entries.forEach(function(entry) {
+        var info = COMPONENTS[entry.comp] || { zh: entry.comp };
+        html += '<div class="changelog-entry">';
+        html += '<span class="changelog-type ' + entry.type + '">' + (typeLabel[entry.type] || entry.type) + '</span>';
+        html += '<span class="changelog-comp-link" onclick="navigate(\'' + entry.comp + '\')">' + entry.comp + ' · ' + info.zh + '</span>';
+        html += '<span class="changelog-note">' + entry.note + '</span>';
+        html += '<span class="changelog-ver">v' + entry.version + '</span>';
+        html += '</div>';
+      });
+      html += '</div></div>';
+    });
+
+    html += '</div>';
+    docContent.innerHTML = html;
+  }
+
+  /* ===================================================
+     渲染组件文档页
+  =================================================== */
+  function renderCompPage(name) {
+    var info = COMPONENTS[name] || { zh: name, desc: '' };
+
+    docContent.innerHTML = [
+      '<div class="comp-header">',
+      '  <div class="comp-header-top">',
+      '    <div>',
+      '      <div class="comp-header-title-row">',
+      '        <span class="comp-title-en">' + name + '</span>',
+      '        <span class="comp-title-tag">cs-' + name + '</span>',
+      '        <span class="comp-title-zh">' + info.zh + '</span>',
+      '      </div>',
+      '      <div class="comp-desc">' + info.desc + '</div>',
+      '    </div>',
+      '    <div class="comp-header-actions">',
+      '      <a class="comp-btn" href="' + name + '/' + name + '.html" target="_blank">',
+      '        <i class="cses-stratis-link-external" style="font-size:12px;"></i> 新标签页打开',
+      '      </a>',
+      '    </div>',
+      '  </div>',
+      '</div>',
+      '<div class="comp-tabs" id="compTabs">',
+      '  <div class="comp-tab active" data-tab="preview">预览</div>',
+      '  <div class="comp-tab" data-tab="code">代码</div>',
+      '  <div class="comp-tab" data-tab="api">API</div>',
+      '</div>',
+      '<div class="comp-tab-panels" id="compPanels">',
+      '  <div class="comp-tab-panel active" id="panelPreview">',
+      '    <div class="preview-toolbar" id="previewToolbar">',
+      '      <span class="preview-toolbar-label">背景</span>',
+      '      <button class="bg-switch-btn active" data-bg="white">',
+      '        <span class="bg-swatch" style="background:#ffffff;"></span> 白色',
+      '      </button>',
+      '      <button class="bg-switch-btn" data-bg="light">',
+      '        <span class="bg-swatch" style="background:#f5f5f5;"></span> 浅灰',
+      '      </button>',
+      '      <button class="bg-switch-btn" data-bg="dark">',
+      '        <span class="bg-swatch" style="background:#2c2a3a;"></span> 深色',
+      '      </button>',
+      '    </div>',
+      '    <div class="preview-demo-wrap" id="previewDemoWrap">',
+      '      <div id="previewSandbox" class="preview-sandbox"></div>',
+      '      <div id="controlsPanel" class="controls-panel" style="display:none;"></div>',
+      '    </div>',
+      '  </div>',
+      '  <div class="comp-tab-panel" id="panelCode">',
+      '    <div class="code-panel">',
+      '      <div class="code-toolbar">',
+      '        <span class="code-lang-badge">HTML · ' + name + '.html · body 内容</span>',
+      '        <button class="code-copy-btn" id="copyCodeBtn"><i class="cses-stratis-file-02" style="font-size:11px;"></i> 复制</button>',
+      '      </div>',
+      '      <div class="code-scroll"><pre class="code-block" id="codeBlock"><span class="hl-comment">// 正在加载...</span></pre></div>',
+      '    </div>',
+      '  </div>',
+      '  <div class="comp-tab-panel" id="panelApi">',
+      '    <div class="api-panel" id="apiPanel"><div class="api-empty">正在加载...</div></div>',
+      '  </div>',
+      '</div>'
+    ].join('\n');
+
+    // 绑定 Tab 切换
+    document.getElementById('compTabs').querySelectorAll('.comp-tab').forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        switchTab(this.getAttribute('data-tab'));
+      });
+    });
+
+    // 绑定背景切换
+    document.getElementById('previewToolbar').querySelectorAll('.bg-switch-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        switchBg(this.getAttribute('data-bg'));
+      });
+    });
+
+    // 恢复当前背景
+    switchBg(previewBg, true);
+
+    // 异步加载代码和 API，并 inline 渲染预览
+    loadHtml(name);
+    loadCss(name);
+    loadPreviewInline(name);
+  }
+
+  /* ===================================================
+     Tab 切换
+  =================================================== */
+  function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.comp-tab').forEach(function (t) {
+      t.classList.toggle('active', t.getAttribute('data-tab') === tab);
+    });
+    document.querySelectorAll('.comp-tab-panel').forEach(function (p) {
+      p.classList.remove('active');
+    });
+    var panelMap = { preview: 'panelPreview', code: 'panelCode', api: 'panelApi' };
+    var panel = document.getElementById(panelMap[tab]);
+    if (panel) panel.classList.add('active');
+  }
+
+  /* ===================================================
+     背景切换
+  =================================================== */
+  var bgColors = { white: '#ffffff', light: '#f5f5f5', dark: '#2c2a3a' };
+  function switchBg(bg, silent) {
+    previewBg = bg;
+    var wrap = document.getElementById('previewDemoWrap');
+    if (wrap) wrap.style.background = bgColors[bg] || '#ffffff';
+    if (!silent) {
+      document.querySelectorAll('.bg-switch-btn').forEach(function (btn) {
+        btn.classList.toggle('active', btn.getAttribute('data-bg') === bg);
+      });
+    }
+  }
+
+  /* ===================================================
+     inline 预览：loadPreviewInline / scopeCss / addInteractions / renderControls
+  =================================================== */
+  function loadPreviewInline(name) {
+    var sandbox = document.getElementById('previewSandbox');
+    if (!sandbox) return;
+    sandbox.innerHTML = '<div class="preview-loading">加载中...</div>';
+
+    // 注入组件 CSS（动态 link 标签）
+    var oldLink = document.getElementById('injected-comp-css');
+    if (oldLink) oldLink.remove();
+    var link = document.createElement('link');
+    link.id = 'injected-comp-css';
+    link.rel = 'stylesheet';
+    link.href = name + '/' + name + '.css';
+    document.head.appendChild(link);
+
+    // fetch HTML，提取 body 内容，注入 sandbox
+    fetch(name + '/' + name + '.html')
+      .then(function(r) { return r.text(); })
+      .then(function(html) {
+        var bodyMatch = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+        if (!bodyMatch) return;
+        var bodyContent = bodyMatch[1];
+
+        // 提取 <style>：先从 <head> 再从 <body>（组件 HTML 的样式通常在 head）
+        var scopedStyles = '';
+        var headMatch = html.match(/<head[^>]*>([\s\S]*?)<\/head>/i);
+        if (headMatch) {
+          // 注入依赖的外部 <link> CSS（如 context-menu 依赖 menu-item.css）
+          headMatch[1].replace(/<link[^>]+rel=["']stylesheet["'][^>]*>/gi, function(tag) {
+            var hrefMatch = tag.match(/href=["']([^"']+)["']/i);
+            if (!hrefMatch) return;
+            var href = hrefMatch[1];
+            if (href.indexOf('base.css') >= 0 || href.indexOf('cses-icons.css') >= 0) return;
+            if (href === name + '.css') return;
+            var depId = 'injected-dep-' + href.replace(/[^a-z0-9]/gi, '-');
+            if (!document.getElementById(depId)) {
+              var depLink = document.createElement('link');
+              depLink.id = depId;
+              depLink.rel = 'stylesheet';
+              depLink.href = name + '/' + href;
+              document.head.appendChild(depLink);
+            }
+          });
+          headMatch[1].replace(/<style[^>]*>([\s\S]*?)<\/style>/gi, function(_, css) {
+            scopedStyles += scopeCss(css, '#previewSandbox');
+          });
+        }
+        bodyContent = bodyContent.replace(/<style[^>]*>([\s\S]*?)<\/style>/gi, function(_, css) {
+          scopedStyles += scopeCss(css, '#previewSandbox');
+          return '';
+        });
+
+        // 注入 scoped style
+        var oldStyle = document.getElementById('injected-demo-style');
+        if (oldStyle) oldStyle.remove();
+        if (scopedStyles) {
+          var st = document.createElement('style');
+          st.id = 'injected-demo-style';
+          st.textContent = scopedStyles;
+          document.head.appendChild(st);
+        }
+
+        // 路径重写：组件 .html 在 components/{name}/，相对路径 ../../assets/ 是从那里去到 design-agent/。
+        // 注入到 components/index.html (在 components/) 后，浏览器按 components/ 解析，应改成 ../assets/。
+        // 把 src/href="../../  → ../"（仅当指向 assets/fonts/css/fragment 等顶层目录时）
+        bodyContent = bodyContent.replace(
+          /(\s(?:src|href)\s*=\s*["'])\.\.\/\.\.\/(assets|fonts|css|fragment|components)\//g,
+          '$1../$2/'
+        );
+        sandbox.innerHTML = bodyContent;
+        addInteractions(sandbox);
+
+        // 如果 CSS 已加载，渲染 Controls；否则等 loadCss 完成后会调用
+        if (fetchedCss[name] !== undefined && fetchedCss[name] !== null) {
+          renderControls(name, parseDataAttrs(fetchedCss[name]));
+        }
+      })
+      .catch(function() {
+        sandbox.innerHTML = '<div class="preview-fetch-error">需要通过本地服务器访问（如 node scripts/req-server.mjs）</div>';
+      });
+  }
+
+  function scopeCss(css, scope) {
+    // 移除注释
+    css = css.replace(/\/\*[\s\S]*?\*\//g, '');
+    // 将 body 选择器替换为 scope
+    css = css.replace(/\bbody\b/g, scope);
+    // 对其他选择器添加 scope 前缀（跳过 @规则 和已含 scope 的）
+    css = css.replace(/([^{}@]+)\{/g, function(match, sel) {
+      if (sel.trim().charAt(0) === '@') return match;
+      if (sel.includes(scope)) return match;
+      var scoped = sel.split(',').map(function(s) {
+        s = s.trim();
+        if (!s) return s;
+        // cs-* 选择器不需要 scope（已是组件级）
+        if (/^cs-/.test(s)) return s;
+        return scope + ' ' + s;
+      }).join(', ');
+      return scoped + ' {';
+    });
+    return css;
+  }
+
+  function addInteractions(container) {
+    // cs-checkbox：点击切换 data-checked
+    container.querySelectorAll('cs-checkbox').forEach(function(el) {
+      if (el.hasAttribute('data-disabled')) return;
+      el.style.cursor = 'pointer';
+      el.addEventListener('click', function() {
+        this.toggleAttribute('data-checked');
+      });
+    });
+
+    // cs-switch：点击切换 data-checked
+    container.querySelectorAll('cs-switch').forEach(function(el) {
+      if (el.hasAttribute('data-disabled')) return;
+      el.style.cursor = 'pointer';
+      el.addEventListener('click', function() {
+        this.toggleAttribute('data-checked');
+      });
+    });
+
+    // cs-radio：点击设为选中，同组其他取消
+    container.querySelectorAll('cs-radio').forEach(function(el) {
+      if (el.hasAttribute('data-disabled')) return;
+      el.style.cursor = 'pointer';
+      el.addEventListener('click', function() {
+        var group = (this.closest('.row') || this.closest('.section') || container)
+                      .querySelectorAll('cs-radio');
+        group.forEach(function(r) { r.removeAttribute('data-checked'); });
+        this.setAttribute('data-checked', '');
+      });
+    });
+
+
+    // cs-segment-control 内部 item：互斥激活
+    container.querySelectorAll('cs-segment-control').forEach(function(seg) {
+      var items = seg.querySelectorAll('.segment-item, [class*="item"]');
+      items.forEach(function(item) {
+        item.style.cursor = 'pointer';
+        item.addEventListener('click', function() {
+          items.forEach(function(i) { i.removeAttribute('data-active'); });
+          this.setAttribute('data-active', '');
+        });
+      });
+    });
+
+    // cs-tab-nav 内部 item：互斥激活
+    container.querySelectorAll('cs-tab-nav').forEach(function(nav) {
+      var items = nav.querySelectorAll('.tab-item, [class*="tab-item"]');
+      items.forEach(function(item) {
+        item.style.cursor = 'pointer';
+        item.addEventListener('click', function() {
+          items.forEach(function(i) { i.removeAttribute('data-active'); });
+          this.setAttribute('data-active', '');
+        });
+      });
+    });
+
+    // cs-nav-item：互斥激活
+    var navItemEls = container.querySelectorAll('cs-nav-item');
+    navItemEls.forEach(function(el) {
+      el.style.cursor = 'pointer';
+      el.addEventListener('click', function() {
+        navItemEls.forEach(function(i) { i.removeAttribute('data-active'); });
+        this.setAttribute('data-active', '');
+      });
+    });
+
+    // cs-view-switcher 内部 item：互斥激活
+    container.querySelectorAll('cs-view-switcher').forEach(function(sw) {
+      var items = sw.querySelectorAll('[class*="item"], [class*="btn"]');
+      items.forEach(function(item) {
+        item.style.cursor = 'pointer';
+        item.addEventListener('click', function() {
+          items.forEach(function(i) { i.removeAttribute('data-active'); });
+          this.setAttribute('data-active', '');
+        });
+      });
+    });
+
+
+
+    // cs-menu-item data-active 互斥激活
+    container.querySelectorAll('cs-menu-item').forEach(function(el) {
+      el.style.cursor = 'pointer';
+      el.addEventListener('click', function() {
+        container.querySelectorAll('cs-menu-item').forEach(function(i) { i.removeAttribute('data-active'); });
+        this.setAttribute('data-active', '');
+      });
+    });
+  }
+
+  function renderControls(name, attrs) {
+    var panel = document.getElementById('controlsPanel');
+    if (!panel) return;
+    if (!attrs || attrs.length === 0) { panel.style.display = 'none'; return; }
+
+    var html = '<div class="controls-header"><span class="controls-title">Controls</span><span class="controls-hint">实时调整属性</span></div>';
+    html += '<div class="controls-rows">';
+
+    attrs.forEach(function(attr) {
+      html += '<div class="controls-row">';
+      html += '<span class="controls-attr">' + attr.name + '</span>';
+      html += '<div class="controls-chips">';
+
+      if (attr.type === 'boolean') {
+        html += '<button class="ctrl-chip ctrl-bool" data-attr="' + attr.name + '" data-bool="true">开启</button>';
+        html += '<button class="ctrl-chip ctrl-bool active" data-attr="' + attr.name + '" data-bool="false">关闭</button>';
+      } else {
+        attr.values.forEach(function(v, i) {
+          html += '<button class="ctrl-chip' + (i === 0 ? ' active' : '') + '" data-attr="' + attr.name + '" data-val="' + v + '">' + v + '</button>';
+        });
+      }
+
+      html += '</div></div>';
+    });
+
+    html += '</div>';
+    panel.innerHTML = html;
+    panel.style.display = 'block';
+
+    // 绑定控制事件
+    panel.querySelectorAll('.ctrl-chip').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var attrName = this.getAttribute('data-attr');
+        var val = this.getAttribute('data-val');
+        var isBool = this.getAttribute('data-bool') !== null;
+        var sandbox = document.getElementById('previewSandbox');
+        var targetEl = sandbox ? sandbox.querySelector('cs-' + name) : null;
+        if (!targetEl) return;
+
+        // 同组 chip 取消 active
+        panel.querySelectorAll('.ctrl-chip[data-attr="' + attrName + '"]').forEach(function(c) {
+          c.classList.remove('active');
+        });
+        this.classList.add('active');
+
+        // 更新目标元素属性
+        if (isBool) {
+          var boolVal = this.getAttribute('data-bool') === 'true';
+          var bareAttr = attrName.replace(/^data-/, '');
+          if (boolVal) {
+            targetEl.setAttribute(bareAttr, '');
+          } else {
+            targetEl.removeAttribute(bareAttr);
+            targetEl.removeAttribute(attrName);
+          }
+        } else {
+          targetEl.setAttribute(attrName, val);
+        }
+      });
+    });
+  }
+
+  /* ===================================================
+     fetch HTML 内容 → 代码面板
+  =================================================== */
+  function loadHtml(name) {
+    var url = name + '/' + name + '.html';
+    if (fetchedHtml[name] !== undefined) {
+      renderCode(name, fetchedHtml[name]);
+      return;
+    }
+    fetch(url)
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.text();
+      })
+      .then(function (html) {
+        fetchedHtml[name] = html;
+        renderCode(name, html);
+      })
+      .catch(function (e) {
+        fetchedHtml[name] = null;
+        renderCodeError(name, e);
+      });
+  }
+
+  function extractBody(html) {
+    var m = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+    if (m) return m[1].trim();
+    return html.trim();
+  }
+
+  function renderCode(name, html) {
+    if (currentComp !== name) return;
+    var block = document.getElementById('codeBlock');
+    var copyBtn = document.getElementById('copyCodeBtn');
+    if (!block) return;
+    var body = extractBody(html);
+    block.innerHTML = highlight(body);
+    if (copyBtn) {
+      copyBtn.onclick = function () {
+        copyText(body, copyBtn);
+      };
+    }
+  }
+
+  function renderCodeError(name, err) {
+    if (currentComp !== name) return;
+    var block = document.getElementById('codeBlock');
+    if (!block) return;
+    block.innerHTML = [
+      '<div class="code-empty">',
+      '  <div class="code-empty-icon"><i class="cses-stratis-bell-01" style="font-size:32px;opacity:0.3;color:#f9e2af;"></i></div>',
+      '  <div class="code-empty-text">无法加载文件内容</div>',
+      '  <div class="code-empty-hint">在 file:// 协议下 fetch 受限，请用本地服务器（如 npx serve）打开</div>',
+      '</div>'
+    ].join('');
+  }
+
+  /* ===================================================
+     fetch CSS 内容 → API 面板
+  =================================================== */
+  function loadCss(name) {
+    var url = name + '/' + name + '.css';
+    if (fetchedCss[name] !== undefined) {
+      renderApi(name, fetchedCss[name]);
+      return;
+    }
+    fetch(url)
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.text();
+      })
+      .then(function (css) {
+        fetchedCss[name] = css;
+        renderApi(name, css);
+      })
+      .catch(function (e) {
+        fetchedCss[name] = null;
+        renderApiError(name);
+      });
+  }
+
+  /* ===================================================
+     解析 CSS 注释中的 data 属性
+  =================================================== */
+  function parseDataAttrs(css) {
+    // 逐行扫描，支持中英文格式，兼容注释内嵌套 */ 的 CSS 文件
+    var lines = css.split('\n');
+    var attrs = {};
+    var inDataSection = false;
+
+    for (var i = 0; i < lines.length; i++) {
+      var clean = lines[i].replace(/^\s*\*\s?/, '').trim();
+
+      // 检测 data 属性段落开始（中文：data 属性： / 英文：data attributes:）
+      if (/^data\s*(?:属性|attributes?)\s*[：:]/i.test(clean)) {
+        inDataSection = true;
+        continue;
+      }
+
+      if (!inDataSection) continue;
+
+      // 段落结束：空行或注释结束
+      if (!clean || clean === '*/' || clean === '/') break;
+
+      // data-attr="val" — desc（枚举值）
+      var mVal = clean.match(/^(data-[\w-]+)="([^"]*)"(?:\s*[—\-–]\s*(.*))?$/);
+      if (mVal) {
+        var an = mVal[1], val = mVal[2], desc = (mVal[3] || '').trim();
+        if (!attrs[an]) attrs[an] = { desc: desc, values: [], type: 'enum' };
+        if (val) attrs[an].values.push(val);
+        if (!attrs[an].desc && desc) attrs[an].desc = desc;
+        continue;
+      }
+
+      // data-attr — desc（布尔值，无引号）
+      var mBool = clean.match(/^(data-[\w-]+)(?:\s*[—\-–]\s*(.*))?$/);
+      if (mBool) {
+        var an2 = mBool[1], desc2 = (mBool[2] || '').trim();
+        if (!attrs[an2]) attrs[an2] = { desc: desc2, values: [], type: 'boolean' };
+        if (!attrs[an2].desc && desc2) attrs[an2].desc = desc2;
+        continue;
+      }
+
+      // 非 data- 开头的行，结束段落
+      if (!clean.startsWith('data-')) break;
+    }
+
+    return Object.keys(attrs).map(function(k) {
+      return { name: k, desc: attrs[k].desc, values: attrs[k].values, type: attrs[k].values.length > 0 ? 'enum' : 'boolean' };
+    });
+  }
+
+  function renderApi(name, css) {
+    if (currentComp !== name) return;
+    var panel = document.getElementById('apiPanel');
+    if (!panel) return;
+
+    var attrs = parseDataAttrs(css);
+
+    // 如果 sandbox 已渲染（预览先加载完），补充渲染 Controls
+    var sandbox = document.getElementById('previewSandbox');
+    if (sandbox && sandbox.children.length > 0 && !sandbox.querySelector('.preview-loading')) {
+      renderControls(name, attrs);
+    }
+
+    if (!attrs || attrs.length === 0) {
+      panel.innerHTML = '<div class="api-empty">此组件无可调节的 data-* 属性。</div>';
+      return;
+    }
+
+    var rows = attrs.map(function (attr) {
+      var vals = attr.values.length > 0
+        ? '<div class="api-vals">' + attr.values.map(function (v) { return '<span class="api-val-chip">"' + v + '"</span>'; }).join('') + '</div>'
+        : '<span style="color:var(--cs-color-text-light2);font-size:12px;">—</span>';
+      var typeBadge = attr.type === 'boolean'
+        ? '<span class="api-type-badge">boolean</span>'
+        : '<span class="api-type-badge">string</span>';
+      return [
+        '<tr>',
+        '  <td><span class="api-attr-name">' + attr.name + '</span></td>',
+        '  <td>' + (attr.desc || '—') + '</td>',
+        '  <td>' + vals + '</td>',
+        '  <td>' + typeBadge + '</td>',
+        '</tr>'
+      ].join('');
+    }).join('');
+
+    panel.innerHTML = [
+      '<div class="api-section-title">data 属性</div>',
+      '<div class="api-table-wrap">',
+      '  <table class="api-table">',
+      '    <thead><tr>',
+      '      <th>属性</th><th>说明</th><th>可选值</th><th>类型</th>',
+      '    </tr></thead>',
+      '    <tbody>' + rows + '</tbody>',
+      '  </table>',
+      '</div>'
+    ].join('');
+  }
+
+  function renderApiError(name) {
+    if (currentComp !== name) return;
+    var panel = document.getElementById('apiPanel');
+    if (panel) panel.innerHTML = '<div class="api-empty">无法加载 CSS 文件，请通过本地服务器访问。</div>';
+  }
+
+  /* ===================================================
+     语法高亮（正则实现，Catppuccin Mocha 配色）
+  =================================================== */
+  function escapeHtml(str) {
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function highlight(code) {
+    var escaped = escapeHtml(code);
+    // 按顺序替换，避免重叠。使用占位符策略：先提取，替换后还原
+    var tokens = [];
+    var idx = 0;
+
+    function placeholder(html) {
+      var key = '\x00TOKEN' + (idx++) + '\x00';
+      tokens.push({ key: key, html: html });
+      return key;
+    }
+
+    // HTML 注释
+    escaped = escaped.replace(/&lt;!--[\s\S]*?--&gt;/g, function (m) {
+      return placeholder('<span class="hl-comment">' + m + '</span>');
+    });
+
+    // 标签名（开始/结束）
+    escaped = escaped.replace(/(&lt;\/?)([a-zA-Z][\w-]*)(\s|&gt;)/g, function (m, slash, tag, after) {
+      return placeholder('<span class="hl-tag">' + escapeHtml(slash) + '</span><span class="hl-tag">' + tag + '</span>') + after;
+    });
+
+    // 属性名（=前，或单独属性）
+    escaped = escaped.replace(/\s([\w-]+)(=&quot;|=(?!&quot;)|\s|&gt;)/g, function (m, attr, after) {
+      return ' ' + placeholder('<span class="hl-attr">' + attr + '</span>') + after;
+    });
+
+    // 属性值 "..."
+    escaped = escaped.replace(/=(&quot;)(.*?)(\1)/g, function (m, q1, val, q2) {
+      return '=' + placeholder('<span class="hl-val">&quot;' + val + '&quot;</span>');
+    });
+
+    // 还原
+    tokens.forEach(function (t) {
+      escaped = escaped.split(t.key).join(t.html);
+    });
+
+    return escaped;
+  }
+
+  /* ===================================================
+     复制到剪贴板
+  =================================================== */
+  function copyText(text, btn) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { flashCopied(btn); });
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); flashCopied(btn); } catch (e) {}
+      document.body.removeChild(ta);
+    }
+  }
+
+  function flashCopied(btn) {
+    btn.classList.add('copied');
+    btn.textContent = '已复制';
+    setTimeout(function () {
+      btn.classList.remove('copied');
+      btn.innerHTML = '<i class="cses-stratis-file-02" style="font-size:11px;"></i> 复制';
+    }, 2000);
+  }
+
+  /* ===================================================
+     搜索过滤
+  =================================================== */
+  docSearch.addEventListener('input', function () {
+    var q = this.value.trim().toLowerCase();
+    var anyVisible = false;
+
+    navGroups.forEach(function (group) {
+      var items = group.querySelectorAll('.doc-nav-item');
+      var groupVisible = false;
+      items.forEach(function (item) {
+        var en = item.getAttribute('data-name') || '';
+        var zh = item.getAttribute('data-zh') || '';
+        var match = !q || en.indexOf(q) >= 0 || zh.indexOf(q) >= 0;
+        item.classList.toggle('hidden', !match);
+        if (match) { groupVisible = true; anyVisible = true; }
+      });
+      group.classList.toggle('hidden', !groupVisible);
+    });
+
+    searchEmpty.style.display = anyVisible ? 'none' : 'block';
+
+    // 如果当前是总览页，同步刷新卡片过滤
+    if (currentView === 'overview') {
+      renderOverview();
+    }
+  });
+
+  /* ===================================================
+     hash 路由
+  =================================================== */
+  function initFromHash() {
+    var hash = location.hash.replace('#', '').trim();
+    if (!hash || hash === 'overview') {
+      navigate('overview');
+    } else if (hash === 'changelog') {
+      navigate('changelog');
+    } else if (COMPONENTS[hash]) {
+      navigate(hash);
+    } else {
+      navigate('overview');
+    }
+  }
+
+  window.addEventListener('hashchange', function() {
+    var hash = location.hash.replace('#', '').trim();
+    if (hash !== currentView) {
+      currentView = null; // 允许重新渲染
+      if (!hash || hash === 'overview') {
+        navigate('overview');
+      } else if (hash === 'changelog') {
+        navigate('changelog');
+      } else if (COMPONENTS[hash]) {
+        navigate(hash);
+      }
+    }
+  });
+
+  initFromHash();
+
+})();
+</script>
+
+</body>
+</html>

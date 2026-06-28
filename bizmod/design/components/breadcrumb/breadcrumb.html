@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>cs-breadcrumb 组件预览</title>
+  <link rel="stylesheet" href="../../css/base.css">
+  <link rel="stylesheet" href="../../fonts/cses-icons.css?v=101">
+  <link rel="stylesheet" href="breadcrumb.css">
+  <style>
+    body { padding: 32px; background: #f5f5f5; }
+    .section { background: #fff; border-radius: 8px; padding: 24px; margin-bottom: 24px; }
+    .section-title { font: var(--typo-cn-16-medium); color: var(--cs-color-text); margin-bottom: 16px; }
+    .section-subtitle { font: var(--typo-cn-12-regular); color: var(--cs-color-text-light2); margin-bottom: 16px; }
+    .row { display: flex; align-items: center; gap: 24px; margin-bottom: 16px; flex-wrap: wrap; }
+    .row-label { font: var(--typo-cn-12-regular); color: var(--cs-color-text-light2); width: 100px; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+
+<!-- 基础用法 -->
+<div class="section">
+  <div class="section-title">基础面包屑</div>
+  <div class="section-subtitle">最后一项为当前页（data-current，14px/500 #333），其余可点击（14px/400 #999），分隔符为 chevron-right 12px</div>
+
+  <div class="row">
+    <span class="row-label">两级导航</span>
+    <cs-breadcrumb>
+      <span class="breadcrumb-item">首页</span>
+      <span class="breadcrumb-separator"><i class="cses-stratis-chevron-right"></i></span>
+      <span class="breadcrumb-item" data-current>任务管理</span>
+    </cs-breadcrumb>
+  </div>
+
+  <div class="row">
+    <span class="row-label">三级导航</span>
+    <cs-breadcrumb>
+      <span class="breadcrumb-item">工作台</span>
+      <span class="breadcrumb-separator"><i class="cses-stratis-chevron-right"></i></span>
+      <span class="breadcrumb-item">项目空间</span>
+      <span class="breadcrumb-separator"><i class="cses-stratis-chevron-right"></i></span>
+      <span class="breadcrumb-item" data-current>前端组件库</span>
+    </cs-breadcrumb>
+  </div>
+
+  <div class="row">
+    <span class="row-label">四级导航</span>
+    <cs-breadcrumb>
+      <span class="breadcrumb-item">工作台</span>
+      <span class="breadcrumb-separator"><i class="cses-stratis-chevron-right"></i></span>
+      <span class="breadcrumb-item">项目空间</span>
+      <span class="breadcrumb-separator"><i class="cses-stratis-chevron-right"></i></span>
+      <span class="breadcrumb-item">前端组件库</span>
+      <span class="breadcrumb-separator"><i class="cses-stratis-chevron-right"></i></span>
+      <span class="breadcrumb-item" data-current>按钮组件</span>
+    </cs-breadcrumb>
+  </div>
+</div>
+
+<!-- 链接形式 -->
+<div class="section">
+  <div class="section-title">链接形式</div>
+  <div class="section-subtitle">使用 a 标签作为 breadcrumb-item</div>
+
+  <div class="row">
+    <span class="row-label">带链接</span>
+    <cs-breadcrumb>
+      <a class="breadcrumb-item" href="#">首页</a>
+      <span class="breadcrumb-separator"><i class="cses-stratis-chevron-right"></i></span>
+      <a class="breadcrumb-item" href="#">任务管理</a>
+      <span class="breadcrumb-separator"><i class="cses-stratis-chevron-right"></i></span>
+      <span class="breadcrumb-item" data-current>任务详情</span>
+    </cs-breadcrumb>
+  </div>
+</div>
+
+<!-- 悬停效果 -->
+<div class="section">
+  <div class="section-title">交互说明</div>
+  <div class="section-subtitle">悬停非当前项时文字变为主色蓝，当前项不响应悬停</div>
+
+  <div class="row">
+    <span class="row-label">试试悬停</span>
+    <cs-breadcrumb>
+      <span class="breadcrumb-item">空间设置</span>
+      <span class="breadcrumb-separator"><i class="cses-stratis-chevron-right"></i></span>
+      <span class="breadcrumb-item">成员管理</span>
+      <span class="breadcrumb-separator"><i class="cses-stratis-chevron-right"></i></span>
+      <span class="breadcrumb-item" data-current>权限配置</span>
+    </cs-breadcrumb>
+  </div>
+</div>
+
+</body>
+</html>

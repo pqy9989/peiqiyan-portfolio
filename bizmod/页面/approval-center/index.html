@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>审批中心 / 我发起的 — CSES</title>
+
+  <link rel="stylesheet" href="../../design/css/base.css">
+  <link rel="stylesheet" href="../../design/css/token.css">
+  <link rel="stylesheet" href="../../design/css/variable.css">
+  <link rel="stylesheet" href="../../design/fonts/cses-icons.css?v=101">
+  <link rel="stylesheet" href="../../design/fragment/fragment.css">
+  <link rel="stylesheet" href="../../design/css/page-shell.css">
+
+  <link rel="stylesheet" href="../../design/components/search-input/search-input.css">
+  <link rel="stylesheet" href="../../design/components/avatar/avatar.css">
+  <link rel="stylesheet" href="../../design/components/button/button.css">
+  <link rel="stylesheet" href="../../design/components/status-badge/status-badge.css">
+  <link rel="stylesheet" href="../../design/components/tag/tag.css">
+
+  <link rel="stylesheet" href="./index.css">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: var(--font-family-cn), -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--cs-color-bg-app-dark);
+      color: var(--cs-color-text);
+      height: 100vh;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+</head>
+<body data-module="approval">
+
+<cs-layout>
+
+  <!-- ===== 标签栏 ===== -->
+  <div class="tabbar">
+    <div class="tabbar-left">
+      <span class="win-ctrl tabbar-window-control">
+        <span class="ctrl-dot" data-c="close"></span>
+        <span class="ctrl-dot" data-c="min"></span>
+        <span class="ctrl-dot" data-c="max"></span>
+      </span>
+      <cs-search-input class="tabbar-search ah-top-search" data-variant="gray" data-size="sm">
+        <i class="search-icon cses-stratis-search-01"></i>
+        <input class="search-field" type="text" placeholder="搜索">
+      </cs-search-input>
+      <div class="tabbar-tabs"></div>
+    </div>
+    <div class="tabbar-right">
+      <span class="tabbar-notice">
+        <i class="cses-stratis-bell-01 notice-icon"></i>
+        <span class="notice-badge">2</span>
+      </span>
+      <cs-avatar data-size="xs" data-shape="circle" data-color="blue">张</cs-avatar>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- 一级导航 -->
+    <cs-sidebar>
+      <span class="logo">
+        <img src="../../design/assets/logo.png" alt="CSES">
+      </span>
+      <nav class="nav">
+        <div class="nav-group">
+          <a class="nav-item" data-module="workspace">
+            <span class="nav-icon"><i class="cses-stratis-home-01"></i></span>
+            <span class="nav-label">工作台</span>
+          </a>
+          <a class="nav-item" data-module="guide">
+            <span class="nav-icon"><i class="cses-stratis-compass"></i></span>
+            <span class="nav-label">导向</span>
+          </a>
+          <a class="nav-item" data-module="message">
+            <span class="nav-icon"><i class="cses-stratis-message-circle"></i></span>
+            <span class="nav-label">消息</span>
+          </a>
+          <a class="nav-item" data-module="task-list">
+            <span class="nav-icon"><i class="cses-stratis-check-square-broken"></i></span>
+            <span class="nav-label">任务</span>
+          </a>
+          <a class="nav-item" data-module="meeting">
+            <span class="nav-icon"><i class="cses-stratis-video-on"></i></span>
+            <span class="nav-label">会议</span>
+          </a>
+          <a class="nav-item" data-module="doc">
+            <span class="nav-icon"><i class="cses-stratis-book-01"></i></span>
+            <span class="nav-label">文档</span>
+          </a>
+          <a class="nav-item" data-module="form">
+            <span class="nav-icon"><i class="cses-stratis-file-edit-01"></i></span>
+            <span class="nav-label">表单</span>
+          </a>
+          <a class="nav-item" data-active data-module="approval">
+            <span class="nav-icon"><i class="cses-stratis-file-check-01"></i></span>
+            <span class="nav-label">审批</span>
+          </a>
+        </div>
+      </nav>
+    </cs-sidebar>
+
+    <!-- 内容包裹 -->
+    <div class="content-wrapper">
+
+      <!-- 二级导航：审批 -->
+      <cs-navbar>
+        <div class="inner">
+
+          <div class="slot-nav">
+            <a class="ac-side-item" href="../approval/index.html">
+              <i class="ac-side-item__icon cses-stratis-home-01"></i>
+              <span class="ac-side-item__label">首页</span>
+            </a>
+            <a class="ac-side-item" href="../approval/index.html">
+              <i class="ac-side-item__icon cses-stratis-arrow-up-right"></i>
+              <span class="ac-side-item__label">发起审批</span>
+            </a>
+
+            <div class="ac-group ac-group--expanded">
+              <div class="ac-side-item">
+                <i class="ac-side-item__icon cses-stratis-user-profile-01"></i>
+                <span class="ac-side-item__label">审批中心</span>
+                <i class="ac-side-item__caret cses-stratis-chevron-down"></i>
+              </div>
+              <div class="ac-sub-list">
+                <div class="ac-sub-item">待处理的</div>
+                <div class="ac-sub-item">已处理的</div>
+                <div class="ac-sub-item" data-active>我发起的</div>
+                <div class="ac-sub-item">抄送我的</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="slot-bottom">
+            <div class="ac-admin">
+              <i class="cses-stratis-settings"></i>
+              <span>后台管理</span>
+            </div>
+          </div>
+
+        </div>
+      </cs-navbar>
+
+      <!-- 主内容区 -->
+      <main class="main-content">
+
+        <div class="ac-main">
+
+          <!-- ===== 中：审批单列表 ===== -->
+          <div class="ac-list-col">
+
+            <div class="ac-list__header">
+              <span class="ac-list__title">我发起的</span>
+              <span class="ac-list__search" title="搜索">
+                <i class="cses-stratis-search-01"></i>
+              </span>
+            </div>
+
+            <div class="ac-list__tabs">
+              <span class="ac-list-tab" data-active>全部 12</span>
+              <span class="ac-list-tab">待审批 3</span>
+              <span class="ac-list-tab">已同意 6</span>
+              <span class="ac-list-tab">已拒绝 2</span>
+              <span class="ac-list-tab">已撤回 1</span>
+            </div>
+
+            <div class="ac-list__scroll">
+
+              <!-- 待审批（当前选中） -->
+              <div class="ac-card" data-active>
+                <div class="ac-card__head">
+                  <span class="ac-card__title">我提交的年假申请</span>
+                  <cs-status-badge data-status="pending">待审批</cs-status-badge>
+                </div>
+                <span class="ac-card__comment">最新评论：黄珊 好的已知晓</span>
+                <div class="ac-card__person">
+                  <cs-avatar data-size="sm" data-color="orange">孙</cs-avatar>
+                  <div class="ac-card__person-info">
+                    <span class="ac-card__person-label">审批人</span>
+                    <span class="ac-card__person-name">
+                      孙婉茹
+                    </span>
+                  </div>
+                </div>
+                <div class="ac-card__foot">
+                  <span class="ac-card__eta">
+                    <i class="cses-stratis-clock-01"></i>
+                    预计3小时处理
+                  </span>
+                </div>
+              </div>
+
+              <!-- 已同意 -->
+              <div class="ac-card">
+                <div class="ac-card__head">
+                  <span class="ac-card__title">我提交的年假申请</span>
+                  <cs-status-badge data-status="approved">已同意</cs-status-badge>
+                </div>
+                <div class="ac-card__person">
+                  <cs-avatar data-size="sm" data-color="green">孙</cs-avatar>
+                  <div class="ac-card__person-info">
+                    <span class="ac-card__person-label">审批人</span>
+                    <span class="ac-card__person-name">
+                      孙婉茹
+                    </span>
+                  </div>
+                </div>
+                <div class="ac-card__reason">
+                  <span class="ac-card__reason-label">通过理由：</span>
+                  <span>工作期间保持手机畅通</span>
+                </div>
+              </div>
+
+              <!-- 已拒绝 -->
+              <div class="ac-card">
+                <div class="ac-card__head">
+                  <span class="ac-card__title">我提交的年假申请</span>
+                  <cs-status-badge data-status="rejected">已拒绝</cs-status-badge>
+                </div>
+                <div class="ac-card__person">
+                  <cs-avatar data-size="sm" data-color="red">孙</cs-avatar>
+                  <div class="ac-card__person-info">
+                    <span class="ac-card__person-label">审批人</span>
+                    <span class="ac-card__person-name">
+                      孙婉茹
+                    </span>
+                  </div>
+                </div>
+                <div class="ac-card__reason">
+                  <span class="ac-card__reason-label">拒绝建议：</span>
+                  <span>请合理安排工作交接。</span>
+                </div>
+              </div>
+
+              <!-- 已撤回 -->
+              <div class="ac-card">
+                <div class="ac-card__head">
+                  <span class="ac-card__title">我提交的年假申请</span>
+                  <cs-status-badge data-status="withdrawn">已撤回</cs-status-badge>
+                </div>
+                <div class="ac-card__person">
+                  <cs-avatar data-size="sm" data-color="purple">孙</cs-avatar>
+                  <div class="ac-card__person-info">
+                    <span class="ac-card__person-label">审批人</span>
+                    <span class="ac-card__person-name">
+                      孙婉茹
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- ===== 右：详情面板 ===== -->
+          <div class="ac-detail">
+
+            <!-- 操作条 -->
+            <div class="ac-detail__topbar">
+              <span class="ac-detail__order">
+                审批单号：<span class="ac-detail__order-num">202402191412000218034</span>
+              </span>
+              <div class="ac-detail__actions">
+                <span class="ac-detail__action">
+                  <i class="cses-stratis-link"></i>
+                  复制链接
+                </span>
+                <span class="ac-detail__action">
+                  <i class="cses-stratis-download-01"></i>
+                  打印
+                </span>
+                <span class="ac-detail__action">
+                  <i class="cses-stratis-share"></i>
+                  转发
+                </span>
+              </div>
+            </div>
+
+            <!-- 标题 -->
+            <div class="ac-detail__header">
+              <h2 class="ac-detail__title">我提交的年假申请</h2>
+              <div class="ac-detail__sub">
+                <span>提交于 11月30日 12:15</span>
+                <span class="ac-detail__sub-strong">
+                  当前审批人：
+                  <cs-avatar data-size="xs" data-color="orange">孙</cs-avatar>
+                  <span class="name">孙婉茹</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="ac-detail__tabs">
+              <span class="ac-tab" data-active data-tab="detail">审批详情</span>
+              <span class="ac-tab" data-tab="record">审批记录</span>
+              <span class="ac-tab" data-tab="task">关联任务</span>
+            </div>
+
+            <!-- 滚动 body -->
+            <div class="ac-detail__body">
+
+              <!-- 申请表 子 tab -->
+              <div class="ac-form-tabs">
+                <span class="ac-form-tab" data-active>年假申请表</span>
+                <span class="ac-form-tab">申请表2</span>
+                <span class="ac-form-tab">申请表3</span>
+                <span class="ac-form-tab">申请表4</span>
+              </div>
+
+              <!-- 审批详情 -->
+              <div class="ac-section" data-section="detail">
+                <div class="ac-section__title">审批详情</div>
+
+                <div class="ac-fields">
+                  <span class="ac-field__label">成果导向</span>
+                  <span class="ac-field__value">请假导向 — 放松身心，调整状态</span>
+
+                  <span class="ac-field__label">预期效果</span>
+                  <span class="ac-field__value">放松身心</span>
+                </div>
+
+                <div class="ac-subsection">
+                  <div class="ac-subsection__title">请假信息</div>
+                  <div class="ac-fields">
+                    <span class="ac-field__label"><span class="req">*</span>请假类型</span>
+                    <span class="ac-field__value">年假</span>
+
+                    <span class="ac-field__label"><span class="req">*</span>开始时间</span>
+                    <span class="ac-field__value">2024年02月19日 09:00</span>
+
+                    <span class="ac-field__label"><span class="req">*</span>结束时间</span>
+                    <span class="ac-field__value">2024年02月23日 18:00</span>
+
+                    <span class="ac-field__label">请假时长</span>
+                    <span class="ac-field__value">5 天</span>
+
+                    <span class="ac-field__label"><span class="req">*</span>请假事由</span>
+                    <span class="ac-field__value">个人休假，用于短期旅行与休息调整。</span>
+                  </div>
+                </div>
+
+                <div class="ac-subsection">
+                  <div class="ac-subsection__title">工作交接</div>
+                  <div class="ac-handover">
+                    <span class="ac-handover__person">
+                      <cs-avatar data-size="sm" data-color="pink">婉</cs-avatar>
+                      <span>魏婉婷</span>
+                    </span>
+                    <span class="ac-handover__person">
+                      <cs-avatar data-size="sm" data-color="sky">逢</cs-avatar>
+                      <span>武逢胜</span>
+                    </span>
+                    <span class="ac-handover__person">
+                      <cs-avatar data-size="sm" data-color="purple">黄</cs-avatar>
+                      <span>黄珊</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 审批记录 -->
+              <div class="ac-section" data-section="record">
+                <div class="ac-section__title">审批记录</div>
+
+                <div class="ac-timeline">
+
+                  <div class="ac-tl-item" data-status="done">
+                    <span class="ac-tl-item__dot"><i class="cses-stratis-check-broken"></i></span>
+                    <div class="ac-tl-item__head">
+                      <span class="ac-tl-item__name">黄珊</span>
+                      <span class="ac-tl-item__action">提交申请</span>
+                    </div>
+                    <div class="ac-tl-item__detail">
+                      <span class="who">审批人：孙婉茹 和 王伟</span> · 均通过
+                    </div>
+                  </div>
+
+                  <div class="ac-tl-item" data-status="current">
+                    <span class="ac-tl-item__dot"><i class="cses-stratis-clock-01"></i></span>
+                    <div class="ac-tl-item__head">
+                      <span class="ac-tl-item__name">审批人：李思琪 (我)</span>
+                      <span class="ac-tl-item__hint">请在 2 小时内处理</span>
+                    </div>
+                  </div>
+
+                  <div class="ac-tl-item" data-status="done">
+                    <span class="ac-tl-item__dot"><i class="cses-stratis-check-broken"></i></span>
+                    <div class="ac-tl-item__head">
+                      <span class="ac-tl-item__name">工作交接 · 审批通过</span>
+                      <span class="ac-tl-item__action">完成于 02月19日 14:20</span>
+                    </div>
+                    <div class="ac-tl-people">
+                      <div class="ac-tl-person">
+                        <cs-avatar data-size="sm" data-color="purple">黄</cs-avatar>
+                        <div class="ac-tl-person__info">
+                          <span class="ac-tl-person__name">黄珊</span>
+                          <span class="ac-tl-person__dept">前端开发 · 开发部</span>
+                        </div>
+                        <span class="ac-tl-person__verdict" data-result="agree">同意工作交接</span>
+                      </div>
+                      <div class="ac-tl-person">
+                        <cs-avatar data-size="sm" data-color="sky">逢</cs-avatar>
+                        <div class="ac-tl-person__info">
+                          <span class="ac-tl-person__name">武逢胜</span>
+                          <span class="ac-tl-person__dept">前端开发 · 开发部</span>
+                        </div>
+                        <span class="ac-tl-person__verdict" data-result="reject">拒绝工作交接</span>
+                      </div>
+                      <div class="ac-tl-person">
+                        <cs-avatar data-size="sm" data-color="pink">婉</cs-avatar>
+                        <div class="ac-tl-person__info">
+                          <span class="ac-tl-person__name">魏婉婷</span>
+                          <span class="ac-tl-person__dept">前端开发 · 开发部</span>
+                        </div>
+                        <span class="ac-tl-person__verdict" data-result="agree">同意工作交接</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="ac-tl-item" data-status="done">
+                    <span class="ac-tl-item__dot"><i class="cses-stratis-check-broken"></i></span>
+                    <div class="ac-tl-item__head">
+                      <span class="ac-tl-item__name">刘俊良</span>
+                      <span class="ac-tl-item__action">提交审批</span>
+                    </div>
+                    <div class="ac-tl-item__detail">前端开发 · 开发部</div>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- 关联任务 -->
+              <div class="ac-section" data-section="task">
+                <div class="ac-section__title">关联任务</div>
+
+                <div class="ac-task">
+                  <div class="ac-task__head">
+                    <span class="ac-task__title">刘俊良 — 武逢胜 工作交接</span>
+                    <cs-status-badge data-status="in-progress">进行中</cs-status-badge>
+                  </div>
+                  <div class="ac-task__meta">
+                    <span class="ac-task__meta-item"><span class="label">周期：</span><span class="val">5 天</span></span>
+                    <span class="ac-task__meta-item"><span class="label">创建人：</span><span class="val">刘俊良</span></span>
+                    <span class="ac-task__meta-item"><span class="label">负责人：</span><span class="val">武逢胜</span></span>
+                    <span class="ac-task__meta-item"><span class="label">起止时间：</span><span class="val">12月1日 — 12月5日</span></span>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </main>
+
+    </div>
+
+  </div>
+</cs-layout>
+
+<script>
+  // Main tab 切换
+  document.querySelectorAll('.ac-detail__tabs .ac-tab').forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      document.querySelectorAll('.ac-detail__tabs .ac-tab').forEach(function (t) { t.removeAttribute('data-active'); });
+      tab.setAttribute('data-active', '');
+      var target = tab.getAttribute('data-tab');
+      document.querySelectorAll('.ac-section').forEach(function (sec) {
+        sec.style.display = sec.getAttribute('data-section') === target ? '' : 'none';
+      });
+      document.querySelector('.ac-form-tabs').style.display = (target === 'detail') ? '' : 'none';
+    });
+  });
+
+  // 列表卡片选中
+  document.querySelectorAll('.ac-card').forEach(function (c) {
+    c.addEventListener('click', function () {
+      document.querySelectorAll('.ac-card').forEach(function (x) { x.removeAttribute('data-active'); });
+      c.setAttribute('data-active', '');
+    });
+  });
+
+  // 列表 tab 切换
+  document.querySelectorAll('.ac-list-tab').forEach(function (t) {
+    t.addEventListener('click', function () {
+      document.querySelectorAll('.ac-list-tab').forEach(function (x) { x.removeAttribute('data-active'); });
+      t.setAttribute('data-active', '');
+    });
+  });
+
+  // 子菜单切换
+  document.querySelectorAll('.ac-sub-item').forEach(function (s) {
+    s.addEventListener('click', function () {
+      document.querySelectorAll('.ac-sub-item').forEach(function (x) { x.removeAttribute('data-active'); });
+      s.setAttribute('data-active', '');
+    });
+  });
+
+  // 审批中心组折叠
+  document.querySelectorAll('.ac-group .ac-side-item').forEach(function (head) {
+    head.addEventListener('click', function () {
+      head.closest('.ac-group').classList.toggle('ac-group--expanded');
+    });
+  });
+
+  // 申请表子 tab 切换
+  document.querySelectorAll('.ac-form-tab').forEach(function (t) {
+    t.addEventListener('click', function () {
+      document.querySelectorAll('.ac-form-tab').forEach(function (x) { x.removeAttribute('data-active'); });
+      t.setAttribute('data-active', '');
+    });
+  });
+</script>
+<script src="../shared.js"></script>
+</body>
+</html>

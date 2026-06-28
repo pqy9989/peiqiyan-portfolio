@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>文档库 · 首页</title>
+
+  <!-- 设计令牌与图标 -->
+  <link rel="stylesheet" href="../../design/css/base.css">
+  <link rel="stylesheet" href="../../design/css/token.css">
+  <link rel="stylesheet" href="../../design/css/variable.css">
+  <link rel="stylesheet" href="../../design/fonts/cses-icons.css?v=101">
+
+  <!-- 骨架 -->
+  <link rel="stylesheet" href="../../design/fragment/fragment.css">
+
+  <!-- 组件 -->
+  <link rel="stylesheet" href="../../design/components/window-control/window-control.css">
+  <link rel="stylesheet" href="../../design/components/search-input/search-input.css">
+  <link rel="stylesheet" href="../../design/components/search-trigger/search-trigger.css">
+  <link rel="stylesheet" href="../../design/components/tab/tab.css">
+  <link rel="stylesheet" href="../../design/components/tab-nav/tab-nav.css">
+  <link rel="stylesheet" href="../../design/components/avatar/avatar.css">
+  <link rel="stylesheet" href="../../design/components/badge/badge.css">
+  <link rel="stylesheet" href="../../design/components/button/button.css">
+  <link rel="stylesheet" href="../../design/components/nav-item/nav-item.css">
+  <link rel="stylesheet" href="../../design/components/nav-action-btn/nav-action-btn.css">
+  <link rel="stylesheet" href="../../design/components/nav-group/nav-group.css">
+  <link rel="stylesheet" href="../../design/components/storage-info/storage-info.css">
+  <link rel="stylesheet" href="../../design/components/tag/tag.css">
+  <link rel="stylesheet" href="../../design/components/thumbnail/thumbnail.css">
+  <link rel="stylesheet" href="../../design/components/view-switcher/view-switcher.css">
+  <link rel="stylesheet" href="../../design/components/status-badge/status-badge.css">
+  <link rel="stylesheet" href="../../design/components/link/link.css">
+
+  <!-- 页面私有样式 -->
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+<cs-layout>
+
+  <!-- ============== 标签栏 ============== -->
+  <div class="tabbar">
+    <div class="tabbar-left">
+      <cs-window-control class="tabbar-window-control">
+        <span class="ctrl-close"></span>
+        <span class="ctrl-minimize"></span>
+        <span class="ctrl-maximize"></span>
+      </cs-window-control>
+      <cs-search-input class="tabbar-search" data-variant="gray" data-size="sm" style="border-radius:var(--radius-lg);">
+        <i class="search-icon cses-stratis-search-01"></i>
+        <input class="search-field" type="text" placeholder="搜索文档、空间、成员">
+      </cs-search-input>
+      <cs-tab data-active>
+        <span class="tab-label">文档库</span>
+        <i class="tab-close cses-stratis-x-01"></i>
+      </cs-tab>
+    </div>
+    <div class="tabbar-right">
+      <span class="tabbar-notice">
+        <i class="cses-stratis-bell-01 notice-icon"></i>
+        <span class="notice-badge">3</span>
+      </span>
+      <cs-avatar data-size="xs" data-shape="circle" data-color="blue"><span class="avatar-text">L</span></cs-avatar>
+    </div>
+  </div>
+
+  <!-- ============== 主体 ============== -->
+  <div class="body">
+
+    <!-- ---------- 一级导航 ---------- -->
+    <cs-sidebar>
+      <span class="logo">
+        <img src="../../design/assets/logo.png" alt="CSES">
+      </span>
+      <nav class="nav">
+        <div class="nav-group">
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-home-01"></i></span>
+            <span class="nav-label">工作台</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-message-circle"></i></span>
+            <span class="nav-label">消息</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-check-square-broken"></i></span>
+            <span class="nav-label">任务</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-video-on"></i></span>
+            <span class="nav-label">会议</span>
+          </a>
+          <a class="nav-item is-active" aria-current="page">
+            <span class="nav-icon"><i class="cses-stratis-book-01"></i></span>
+            <span class="nav-label">文档</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-file-check-01"></i></span>
+            <span class="nav-label">审批</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-users-profiles-01"></i></span>
+            <span class="nav-label">人事</span>
+          </a>
+        </div>
+      </nav>
+    </cs-sidebar>
+
+    <!-- ---------- 内容包裹 ---------- -->
+    <div class="content-wrapper">
+
+      <!-- ---------- 二级导航 ---------- -->
+      <cs-navbar>
+        <div class="inner">
+
+          <!-- ① 标题区 -->
+          <div class="slot-header" style="display:flex;flex-direction:column;gap:4px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:16px;font-weight:600;color:#333;font-family:var(--font-family-cn);">文档库</span>
+            </div>
+            <span style="font-size:12px;color:#999;font-family:var(--font-family-cn);">14,328 份文档 · 96% 已用</span>
+          </div>
+
+          <!-- ② 主 CTA - 新建/上传入口 -->
+          <div class="slot-action">
+            <cs-button data-variant="primary" data-dl-action="open-create" style="width:100%;">
+              <i class="btn-icon cses-stratis-plus-01"></i>
+              <span class="btn-label">新建</span>
+              <i class="btn-dropdown cses-stratis-chevron-down"></i>
+            </cs-button>
+          </div>
+
+          <!-- ③ 主菜单 -->
+          <div class="slot-nav" style="display:flex;flex-direction:column;gap:4px;padding-top:8px;border-top:1px solid #EBEDEF;flex:none;">
+            <div class="dl-nav-row dl-nav-row--active" data-dl-action="goto" data-dl-key="home">
+              <i class="cses-stratis-home-01 dl-nav-row__icon"></i>
+              <span class="dl-nav-row__label">首页</span>
+            </div>
+            <div class="dl-nav-row" data-dl-action="goto" data-dl-key="recent">
+              <i class="cses-stratis-clock-backward dl-nav-row__icon"></i>
+              <span class="dl-nav-row__label">最近</span>
+            </div>
+            <div class="dl-nav-row" data-dl-action="goto" data-dl-key="starred">
+              <i class="cses-stratis-star-01 dl-nav-row__icon"></i>
+              <span class="dl-nav-row__label">收藏</span>
+              <span class="dl-nav-row__count">12</span>
+            </div>
+            <div class="dl-nav-row" data-dl-action="goto" data-dl-key="shared">
+              <i class="cses-stratis-share dl-nav-row__icon"></i>
+              <span class="dl-nav-row__label">共享给我</span>
+              <span class="dl-nav-row__count">28</span>
+            </div>
+            <div class="dl-nav-row" data-dl-action="goto" data-dl-key="trash">
+              <i class="cses-stratis-trash-01 dl-nav-row__icon"></i>
+              <span class="dl-nav-row__label">回收站</span>
+            </div>
+          </div>
+
+          <!-- ④ 团队空间 -->
+          <div class="slot-sub" style="display:flex;flex-direction:column;gap:8px;border-top:1px solid #EBEDEF;flex:1;min-height:0;overflow-y:auto;padding-top:8px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:0 8px 4px 8px;">
+              <span style="font-size:12px;color:#999;font-family:var(--font-family-cn);">团队空间</span>
+              <i class="cses-stratis-plus-01" style="font-size:12px;color:#999;cursor:pointer;" data-dl-action="open-create-space"></i>
+            </div>
+            <div class="dl-space-row" data-dl-action="goto-space" data-dl-space-id="design">
+              <span class="dl-space-row__icon" style="background:#E8EAFE;color:#4857E2;">设</span>
+              <span class="dl-space-row__label">设计中心</span>
+            </div>
+            <div class="dl-space-row" data-dl-action="goto-space" data-dl-space-id="product">
+              <span class="dl-space-row__icon" style="background:#FFF1E0;color:#F97316;">产</span>
+              <span class="dl-space-row__label">产品规划</span>
+            </div>
+            <div class="dl-space-row" data-dl-action="goto-space" data-dl-space-id="frontend">
+              <span class="dl-space-row__icon" style="background:#E3F6EA;color:#16A34A;">前</span>
+              <span class="dl-space-row__label">前端工程</span>
+            </div>
+            <div class="dl-space-row" data-dl-action="goto-space" data-dl-space-id="hr">
+              <span class="dl-space-row__icon" style="background:#FDE9EA;color:#DC2626;">人</span>
+              <span class="dl-space-row__label">HR 公开资料</span>
+              <cs-tag data-variant="text" data-color="primary" data-size="sm"><span class="tag-label">外部</span></cs-tag>
+            </div>
+          </div>
+
+          <!-- ⑥ 存储空间 -->
+          <div style="flex-shrink:0;border-top:1px solid #EBEDEF;">
+            <cs-storage-info>
+              <div class="header">
+                <span class="header-icon"><i class="cses-stratis-cloud-01"></i></span>
+                <span>云空间</span>
+              </div>
+              <div class="detail">
+                <span class="usage">480GB / 500GB</span>
+                <a class="upgrade" data-dl-action="open-upgrade">升级</a>
+              </div>
+              <div class="dl-progress">
+                <div class="dl-progress__fill" style="width:96%;background:#D63D3D;"></div>
+              </div>
+              <div class="warning">
+                <span class="warning-icon"><i class="cses-stratis-bell-01"></i></span>
+                <span>空间将满，影响云存储</span>
+              </div>
+            </cs-storage-info>
+          </div>
+
+        </div>
+      </cs-navbar>
+
+      <!-- ---------- 主内容区 ---------- -->
+      <main class="main-content">
+
+        <!-- 内容区头部 -->
+        <cs-content-header>
+          <div class="slot-left">
+            <span class="page-title">文档库</span>
+            <span class="page-subtitle">Lbros · 今日 14,328 份文档可访问</span>
+          </div>
+          <div class="slot-right">
+            <cs-search-trigger>
+              <span class="trigger-text">搜索文档</span>
+              <i class="trigger-icon cses-stratis-search-01"></i>
+            </cs-search-trigger>
+            <cs-view-switcher>
+              <span class="view-item" data-active><i class="cses-stratis-grid-01"></i></span>
+              <span class="view-item"><i class="cses-stratis-list"></i></span>
+            </cs-view-switcher>
+          </div>
+        </cs-content-header>
+
+        <!-- 主体滚动区 -->
+        <div class="dl-scroll">
+
+          <!-- ============== 区块 1：快捷操作 ============== -->
+          <section class="dl-section">
+            <div class="dl-quickbar">
+              <button class="dl-quick" data-dl-action="open-create" data-dl-type="doc">
+                <span class="dl-quick__icon" style="background:#E8EAFE;color:#4857E2;">
+                  <i class="cses-stratis-file-edit-01"></i>
+                </span>
+                <span class="dl-quick__label">新建文档</span>
+              </button>
+              <button class="dl-quick" data-dl-action="open-create" data-dl-type="sheet">
+                <span class="dl-quick__icon" style="background:#E3F6EA;color:#16A34A;">
+                  <i class="cses-stratis-grid-01"></i>
+                </span>
+                <span class="dl-quick__label">新建表格</span>
+              </button>
+              <button class="dl-quick" data-dl-action="open-create" data-dl-type="folder">
+                <span class="dl-quick__icon" style="background:#FFF1E0;color:#F97316;">
+                  <i class="cses-stratis-folder-plus-01"></i>
+                </span>
+                <span class="dl-quick__label">新建文件夹</span>
+              </button>
+              <button class="dl-quick" data-dl-action="open-upload">
+                <span class="dl-quick__icon" style="background:#E0F0FE;color:#0084D1;">
+                  <i class="cses-stratis-upload-01"></i>
+                </span>
+                <span class="dl-quick__label">上传</span>
+              </button>
+              <button class="dl-quick" data-dl-action="open-templates">
+                <span class="dl-quick__icon" style="background:#F3E8FF;color:#7C3AED;">
+                  <i class="cses-stratis-book-01"></i>
+                </span>
+                <span class="dl-quick__label">模板库</span>
+              </button>
+              <button class="dl-quick" data-dl-action="open-cloud-import">
+                <span class="dl-quick__icon" style="background:#FDE9EA;color:#DC2626;">
+                  <i class="cses-stratis-cloud-01"></i>
+                </span>
+                <span class="dl-quick__label">云端导入</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- ============== 区块 2：存储用量 + 类型分布 ============== -->
+          <section class="dl-section">
+            <div class="dl-section__head">
+              <h2 class="dl-section__title">存储与文件类型</h2>
+            </div>
+
+            <div class="dl-storage-grid">
+              <!-- 大容量条 -->
+              <div class="dl-storage-card">
+                <div class="dl-storage-card__head">
+                  <div>
+                    <div class="dl-storage-card__title">云空间总览</div>
+                    <div class="dl-storage-card__subtitle">已用 480GB / 共 500GB</div>
+                  </div>
+                  <cs-button data-variant="secondary" data-size="sm" data-dl-action="open-upgrade">
+                    <span class="btn-label">升级容量</span>
+                  </cs-button>
+                </div>
+                <div class="dl-storage-bar">
+                  <div class="dl-storage-bar__seg" style="width:32%;background:var(--cs-color-filetype-image);" title="图片 153.6 GB"></div>
+                  <div class="dl-storage-bar__seg" style="width:24%;background:var(--cs-color-filetype-video);" title="视频 115.2 GB"></div>
+                  <div class="dl-storage-bar__seg" style="width:18%;background:var(--cs-color-filetype-pdf);" title="PDF 86.4 GB"></div>
+                  <div class="dl-storage-bar__seg" style="width:12%;background:var(--cs-color-filetype-word);" title="Word 57.6 GB"></div>
+                  <div class="dl-storage-bar__seg" style="width:6%;background:var(--cs-color-filetype-excel);" title="Excel 28.8 GB"></div>
+                  <div class="dl-storage-bar__seg" style="width:4%;background:var(--cs-color-filetype-ppt);" title="PPT 19.2 GB"></div>
+                </div>
+                <div class="dl-storage-legend">
+                  <span class="dl-storage-legend__item"><i class="dl-dot" style="background:var(--cs-color-filetype-image);"></i>图片 153.6GB</span>
+                  <span class="dl-storage-legend__item"><i class="dl-dot" style="background:var(--cs-color-filetype-video);"></i>视频 115.2GB</span>
+                  <span class="dl-storage-legend__item"><i class="dl-dot" style="background:var(--cs-color-filetype-pdf);"></i>PDF 86.4GB</span>
+                  <span class="dl-storage-legend__item"><i class="dl-dot" style="background:var(--cs-color-filetype-word);"></i>Word 57.6GB</span>
+                  <span class="dl-storage-legend__item"><i class="dl-dot" style="background:var(--cs-color-filetype-excel);"></i>Excel 28.8GB</span>
+                  <span class="dl-storage-legend__item"><i class="dl-dot" style="background:var(--cs-color-filetype-ppt);"></i>PPT 19.2GB</span>
+                </div>
+              </div>
+
+              <!-- 按文件类型筛选入口 -->
+              <div class="dl-typegrid">
+                <button class="dl-typecell" data-dl-action="filter-type" data-dl-filetype="pdf">
+                  <cs-thumbnail data-type="file-icon" data-filetype="pdf" data-size="md">
+                    <i class="cses-stratis-file-01"></i>
+                  </cs-thumbnail>
+                  <span class="dl-typecell__label">PDF</span>
+                  <span class="dl-typecell__count">2,134</span>
+                </button>
+                <button class="dl-typecell" data-dl-action="filter-type" data-dl-filetype="word">
+                  <cs-thumbnail data-type="file-icon" data-filetype="word" data-size="md">
+                    <i class="cses-stratis-file-01"></i>
+                  </cs-thumbnail>
+                  <span class="dl-typecell__label">Word</span>
+                  <span class="dl-typecell__count">3,608</span>
+                </button>
+                <button class="dl-typecell" data-dl-action="filter-type" data-dl-filetype="excel">
+                  <cs-thumbnail data-type="file-icon" data-filetype="excel" data-size="md">
+                    <i class="cses-stratis-file-01"></i>
+                  </cs-thumbnail>
+                  <span class="dl-typecell__label">Excel</span>
+                  <span class="dl-typecell__count">1,452</span>
+                </button>
+                <button class="dl-typecell" data-dl-action="filter-type" data-dl-filetype="ppt">
+                  <cs-thumbnail data-type="file-icon" data-filetype="ppt" data-size="md">
+                    <i class="cses-stratis-file-01"></i>
+                  </cs-thumbnail>
+                  <span class="dl-typecell__label">PPT</span>
+                  <span class="dl-typecell__count">896</span>
+                </button>
+                <button class="dl-typecell" data-dl-action="filter-type" data-dl-filetype="image">
+                  <cs-thumbnail data-type="file-icon" data-filetype="image" data-size="md">
+                    <i class="cses-stratis-image"></i>
+                  </cs-thumbnail>
+                  <span class="dl-typecell__label">图片</span>
+                  <span class="dl-typecell__count">4,820</span>
+                </button>
+                <button class="dl-typecell" data-dl-action="filter-type" data-dl-filetype="video">
+                  <cs-thumbnail data-type="file-icon" data-filetype="video" data-size="md">
+                    <i class="cses-stratis-file-01"></i>
+                  </cs-thumbnail>
+                  <span class="dl-typecell__label">视频</span>
+                  <span class="dl-typecell__count">312</span>
+                </button>
+                <button class="dl-typecell" data-dl-action="filter-type" data-dl-filetype="zip">
+                  <cs-thumbnail data-type="file-icon" data-filetype="zip" data-size="md">
+                    <i class="cses-stratis-file-01"></i>
+                  </cs-thumbnail>
+                  <span class="dl-typecell__label">压缩包</span>
+                  <span class="dl-typecell__count">128</span>
+                </button>
+                <button class="dl-typecell" data-dl-action="filter-type" data-dl-filetype="unknown">
+                  <cs-thumbnail data-type="file-icon" data-filetype="unknown" data-size="md">
+                    <i class="cses-stratis-file-01"></i>
+                  </cs-thumbnail>
+                  <span class="dl-typecell__label">其他</span>
+                  <span class="dl-typecell__count">978</span>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============== 区块 3：最近访问 ============== -->
+          <section class="dl-section">
+            <div class="dl-section__head">
+              <h2 class="dl-section__title">最近访问</h2>
+              <cs-tab-nav class="dl-section__tabs">
+                <span class="tab-item" data-active>全部</span>
+                <span class="tab-item">我打开的</span>
+                <span class="tab-item">我编辑的</span>
+              </cs-tab-nav>
+              <a class="dl-section__more" data-dl-action="goto" data-dl-key="recent">
+                查看全部
+                <i class="cses-stratis-chevron-right"></i>
+              </a>
+            </div>
+
+            <div class="dl-recent-grid">
+              <article class="dl-doc-card" data-dl-action="open-detail" data-dl-id="r-1">
+                <div class="dl-doc-card__cover dl-doc-card__cover--word">
+                  <i class="cses-stratis-file-01"></i>
+                </div>
+                <div class="dl-doc-card__body">
+                  <div class="dl-doc-card__title">2026 Q3 产品规划终稿</div>
+                  <div class="dl-doc-card__meta">
+                    <span>2 小时前打开</span>
+                    <span class="dl-dot-sep"></span>
+                    <span>产品规划</span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="dl-doc-card" data-dl-action="open-detail" data-dl-id="r-2">
+                <div class="dl-doc-card__cover dl-doc-card__cover--ppt">
+                  <i class="cses-stratis-file-01"></i>
+                </div>
+                <div class="dl-doc-card__body">
+                  <div class="dl-doc-card__title">客户演示_品牌升级方案</div>
+                  <div class="dl-doc-card__meta">
+                    <span>昨日 18:42</span>
+                    <span class="dl-dot-sep"></span>
+                    <span>设计中心</span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="dl-doc-card" data-dl-action="open-detail" data-dl-id="r-3">
+                <div class="dl-doc-card__cover dl-doc-card__cover--excel">
+                  <i class="cses-stratis-file-01"></i>
+                </div>
+                <div class="dl-doc-card__body">
+                  <div class="dl-doc-card__title">研发资源排期表 v6</div>
+                  <div class="dl-doc-card__meta">
+                    <span>昨日 11:08</span>
+                    <span class="dl-dot-sep"></span>
+                    <span>前端工程</span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="dl-doc-card" data-dl-action="open-detail" data-dl-id="r-4">
+                <div class="dl-doc-card__cover dl-doc-card__cover--pdf">
+                  <i class="cses-stratis-file-01"></i>
+                </div>
+                <div class="dl-doc-card__body">
+                  <div class="dl-doc-card__title">合同_深创新硬件_2026.pdf</div>
+                  <div class="dl-doc-card__meta">
+                    <span>06-23 16:30</span>
+                    <span class="dl-dot-sep"></span>
+                    <span>共享给我</span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="dl-doc-card" data-dl-action="open-detail" data-dl-id="r-5">
+                <div class="dl-doc-card__cover dl-doc-card__cover--image" style="background-image:linear-gradient(135deg,#FAE2C7 0%,#F6AD00 100%);">
+                  <i class="cses-stratis-image"></i>
+                </div>
+                <div class="dl-doc-card__body">
+                  <div class="dl-doc-card__title">品牌主视觉_终稿.png</div>
+                  <div class="dl-doc-card__meta">
+                    <span>06-23 14:12</span>
+                    <span class="dl-dot-sep"></span>
+                    <span>设计中心</span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="dl-doc-card" data-dl-action="open-detail" data-dl-id="r-6">
+                <div class="dl-doc-card__cover dl-doc-card__cover--video" style="background-image:linear-gradient(135deg,#CFD6FB 0%,#7C8EEE 100%);">
+                  <i class="cses-stratis-video-on"></i>
+                </div>
+                <div class="dl-doc-card__body">
+                  <div class="dl-doc-card__title">产品介绍_v3.mp4</div>
+                  <div class="dl-doc-card__meta">
+                    <span>06-22 10:48</span>
+                    <span class="dl-dot-sep"></span>
+                    <span>产品规划</span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="dl-doc-card" data-dl-action="open-detail" data-dl-id="r-7">
+                <div class="dl-doc-card__cover dl-doc-card__cover--word">
+                  <i class="cses-stratis-file-01"></i>
+                </div>
+                <div class="dl-doc-card__body">
+                  <div class="dl-doc-card__title">竞品调研_Notion vs Coda</div>
+                  <div class="dl-doc-card__meta">
+                    <span>06-21 17:24</span>
+                    <span class="dl-dot-sep"></span>
+                    <span>产品规划</span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="dl-doc-card" data-dl-action="open-detail" data-dl-id="r-8">
+                <div class="dl-doc-card__cover dl-doc-card__cover--ppt">
+                  <i class="cses-stratis-file-01"></i>
+                </div>
+                <div class="dl-doc-card__body">
+                  <div class="dl-doc-card__title">月会汇报_2026-06</div>
+                  <div class="dl-doc-card__meta">
+                    <span>06-20 09:00</span>
+                    <span class="dl-dot-sep"></span>
+                    <span>HR 公开资料</span>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <!-- ============== 区块 4：共享给我 ============== -->
+          <section class="dl-section">
+            <div class="dl-section__head">
+              <h2 class="dl-section__title">共享给我</h2>
+              <a class="dl-section__more" data-dl-action="goto" data-dl-key="shared">
+                查看全部 28
+                <i class="cses-stratis-chevron-right"></i>
+              </a>
+            </div>
+
+            <ul class="dl-share-list">
+              <li class="dl-share-row" data-dl-action="open-detail" data-dl-id="s-1">
+                <cs-thumbnail data-type="file-icon" data-filetype="pdf" data-size="md">
+                  <i class="cses-stratis-file-01"></i>
+                </cs-thumbnail>
+                <div class="dl-share-row__main">
+                  <span class="dl-share-row__title">2026 H2 战略评审材料</span>
+                  <span class="dl-share-row__meta">由 王琦 共享 · 1 小时前</span>
+                </div>
+                <cs-avatar data-size="sm" data-color="orange"><span class="avatar-text">王</span></cs-avatar>
+                <cs-tag data-color="primary" data-size="sm"><span class="tag-label">可编辑</span></cs-tag>
+                <button class="dl-share-row__action" data-dl-action="open-doc-menu" data-dl-id="s-1" aria-label="更多">
+                  <i class="cses-stratis-menu-01"></i>
+                </button>
+              </li>
+              <li class="dl-share-row" data-dl-action="open-detail" data-dl-id="s-2">
+                <cs-thumbnail data-type="file-icon" data-filetype="excel" data-size="md">
+                  <i class="cses-stratis-file-01"></i>
+                </cs-thumbnail>
+                <div class="dl-share-row__main">
+                  <span class="dl-share-row__title">2026Q2 销售达成明细</span>
+                  <span class="dl-share-row__meta">由 林森 共享 · 3 小时前</span>
+                </div>
+                <cs-avatar data-size="sm" data-color="green"><span class="avatar-text">林</span></cs-avatar>
+                <cs-tag data-color="success" data-size="sm"><span class="tag-label">可查看</span></cs-tag>
+                <button class="dl-share-row__action" data-dl-action="open-doc-menu" data-dl-id="s-2" aria-label="更多">
+                  <i class="cses-stratis-menu-01"></i>
+                </button>
+              </li>
+              <li class="dl-share-row" data-dl-action="open-detail" data-dl-id="s-3">
+                <cs-thumbnail data-type="file-icon" data-filetype="word" data-size="md">
+                  <i class="cses-stratis-file-01"></i>
+                </cs-thumbnail>
+                <div class="dl-share-row__main">
+                  <span class="dl-share-row__title">2026 员工手册_修订版</span>
+                  <span class="dl-share-row__meta">由 陈思 共享 · 昨日</span>
+                </div>
+                <cs-avatar data-size="sm" data-color="purple"><span class="avatar-text">陈</span></cs-avatar>
+                <cs-tag data-color="warning" data-size="sm"><span class="tag-label">可评论</span></cs-tag>
+                <button class="dl-share-row__action" data-dl-action="open-doc-menu" data-dl-id="s-3" aria-label="更多">
+                  <i class="cses-stratis-menu-01"></i>
+                </button>
+              </li>
+              <li class="dl-share-row" data-dl-action="open-detail" data-dl-id="s-4">
+                <cs-thumbnail data-type="file-icon" data-filetype="ppt" data-size="md">
+                  <i class="cses-stratis-file-01"></i>
+                </cs-thumbnail>
+                <div class="dl-share-row__main">
+                  <span class="dl-share-row__title">设计评审 · 移动端体验升级</span>
+                  <span class="dl-share-row__meta">由 苏阳 共享 · 06-23</span>
+                </div>
+                <cs-avatar data-size="sm" data-color="pink"><span class="avatar-text">苏</span></cs-avatar>
+                <cs-tag data-color="primary" data-size="sm"><span class="tag-label">可编辑</span></cs-tag>
+                <button class="dl-share-row__action" data-dl-action="open-doc-menu" data-dl-id="s-4" aria-label="更多">
+                  <i class="cses-stratis-menu-01"></i>
+                </button>
+              </li>
+              <li class="dl-share-row" data-dl-action="open-detail" data-dl-id="s-5">
+                <cs-thumbnail data-type="file-icon" data-filetype="pdf" data-size="md">
+                  <i class="cses-stratis-file-01"></i>
+                </cs-thumbnail>
+                <div class="dl-share-row__main">
+                  <span class="dl-share-row__title">外部 NDA 模板 v2.pdf</span>
+                  <span class="dl-share-row__meta">由 张玥 共享 · 06-21</span>
+                </div>
+                <cs-avatar data-size="sm" data-color="sky"><span class="avatar-text">张</span></cs-avatar>
+                <cs-tag data-color="success" data-size="sm"><span class="tag-label">可查看</span></cs-tag>
+                <button class="dl-share-row__action" data-dl-action="open-doc-menu" data-dl-id="s-5" aria-label="更多">
+                  <i class="cses-stratis-menu-01"></i>
+                </button>
+              </li>
+            </ul>
+          </section>
+
+          <!-- ============== 区块 5：收藏 + 团队空间预览 ============== -->
+          <section class="dl-section dl-section--two-col">
+
+            <!-- 收藏 -->
+            <div class="dl-subsection">
+              <div class="dl-section__head dl-section__head--compact">
+                <h2 class="dl-section__title">
+                  <i class="cses-stratis-star-01" style="color:#F6AD00;"></i>
+                  收藏
+                </h2>
+                <a class="dl-section__more" data-dl-action="goto" data-dl-key="starred">查看 12 个<i class="cses-stratis-chevron-right"></i></a>
+              </div>
+              <ul class="dl-fav-list">
+                <li class="dl-fav-row" data-dl-action="open-detail" data-dl-id="f-1">
+                  <cs-thumbnail data-type="file-icon" data-filetype="word" data-size="sm">
+                    <i class="cses-stratis-file-01"></i>
+                  </cs-thumbnail>
+                  <span class="dl-fav-row__title">研发流程规范 v4.2</span>
+                  <span class="dl-fav-row__meta">前端工程</span>
+                </li>
+                <li class="dl-fav-row" data-dl-action="open-detail" data-dl-id="f-2">
+                  <cs-thumbnail data-type="file-icon" data-filetype="ppt" data-size="sm">
+                    <i class="cses-stratis-file-01"></i>
+                  </cs-thumbnail>
+                  <span class="dl-fav-row__title">公司 OKR 2026 全年</span>
+                  <span class="dl-fav-row__meta">产品规划</span>
+                </li>
+                <li class="dl-fav-row" data-dl-action="open-detail" data-dl-id="f-3">
+                  <cs-thumbnail data-type="file-icon" data-filetype="excel" data-size="sm">
+                    <i class="cses-stratis-file-01"></i>
+                  </cs-thumbnail>
+                  <span class="dl-fav-row__title">部门预算明细 2026</span>
+                  <span class="dl-fav-row__meta">HR 公开资料</span>
+                </li>
+                <li class="dl-fav-row" data-dl-action="open-detail" data-dl-id="f-4">
+                  <cs-thumbnail data-type="file-icon" data-filetype="pdf" data-size="sm">
+                    <i class="cses-stratis-file-01"></i>
+                  </cs-thumbnail>
+                  <span class="dl-fav-row__title">品牌 VI 规范.pdf</span>
+                  <span class="dl-fav-row__meta">设计中心</span>
+                </li>
+                <li class="dl-fav-row" data-dl-action="open-detail" data-dl-id="f-5">
+                  <cs-thumbnail data-type="file-icon" data-filetype="word" data-size="sm">
+                    <i class="cses-stratis-file-01"></i>
+                  </cs-thumbnail>
+                  <span class="dl-fav-row__title">新员工入职指南</span>
+                  <span class="dl-fav-row__meta">HR 公开资料</span>
+                </li>
+              </ul>
+            </div>
+
+            <!-- 团队空间预览 -->
+            <div class="dl-subsection">
+              <div class="dl-section__head dl-section__head--compact">
+                <h2 class="dl-section__title">
+                  <i class="cses-folder-team" style="color:#4857E2;"></i>
+                  团队空间
+                </h2>
+                <a class="dl-section__more" data-dl-action="open-create-space">新建空间<i class="cses-stratis-plus-01"></i></a>
+              </div>
+
+              <ul class="dl-space-list">
+                <li class="dl-space-card" data-dl-action="goto-space" data-dl-space-id="design">
+                  <div class="dl-space-card__head">
+                    <span class="dl-space-card__icon" style="background:#E8EAFE;color:#4857E2;">设</span>
+                    <div class="dl-space-card__title-wrap">
+                      <span class="dl-space-card__title">设计中心</span>
+                      <span class="dl-space-card__meta">38 人 · 1,204 份文档</span>
+                    </div>
+                    <cs-tag data-color="primary" data-size="sm"><span class="tag-label">活跃</span></cs-tag>
+                  </div>
+                  <div class="dl-space-card__recent">
+                    <span class="dl-space-card__recent-label">最近活跃：</span>
+                    <span class="dl-space-card__recent-doc">品牌主视觉_终稿.png</span>
+                  </div>
+                </li>
+
+                <li class="dl-space-card" data-dl-action="goto-space" data-dl-space-id="product">
+                  <div class="dl-space-card__head">
+                    <span class="dl-space-card__icon" style="background:#FFF1E0;color:#F97316;">产</span>
+                    <div class="dl-space-card__title-wrap">
+                      <span class="dl-space-card__title">产品规划</span>
+                      <span class="dl-space-card__meta">22 人 · 862 份文档</span>
+                    </div>
+                    <cs-tag data-color="primary" data-size="sm"><span class="tag-label">活跃</span></cs-tag>
+                  </div>
+                  <div class="dl-space-card__recent">
+                    <span class="dl-space-card__recent-label">最近活跃：</span>
+                    <span class="dl-space-card__recent-doc">2026 Q3 产品规划终稿</span>
+                  </div>
+                </li>
+
+                <li class="dl-space-card" data-dl-action="goto-space" data-dl-space-id="frontend">
+                  <div class="dl-space-card__head">
+                    <span class="dl-space-card__icon" style="background:#E3F6EA;color:#16A34A;">前</span>
+                    <div class="dl-space-card__title-wrap">
+                      <span class="dl-space-card__title">前端工程</span>
+                      <span class="dl-space-card__meta">14 人 · 326 份文档</span>
+                    </div>
+                  </div>
+                  <div class="dl-space-card__recent">
+                    <span class="dl-space-card__recent-label">最近活跃：</span>
+                    <span class="dl-space-card__recent-doc">研发资源排期表 v6</span>
+                  </div>
+                </li>
+
+                <li class="dl-space-card" data-dl-action="goto-space" data-dl-space-id="hr">
+                  <div class="dl-space-card__head">
+                    <span class="dl-space-card__icon" style="background:#FDE9EA;color:#DC2626;">人</span>
+                    <div class="dl-space-card__title-wrap">
+                      <span class="dl-space-card__title">HR 公开资料</span>
+                      <span class="dl-space-card__meta">9 人 · 184 份文档</span>
+                    </div>
+                    <cs-tag data-variant="text" data-color="primary" data-size="sm"><span class="tag-label">外部</span></cs-tag>
+                  </div>
+                  <div class="dl-space-card__recent">
+                    <span class="dl-space-card__recent-label">最近活跃：</span>
+                    <span class="dl-space-card__recent-doc">月会汇报_2026-06</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+          </section>
+
+        </div><!-- /.dl-scroll -->
+      </main>
+    </div>
+  </div>
+</cs-layout>
+
+</body>
+</html>

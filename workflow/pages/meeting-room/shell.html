@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>会议室预订 · 统一框架 — CSES Meeting Room</title>
+
+  <!-- 1. 设计令牌（base = token + variable） -->
+  <link rel="stylesheet" href="../../design/css/base.css">
+  <!-- 2. 图标字体 -->
+  <link rel="stylesheet" href="../../design/fonts/cses-icons.css">
+  <!-- 3. 布局容器 -->
+  <link rel="stylesheet" href="../../design/fragment/fragment.css">
+  <!-- 4. page-shell 桥接（tabbar 内被删组件 + stratis 图标对齐） -->
+  <link rel="stylesheet" href="../../design/css/page-shell.css">
+
+  <!-- 5. 组件库（按需引入 — shell 阶段只用 tabbar / sidebar / navbar / content-header 涉及的） -->
+  <link rel="stylesheet" href="../../design/components/window-control/window-control.css">
+  <link rel="stylesheet" href="../../design/components/search-input/search-input.css">
+  <link rel="stylesheet" href="../../design/components/tab/tab.css">
+  <link rel="stylesheet" href="../../design/components/avatar/avatar.css">
+  <link rel="stylesheet" href="../../design/components/badge/badge.css">
+  <link rel="stylesheet" href="../../design/components/button/button.css">
+  <link rel="stylesheet" href="../../design/components/search-trigger/search-trigger.css">
+
+  <!-- 6. 本模块私有样式（前缀 --meeting-room-*） -->
+  <link rel="stylesheet" href="./shell.css">
+</head>
+<body>
+
+<!-- ============================================================
+     完整布局 — 严格沿用 fragment/fragment.html 骨架结构
+     cs-layout
+     ├── .tabbar              ① 顶部标签栏（fragment 默认，不修改）
+     └── .body
+         ├── cs-sidebar       ② 一级导航（fragment 默认产品级，不修改）
+         └── .content-wrapper
+             ├── cs-navbar    ③ 二级导航（本模块业务内容：会议室）
+             └── .main-content
+                 ├── cs-content-header   ④ 内容区头部（列表型 · 我的预约）
+                 └── 业务主区             ⑤ 占位 · 待阶段 2 装配
+============================================================ -->
+<cs-layout>
+
+  <!-- ============================================================
+       ① tabbar — 顶部标签栏（macOS 风格 + 全局搜索 + 通知 + 头像）
+       fragment 默认提供，按 REQ 保留默认即可
+  ============================================================ -->
+  <div class="tabbar">
+    <div class="tabbar-left">
+      <cs-window-control class="tabbar-window-control">
+        <span class="ctrl-close"></span>
+        <span class="ctrl-minimize"></span>
+        <span class="ctrl-maximize"></span>
+      </cs-window-control>
+      <cs-search-input class="tabbar-search" data-variant="gray" data-size="sm" style="border-radius:var(--radius-lg);">
+        <i class="search-icon cses-stratis-search-01"></i>
+        <input class="search-field" type="text" placeholder="搜索">
+      </cs-search-input>
+      <cs-tab data-active>
+        <span class="tab-label">会议室</span>
+        <i class="tab-close cses-stratis-x-01"></i>
+      </cs-tab>
+    </div>
+    <div class="tabbar-right">
+      <!-- 通知铃铛 — REQ Q4：右上铃铛触发下拉面板，本 shell 仅留位 -->
+      <span class="tabbar-notice">
+        <i class="cses-stratis-bell-01 notice-icon"></i>
+        <span class="notice-badge">0</span>
+      </span>
+      <cs-avatar data-size="xs" data-shape="circle" data-color="blue">
+        <span class="avatar-text">张</span>
+      </cs-avatar>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       ② body — 主体（sidebar + content-wrapper）
+  ============================================================ -->
+  <div class="body">
+
+    <!-- ② -1 sidebar — 一级导航（fragment 默认 8 项，会议项 active 作为会议室预订入口语义最近） -->
+    <cs-sidebar>
+      <span class="logo">
+        <img src="../../design/assets/logo.png" alt="CSES">
+      </span>
+      <nav class="nav">
+        <div class="nav-group">
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-home-01"></i></span>
+            <span class="nav-label">工作台</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-compass"></i></span>
+            <span class="nav-label">导向</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-message-circle"></i></span>
+            <span class="nav-label">消息</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-check-square-broken"></i></span>
+            <span class="nav-label">任务</span>
+          </a>
+          <a class="nav-item" data-active>
+            <span class="nav-icon"><i class="cses-stratis-video-on"></i></span>
+            <span class="nav-label">会议</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-book-01"></i></span>
+            <span class="nav-label">文档</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-file-edit-01"></i></span>
+            <span class="nav-label">表单</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-file-check-01"></i></span>
+            <span class="nav-label">审批</span>
+          </a>
+        </div>
+      </nav>
+    </cs-sidebar>
+
+    <div class="content-wrapper">
+
+      <!-- ============================================================
+           ② -2 navbar — 二级导航（会议室模块）
+           严格按 fragment.md §4：cs-navbar > .inner + 6 个 slot
+           - slot-header：模块名「会议室」+ <副标题占位>
+           - slot-action：主 CTA「+ 新建预约」（页面唯一）
+           - slot-nav   ：📅 我的预约（默认选中）、🔍 找会议室
+           - slot-admin ：⚙ 管理后台（仅有权限时显示，shell 阶段保留可见以展示存在性）
+      ============================================================ -->
+      <cs-navbar>
+        <div class="inner">
+
+          <!-- ① 标题区（slot-header） -->
+          <div class="slot-header" style="display:flex;flex-direction:column;gap:var(--space-3xs);">
+            <span style="font: var(--typo-cn-16-medium); color: var(--cs-color-text);">会议室</span>
+            <span style="font: var(--typo-cn-12-regular); color: var(--cs-color-text-light2);">&lt;副标题占位&gt;</span>
+          </div>
+
+          <!-- ② 主 CTA（slot-action） — 页面唯一主操作入口 -->
+          <div class="slot-action">
+            <cs-button data-variant="primary" data-size="lg" style="width:100%;">
+              <i class="btn-icon cses-stratis-plus-01"></i>
+              <span class="btn-label">新建预约</span>
+            </cs-button>
+          </div>
+
+          <!-- ③ 主菜单（slot-nav） — 我的预约（默认） / 找会议室 -->
+          <div class="slot-nav" style="display:flex;flex-direction:column;gap:var(--space-2xs);padding-top:var(--space-xs);border-top:var(--line-width) solid var(--cs-color-border);">
+            <a class="nav-item" data-active>
+              <span class="nav-icon"><i class="cses-stratis-calendar-01"></i></span>
+              <span class="nav-label">我的预约</span>
+            </a>
+            <a class="nav-item">
+              <span class="nav-icon"><i class="cses-stratis-search-01"></i></span>
+              <span class="nav-label">找会议室</span>
+            </a>
+          </div>
+
+          <!-- ④ 副菜单（slot-sub） — 会议室模块无三级，留空占位以保持骨架 -->
+          <div class="slot-sub" aria-hidden="true"></div>
+
+          <!-- ⑤ 管理后台（slot-admin） — 仅有权限时显示；shell 阶段默认展示存在性 -->
+          <div class="slot-admin" style="display:flex;align-items:center;gap:var(--space-2xs);padding:var(--space-xs);cursor:pointer;border-top:var(--line-width) solid var(--cs-color-border);">
+            <i class="cses-stratis-settings" style="font-size:var(--cs-sem-size-icon-sm);color:var(--cs-color-text);"></i>
+            <span style="font: var(--typo-cn-14-regular); color: var(--cs-color-text);">管理后台</span>
+          </div>
+
+        </div>
+      </cs-navbar>
+
+      <!-- ============================================================
+           ② -3 main-content — 主内容区
+      ============================================================ -->
+      <main class="main-content">
+
+        <!-- ④ 内容区头部（cs-content-header）— 列表型变体 · 默认落地页「我的预约」 -->
+        <cs-content-header>
+          <div class="slot-left">
+            <span class="page-title">我的预约</span>
+            <span class="page-subtitle">&lt;副标题占位&gt;</span>
+          </div>
+          <div class="slot-right">
+            <cs-search-trigger>
+              <span class="trigger-text">搜索</span>
+              <i class="trigger-icon cses-stratis-search-01"></i>
+            </cs-search-trigger>
+          </div>
+        </cs-content-header>
+
+        <!-- ⑤ 业务主区 — shell 阶段占位，待阶段 2 各 page 装配各自 main-area 内容 -->
+        <div class="meeting-room-placeholder">
+          <i class="cses-stratis-grid-01 meeting-room-placeholder__icon"></i>
+          <div class="meeting-room-placeholder__title">内容区 · 待填充</div>
+          <div class="meeting-room-placeholder__desc">本区域在「阶段 2」由各页面 main-area 片段并行装配（我的预约 / 找会议室 / 会议室详情 / 预约详情 / 通知中心 / 创建编辑抽屉）</div>
+        </div>
+
+      </main>
+    </div>
+
+  </div>
+</cs-layout>
+
+</body>
+</html>

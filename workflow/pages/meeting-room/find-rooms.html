@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>找会议室 · CSES Meeting Room</title>
+
+  <!-- 1. 设计令牌（base = token + variable） -->
+  <link rel="stylesheet" href="../../design/css/base.css">
+  <!-- 2. 图标字体 -->
+  <link rel="stylesheet" href="../../design/fonts/cses-icons.css">
+  <!-- 3. 布局容器 -->
+  <link rel="stylesheet" href="../../design/fragment/fragment.css">
+  <!-- 4. page-shell 桥接 -->
+  <link rel="stylesheet" href="../../design/css/page-shell.css">
+
+  <!-- 5. 组件库（按需引入 — shell + 本页装配涉及） -->
+  <link rel="stylesheet" href="../../design/components/window-control/window-control.css">
+  <link rel="stylesheet" href="../../design/components/search-input/search-input.css">
+  <link rel="stylesheet" href="../../design/components/tab/tab.css">
+  <link rel="stylesheet" href="../../design/components/avatar/avatar.css">
+  <link rel="stylesheet" href="../../design/components/badge/badge.css">
+  <link rel="stylesheet" href="../../design/components/button/button.css">
+  <link rel="stylesheet" href="../../design/components/search-trigger/search-trigger.css">
+  <link rel="stylesheet" href="../../design/components/view-switcher/view-switcher.css">
+  <link rel="stylesheet" href="../../design/components/tag/tag.css">
+  <link rel="stylesheet" href="../../design/components/input/input.css">
+  <link rel="stylesheet" href="../../design/components/select/select.css">
+  <link rel="stylesheet" href="../../design/components/switch/switch.css">
+  <link rel="stylesheet" href="../../design/components/checkbox/checkbox.css">
+  <link rel="stylesheet" href="../../design/components/user-pill/user-pill.css">
+
+  <!-- 6. 本模块私有样式 -->
+  <link rel="stylesheet" href="./shell.css">
+  <!-- 7. 本页私有样式 -->
+  <link rel="stylesheet" href="./find-rooms.css">
+</head>
+<body>
+
+<cs-layout>
+
+  <!-- ① tabbar — 顶部标签栏（保持 shell 默认） -->
+  <div class="tabbar">
+    <div class="tabbar-left">
+      <cs-window-control class="tabbar-window-control">
+        <span class="ctrl-close"></span>
+        <span class="ctrl-minimize"></span>
+        <span class="ctrl-maximize"></span>
+      </cs-window-control>
+      <cs-search-input class="tabbar-search" data-variant="gray" data-size="sm" style="border-radius:var(--radius-lg);">
+        <i class="search-icon cses-stratis-search-01"></i>
+        <input class="search-field" type="text" placeholder="搜索">
+      </cs-search-input>
+      <cs-tab data-active>
+        <span class="tab-label">会议室</span>
+        <i class="tab-close cses-stratis-x-01"></i>
+      </cs-tab>
+    </div>
+    <div class="tabbar-right">
+      <span class="tabbar-notice">
+        <i class="cses-stratis-bell-01 notice-icon"></i>
+        <span class="notice-badge">3</span>
+      </span>
+      <cs-avatar data-size="xs" data-shape="circle" data-color="blue">
+        <span class="avatar-text">张</span>
+      </cs-avatar>
+    </div>
+  </div>
+
+  <!-- ② body -->
+  <div class="body">
+
+    <!-- ② -1 sidebar — 一级导航（保持 shell 默认） -->
+    <cs-sidebar>
+      <span class="logo">
+        <img src="../../design/assets/logo.png" alt="CSES">
+      </span>
+      <nav class="nav">
+        <div class="nav-group">
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-home-01"></i></span>
+            <span class="nav-label">工作台</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-compass"></i></span>
+            <span class="nav-label">导向</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-message-circle"></i></span>
+            <span class="nav-label">消息</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-check-square-broken"></i></span>
+            <span class="nav-label">任务</span>
+          </a>
+          <a class="nav-item" data-active>
+            <span class="nav-icon"><i class="cses-stratis-video-on"></i></span>
+            <span class="nav-label">会议</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-book-01"></i></span>
+            <span class="nav-label">文档</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-file-edit-01"></i></span>
+            <span class="nav-label">表单</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-file-check-01"></i></span>
+            <span class="nav-label">审批</span>
+          </a>
+        </div>
+      </nav>
+    </cs-sidebar>
+
+    <div class="content-wrapper">
+
+      <!-- ② -2 navbar — 二级导航（会议室模块） -->
+      <cs-navbar>
+        <div class="inner">
+
+          <!-- ① 标题区 -->
+          <div class="slot-header" style="display:flex;flex-direction:column;gap:var(--space-3xs);">
+            <span style="font: var(--typo-cn-16-medium); color: var(--cs-color-text);">我的会议</span>
+            <span style="font: var(--typo-cn-12-regular); color: var(--cs-color-text-light2);">预订与管理</span>
+          </div>
+
+          <!-- ② 主 CTA — sidebar 顶部唯一主操作入口（触发抽屉） -->
+          <div class="slot-action">
+            <cs-button data-variant="primary" data-size="lg" style="width:100%;" data-open="booking-drawer">
+              <i class="btn-icon cses-stratis-plus-01"></i>
+              <span class="btn-label">新建预约</span>
+            </cs-button>
+          </div>
+
+          <!-- ③ 主菜单 — 我的预约 / 找会议室（找会议室 active） -->
+          <div class="slot-nav" style="display:flex;flex-direction:column;gap:var(--space-2xs);padding-top:var(--space-xs);border-top:var(--line-width) solid var(--cs-color-border);">
+            <a class="nav-item" href="my-bookings.html">
+              <span class="nav-icon"><i class="cses-stratis-calendar-01"></i></span>
+              <span class="nav-label">我的会议</span>
+            </a>
+            <a class="nav-item" href="find-rooms.html" data-active>
+              <span class="nav-icon"><i class="cses-stratis-search-01"></i></span>
+              <span class="nav-label">找会议室</span>
+            </a>
+          </div>
+
+          <!-- ④ 副菜单留空占位 -->
+          <div class="slot-sub" aria-hidden="true"></div>
+
+          <!-- ⑤ 管理后台 -->
+          <div class="slot-admin" style="display:flex;align-items:center;gap:var(--space-2xs);padding:var(--space-xs);cursor:pointer;border-top:var(--line-width) solid var(--cs-color-border);">
+            <i class="cses-stratis-settings" style="font-size:var(--cs-sem-size-icon-sm);color:var(--cs-color-text);"></i>
+            <a href="#" style="font: var(--typo-cn-14-regular); color: var(--cs-color-text); text-decoration:none;">管理后台</a>
+          </div>
+
+        </div>
+      </cs-navbar>
+
+      <!-- ② -3 main-content -->
+      <main class="main-content">
+
+        <!-- ④ 内容区头部（列表型 · 找会议室） -->
+        <cs-content-header>
+          <div class="slot-left">
+            <span class="page-title">找会议室</span>
+            <span class="page-subtitle">按时间、容量、设备筛选可用会议室</span>
+          </div>
+          <div class="slot-right">
+            <cs-search-trigger>
+              <span class="trigger-text">搜索会议室名 / 位置</span>
+              <i class="trigger-icon cses-stratis-search-01"></i>
+            </cs-search-trigger>
+          </div>
+        </cs-content-header>
+
+        <!-- ⑤ 业务主区 · 找会议室 -->
+        <div class="meet-find">
+
+          <!-- 顶部控制条：左 filter-bar dropdowns + 右 view 切换 -->
+          <cs-filter-bar data-variant="dropdowns" class="meet-find__filter-bar">
+            <div class="filter-left">
+              <cs-select>
+                <span class="select-value">2026-06-26</span>
+                <i class="select-arrow cses-stratis-chevron-down"></i>
+              </cs-select>
+              <cs-select>
+                <span class="select-value">14:00 – 15:00</span>
+                <i class="select-arrow cses-stratis-chevron-down"></i>
+              </cs-select>
+              <cs-select>
+                <span class="select-value">不限容量</span>
+                <i class="select-arrow cses-stratis-chevron-down"></i>
+              </cs-select>
+              <cs-select>
+                <span class="select-value">全部位置</span>
+                <i class="select-arrow cses-stratis-chevron-down"></i>
+              </cs-select>
+            </div>
+            <div class="filter-right">
+              <div class="meet-find__view-switch" role="tablist" aria-label="视图切换">
+                <button class="meet-find__view-btn is-active" data-view="list" type="button">
+                  <i class="cses-stratis-list"></i>
+                  <span>列表</span>
+                </button>
+                <button class="meet-find__view-btn" data-view="timeline" type="button">
+                  <i class="cses-stratis-clock-01"></i>
+                  <span>时间轴</span>
+                </button>
+              </div>
+            </div>
+          </cs-filter-bar>
+
+          <!-- 设备 chip 行 -->
+          <div class="meet-find__chips" role="group" aria-label="设备筛选">
+            <button class="meet-find__chip is-active" type="button">
+              <i class="cses-stratis-presentation-01"></i>
+              <span>投影</span>
+            </button>
+            <button class="meet-find__chip" type="button">
+              <i class="cses-stratis-tv"></i>
+              <span>电视大屏</span>
+            </button>
+            <button class="meet-find__chip" type="button">
+              <i class="cses-stratis-edit-01"></i>
+              <span>白板</span>
+            </button>
+            <button class="meet-find__chip is-active" type="button">
+              <i class="cses-stratis-video-on"></i>
+              <span>视频会议终端</span>
+            </button>
+            <button class="meet-find__chip" type="button">
+              <i class="cses-stratis-microphone-01"></i>
+              <span>麦克风/扬声器</span>
+            </button>
+            <button class="meet-find__chip" type="button">
+              <i class="cses-stratis-camera-01"></i>
+              <span>摄像头</span>
+            </button>
+            <button class="meet-find__chip" type="button">
+              <i class="cses-stratis-phone"></i>
+              <span>电话</span>
+            </button>
+            <button class="meet-find__chip" type="button">
+              <i class="cses-stratis-server-01"></i>
+              <span>HDMI/转接器</span>
+            </button>
+          </div>
+
+          <!-- ═══════════════════════════════════════════════════════════
+               列表视图（默认显示）
+               每行严格按 PROTO：名称 / 位置 / 容量 / 设备图标×N
+                            / 当前时段是否空闲 / 可不可预订(含原因)
+          ═══════════════════════════════════════════════════════════ -->
+          <div class="meet-find__view" data-view-panel="list">
+
+            <div class="meet-find__list-meta">
+              <span class="meet-find__list-count">共 <b>10</b> 间会议室</span>
+              <div class="meet-find__list-sort">
+                <span>排序：</span>
+                <select aria-label="排序">
+                  <option>容量从小到大</option>
+                  <option>容量从大到小</option>
+                  <option>位置就近</option>
+                </select>
+              </div>
+            </div>
+
+            <ul class="meet-find__list">
+
+              <!-- row 1 -->
+              <li class="meet-find__row">
+                <div class="meet-find__row-main">
+                  <div class="meet-find__row-title-line">
+                    <span class="meet-find__row-name">望京 3F-A 大会议室</span>
+                    <span class="meet-find__row-cap"><i class="cses-stratis-users-profiles-01"></i> 12 人</span>
+                  </div>
+                  <div class="meet-find__row-meta-line">
+                    <span class="meet-find__row-loc"><i class="cses-stratis-marker-01"></i> 北京 · 望京 · 3F</span>
+                    <ul class="meet-find__row-devices">
+                      <li title="投影"><i class="cses-stratis-presentation-01"></i></li>
+                      <li title="白板"><i class="cses-stratis-edit-01"></i></li>
+                      <li title="视频会议终端"><i class="cses-stratis-video-on"></i></li>
+                      <li title="摄像头"><i class="cses-stratis-camera-01"></i></li>
+                      <li title="麦克风/扬声器"><i class="cses-stratis-microphone-01"></i></li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="meet-find__row-status">
+                  <span class="meet-find__status-badge is-free">
+                    <i class="cses-stratis-check-broken"></i>
+                    14:00 – 15:00 空闲
+                  </span>
+                </div>
+                <div class="meet-find__row-actions">
+                  <button class="meet-find__btn-primary" type="button" data-open="booking-drawer">预订</button>
+                </div>
+              </li>
+
+              <!-- row 2 -->
+              <li class="meet-find__row">
+                <div class="meet-find__row-main">
+                  <div class="meet-find__row-title-line">
+                    <span class="meet-find__row-name">望京 3F-B 小会议室</span>
+                    <span class="meet-find__row-cap"><i class="cses-stratis-users-profiles-01"></i> 8 人</span>
+                  </div>
+                  <div class="meet-find__row-meta-line">
+                    <span class="meet-find__row-loc"><i class="cses-stratis-marker-01"></i> 北京 · 望京 · 3F</span>
+                    <ul class="meet-find__row-devices">
+                      <li title="电视大屏"><i class="cses-stratis-tv"></i></li>
+                      <li title="白板"><i class="cses-stratis-edit-01"></i></li>
+                      <li title="HDMI/转接器"><i class="cses-stratis-server-01"></i></li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="meet-find__row-status">
+                  <span class="meet-find__status-badge is-busy">
+                    <i class="cses-stratis-clock-01"></i>
+                    14:00 – 15:00 占用
+                  </span>
+                </div>
+                <div class="meet-find__row-actions">
+                  <button class="meet-find__btn-primary is-disabled" type="button" disabled>预订</button>
+                </div>
+              </li>
+
+              <!-- row 3 -->
+              <li class="meet-find__row">
+                <div class="meet-find__row-main">
+                  <div class="meet-find__row-title-line">
+                    <span class="meet-find__row-name">知春路 5F 培训厅</span>
+                    <span class="meet-find__row-cap"><i class="cses-stratis-users-profiles-01"></i> 30 人</span>
+                  </div>
+                  <div class="meet-find__row-meta-line">
+                    <span class="meet-find__row-loc"><i class="cses-stratis-marker-01"></i> 北京 · 知春路 · 5F</span>
+                    <ul class="meet-find__row-devices">
+                      <li title="投影"><i class="cses-stratis-presentation-01"></i></li>
+                      <li title="视频会议终端"><i class="cses-stratis-video-on"></i></li>
+                      <li title="麦克风/扬声器"><i class="cses-stratis-microphone-01"></i></li>
+                      <li title="摄像头"><i class="cses-stratis-camera-01"></i></li>
+                      <li title="电话"><i class="cses-stratis-phone"></i></li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="meet-find__row-status">
+                  <span class="meet-find__status-badge is-free">
+                    <i class="cses-stratis-check-broken"></i>
+                    14:00 – 15:00 空闲
+                  </span>
+                </div>
+                <div class="meet-find__row-actions">
+                  <button class="meet-find__btn-primary" type="button" data-open="booking-drawer">预订</button>
+                </div>
+              </li>
+
+              <!-- row 4 -->
+              <li class="meet-find__row">
+                <div class="meet-find__row-main">
+                  <div class="meet-find__row-title-line">
+                    <span class="meet-find__row-name">望京 12F 路演厅</span>
+                    <span class="meet-find__row-cap"><i class="cses-stratis-users-profiles-01"></i> 60 人</span>
+                  </div>
+                  <div class="meet-find__row-meta-line">
+                    <span class="meet-find__row-loc"><i class="cses-stratis-marker-01"></i> 北京 · 望京 · 12F</span>
+                    <ul class="meet-find__row-devices">
+                      <li title="投影"><i class="cses-stratis-presentation-01"></i></li>
+                      <li title="电视大屏"><i class="cses-stratis-tv"></i></li>
+                      <li title="视频会议终端"><i class="cses-stratis-video-on"></i></li>
+                      <li title="麦克风/扬声器"><i class="cses-stratis-microphone-01"></i></li>
+                      <li title="摄像头"><i class="cses-stratis-camera-01"></i></li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="meet-find__row-status">
+                  <span class="meet-find__status-badge is-free">
+                    <i class="cses-stratis-check-broken"></i>
+                    14:00 – 15:00 空闲
+                  </span>
+                  <span class="meet-find__status-reason">
+                    <i class="cses-stratis-alert-circle"></i>
+                    不可预订：你不在白名单
+                  </span>
+                </div>
+                <div class="meet-find__row-actions">
+                  <button class="meet-find__btn-primary is-disabled" type="button" disabled title="你不在白名单">预订</button>
+                </div>
+              </li>
+
+              <!-- row 5 -->
+              <li class="meet-find__row">
+                <div class="meet-find__row-main">
+                  <div class="meet-find__row-title-line">
+                    <span class="meet-find__row-name">望京 5F-A 小会议室</span>
+                    <span class="meet-find__row-cap"><i class="cses-stratis-users-profiles-01"></i> 6 人</span>
+                  </div>
+                  <div class="meet-find__row-meta-line">
+                    <span class="meet-find__row-loc"><i class="cses-stratis-marker-01"></i> 北京 · 望京 · 5F</span>
+                    <ul class="meet-find__row-devices">
+                      <li title="电视大屏"><i class="cses-stratis-tv"></i></li>
+                      <li title="HDMI/转接器"><i class="cses-stratis-server-01"></i></li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="meet-find__row-status">
+                  <span class="meet-find__status-badge is-free">
+                    <i class="cses-stratis-check-broken"></i>
+                    14:00 – 15:00 空闲
+                  </span>
+                </div>
+                <div class="meet-find__row-actions">
+                  <button class="meet-find__btn-primary" type="button" data-open="booking-drawer">预订</button>
+                </div>
+              </li>
+
+              <!-- row 6 -->
+              <li class="meet-find__row">
+                <div class="meet-find__row-main">
+                  <div class="meet-find__row-title-line">
+                    <span class="meet-find__row-name">望京 5F-B 中会议室</span>
+                    <span class="meet-find__row-cap"><i class="cses-stratis-users-profiles-01"></i> 10 人</span>
+                  </div>
+                  <div class="meet-find__row-meta-line">
+                    <span class="meet-find__row-loc"><i class="cses-stratis-marker-01"></i> 北京 · 望京 · 5F</span>
+                    <ul class="meet-find__row-devices">
+                      <li title="投影"><i class="cses-stratis-presentation-01"></i></li>
+                      <li title="白板"><i class="cses-stratis-edit-01"></i></li>
+                      <li title="视频会议终端"><i class="cses-stratis-video-on"></i></li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="meet-find__row-status">
+                  <span class="meet-find__status-badge is-busy">
+                    <i class="cses-stratis-clock-01"></i>
+                    14:00 – 15:00 占用
+                  </span>
+                </div>
+                <div class="meet-find__row-actions">
+                  <button class="meet-find__btn-primary is-disabled" type="button" disabled>预订</button>
+                </div>
+              </li>
+
+              <!-- row 7 -->
+              <li class="meet-find__row">
+                <div class="meet-find__row-main">
+                  <div class="meet-find__row-title-line">
+                    <span class="meet-find__row-name">知春路 3F 头脑风暴室</span>
+                    <span class="meet-find__row-cap"><i class="cses-stratis-users-profiles-01"></i> 8 人</span>
+                  </div>
+                  <div class="meet-find__row-meta-line">
+                    <span class="meet-find__row-loc"><i class="cses-stratis-marker-01"></i> 北京 · 知春路 · 3F</span>
+                    <ul class="meet-find__row-devices">
+                      <li title="白板"><i class="cses-stratis-edit-01"></i></li>
+                      <li title="电视大屏"><i class="cses-stratis-tv"></i></li>
+                      <li title="HDMI/转接器"><i class="cses-stratis-server-01"></i></li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="meet-find__row-status">
+                  <span class="meet-find__status-badge is-free">
+                    <i class="cses-stratis-check-broken"></i>
+                    14:00 – 15:00 空闲
+                  </span>
+                </div>
+                <div class="meet-find__row-actions">
+                  <button class="meet-find__btn-primary" type="button" data-open="booking-drawer">预订</button>
+                </div>
+              </li>
+
+              <!-- row 8 -->
+              <li class="meet-find__row">
+                <div class="meet-find__row-main">
+                  <div class="meet-find__row-title-line">
+                    <span class="meet-find__row-name">知春路 5F-C 客户会谈室</span>
+                    <span class="meet-find__row-cap"><i class="cses-stratis-users-profiles-01"></i> 6 人</span>
+                  </div>
+                  <div class="meet-find__row-meta-line">
+                    <span class="meet-find__row-loc"><i class="cses-stratis-marker-01"></i> 北京 · 知春路 · 5F</span>
+                    <ul class="meet-find__row-devices">
+                      <li title="电视大屏"><i class="cses-stratis-tv"></i></li>
+                      <li title="视频会议终端"><i class="cses-stratis-video-on"></i></li>
+                      <li title="电话"><i class="cses-stratis-phone"></i></li>
+                      <li title="麦克风/扬声器"><i class="cses-stratis-microphone-01"></i></li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="meet-find__row-status">
+                  <span class="meet-find__status-badge is-free">
+                    <i class="cses-stratis-check-broken"></i>
+                    14:00 – 15:00 空闲
+                  </span>
+                </div>
+                <div class="meet-find__row-actions">
+                  <button class="meet-find__btn-primary" type="button" data-open="booking-drawer">预订</button>
+                </div>
+              </li>
+
+              <!-- row 9 -->
+              <li class="meet-find__row">
+                <div class="meet-find__row-main">
+                  <div class="meet-find__row-title-line">
+                    <span class="meet-find__row-name">望京 8F 董事会议室</span>
+                    <span class="meet-find__row-cap"><i class="cses-stratis-users-profiles-01"></i> 16 人</span>
+                  </div>
+                  <div class="meet-find__row-meta-line">
+                    <span class="meet-find__row-loc"><i class="cses-stratis-marker-01"></i> 北京 · 望京 · 8F</span>
+                    <ul class="meet-find__row-devices">
+                      <li title="投影"><i class="cses-stratis-presentation-01"></i></li>
+                      <li title="电视大屏"><i class="cses-stratis-tv"></i></li>
+                      <li title="视频会议终端"><i class="cses-stratis-video-on"></i></li>
+                      <li title="麦克风/扬声器"><i class="cses-stratis-microphone-01"></i></li>
+                      <li title="摄像头"><i class="cses-stratis-camera-01"></i></li>
+                      <li title="电话"><i class="cses-stratis-phone"></i></li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="meet-find__row-status">
+                  <span class="meet-find__status-badge is-free">
+                    <i class="cses-stratis-check-broken"></i>
+                    14:00 – 15:00 空闲
+                  </span>
+                  <span class="meet-find__status-reason">
+                    <i class="cses-stratis-alert-circle"></i>
+                    不可预订：超过最大提前预订天数
+                  </span>
+                </div>
+                <div class="meet-find__row-actions">
+                  <button class="meet-find__btn-primary is-disabled" type="button" disabled title="超过最大提前预订天数">预订</button>
+                </div>
+              </li>
+
+              <!-- row 10 -->
+              <li class="meet-find__row">
+                <div class="meet-find__row-main">
+                  <div class="meet-find__row-title-line">
+                    <span class="meet-find__row-name">望京 3F-C 一对一面谈间</span>
+                    <span class="meet-find__row-cap"><i class="cses-stratis-users-profiles-01"></i> 2 人</span>
+                  </div>
+                  <div class="meet-find__row-meta-line">
+                    <span class="meet-find__row-loc"><i class="cses-stratis-marker-01"></i> 北京 · 望京 · 3F</span>
+                    <ul class="meet-find__row-devices">
+                      <li title="电视大屏"><i class="cses-stratis-tv"></i></li>
+                      <li title="HDMI/转接器"><i class="cses-stratis-server-01"></i></li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="meet-find__row-status">
+                  <span class="meet-find__status-badge is-free">
+                    <i class="cses-stratis-check-broken"></i>
+                    14:00 – 15:00 空闲
+                  </span>
+                </div>
+                <div class="meet-find__row-actions">
+                  <button class="meet-find__btn-primary" type="button" data-open="booking-drawer">预订</button>
+                </div>
+              </li>
+
+            </ul>
+          </div>
+
+          <!-- ═══════════════════════════════════════════════════════════
+               时间轴视图（默认隐藏）
+               左侧会议室列 + 右横向 30 分钟刻度（08:00–18:00 = 20 格）
+               静态铺占用块（蓝/淡蓝）
+          ═══════════════════════════════════════════════════════════ -->
+          <div class="meet-find__view" data-view-panel="timeline" hidden>
+
+            <div class="meet-find__axis">
+
+              <!-- 表头：时间刻度 -->
+              <div class="meet-find__axis-header">
+                <div class="meet-find__axis-room-col">会议室</div>
+                <div class="meet-find__axis-scale">
+                  <span class="meet-find__axis-tick" data-major>08:00</span>
+                  <span class="meet-find__axis-tick">08:30</span>
+                  <span class="meet-find__axis-tick" data-major>09:00</span>
+                  <span class="meet-find__axis-tick">09:30</span>
+                  <span class="meet-find__axis-tick" data-major>10:00</span>
+                  <span class="meet-find__axis-tick">10:30</span>
+                  <span class="meet-find__axis-tick" data-major>11:00</span>
+                  <span class="meet-find__axis-tick">11:30</span>
+                  <span class="meet-find__axis-tick" data-major>12:00</span>
+                  <span class="meet-find__axis-tick">12:30</span>
+                  <span class="meet-find__axis-tick" data-major>13:00</span>
+                  <span class="meet-find__axis-tick">13:30</span>
+                  <span class="meet-find__axis-tick" data-major>14:00</span>
+                  <span class="meet-find__axis-tick">14:30</span>
+                  <span class="meet-find__axis-tick" data-major>15:00</span>
+                  <span class="meet-find__axis-tick">15:30</span>
+                  <span class="meet-find__axis-tick" data-major>16:00</span>
+                  <span class="meet-find__axis-tick">16:30</span>
+                  <span class="meet-find__axis-tick" data-major>17:00</span>
+                  <span class="meet-find__axis-tick">17:30</span>
+                </div>
+              </div>
+
+              <!-- 每行：左侧 room 名 + 右占用条 -->
+              <!-- 占用块用 grid-column: span N 控制宽度，每格 = 30 分钟 -->
+
+              <div class="meet-find__axis-row">
+                <div class="meet-find__axis-room">
+                  <span class="meet-find__axis-room-name">望京 3F-A 大会议室</span>
+                  <span class="meet-find__axis-room-loc">12 人 · 望京 3F</span>
+                </div>
+                <div class="meet-find__axis-track">
+                  <span class="meet-find__axis-block is-busy" style="grid-column: 5 / span 4;" title="09:00 – 11:00 周会">周会</span>
+                  <span class="meet-find__axis-block is-busy" style="grid-column: 17 / span 2;" title="16:00 – 17:00 季度评审">季度评审</span>
+                </div>
+              </div>
+
+              <div class="meet-find__axis-row">
+                <div class="meet-find__axis-room">
+                  <span class="meet-find__axis-room-name">望京 3F-B 小会议室</span>
+                  <span class="meet-find__axis-room-loc">8 人 · 望京 3F</span>
+                </div>
+                <div class="meet-find__axis-track">
+                  <span class="meet-find__axis-block is-busy" style="grid-column: 13 / span 2;" title="14:00 – 15:00 产品评审">产品评审</span>
+                </div>
+              </div>
+
+              <div class="meet-find__axis-row">
+                <div class="meet-find__axis-room">
+                  <span class="meet-find__axis-room-name">知春路 5F 培训厅</span>
+                  <span class="meet-find__axis-room-loc">30 人 · 知春路 5F</span>
+                </div>
+                <div class="meet-find__axis-track">
+                  <span class="meet-find__axis-block is-busy" style="grid-column: 1 / span 6;" title="08:00 – 11:00 新员工培训">新员工培训</span>
+                </div>
+              </div>
+
+              <div class="meet-find__axis-row">
+                <div class="meet-find__axis-room">
+                  <span class="meet-find__axis-room-name">望京 12F 路演厅</span>
+                  <span class="meet-find__axis-room-loc">60 人 · 望京 12F</span>
+                </div>
+                <div class="meet-find__axis-track">
+                  <span class="meet-find__axis-block is-busy" style="grid-column: 9 / span 4;" title="12:00 – 14:00 客户路演">客户路演</span>
+                </div>
+              </div>
+
+              <div class="meet-find__axis-row">
+                <div class="meet-find__axis-room">
+                  <span class="meet-find__axis-room-name">望京 5F-A 小会议室</span>
+                  <span class="meet-find__axis-room-loc">6 人 · 望京 5F</span>
+                </div>
+                <div class="meet-find__axis-track">
+                  <span class="meet-find__axis-block is-busy" style="grid-column: 3 / span 2;" title="09:00 – 10:00 一对一">一对一</span>
+                  <span class="meet-find__axis-block is-busy" style="grid-column: 15 / span 1;" title="15:00 – 15:30 同步">同步</span>
+                </div>
+              </div>
+
+              <div class="meet-find__axis-row">
+                <div class="meet-find__axis-room">
+                  <span class="meet-find__axis-room-name">望京 5F-B 中会议室</span>
+                  <span class="meet-find__axis-room-loc">10 人 · 望京 5F</span>
+                </div>
+                <div class="meet-find__axis-track">
+                  <span class="meet-find__axis-block is-busy" style="grid-column: 7 / span 4;" title="10:00 – 12:00 设计评审">设计评审</span>
+                  <span class="meet-find__axis-block is-busy" style="grid-column: 13 / span 2;" title="14:00 – 15:00 跨部门">跨部门</span>
+                </div>
+              </div>
+
+              <div class="meet-find__axis-row">
+                <div class="meet-find__axis-room">
+                  <span class="meet-find__axis-room-name">知春路 3F 头脑风暴室</span>
+                  <span class="meet-find__axis-room-loc">8 人 · 知春路 3F</span>
+                </div>
+                <div class="meet-find__axis-track">
+                  <span class="meet-find__axis-block is-busy" style="grid-column: 11 / span 4;" title="13:00 – 15:00 idea-jam">idea-jam</span>
+                </div>
+              </div>
+
+              <div class="meet-find__axis-row">
+                <div class="meet-find__axis-room">
+                  <span class="meet-find__axis-room-name">知春路 5F-C 客户会谈室</span>
+                  <span class="meet-find__axis-room-loc">6 人 · 知春路 5F</span>
+                </div>
+                <div class="meet-find__axis-track">
+                  <span class="meet-find__axis-block is-busy" style="grid-column: 19 / span 2;" title="17:00 – 18:00 客户会谈">客户会谈</span>
+                </div>
+              </div>
+
+              <div class="meet-find__axis-row">
+                <div class="meet-find__axis-room">
+                  <span class="meet-find__axis-room-name">望京 8F 董事会议室</span>
+                  <span class="meet-find__axis-room-loc">16 人 · 望京 8F</span>
+                </div>
+                <div class="meet-find__axis-track">
+                  <!-- 全天空闲 -->
+                </div>
+              </div>
+
+              <div class="meet-find__axis-row">
+                <div class="meet-find__axis-room">
+                  <span class="meet-find__axis-room-name">望京 3F-C 一对一面谈间</span>
+                  <span class="meet-find__axis-room-loc">2 人 · 望京 3F</span>
+                </div>
+                <div class="meet-find__axis-track">
+                  <span class="meet-find__axis-block is-busy" style="grid-column: 5 / span 1;" title="09:00 – 09:30 1:1">1:1</span>
+                  <span class="meet-find__axis-block is-busy" style="grid-column: 9 / span 1;" title="11:00 – 11:30 1:1">1:1</span>
+                  <span class="meet-find__axis-block is-busy" style="grid-column: 13 / span 1;" title="14:00 – 14:30 1:1">1:1</span>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="meet-find__axis-legend">
+              <span><span class="meet-find__axis-legend-swatch is-free"></span>空闲（可拖选预订）</span>
+              <span><span class="meet-find__axis-legend-swatch is-busy"></span>已占用</span>
+            </div>
+          </div>
+
+          <!-- 空态（默认 hidden；筛选无结果时由交互层 toggle） -->
+          <div class="meet-find__empty" hidden>
+            <i class="cses-stratis-search-01 meet-find__empty-icon"></i>
+            <div class="meet-find__empty-title">没找到匹配的会议室</div>
+            <div class="meet-find__empty-desc">试着放宽容量 / 时段 / 设备条件</div>
+            <button class="meet-find__btn-secondary" type="button">清空筛选</button>
+          </div>
+
+        </div>
+
+      </main>
+    </div>
+  </div>
+</cs-layout>
+
+
+<!-- ════════════════════════════════════════════════════════════════
+     创建 / 编辑预约 — 右侧抽屉（inline overlay）
+     · sidebar [+ 新建预约] 与列表行 [预订] 共用触发
+     · 严格按 PROTO-3.5：主题 / 参会人 / 时间 / 会议室 / toggle 重复 / toggle 线上 / 折叠 F2 / 冲突提示
+==================================================================== -->
+<div class="booking-drawer" id="booking-drawer" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="booking-drawer-title">
+  <div class="booking-drawer__scrim" data-close="booking-drawer"></div>
+
+  <aside class="booking-drawer__panel">
+
+    <!-- header -->
+    <header class="booking-drawer__header">
+      <div class="booking-drawer__title-block">
+        <h2 class="booking-drawer__title" id="booking-drawer-title">新建预约</h2>
+        <p class="booking-drawer__subtitle">填写下方字段，提交后会出现在「我的预约」</p>
+      </div>
+      <button class="booking-drawer__close" type="button" data-close="booking-drawer" aria-label="关闭">
+        <i class="cses-stratis-x-01"></i>
+      </button>
+    </header>
+
+    <!-- body · 表单 -->
+    <div class="booking-drawer__body">
+
+      <!-- F1 主题 -->
+      <label class="booking-drawer__field">
+        <span class="booking-drawer__field-label">主题 <em>*</em></span>
+        <input type="text" class="booking-drawer__input" placeholder="如：Q3 产品评审会" value="Q3 产品评审会">
+      </label>
+
+      <!-- F1 参会人选择器 -->
+      <label class="booking-drawer__field">
+        <span class="booking-drawer__field-label">参会人 <em>*</em></span>
+        <div class="booking-drawer__people">
+          <span class="booking-drawer__people-pill">
+            <span class="booking-drawer__people-avatar" style="background:#165dff;">张</span>
+            张子安
+            <i class="cses-stratis-x-01"></i>
+          </span>
+          <span class="booking-drawer__people-pill">
+            <span class="booking-drawer__people-avatar" style="background:#00b42a;">李</span>
+            李慕白
+            <i class="cses-stratis-x-01"></i>
+          </span>
+          <span class="booking-drawer__people-pill">
+            <span class="booking-drawer__people-avatar" style="background:#f7ba1e;">王</span>
+            王小满
+            <i class="cses-stratis-x-01"></i>
+          </span>
+          <button class="booking-drawer__people-add" type="button">
+            <i class="cses-stratis-plus-01"></i>
+            添加
+          </button>
+        </div>
+      </label>
+
+      <!-- F1 时间（开始 – 结束） -->
+      <div class="booking-drawer__row">
+        <label class="booking-drawer__field">
+          <span class="booking-drawer__field-label">开始时间 <em>*</em></span>
+          <input type="text" class="booking-drawer__input" value="2026-06-26 14:00">
+        </label>
+        <label class="booking-drawer__field">
+          <span class="booking-drawer__field-label">结束时间 <em>*</em></span>
+          <input type="text" class="booking-drawer__input" value="2026-06-26 15:00">
+        </label>
+      </div>
+
+      <!-- F1 会议室 -->
+      <label class="booking-drawer__field">
+        <span class="booking-drawer__field-label">会议室 <em>*</em></span>
+        <div class="booking-drawer__room-picked">
+          <i class="cses-stratis-marker-01"></i>
+          <div class="booking-drawer__room-info">
+            <span class="booking-drawer__room-name">望京 3F-A 大会议室</span>
+            <span class="booking-drawer__room-meta">12 人 · 北京 · 望京 · 3F</span>
+          </div>
+          <button class="booking-drawer__room-change" type="button">更换</button>
+        </div>
+      </label>
+
+      <div class="booking-drawer__divider"></div>
+
+      <!-- toggle 重复 -->
+      <div class="booking-drawer__toggle-row">
+        <div class="booking-drawer__toggle-label">
+          <i class="cses-stratis-arrow-refresh-01"></i>
+          <div>
+            <div class="booking-drawer__toggle-name">重复</div>
+            <div class="booking-drawer__toggle-desc">每周/每月按规则重复预订</div>
+          </div>
+        </div>
+        <label class="booking-drawer__switch">
+          <input type="checkbox" id="toggle-recur">
+          <span class="booking-drawer__switch-track"></span>
+        </label>
+      </div>
+
+      <!-- toggle 线上会议 -->
+      <div class="booking-drawer__toggle-row">
+        <div class="booking-drawer__toggle-label">
+          <i class="cses-stratis-video-on"></i>
+          <div>
+            <div class="booking-drawer__toggle-name">开启线上会议</div>
+            <div class="booking-drawer__toggle-desc">同时生成视频会议入会链接</div>
+          </div>
+        </div>
+        <label class="booking-drawer__switch">
+          <input type="checkbox" id="toggle-online" checked>
+          <span class="booking-drawer__switch-track"></span>
+        </label>
+      </div>
+
+      <div class="booking-drawer__divider"></div>
+
+      <!-- F2 描述 / 附件（折叠） -->
+      <details class="booking-drawer__details">
+        <summary>
+          <i class="cses-stratis-chevron-right"></i>
+          描述 / 附件（选填）
+        </summary>
+        <label class="booking-drawer__field">
+          <span class="booking-drawer__field-label">描述</span>
+          <textarea class="booking-drawer__input" rows="3" placeholder="议程、目标、需要参会人准备的材料……"></textarea>
+        </label>
+        <label class="booking-drawer__field">
+          <span class="booking-drawer__field-label">附件</span>
+          <button type="button" class="booking-drawer__attach">
+            <i class="cses-stratis-file-attach-01"></i>
+            选择文件
+          </button>
+        </label>
+      </details>
+
+      <!-- ⚠ 冲突提示区 -->
+      <div class="booking-drawer__conflict">
+        <i class="cses-stratis-alert-triangle"></i>
+        <div>
+          <div class="booking-drawer__conflict-title">参会人「王小满」在该时段已有「客户拜访」</div>
+          <div class="booking-drawer__conflict-desc">仍可继续预订，提交后会通知该参会人冲突</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- footer -->
+    <footer class="booking-drawer__footer">
+      <button class="booking-drawer__btn-secondary" type="button" data-close="booking-drawer">取消</button>
+      <button class="booking-drawer__btn-primary" type="button">提交预约</button>
+    </footer>
+
+  </aside>
+</div>
+
+<script>
+  // ─── 抽屉 toggle ───────────────────────────────────────────
+  (function () {
+    const drawer = document.getElementById('booking-drawer');
+    if (!drawer) return;
+
+    function open() {
+      drawer.hidden = false;
+      drawer.setAttribute('aria-hidden', 'false');
+      // 双 RAF 触发 transition
+      requestAnimationFrame(() => requestAnimationFrame(() => drawer.classList.add('is-open')));
+      document.body.style.overflow = 'hidden';
+    }
+    function close() {
+      drawer.classList.remove('is-open');
+      drawer.setAttribute('aria-hidden', 'true');
+      setTimeout(() => { drawer.hidden = true; }, 240);
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('click', (e) => {
+      const opener = e.target.closest('[data-open="booking-drawer"]');
+      if (opener) { e.preventDefault(); open(); return; }
+      const closer = e.target.closest('[data-close="booking-drawer"]');
+      if (closer) { e.preventDefault(); close(); return; }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !drawer.hidden) close();
+    });
+  })();
+
+  // ─── view 切换（列表 ↔ 时间轴） ─────────────────────────────
+  (function () {
+    const btns = document.querySelectorAll('.meet-find__view-btn');
+    const panels = document.querySelectorAll('[data-view-panel]');
+    btns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const view = btn.dataset.view;
+        btns.forEach(b => b.classList.toggle('is-active', b === btn));
+        panels.forEach(p => p.hidden = p.dataset.viewPanel !== view);
+      });
+    });
+  })();
+
+  // ─── 设备 chip toggle（纯前端示意） ────────────────────────
+  (function () {
+    document.querySelectorAll('.meet-find__chip').forEach(c => {
+      c.addEventListener('click', () => c.classList.toggle('is-active'));
+    });
+  })();
+</script>
+
+</body>
+</html>

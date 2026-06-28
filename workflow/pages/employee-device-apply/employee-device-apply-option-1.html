@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>员工设备申请 · 套餐速选</title>
+
+  <!-- 基础 -->
+  <link rel="stylesheet" href="../../design/css/base.css">
+  <link rel="stylesheet" href="../../design/css/token.css">
+  <link rel="stylesheet" href="../../design/css/variable.css">
+  <link rel="stylesheet" href="../../design/fonts/cses-icons.css?v=101">
+
+  <!-- 布局 fragment -->
+  <link rel="stylesheet" href="../../design/fragment/fragment.css">
+  <link rel="stylesheet" href="../../design/css/page-shell.css">
+
+  <!-- 组件（按使用挑选） -->
+  <link rel="stylesheet" href="../../design/components/avatar/avatar.css">
+  <link rel="stylesheet" href="../../design/components/badge/badge.css">
+  <link rel="stylesheet" href="../../design/components/button/button.css">
+  <link rel="stylesheet" href="../../design/components/form-group/form-group.css">
+  <link rel="stylesheet" href="../../design/components/input/input.css">
+  <link rel="stylesheet" href="../../design/components/search-input/search-input.css">
+  <link rel="stylesheet" href="../../design/components/search-trigger/search-trigger.css">
+  <link rel="stylesheet" href="../../design/components/select/select.css">
+  <link rel="stylesheet" href="../../design/components/status-badge/status-badge.css">
+  <link rel="stylesheet" href="../../design/components/tag/tag.css">
+  <link rel="stylesheet" href="../../design/components/textarea/textarea.css">
+  <link rel="stylesheet" href="../../design/components/nav-item/nav-item.css">
+
+  <!-- 页面私有 -->
+  <link rel="stylesheet" href="employee-device-apply-option-1.css">
+</head>
+<body>
+
+<cs-layout>
+
+  <!-- ========== 标签栏 ========== -->
+  <div class="tabbar">
+    <div class="tabbar-left">
+      <span class="win-ctrl">
+        <span class="ctrl-dot" data-c="close"></span>
+        <span class="ctrl-dot" data-c="min"></span>
+        <span class="ctrl-dot" data-c="max"></span>
+      </span>
+      <cs-search-input class="ah-top-search" data-variant="gray" data-size="sm">
+        <i class="search-icon cses-stratis-search-01"></i>
+        <input class="search-field" type="text" placeholder="搜索">
+      </cs-search-input>
+      <div class="page-tab" data-active>
+        <span class="tab-label">员工设备申请</span>
+        <i class="tab-close cses-stratis-x-01"></i>
+      </div>
+    </div>
+    <div class="tabbar-right">
+      <span class="notice-wrap">
+        <i class="cses-stratis-bell-01 notice-icon"></i>
+        <span class="notice-badge">3</span>
+      </span>
+      <cs-avatar data-size="xs" data-shape="circle" data-color="blue">林</cs-avatar>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- ========== 一级导航 sidebar ========== -->
+    <cs-sidebar>
+      <span class="logo">
+        <img src="../../design/assets/logo.png" alt="CSES">
+      </span>
+      <nav class="nav">
+        <div class="nav-group">
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-home-01"></i></span>
+            <span class="nav-label">工作台</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-message-circle"></i></span>
+            <span class="nav-label">消息</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-check-square-broken"></i></span>
+            <span class="nav-label">任务</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-book-01"></i></span>
+            <span class="nav-label">文档</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-file-check-01"></i></span>
+            <span class="nav-label">审批</span>
+          </a>
+          <a class="nav-item" data-active>
+            <span class="nav-icon"><i class="cses-stratis-laptop-01"></i></span>
+            <span class="nav-label">设备</span>
+          </a>
+        </div>
+      </nav>
+    </cs-sidebar>
+
+    <!-- ========== content-wrapper ========== -->
+    <div class="content-wrapper">
+
+      <!-- ========== 二级导航 navbar ========== -->
+      <cs-navbar>
+        <div class="inner">
+
+          <!-- ① 标题区 -->
+          <div class="slot-header" style="display:flex;flex-direction:column;gap:var(--space-3xs);">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font:var(--typo-cn-16-medium);font-weight:var(--font-weight-semibold);color:var(--cs-color-text);">设备申请</span>
+              <i class="cses-stratis-chevron-left" style="font-size:14px;color:var(--cs-color-text-light2);cursor:pointer;"></i>
+            </div>
+            <span style="font:var(--typo-cn-12-regular);color:var(--cs-color-text-light2);">入职装备 · 一站领齐</span>
+          </div>
+
+          <!-- ② 按钮区（主 CTA：唯一） -->
+          <div class="slot-action">
+            <cs-button data-variant="primary" style="width:100%;" id="navOpenDrawer">
+              <i class="btn-icon cses-stratis-plus-01"></i>
+              <span class="btn-label">新建申请</span>
+            </cs-button>
+          </div>
+
+          <!-- ③ 主菜单区 -->
+          <div class="slot-nav" style="display:flex;flex-direction:column;gap:var(--space-2xs);padding-top:var(--space-xs);border-top:1px solid #EBEDEF;flex:none;">
+            <a class="nav-item" data-active>
+              <span class="nav-icon"><i class="cses-stratis-gift-01"></i></span>
+              <span class="nav-label">套餐选择</span>
+            </a>
+            <a class="nav-item">
+              <span class="nav-icon"><i class="cses-stratis-inbox-01"></i></span>
+              <span class="nav-label">我的申请</span>
+              <span class="eda-nav-badge">2</span>
+            </a>
+            <a class="nav-item">
+              <span class="nav-icon"><i class="cses-stratis-book-01"></i></span>
+              <span class="nav-label">设备目录</span>
+            </a>
+            <a class="nav-item">
+              <span class="nav-icon"><i class="cses-stratis-file-edit-01"></i></span>
+              <span class="nav-label">草稿箱</span>
+              <span class="eda-nav-badge eda-nav-badge--muted">1</span>
+            </a>
+          </div>
+
+          <!-- ④ 副菜单区（占位填充，符合 navbar 6 槽规范） -->
+          <div class="slot-sub" style="border-top:1px solid #EBEDEF;padding:var(--space-sm) 0;">
+            <div class="eda-tips">
+              <div class="eda-tips__title">
+                <i class="cses-stratis-info-square-02-contained-filled"></i>
+                <span>新员工提示</span>
+              </div>
+              <p class="eda-tips__text">
+                入职 3 天内提交申请，IT 会在到岗当天为你备好装备。如套餐与岗位不符，可在抽屉内自定义补充设备。
+              </p>
+            </div>
+          </div>
+
+          <!-- ⑤ 管理后台 -->
+          <div class="slot-admin" style="display:flex;align-items:center;gap:var(--space-2xs);padding:var(--space-xs);cursor:pointer;">
+            <i class="cses-stratis-settings" style="font-size:14px;color:var(--cs-color-text);"></i>
+            <span style="font:var(--typo-cn-14-regular);color:var(--cs-color-text);">IT 资产后台</span>
+          </div>
+
+          <!-- ⑥ 联系入口 -->
+          <div class="slot-bottom" style="display:flex;align-items:center;gap:var(--space-2xs);padding:var(--space-xs);border-top:1px solid #EBEDEF;">
+            <i class="cses-stratis-message-chat-01" style="font-size:14px;color:var(--cs-color-text-light2);"></i>
+            <span style="font:var(--typo-cn-12-regular);color:var(--cs-color-text-light2);">联系 IT 支持 · 在线</span>
+          </div>
+
+        </div>
+      </cs-navbar>
+
+      <!-- ========== 主内容区 ========== -->
+      <main class="main-content">
+
+        <!-- 内容区头部：只放标题 + 副标题 + 搜索（禁止主 CTA） -->
+        <cs-content-header>
+          <div class="slot-left">
+            <span class="page-title">套餐选择</span>
+            <span class="page-subtitle">挑一张匹配岗位的入职装备包，60 秒提交申请</span>
+          </div>
+          <div class="slot-right">
+            <cs-search-trigger>
+              <span class="trigger-text">搜索套餐 / 申请单</span>
+              <i class="trigger-icon cses-stratis-search-01"></i>
+            </cs-search-trigger>
+          </div>
+        </cs-content-header>
+
+        <!-- 筛选区：状态 tab（按 REQ：全部/草稿/待审批/已批准/发货中/已领取/已驳回） -->
+        <cs-filter-bar data-variant="tabs">
+          <div class="filter-left">
+            <button type="button" class="filter-tab" data-active>全部套餐</button>
+            <button type="button" class="filter-tab">草稿 <span class="eda-tab-count">1</span></button>
+            <button type="button" class="filter-tab">待审批 <span class="eda-tab-count">1</span></button>
+            <button type="button" class="filter-tab">已批准</button>
+            <button type="button" class="filter-tab">发货中 <span class="eda-tab-count">1</span></button>
+            <button type="button" class="filter-tab">已领取</button>
+            <button type="button" class="filter-tab">已驳回</button>
+          </div>
+          <div class="filter-right">
+            <span class="filter-tool">
+              <i class="cses-stratis-filter"></i>
+              <span>岗位筛选</span>
+            </span>
+          </div>
+        </cs-filter-bar>
+
+        <!-- 滚动内容区 -->
+        <div class="eda-scroll">
+
+          <!-- ============ 套餐卡片墙 ============ -->
+          <section class="eda-section">
+            <header class="eda-section__head">
+              <h2 class="eda-section__title">推荐套餐</h2>
+              <span class="eda-section__sub">按岗位匹配 · 共 4 张</span>
+            </header>
+
+            <div class="eda-package-grid">
+
+              <!-- 卡片 1：研发 -->
+              <article class="eda-pkg" data-eda-action="open-create" data-eda-pkg="dev-pro">
+                <div class="eda-pkg__head">
+                  <div class="eda-pkg__icon eda-pkg__icon--blue">
+                    <i class="cses-stratis-laptop-01"></i>
+                  </div>
+                  <div class="eda-pkg__heading">
+                    <h3 class="eda-pkg__title">研发工程师套餐</h3>
+                    <p class="eda-pkg__suit">适配岗位：前端 / 后端 / 算法</p>
+                  </div>
+                  <cs-tag data-color="success" data-size="sm" class="eda-pkg__stock">现货可领</cs-tag>
+                </div>
+
+                <ul class="eda-pkg__items">
+                  <li><i class="cses-stratis-laptop-01"></i><span>MacBook Pro 14" M3 · 32G</span></li>
+                  <li><i class="cses-stratis-tv"></i><span>外接显示器 27" 4K</span></li>
+                  <li><i class="cses-stratis-mouse"></i><span>无线鼠键套装</span></li>
+                  <li><i class="cses-stratis-package-01"></i><span>降噪耳机 · 摄像头</span></li>
+                </ul>
+
+                <footer class="eda-pkg__foot">
+                  <div class="eda-pkg__price">
+                    <span class="eda-pkg__price-num">¥ 24,800</span>
+                    <span class="eda-pkg__eta">预计 2026-07-02 到货</span>
+                  </div>
+                  <cs-button data-variant="secondary" data-size="sm" class="eda-pkg__cta" data-eda-action="open-create" data-eda-pkg="dev-pro">
+                    <i class="btn-icon cses-stratis-package-check"></i>
+                    <span class="btn-label">一键领取</span>
+                  </cs-button>
+                </footer>
+              </article>
+
+              <!-- 卡片 2：设计 -->
+              <article class="eda-pkg" data-eda-action="open-create" data-eda-pkg="design-pro">
+                <div class="eda-pkg__head">
+                  <div class="eda-pkg__icon eda-pkg__icon--purple">
+                    <i class="cses-stratis-edit-01"></i>
+                  </div>
+                  <div class="eda-pkg__heading">
+                    <h3 class="eda-pkg__title">设计师套餐</h3>
+                    <p class="eda-pkg__suit">适配岗位：UI / 视觉 / 交互</p>
+                  </div>
+                  <cs-tag data-color="success" data-size="sm" class="eda-pkg__stock">现货可领</cs-tag>
+                </div>
+
+                <ul class="eda-pkg__items">
+                  <li><i class="cses-stratis-laptop-01"></i><span>MacBook Pro 16" M3 Max · 36G</span></li>
+                  <li><i class="cses-stratis-tv"></i><span>校色显示器 27" 4K</span></li>
+                  <li><i class="cses-stratis-edit-01"></i><span>数位板 · 触控笔</span></li>
+                  <li><i class="cses-stratis-mouse"></i><span>静音鼠键套装</span></li>
+                </ul>
+
+                <footer class="eda-pkg__foot">
+                  <div class="eda-pkg__price">
+                    <span class="eda-pkg__price-num">¥ 28,600</span>
+                    <span class="eda-pkg__eta">预计 2026-07-02 到货</span>
+                  </div>
+                  <cs-button data-variant="secondary" data-size="sm" class="eda-pkg__cta" data-eda-action="open-create" data-eda-pkg="design-pro">
+                    <i class="btn-icon cses-stratis-package-check"></i>
+                    <span class="btn-label">一键领取</span>
+                  </cs-button>
+                </footer>
+              </article>
+
+              <!-- 卡片 3：产品/运营 -->
+              <article class="eda-pkg" data-eda-action="open-create" data-eda-pkg="pm-std">
+                <div class="eda-pkg__head">
+                  <div class="eda-pkg__icon eda-pkg__icon--green">
+                    <i class="cses-stratis-file-edit-01"></i>
+                  </div>
+                  <div class="eda-pkg__heading">
+                    <h3 class="eda-pkg__title">产品 / 运营套餐</h3>
+                    <p class="eda-pkg__suit">适配岗位：产品 / 运营 / 项目</p>
+                  </div>
+                  <cs-tag data-color="warning" data-size="sm" class="eda-pkg__stock">部分缺货</cs-tag>
+                </div>
+
+                <ul class="eda-pkg__items">
+                  <li><i class="cses-stratis-laptop-01"></i><span>MacBook Air 15" M3 · 16G</span></li>
+                  <li><i class="cses-stratis-tv"></i><span>外接显示器 27" 2K</span></li>
+                  <li><i class="cses-stratis-mouse"></i><span>无线鼠键套装</span></li>
+                  <li><i class="cses-stratis-package-01"></i><span>会议耳机</span></li>
+                </ul>
+
+                <footer class="eda-pkg__foot">
+                  <div class="eda-pkg__price">
+                    <span class="eda-pkg__price-num">¥ 18,500</span>
+                    <span class="eda-pkg__eta">预计 2026-07-05 到货</span>
+                  </div>
+                  <cs-button data-variant="secondary" data-size="sm" class="eda-pkg__cta" data-eda-action="open-create" data-eda-pkg="pm-std">
+                    <i class="btn-icon cses-stratis-package-check"></i>
+                    <span class="btn-label">一键领取</span>
+                  </cs-button>
+                </footer>
+              </article>
+
+              <!-- 卡片 4：销售/职能 -->
+              <article class="eda-pkg" data-eda-action="open-create" data-eda-pkg="sales-lite">
+                <div class="eda-pkg__head">
+                  <div class="eda-pkg__icon eda-pkg__icon--orange">
+                    <i class="cses-stratis-message-chat-01"></i>
+                  </div>
+                  <div class="eda-pkg__heading">
+                    <h3 class="eda-pkg__title">销售 / 职能套餐</h3>
+                    <p class="eda-pkg__suit">适配岗位：销售 / HR / 行政</p>
+                  </div>
+                  <cs-tag data-color="success" data-size="sm" class="eda-pkg__stock">现货可领</cs-tag>
+                </div>
+
+                <ul class="eda-pkg__items">
+                  <li><i class="cses-stratis-laptop-01"></i><span>ThinkPad X1 Carbon · 16G</span></li>
+                  <li><i class="cses-stratis-tv"></i><span>外接显示器 24" 2K</span></li>
+                  <li><i class="cses-stratis-mouse"></i><span>有线鼠键套装</span></li>
+                  <li><i class="cses-stratis-package-01"></i><span>会议耳机 · 名片夹</span></li>
+                </ul>
+
+                <footer class="eda-pkg__foot">
+                  <div class="eda-pkg__price">
+                    <span class="eda-pkg__price-num">¥ 12,800</span>
+                    <span class="eda-pkg__eta">预计 2026-07-03 到货</span>
+                  </div>
+                  <cs-button data-variant="secondary" data-size="sm" class="eda-pkg__cta" data-eda-action="open-create" data-eda-pkg="sales-lite">
+                    <i class="btn-icon cses-stratis-package-check"></i>
+                    <span class="btn-label">一键领取</span>
+                  </cs-button>
+                </footer>
+              </article>
+
+            </div>
+          </section>
+
+          <!-- ============ 折叠"我的申请" ============ -->
+          <section class="eda-section eda-my">
+            <button type="button" class="eda-my__head" data-eda-action="toggle-my" aria-expanded="true">
+              <span class="eda-my__caret"><i class="cses-stratis-chevron-down"></i></span>
+              <span class="eda-my__title">我的申请</span>
+              <span class="eda-my__count">共 3 条 · 默认按创建时间倒序</span>
+            </button>
+
+            <div class="eda-my__body">
+              <!-- 申请项：发货中 -->
+              <article class="eda-apply" data-eda-action="open-detail" data-eda-id="APL-20260622-018">
+                <div class="eda-apply__main">
+                  <div class="eda-apply__title">
+                    <span class="eda-apply__name">研发工程师套餐</span>
+                    <cs-status-badge data-status="in-progress">发货中</cs-status-badge>
+                  </div>
+                  <p class="eda-apply__items">MacBook Pro 14" · 显示器 27" · 鼠键套装 · 降噪耳机</p>
+                  <div class="eda-apply__progress">
+                    <span class="eda-apply__step eda-apply__step--done">提交</span>
+                    <i class="eda-apply__dot eda-apply__dot--done"></i>
+                    <span class="eda-apply__step eda-apply__step--done">部门长</span>
+                    <i class="eda-apply__dot eda-apply__dot--done"></i>
+                    <span class="eda-apply__step eda-apply__step--done">IT 审批</span>
+                    <i class="eda-apply__dot eda-apply__dot--active"></i>
+                    <span class="eda-apply__step eda-apply__step--active">备货发货</span>
+                    <i class="eda-apply__dot"></i>
+                    <span class="eda-apply__step">已领取</span>
+                  </div>
+                </div>
+                <div class="eda-apply__side">
+                  <span class="eda-apply__price">¥ 24,800</span>
+                  <span class="eda-apply__eta">预计 06-30 送达</span>
+                  <span class="eda-apply__act" data-eda-action="track" data-eda-id="APL-20260622-018">
+                    <i class="cses-stratis-truck"></i>
+                    <span>跟踪物流</span>
+                  </span>
+                </div>
+              </article>
+
+              <!-- 申请项：待审批 -->
+              <article class="eda-apply" data-eda-action="open-detail" data-eda-id="APL-20260625-022">
+                <div class="eda-apply__main">
+                  <div class="eda-apply__title">
+                    <span class="eda-apply__name">设计师套餐</span>
+                    <cs-status-badge data-status="pending">待审批</cs-status-badge>
+                  </div>
+                  <p class="eda-apply__items">MacBook Pro 16" · 校色显示器 · 数位板 · 静音鼠键</p>
+                  <div class="eda-apply__progress">
+                    <span class="eda-apply__step eda-apply__step--done">提交</span>
+                    <i class="eda-apply__dot eda-apply__dot--done"></i>
+                    <span class="eda-apply__step eda-apply__step--active">部门长</span>
+                    <i class="eda-apply__dot"></i>
+                    <span class="eda-apply__step">IT 审批</span>
+                    <i class="eda-apply__dot"></i>
+                    <span class="eda-apply__step">备货发货</span>
+                    <i class="eda-apply__dot"></i>
+                    <span class="eda-apply__step">已领取</span>
+                  </div>
+                </div>
+                <div class="eda-apply__side">
+                  <span class="eda-apply__price">¥ 28,600</span>
+                  <span class="eda-apply__eta">期望 07-02 到货</span>
+                  <span class="eda-apply__act eda-apply__act--danger" data-eda-action="withdraw" data-eda-id="APL-20260625-022">
+                    <i class="cses-stratis-package-x"></i>
+                    <span>撤回申请</span>
+                  </span>
+                </div>
+              </article>
+
+              <!-- 申请项：草稿 -->
+              <article class="eda-apply" data-eda-action="open-detail" data-eda-id="APL-DRAFT-002">
+                <div class="eda-apply__main">
+                  <div class="eda-apply__title">
+                    <span class="eda-apply__name">产品 / 运营套餐</span>
+                    <cs-status-badge data-status="not-started">草稿</cs-status-badge>
+                  </div>
+                  <p class="eda-apply__items">MacBook Air 15" · 显示器 27" 2K · 无线鼠键 · 会议耳机</p>
+                  <p class="eda-apply__hint">未填交付地址，无法提交</p>
+                </div>
+                <div class="eda-apply__side">
+                  <span class="eda-apply__price">¥ 18,500</span>
+                  <span class="eda-apply__eta">— 期望日待填 —</span>
+                  <span class="eda-apply__act" data-eda-action="resume-draft" data-eda-id="APL-DRAFT-002">
+                    <i class="cses-stratis-file-edit-01"></i>
+                    <span>继续填写</span>
+                  </span>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <div class="eda-bottom-tip">
+            <i class="cses-stratis-information-circle-contained"></i>
+            <span>如需补领或替换设备，请使用 navbar「+ 新建申请」并备注原申请单号</span>
+          </div>
+        </div>
+
+        <!-- ========== 抽屉：填表（点卡片 / 主 CTA 共用） ========== -->
+        <cs-drawer-overlay id="ovr"></cs-drawer-overlay>
+        <cs-drawer data-width="lg" id="drw" aria-hidden="true">
+
+          <div class="slot-header eda-drw__head">
+            <div class="eda-drw__head-left">
+              <span class="eda-drw__title">新建设备申请</span>
+              <span class="eda-drw__sub">套餐预览 · 填 3 个字段即可提交</span>
+            </div>
+            <button type="button" class="eda-drw__close" data-eda-action="close-drawer" aria-label="关闭">
+              <i class="cses-stratis-x-01"></i>
+            </button>
+          </div>
+
+          <div class="slot-body eda-drw__body">
+
+            <!-- 套餐预览（来自所点卡片） -->
+            <section class="eda-drw__pkg">
+              <header class="eda-drw__pkg-head">
+                <div class="eda-pkg__icon eda-pkg__icon--blue"><i class="cses-stratis-laptop-01"></i></div>
+                <div class="eda-drw__pkg-heading">
+                  <h3 class="eda-drw__pkg-name">研发工程师套餐</h3>
+                  <p class="eda-drw__pkg-suit">适配岗位：前端 / 后端 / 算法 · 现货可领</p>
+                </div>
+                <span class="eda-drw__pkg-price">¥ 24,800</span>
+              </header>
+              <ul class="eda-drw__pkg-items">
+                <li><i class="cses-stratis-laptop-01"></i><span>MacBook Pro 14" M3 · 32G</span></li>
+                <li><i class="cses-stratis-tv"></i><span>外接显示器 27" 4K</span></li>
+                <li><i class="cses-stratis-mouse"></i><span>无线鼠键套装</span></li>
+                <li><i class="cses-stratis-package-01"></i><span>降噪耳机 · 摄像头</span></li>
+              </ul>
+              <button type="button" class="eda-drw__pkg-swap" data-eda-action="swap-pkg">
+                <i class="cses-stratis-edit-01"></i>
+                <span>更换套餐 / 自定义设备</span>
+              </button>
+            </section>
+
+            <!-- 表单：交付地址 / 期望到货日 / 备注 -->
+            <section class="eda-drw__form">
+
+              <cs-form-group data-required>
+                <label class="form-label">交付地址</label>
+                <div class="form-field">
+                  <cs-select>
+                    <span class="select-text">深圳总部 · 科兴科学园 B2 · 23F · 工位 23-A12</span>
+                    <i class="select-arrow cses-stratis-chevron-down"></i>
+                  </cs-select>
+                </div>
+                <span class="form-helper">默认选用 HR 登记的工位地址，可改为家庭地址</span>
+              </cs-form-group>
+
+              <cs-form-group data-required>
+                <label class="form-label">期望到货日</label>
+                <div class="form-field">
+                  <cs-input>
+                    <input class="input-field" type="text" value="2026-07-02" placeholder="选择日期">
+                    <i class="input-suffix cses-stratis-calendar-01"></i>
+                  </cs-input>
+                </div>
+                <span class="form-helper">现货套餐通常 1-2 个工作日内送达</span>
+              </cs-form-group>
+
+              <cs-form-group>
+                <label class="form-label">备注</label>
+                <div class="form-field">
+                  <cs-textarea>
+                    <textarea class="textarea-field" rows="3" placeholder="如有特殊需求（左手鼠标 / 双显示器 / 加内存）请说明，IT 会与你确认"></textarea>
+                  </cs-textarea>
+                </div>
+              </cs-form-group>
+
+              <!-- 折叠：附加字段 -->
+              <details class="eda-drw__more">
+                <summary>
+                  <i class="cses-stratis-chevron-down"></i>
+                  <span>更多字段（联系电话 / 工号 / 部门长）</span>
+                </summary>
+                <div class="eda-drw__more-body">
+                  <cs-form-group data-direction="horizontal">
+                    <label class="form-label">联系电话</label>
+                    <div class="form-field">
+                      <cs-input><input class="input-field" type="text" value="138 0000 1234"></cs-input>
+                    </div>
+                  </cs-form-group>
+                  <cs-form-group data-direction="horizontal">
+                    <label class="form-label">工号</label>
+                    <div class="form-field">
+                      <cs-input><input class="input-field" type="text" value="CS-20260615-088"></cs-input>
+                    </div>
+                  </cs-form-group>
+                  <cs-form-group data-direction="horizontal">
+                    <label class="form-label">部门长</label>
+                    <div class="form-field">
+                      <cs-input><input class="input-field" type="text" value="张明 · 自动带出"></cs-input>
+                    </div>
+                  </cs-form-group>
+                </div>
+              </details>
+
+            </section>
+          </div>
+
+          <div class="slot-footer eda-drw__foot">
+            <button type="button" class="eda-drw__btn" data-eda-action="cancel-drawer">取消</button>
+            <button type="button" class="eda-drw__btn" data-eda-action="save-draft">保存草稿</button>
+            <cs-button data-variant="primary" data-eda-action="submit-create">
+              <i class="btn-icon cses-stratis-package-check"></i>
+              <span class="btn-label">提交申请</span>
+            </cs-button>
+          </div>
+
+        </cs-drawer>
+
+      </main>
+    </div>
+
+  </div>
+</cs-layout>
+
+</body>
+</html>

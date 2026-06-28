@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>思维导图 — 选择模板</title>
+
+  <link rel="stylesheet" href="../../design/css/base.css">
+  <link rel="stylesheet" href="../../design/css/token.css">
+  <link rel="stylesheet" href="../../design/css/variable.css">
+  <link rel="stylesheet" href="../../design/fonts/cses-icons.css?v=101">
+
+  <link rel="stylesheet" href="./mindmap.css">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      height: 100vh;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+</head>
+<body>
+
+<div class="mm-app" id="mmApp">
+
+  <!-- 顶部栏：一整条白色 bar -->
+  <header class="mm-topbar">
+
+    <!-- 左：返回 + 思维导图 -->
+    <div class="mm-tb-left">
+      <span class="mm-back" title="返回画板" onclick="window.location.href='./board.html'">
+        <i class="cses-stratis-arrow-left"></i>
+      </span>
+      <span class="mm-tb-sep"></span>
+      <div class="mm-bc-group">
+        <span class="mm-bc-icon">
+          <svg viewBox="0 0 22 22" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="9" width="5" height="4" rx="0.8"></rect>
+            <rect x="16" y="2.5" width="5" height="4" rx="0.8"></rect>
+            <rect x="16" y="9" width="5" height="4" rx="0.8"></rect>
+            <rect x="16" y="15.5" width="5" height="4" rx="0.8"></rect>
+            <path d="M6 11 C 10 11, 12 4.5, 16 4.5"></path>
+            <path d="M6 11 H 16"></path>
+            <path d="M6 11 C 10 11, 12 17.5, 16 17.5"></path>
+          </svg>
+        </span>
+        <span class="mm-bc-title" id="mmTitle">思维导图</span>
+      </div>
+    </div>
+
+    <!-- 中：导图 / 大纲（绝对居中）-->
+    <div class="mm-mode-tabs">
+      <button class="mm-mode-tab" data-active>
+        <i class="cses-stratis-share"></i>
+        <span>导图</span>
+      </button>
+      <button class="mm-mode-tab">
+        <i class="cses-stratis-menu-04"></i>
+        <span>大纲</span>
+      </button>
+    </div>
+
+    <!-- 右：工具 + 分享 -->
+    <div class="mm-tb-right">
+      <div class="mm-tc-tools">
+        <button class="mm-tc-tool"><i class="cses-stratis-search-01"></i><span>搜索</span></button>
+        <button class="mm-tc-tool"><i class="cses-stratis-video-on"></i><span>演说</span></button>
+        <button class="mm-tc-tool"><i class="cses-stratis-arrow-down-contained-01"></i><span>下载</span></button>
+        <button class="mm-tc-tool"><i class="cses-stratis-menu-04"></i><span>更多</span></button>
+      </div>
+      <span class="mm-tc-vline"></span>
+      <button class="mm-share">
+        <i class="cses-stratis-share"></i>
+        <span>分享</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 主体 -->
+  <div class="mm-body">
+
+    <!-- 左侧工具栏（精简版） -->
+    <div class="mm-left">
+      <aside class="mm-sidebar">
+        <span class="mm-ai" title="AI"><i class="cses-stratis-stars"></i></span>
+
+        <button class="mm-sb-item">
+          <span class="mm-sb-item__hot">T</span>
+          <i class="mm-sb-item__icon cses-stratis-file-edit-01"></i>
+          <span class="mm-sb-item__label">文本</span>
+        </button>
+        <button class="mm-sb-item">
+          <span class="mm-sb-item__hot">N</span>
+          <i class="mm-sb-item__icon cses-stratis-file-01"></i>
+          <span class="mm-sb-item__label">便签</span>
+        </button>
+        <button class="mm-sb-item">
+          <span class="mm-sb-item__hot">S</span>
+          <i class="mm-sb-item__icon cses-stratis-grid-01"></i>
+          <span class="mm-sb-item__label">形状</span>
+        </button>
+        <button class="mm-sb-item">
+          <span class="mm-sb-item__hot">A</span>
+          <i class="mm-sb-item__icon cses-stratis-arrow-up-right"></i>
+          <span class="mm-sb-item__label">箭头</span>
+        </button>
+        <button class="mm-sb-item">
+          <span class="mm-sb-item__hot">P</span>
+          <i class="mm-sb-item__icon cses-stratis-edit-01"></i>
+          <span class="mm-sb-item__label">画笔</span>
+        </button>
+        <button class="mm-sb-item">
+          <span class="mm-sb-item__hot">T</span>
+          <i class="mm-sb-item__icon cses-stratis-menu-04"></i>
+          <span class="mm-sb-item__label">表格</span>
+        </button>
+        <button class="mm-sb-item" data-active>
+          <span class="mm-sb-item__hot">T</span>
+          <i class="mm-sb-item__icon cses-stratis-grid-01"></i>
+          <span class="mm-sb-item__label">模板库</span>
+        </button>
+      </aside>
+    </div>
+
+    <!-- 模板面板 -->
+    <aside class="mm-tpl-panel">
+
+      <!-- 无数据 -->
+      <section class="mm-tpl-section">
+        <div class="mm-tpl-section__head">
+          <span class="mm-tpl-section__title">无数据</span>
+          <i class="mm-tpl-section__caret cses-stratis-chevron-down"></i>
+        </div>
+        <div class="mm-tpl-grid">
+          <div class="mm-tpl-card">
+            <svg viewBox="0 0 80 60">
+              <ellipse cx="14" cy="30" rx="9" ry="6" fill="#3b82f6"/>
+              <path d="M23 30 Q40 30 55 16" stroke="#10b981" stroke-width="1.2" fill="none"/>
+              <path d="M23 30 H 55" stroke="#10b981" stroke-width="1.2" fill="none"/>
+              <path d="M23 30 Q40 30 55 44" stroke="#10b981" stroke-width="1.2" fill="none"/>
+              <circle cx="58" cy="16" r="3" fill="#10b981"/>
+              <circle cx="58" cy="30" r="3" fill="#10b981"/>
+              <circle cx="58" cy="44" r="3" fill="#10b981"/>
+            </svg>
+          </div>
+          <div class="mm-tpl-card">
+            <svg viewBox="0 0 80 60">
+              <ellipse cx="14" cy="30" rx="9" ry="6" fill="#3b82f6"/>
+              <rect x="48" y="13" width="20" height="5" rx="1" fill="#9ca3af"/>
+              <rect x="48" y="27" width="20" height="5" rx="1" fill="#9ca3af"/>
+              <rect x="48" y="41" width="20" height="5" rx="1" fill="#9ca3af"/>
+              <path d="M23 30 L 48 15" stroke="#9ca3af" stroke-width="1.2" fill="none"/>
+              <path d="M23 30 H 48" stroke="#9ca3af" stroke-width="1.2" fill="none"/>
+              <path d="M23 30 L 48 44" stroke="#9ca3af" stroke-width="1.2" fill="none"/>
+            </svg>
+          </div>
+          <div class="mm-tpl-card">
+            <svg viewBox="0 0 80 60">
+              <ellipse cx="14" cy="30" rx="9" ry="6" fill="#7c3aed"/>
+              <path d="M23 30 Q40 30 56 14" stroke="#7c3aed" stroke-width="1.2" fill="none"/>
+              <path d="M23 30 Q40 30 56 30" stroke="#06b6d4" stroke-width="1.2" fill="none"/>
+              <path d="M23 30 Q40 30 56 46" stroke="#ec4899" stroke-width="1.2" fill="none"/>
+              <rect x="56" y="11" width="14" height="6" rx="1" fill="#7c3aed"/>
+              <rect x="56" y="27" width="14" height="6" rx="1" fill="#06b6d4"/>
+              <rect x="56" y="43" width="14" height="6" rx="1" fill="#ec4899"/>
+            </svg>
+          </div>
+
+          <div class="mm-tpl-card">
+            <svg viewBox="0 0 80 60">
+              <rect x="6" y="26" width="22" height="8" rx="1.5" fill="#3b82f6"/>
+              <rect x="44" y="11" width="22" height="6" rx="1" fill="#3b82f6"/>
+              <rect x="44" y="27" width="22" height="6" rx="1" fill="#3b82f6"/>
+              <rect x="44" y="43" width="22" height="6" rx="1" fill="#3b82f6"/>
+              <path d="M28 30 L44 14" stroke="#3b82f6" stroke-width="1.2" fill="none"/>
+              <path d="M28 30 H44" stroke="#3b82f6" stroke-width="1.2" fill="none"/>
+              <path d="M28 30 L44 46" stroke="#3b82f6" stroke-width="1.2" fill="none"/>
+            </svg>
+          </div>
+          <div class="mm-tpl-card">
+            <svg viewBox="0 0 80 60">
+              <ellipse cx="14" cy="30" rx="9" ry="6" fill="#7c3aed"/>
+              <path d="M23 30 Q40 30 58 14" stroke="#7c3aed" stroke-width="1.4" fill="none"/>
+              <path d="M23 30 Q40 30 58 30" stroke="#7c3aed" stroke-width="1.4" fill="none"/>
+              <path d="M23 30 Q40 30 58 46" stroke="#7c3aed" stroke-width="1.4" fill="none"/>
+              <ellipse cx="64" cy="14" rx="5" ry="3" fill="none" stroke="#7c3aed" stroke-width="1"/>
+              <ellipse cx="64" cy="30" rx="5" ry="3" fill="none" stroke="#7c3aed" stroke-width="1"/>
+              <ellipse cx="64" cy="46" rx="5" ry="3" fill="none" stroke="#7c3aed" stroke-width="1"/>
+            </svg>
+          </div>
+          <div class="mm-tpl-card">
+            <svg viewBox="0 0 80 60">
+              <ellipse cx="14" cy="30" rx="9" ry="6" fill="#3b82f6"/>
+              <path d="M23 30 Q40 30 58 14" stroke="#06b6d4" stroke-width="1.4" fill="none"/>
+              <path d="M23 30 Q40 30 58 30" stroke="#06b6d4" stroke-width="1.4" fill="none"/>
+              <path d="M23 30 Q40 30 58 46" stroke="#06b6d4" stroke-width="1.4" fill="none"/>
+              <ellipse cx="66" cy="14" rx="5" ry="3" fill="#06b6d4"/>
+              <ellipse cx="66" cy="30" rx="5" ry="3" fill="#06b6d4"/>
+              <ellipse cx="66" cy="46" rx="5" ry="3" fill="#06b6d4"/>
+            </svg>
+          </div>
+
+          <div class="mm-tpl-card">
+            <svg viewBox="0 0 80 60">
+              <path d="M14 30 H30" stroke="#06b6d4" stroke-width="1.2" fill="none"/>
+              <path d="M30 30 Q42 30 55 12" stroke="#06b6d4" stroke-width="1.2" fill="none"/>
+              <path d="M30 30 H 55" stroke="#06b6d4" stroke-width="1.2" fill="none"/>
+              <path d="M30 30 Q42 30 55 48" stroke="#06b6d4" stroke-width="1.2" fill="none"/>
+              <line x1="55" y1="12" x2="68" y2="12" stroke="#06b6d4" stroke-width="1.2"/>
+              <line x1="55" y1="30" x2="68" y2="30" stroke="#06b6d4" stroke-width="1.2"/>
+              <line x1="55" y1="48" x2="68" y2="48" stroke="#06b6d4" stroke-width="1.2"/>
+            </svg>
+          </div>
+          <div class="mm-tpl-card">
+            <svg viewBox="0 0 80 60">
+              <path d="M14 30 H30" stroke="#3b82f6" stroke-width="1.4" fill="none"/>
+              <path d="M30 30 Q42 30 55 12" stroke="#3b82f6" stroke-width="1.4" fill="none"/>
+              <path d="M30 30 H 55" stroke="#3b82f6" stroke-width="1.4" fill="none"/>
+              <path d="M30 30 Q42 30 55 48" stroke="#3b82f6" stroke-width="1.4" fill="none"/>
+              <line x1="55" y1="12" x2="68" y2="12" stroke="#3b82f6" stroke-width="1.4"/>
+              <line x1="55" y1="30" x2="68" y2="30" stroke="#3b82f6" stroke-width="1.4"/>
+              <line x1="55" y1="48" x2="68" y2="48" stroke="#3b82f6" stroke-width="1.4"/>
+            </svg>
+          </div>
+          <div class="mm-tpl-card">
+            <svg viewBox="0 0 80 60">
+              <path d="M14 30 H32" stroke="#10b981" stroke-width="1.4" fill="none"/>
+              <path d="M32 30 Q44 30 56 14" stroke="#10b981" stroke-width="1.4" fill="none"/>
+              <path d="M32 30 Q44 30 56 30" stroke="#10b981" stroke-width="1.4" fill="none"/>
+              <path d="M32 30 Q44 30 56 46" stroke="#10b981" stroke-width="1.4" fill="none"/>
+              <line x1="56" y1="14" x2="70" y2="14" stroke="#10b981" stroke-width="1.4"/>
+              <line x1="56" y1="30" x2="70" y2="30" stroke="#10b981" stroke-width="1.4"/>
+              <line x1="56" y1="46" x2="70" y2="46" stroke="#10b981" stroke-width="1.4"/>
+            </svg>
+          </div>
+        </div>
+      </section>
+
+      <!-- 公司/部门统计 -->
+      <section class="mm-tpl-section">
+        <div class="mm-tpl-section__head">
+          <span class="mm-tpl-section__title">公司/部门统计</span>
+          <i class="mm-tpl-section__caret cses-stratis-chevron-down"></i>
+        </div>
+        <div class="mm-stat-grid">
+          <div class="mm-stat-item" data-tpl="org">
+            <span class="mm-stat-item__icon"><i class="cses-stratis-users-profiles-01"></i></span>
+            <span class="mm-stat-item__label">组织结构</span>
+          </div>
+          <div class="mm-stat-item">
+            <span class="mm-stat-item__icon"><i class="cses-stratis-grid-01"></i></span>
+            <span class="mm-stat-item__label">项目模块</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 个人统计 -->
+      <section class="mm-tpl-section">
+        <div class="mm-tpl-section__head">
+          <span class="mm-tpl-section__title">个人统计</span>
+          <i class="mm-tpl-section__caret cses-stratis-chevron-down"></i>
+        </div>
+        <div class="mm-stat-grid">
+          <div class="mm-stat-item">
+            <span class="mm-stat-item__icon"><i class="cses-stratis-compass"></i></span>
+            <span class="mm-stat-item__label">成果导向</span>
+          </div>
+          <div class="mm-stat-item">
+            <span class="mm-stat-item__icon"><i class="cses-stratis-video-on"></i></span>
+            <span class="mm-stat-item__label">会议</span>
+          </div>
+          <div class="mm-stat-item">
+            <span class="mm-stat-item__icon"><i class="cses-stratis-check-square-broken"></i></span>
+            <span class="mm-stat-item__label">任务管理</span>
+          </div>
+          <div class="mm-stat-item">
+            <span class="mm-stat-item__icon"><i class="cses-stratis-file-check-01"></i></span>
+            <span class="mm-stat-item__label">审批</span>
+          </div>
+          <div class="mm-stat-item">
+            <span class="mm-stat-item__icon"><i class="cses-stratis-book-01"></i></span>
+            <span class="mm-stat-item__label">文档</span>
+          </div>
+          <div class="mm-stat-item">
+            <span class="mm-stat-item__icon"><i class="cses-stratis-message-circle"></i></span>
+            <span class="mm-stat-item__label">消息</span>
+          </div>
+        </div>
+      </section>
+
+    </aside>
+
+    <!-- 中央点阵画布 -->
+    <div class="mm-canvas">
+
+      <!-- 组织结构选中节点（仅 org 状态显示）-->
+      <div class="mm-canvas-stage">
+        <div class="mm-node-group">
+          <span class="mm-node-plus"><i class="cses-stratis-plus-01"></i></span>
+          <span class="mm-node">
+            组织结构
+            <span class="mm-node__handle mm-node__handle--tl"></span>
+            <span class="mm-node__handle mm-node__handle--tr"></span>
+            <span class="mm-node__handle mm-node__handle--bl"></span>
+            <span class="mm-node__handle mm-node__handle--br"></span>
+          </span>
+          <span class="mm-node-plus"><i class="cses-stratis-plus-01"></i></span>
+        </div>
+      </div>
+
+      <!-- 生成后的思维导图（仅 generated 状态显示）-->
+      <div class="mm-mindmap" id="mmMindmap">
+        <svg viewBox="0 0 800 480" preserveAspectRatio="xMidYMid meet" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+          <!-- 根 → 4 周连线 -->
+          <path d="M 130 240 C 230 240, 230 100, 330 100" stroke="#4f7df5" stroke-width="2"/>
+          <path d="M 130 240 C 230 240, 230 200, 330 200" stroke="#2dc8a7" stroke-width="2"/>
+          <path d="M 130 240 C 230 240, 230 280, 330 280" stroke="#ff9333" stroke-width="2"/>
+          <path d="M 130 240 C 230 240, 230 380, 330 380" stroke="#a78bfa" stroke-width="2"/>
+
+          <!-- 每周 → 2 叶子连线 -->
+          <path d="M 430 100 C 505 100, 505 80,  580 80"  stroke="#4f7df5" stroke-width="1.5"/>
+          <path d="M 430 100 C 505 100, 505 120, 580 120" stroke="#4f7df5" stroke-width="1.5"/>
+          <path d="M 430 200 C 505 200, 505 180, 580 180" stroke="#2dc8a7" stroke-width="1.5"/>
+          <path d="M 430 200 C 505 200, 505 220, 580 220" stroke="#2dc8a7" stroke-width="1.5"/>
+          <path d="M 430 280 C 505 280, 505 260, 580 260" stroke="#ff9333" stroke-width="1.5"/>
+          <path d="M 430 280 C 505 280, 505 300, 580 300" stroke="#ff9333" stroke-width="1.5"/>
+          <path d="M 430 380 C 505 380, 505 360, 580 360" stroke="#a78bfa" stroke-width="1.5"/>
+          <path d="M 430 380 C 505 380, 505 400, 580 400" stroke="#a78bfa" stroke-width="1.5"/>
+
+          <!-- 根节点 -->
+          <g transform="translate(80, 240)">
+            <rect x="-50" y="-22" width="100" height="44" rx="22" fill="#1a185a" stroke="#0d99ff" stroke-width="1"/>
+            <text x="0" y="-3" fill="#fff" font-size="11" font-weight="600" text-anchor="middle" font-family="PingFang SC, sans-serif">开发部 12月</text>
+            <text x="0" y="13" fill="#fff" font-size="11" font-weight="600" text-anchor="middle" font-family="PingFang SC, sans-serif">共 44 次</text>
+          </g>
+
+          <!-- 4 周节点 -->
+          <g transform="translate(380, 100)">
+            <rect x="-50" y="-16" width="100" height="32" rx="16" fill="#fff" stroke="#4f7df5" stroke-width="1.5"/>
+            <text x="0" y="4" fill="#4f7df5" font-size="11" font-weight="600" text-anchor="middle" font-family="PingFang SC, sans-serif">第1周 · 8次</text>
+          </g>
+          <g transform="translate(380, 200)">
+            <rect x="-50" y="-16" width="100" height="32" rx="16" fill="#fff" stroke="#2dc8a7" stroke-width="1.5"/>
+            <text x="0" y="4" fill="#2dc8a7" font-size="11" font-weight="600" text-anchor="middle" font-family="PingFang SC, sans-serif">第2周 · 12次</text>
+          </g>
+          <g transform="translate(380, 280)">
+            <rect x="-50" y="-16" width="100" height="32" rx="16" fill="#fff" stroke="#ff9333" stroke-width="1.5"/>
+            <text x="0" y="4" fill="#ff9333" font-size="11" font-weight="600" text-anchor="middle" font-family="PingFang SC, sans-serif">第3周 · 10次</text>
+          </g>
+          <g transform="translate(380, 380)">
+            <rect x="-50" y="-16" width="100" height="32" rx="16" fill="#fff" stroke="#a78bfa" stroke-width="1.5"/>
+            <text x="0" y="4" fill="#a78bfa" font-size="11" font-weight="600" text-anchor="middle" font-family="PingFang SC, sans-serif">第4周 · 14次</text>
+          </g>
+
+          <!-- 8 叶节点 -->
+          <g transform="translate(620, 80)">
+            <rect x="-40" y="-12" width="80" height="24" rx="12" fill="#fff" stroke="#4f7df5"/>
+            <text x="0" y="4" fill="#4f7df5" font-size="10" text-anchor="middle" font-family="PingFang SC, sans-serif">周会 · 4</text>
+          </g>
+          <g transform="translate(620, 120)">
+            <rect x="-40" y="-12" width="80" height="24" rx="12" fill="#fff" stroke="#4f7df5"/>
+            <text x="0" y="4" fill="#4f7df5" font-size="10" text-anchor="middle" font-family="PingFang SC, sans-serif">复盘 · 4</text>
+          </g>
+          <g transform="translate(620, 180)">
+            <rect x="-40" y="-12" width="80" height="24" rx="12" fill="#fff" stroke="#2dc8a7"/>
+            <text x="0" y="4" fill="#2dc8a7" font-size="10" text-anchor="middle" font-family="PingFang SC, sans-serif">周会 · 4</text>
+          </g>
+          <g transform="translate(620, 220)">
+            <rect x="-40" y="-12" width="80" height="24" rx="12" fill="#fff" stroke="#2dc8a7"/>
+            <text x="0" y="4" fill="#2dc8a7" font-size="10" text-anchor="middle" font-family="PingFang SC, sans-serif">评审 · 8</text>
+          </g>
+          <g transform="translate(620, 260)">
+            <rect x="-40" y="-12" width="80" height="24" rx="12" fill="#fff" stroke="#ff9333"/>
+            <text x="0" y="4" fill="#ff9333" font-size="10" text-anchor="middle" font-family="PingFang SC, sans-serif">周会 · 4</text>
+          </g>
+          <g transform="translate(620, 300)">
+            <rect x="-40" y="-12" width="80" height="24" rx="12" fill="#fff" stroke="#ff9333"/>
+            <text x="0" y="4" fill="#ff9333" font-size="10" text-anchor="middle" font-family="PingFang SC, sans-serif">客户 · 6</text>
+          </g>
+          <g transform="translate(620, 360)">
+            <rect x="-40" y="-12" width="80" height="24" rx="12" fill="#fff" stroke="#a78bfa"/>
+            <text x="0" y="4" fill="#a78bfa" font-size="10" text-anchor="middle" font-family="PingFang SC, sans-serif">月会 · 4</text>
+          </g>
+          <g transform="translate(620, 400)">
+            <rect x="-40" y="-12" width="80" height="24" rx="12" fill="#fff" stroke="#a78bfa"/>
+            <text x="0" y="4" fill="#a78bfa" font-size="10" text-anchor="middle" font-family="PingFang SC, sans-serif">总结 · 10</text>
+          </g>
+
+        </svg>
+      </div>
+
+      <!-- 底部缩放/撤销条 -->
+      <div class="mm-bot">
+        <span class="mm-bot-icon" data-active title="选择">
+          <i class="cses-stratis-arrow-up-right" style="transform:rotate(-90deg);"></i>
+        </span>
+        <span class="mm-bot-icon" title="缩小"><i class="cses-stratis-search-01"></i></span>
+        <span class="mm-bot-zoom">100%</span>
+        <span class="mm-bot-icon" title="放大"><i class="cses-stratis-search-01"></i></span>
+        <span class="mm-bot-vline"></span>
+        <span class="mm-bot-icon" title="撤销"><i class="cses-stratis-arrow-rotate-left-01"></i></span>
+        <span class="mm-bot-icon" title="重做"><i class="cses-stratis-arrow-rotate-right-01"></i></span>
+        <span class="mm-bot-icon" title="历史"><i class="cses-stratis-alarm-01"></i></span>
+      </div>
+    </div>
+
+    <!-- 右侧配置面板（仅 org 状态显示）-->
+    <aside class="mm-config-panel" id="mmConfigPanel">
+
+      <!-- header: tabs + close -->
+      <div class="mm-cf-header">
+        <div class="mm-cf-tabs">
+          <button class="mm-cf-tab" data-active>
+            <span class="mm-cf-tab__inner">
+              <span>数据类型</span>
+              <span class="mm-cf-tab__indicator"></span>
+            </span>
+          </button>
+          <button class="mm-cf-tab">
+            <span class="mm-cf-tab__inner">
+              <span>样式设计</span>
+              <span class="mm-cf-tab__indicator"></span>
+            </span>
+          </button>
+        </div>
+        <span class="mm-cf-close" id="mmConfigClose" title="关闭">
+          <i class="cses-stratis-plus-01" style="transform:rotate(45deg);font-size:16px;"></i>
+        </span>
+      </div>
+
+      <!-- body -->
+      <div class="mm-cf-body">
+        <div class="mm-cf-fields">
+
+          <!-- 数据类型（disabled-style）-->
+          <div class="mm-cf-row">
+            <span class="mm-cf-row__label">数据类型</span>
+            <div class="mm-cf-row__value">
+              <div class="mm-cf-select mm-cf-select--disabled">
+                <span>组织结构</span>
+                <i class="cses-stratis-chevron-down"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- 人员范围 -->
+          <div class="mm-cf-row">
+            <span class="mm-cf-row__label">人员范围</span>
+            <div class="mm-cf-row__value">
+              <div class="mm-cf-select">
+                <span>开发部</span>
+                <i class="cses-stratis-chevron-down"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- 数据源 -->
+          <div class="mm-cf-row mm-cf-row--top">
+            <span class="mm-cf-row__label">数据源</span>
+            <div class="mm-cf-row__value">
+              <div class="mm-cf-source">
+                <button class="mm-cf-source-item">
+                  <i class="cses-stratis-compass"></i>
+                  <span>导向</span>
+                </button>
+                <button class="mm-cf-source-item" data-active>
+                  <i class="cses-stratis-video-on"></i>
+                  <span>会议</span>
+                </button>
+                <button class="mm-cf-source-item">
+                  <i class="cses-stratis-check-square-broken"></i>
+                  <span>任务管理</span>
+                </button>
+                <button class="mm-cf-source-item">
+                  <i class="cses-stratis-file-check-01"></i>
+                  <span>审批</span>
+                </button>
+                <button class="mm-cf-source-item">
+                  <i class="cses-stratis-book-01"></i>
+                  <span>文档</span>
+                </button>
+                <button class="mm-cf-source-item">
+                  <i class="cses-stratis-message-circle"></i>
+                  <span>消息</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 时间范围 -->
+          <div class="mm-cf-row">
+            <span class="mm-cf-row__label">时间范围</span>
+            <div class="mm-cf-row__value">
+              <div class="mm-cf-select">
+                <span>12月</span>
+                <i class="cses-stratis-chevron-down"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- 数据类型（底部）-->
+          <div class="mm-cf-row">
+            <span class="mm-cf-row__label">数据类型</span>
+            <div class="mm-cf-row__value">
+              <div class="mm-cf-select">
+                <span>会议数量</span>
+                <i class="cses-stratis-chevron-down"></i>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 生成按钮 -->
+        <button class="mm-cf-submit">生成思维导图</button>
+      </div>
+
+    </aside>
+
+  </div>
+</div>
+
+
+<script>
+  // 模式 tab 切换
+  document.querySelectorAll('.mm-mode-tab').forEach(function (el) {
+    el.addEventListener('click', function () {
+      document.querySelectorAll('.mm-mode-tab').forEach(function (x) { x.removeAttribute('data-active'); });
+      el.setAttribute('data-active', '');
+    });
+  });
+
+  // 左侧工具切换 active
+  document.querySelectorAll('.mm-sb-item').forEach(function (el) {
+    el.addEventListener('click', function () {
+      document.querySelectorAll('.mm-sb-item').forEach(function (x) { x.removeAttribute('data-active'); });
+      el.setAttribute('data-active', '');
+    });
+  });
+
+  // 折叠 section
+  document.querySelectorAll('.mm-tpl-section__head').forEach(function (head) {
+    head.addEventListener('click', function () {
+      var caret = head.querySelector('.mm-tpl-section__caret');
+      if (caret) {
+        caret.style.transform = caret.style.transform === 'rotate(-90deg)' ? '' : 'rotate(-90deg)';
+      }
+    });
+  });
+
+  // ===== 组织结构：点击模板项 → 进入 org 状态 =====
+  (function () {
+    var app   = document.getElementById('mmApp');
+    var title = document.getElementById('mmTitle');
+    var orgBtn = document.querySelector('[data-tpl="org"]');
+    var closeBtn = document.getElementById('mmConfigClose');
+    if (!app || !orgBtn) return;
+
+    var defaultTitle = title.textContent;
+    var orgTitle = '中企云链12月月度成果导向';
+
+    function enterOrg() {
+      app.dataset.state = 'org';
+      title.textContent = orgTitle;
+    }
+    function exitOrg() {
+      app.dataset.state = '';
+      title.textContent = defaultTitle;
+    }
+
+    orgBtn.addEventListener('click', enterOrg);
+    closeBtn && closeBtn.addEventListener('click', exitOrg);
+
+    // 生成思维导图：org → generated
+    var submitBtn = document.querySelector('.mm-cf-submit');
+    submitBtn && submitBtn.addEventListener('click', function () {
+      app.dataset.state = 'generated';
+    });
+
+    // 配置面板：tab 切换
+    document.querySelectorAll('.mm-cf-tab').forEach(function (el) {
+      el.addEventListener('click', function () {
+        document.querySelectorAll('.mm-cf-tab').forEach(function (x) { x.removeAttribute('data-active'); });
+        el.setAttribute('data-active', '');
+      });
+    });
+
+    // 数据源 选择
+    document.querySelectorAll('.mm-cf-source-item').forEach(function (el) {
+      el.addEventListener('click', function () {
+        document.querySelectorAll('.mm-cf-source-item').forEach(function (x) { x.removeAttribute('data-active'); });
+        el.setAttribute('data-active', '');
+      });
+    });
+
+    // 复选框
+    document.querySelectorAll('.mm-cf-check').forEach(function (el) {
+      el.addEventListener('click', function () { el.toggleAttribute('data-checked'); });
+    });
+  })();
+
+  // ESC 返回（org 状态下 → 退回模板；模板状态 → 回 board）
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    var app = document.getElementById('mmApp');
+    if (app && app.dataset.state === 'org') {
+      app.dataset.state = '';
+      document.getElementById('mmTitle').textContent = '思维导图';
+    } else {
+      window.location.href = './board.html';
+    }
+  });
+</script>
+</body>
+</html>

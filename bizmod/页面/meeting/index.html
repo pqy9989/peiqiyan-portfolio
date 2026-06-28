@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>会议 — CSES</title>
+
+  <link rel="stylesheet" href="../../design/css/base.css">
+  <link rel="stylesheet" href="../../design/css/token.css">
+  <link rel="stylesheet" href="../../design/css/variable.css">
+  <link rel="stylesheet" href="../../design/fonts/cses-icons.css?v=101">
+  <link rel="stylesheet" href="../../design/fragment/fragment.css">
+  <link rel="stylesheet" href="../../design/css/page-shell.css">
+
+  <link rel="stylesheet" href="../../design/components/search-input/search-input.css">
+  <link rel="stylesheet" href="../../design/components/avatar/avatar.css">
+  <link rel="stylesheet" href="../../design/components/button/button.css">
+  <link rel="stylesheet" href="../../design/components/file-icon/file-icon.css">
+
+  <link rel="stylesheet" href="./index.css">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: var(--font-family-cn), -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--cs-color-bg-app-dark);
+      color: var(--cs-color-text);
+      height: 100vh;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+</head>
+<body data-module="meeting">
+
+<cs-layout>
+
+  <!-- 标签栏 -->
+  <div class="tabbar">
+    <div class="tabbar-left">
+      <span class="win-ctrl tabbar-window-control">
+        <span class="ctrl-dot" data-c="close"></span>
+        <span class="ctrl-dot" data-c="min"></span>
+        <span class="ctrl-dot" data-c="max"></span>
+      </span>
+      <cs-search-input class="tabbar-search ah-top-search" data-variant="gray" data-size="sm">
+        <i class="search-icon cses-stratis-search-01"></i>
+        <input class="search-field" type="text" placeholder="搜索">
+      </cs-search-input>
+      <div class="tabbar-tabs"></div>
+    </div>
+    <div class="tabbar-right">
+      <span class="tabbar-notice">
+        <i class="cses-stratis-bell-01 notice-icon"></i>
+        <span class="notice-badge">2</span>
+      </span>
+      <cs-avatar data-size="xs" data-shape="circle" data-color="blue">张</cs-avatar>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- 一级导航 -->
+    <cs-sidebar>
+      <span class="logo">
+        <img src="../../design/assets/logo.png" alt="CSES">
+      </span>
+      <nav class="nav">
+        <div class="nav-group">
+          <a class="nav-item" data-module="workspace">
+            <span class="nav-icon"><i class="cses-stratis-home-01"></i></span>
+            <span class="nav-label">工作台</span>
+          </a>
+          <a class="nav-item" data-module="guide">
+            <span class="nav-icon"><i class="cses-stratis-compass"></i></span>
+            <span class="nav-label">导向</span>
+          </a>
+          <a class="nav-item" data-module="message">
+            <span class="nav-icon"><i class="cses-stratis-message-circle"></i></span>
+            <span class="nav-label">消息</span>
+          </a>
+          <a class="nav-item" data-module="task-list">
+            <span class="nav-icon"><i class="cses-stratis-check-square-broken"></i></span>
+            <span class="nav-label">任务</span>
+          </a>
+          <a class="nav-item" data-active data-module="meeting">
+            <span class="nav-icon"><i class="cses-stratis-video-on"></i></span>
+            <span class="nav-label">会议</span>
+          </a>
+          <a class="nav-item" data-module="doc">
+            <span class="nav-icon"><i class="cses-stratis-book-01"></i></span>
+            <span class="nav-label">文档</span>
+          </a>
+          <a class="nav-item" data-module="form">
+            <span class="nav-icon"><i class="cses-stratis-file-edit-01"></i></span>
+            <span class="nav-label">表单</span>
+          </a>
+          <a class="nav-item" data-module="approval">
+            <span class="nav-icon"><i class="cses-stratis-file-check-01"></i></span>
+            <span class="nav-label">审批</span>
+          </a>
+        </div>
+      </nav>
+    </cs-sidebar>
+
+    <!-- 内容包裹 -->
+    <div class="content-wrapper" style="position:relative;">
+
+      <!-- 二级导航 -->
+      <cs-navbar>
+        <div class="inner">
+
+          <div class="slot-action">
+            <div class="mt-cta">
+              <button class="mt-cta__btn" data-variant="primary" type="button">
+                <i class="cses-stratis-calendar-plus"></i>
+                <span>预约会议</span>
+              </button>
+              <button class="mt-cta__btn" data-variant="secondary" type="button">
+                <i class="cses-stratis-video-on"></i>
+                <span>快速会议</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="slot-nav">
+            <div class="mt-side-item" data-active>我的预定会议</div>
+            <div class="mt-side-item">我的历史会议</div>
+          </div>
+
+        </div>
+      </cs-navbar>
+
+      <!-- 主内容区 -->
+      <main class="main-content">
+
+        <!-- 顶栏：我的预定会议 -->
+        <cs-content-header>
+          <div class="slot-left">
+            <span class="page-title">我的预定会议</span>
+          </div>
+        </cs-content-header>
+
+        <div class="mt-layout">
+
+          <!-- 中：列表 -->
+          <div class="mt-main">
+
+            <div class="mt-main__top">
+              <span class="mt-search-box">
+                <input class="mt-search-box__input" type="text" placeholder="搜索">
+                <i class="mt-search-box__icon cses-stratis-search-01"></i>
+              </span>
+              <button class="mt-filter-btn" style="margin-left:auto;">
+                <i class="cses-stratis-filter"></i>
+                <span>筛选</span>
+              </button>
+            </div>
+
+            <div class="mt-stream">
+
+              <!-- 正在进行 -->
+              <section class="mt-section">
+                <div class="mt-section__head">正在进行</div>
+                <div class="mt-section__list">
+                  <div class="mt-card" data-status="live">
+                    <div class="mt-card__when">
+                      <span class="mt-card__time">11:20</span>
+                      <span class="mt-card__time-end">~12:00</span>
+                    </div>
+                    <div class="mt-card__body">
+                      <span class="mt-card__title">如何把握好本周的活动节点，为5月份的利润翻倍匹配条件</span>
+                      <div class="mt-card__meta">
+                        <span class="mt-card__meta-item">
+                          <span>主持人：</span>
+                          <span class="mt-card__host-avatar" data-color="blue">周</span>
+                          <span class="mt-card__host-name">周海</span>
+                        </span>
+                        <span class="mt-card__meta-divider"></span>
+                        <span class="mt-card__meta-item">
+                          <span>会议号：</span><span class="mt-card__meta-num">817 200 172</span>
+                        </span>
+                        <span class="mt-card__meta-divider"></span>
+                        <span class="mt-card__meta-item">
+                          <span>地点：</span><span class="mt-card__meta-num">大会议室</span>
+                        </span>
+                        <span class="mt-card__meta-divider"></span>
+                        <span class="mt-card__meta-item">
+                          <span>预计人数：</span><span class="mt-card__meta-num">20</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- 周一 05月19日 -->
+              <section class="mt-section">
+                <div class="mt-section__head">周一 05月19日</div>
+                <div class="mt-section__list">
+
+                  <div class="mt-card" data-tone="primary" id="meetingCardMonthly" onclick="openConfWindow()">
+                    <div class="mt-card__when">
+                      <span class="mt-card__time">09:30</span>
+                      <span class="mt-card__time-end">~10:30</span>
+                    </div>
+                    <div class="mt-card__body">
+                      <span class="mt-card__title">开发部5月月度导向</span>
+                      <div class="mt-card__meta">
+                        <span class="mt-card__meta-item">
+                          <span>主持人：</span>
+                          <span class="mt-card__host-avatar" data-color="orange">张</span>
+                          <span class="mt-card__host-name">张敏</span>
+                        </span>
+                        <span class="mt-card__meta-divider"></span>
+                        <span class="mt-card__meta-item">
+                          <span>会议号：</span><span class="mt-card__meta-num">882 411 305</span>
+                        </span>
+                        <span class="mt-card__meta-divider"></span>
+                        <span class="mt-card__meta-item">
+                          <span>地点：</span><span class="mt-card__meta-num">线上</span>
+                        </span>
+                        <span class="mt-card__meta-divider"></span>
+                        <span class="mt-card__meta-item">
+                          <span>预计人数：</span><span class="mt-card__meta-num">12</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-card" data-tone="warning">
+                    <div class="mt-card__when">
+                      <span class="mt-card__time">14:00</span>
+                      <span class="mt-card__time-end">~16:00</span>
+                    </div>
+                    <div class="mt-card__body">
+                      <span class="mt-card__title">5月发版需求评审</span>
+                      <div class="mt-card__meta">
+                        <span class="mt-card__meta-item">
+                          <span>主持人：</span>
+                          <span class="mt-card__host-avatar" data-color="green">李</span>
+                          <span class="mt-card__host-name">李豫卓</span>
+                        </span>
+                        <span class="mt-card__meta-divider"></span>
+                        <span class="mt-card__meta-item">
+                          <span>会议号：</span><span class="mt-card__meta-num">705 829 144</span>
+                        </span>
+                        <span class="mt-card__meta-divider"></span>
+                        <span class="mt-card__meta-item">
+                          <span>地点：</span><span class="mt-card__meta-num">三楼会议室</span>
+                        </span>
+                        <span class="mt-card__meta-divider"></span>
+                        <span class="mt-card__meta-item">
+                          <span>预计人数：</span><span class="mt-card__meta-num">8</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-card" data-tone="primary">
+                    <div class="mt-card__when">
+                      <span class="mt-card__time">16:30</span>
+                      <span class="mt-card__time-end">~17:30</span>
+                    </div>
+                    <div class="mt-card__body">
+                      <span class="mt-card__title">客户反馈周复盘</span>
+                      <div class="mt-card__meta">
+                        <span class="mt-card__meta-item">
+                          <span>主持人：</span>
+                          <span class="mt-card__host-avatar" data-color="purple">王</span>
+                          <span class="mt-card__host-name">王俊虎</span>
+                        </span>
+                        <span class="mt-card__meta-divider"></span>
+                        <span class="mt-card__meta-item">
+                          <span>会议号：</span><span class="mt-card__meta-num">661 220 318</span>
+                        </span>
+                        <span class="mt-card__meta-divider"></span>
+                        <span class="mt-card__meta-item">
+                          <span>地点：</span><span class="mt-card__meta-num">线上</span>
+                        </span>
+                        <span class="mt-card__meta-divider"></span>
+                        <span class="mt-card__meta-item">
+                          <span>预计人数：</span><span class="mt-card__meta-num">6</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </section>
+
+              <!-- 周二 05月20日 -->
+              <section class="mt-section">
+                <div class="mt-section__head">周二 05月20日</div>
+                <div class="mt-section__list">
+
+                  <div class="mt-card" data-tone="primary">
+                    <div class="mt-card__when">
+                      <span class="mt-card__time">10:00</span>
+                      <span class="mt-card__time-end">~12:00</span>
+                    </div>
+                    <div class="mt-card__body">
+                      <span class="mt-card__title">技术评审 · 数据中台对接方案</span>
+                      <div class="mt-card__meta">
+                        <span class="mt-card__meta-item">
+                          <span>主持人：</span>
+                          <span class="mt-card__host-avatar" data-color="pink">赵</span>
+                          <span class="mt-card__host-name">赵吾光</span>
+                        </span>
+                        <span class="mt-card__meta-divider"></span>
+                        <span class="mt-card__meta-item">
+                          <span>会议号：</span><span class="mt-card__meta-num">317 482 906</span>
+                        </span>
+                        <span class="mt-card__meta-divider"></span>
+                        <span class="mt-card__meta-item">
+                          <span>地点：</span><span class="mt-card__meta-num">大会议室</span>
+                        </span>
+                        <span class="mt-card__meta-divider"></span>
+                        <span class="mt-card__meta-item">
+                          <span>预计人数：</span><span class="mt-card__meta-num">12</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-card" data-tone="warning">
+                    <div class="mt-card__when">
+                      <span class="mt-card__time">14:00</span>
+                      <span class="mt-card__time-end">~15:00</span>
+                    </div>
+                    <div class="mt-card__body">
+                      <span class="mt-card__title">头脑风暴 · 盈利模式探索</span>
+                      <div class="mt-card__meta">
+                        <span class="mt-card__meta-item">
+                          <span>主持人：</span>
+                          <span class="mt-card__host-avatar" data-color="teal">孙</span>
+                          <span class="mt-card__host-name">孙思达</span>
+                        </span>
+                        <span class="mt-card__meta-divider"></span>
+                        <span class="mt-card__meta-item">
+                          <span>会议号：</span><span class="mt-card__meta-num">412 905 671</span>
+                        </span>
+                        <span class="mt-card__meta-divider"></span>
+                        <span class="mt-card__meta-item">
+                          <span>地点：</span><span class="mt-card__meta-num">二楼咖啡区</span>
+                        </span>
+                        <span class="mt-card__meta-divider"></span>
+                        <span class="mt-card__meta-item">
+                          <span>预计人数：</span><span class="mt-card__meta-num">10</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-card" data-tone="primary">
+                    <div class="mt-card__when">
+                      <span class="mt-card__time">16:00</span>
+                      <span class="mt-card__time-end">~17:00</span>
+                    </div>
+                    <div class="mt-card__body">
+                      <span class="mt-card__title">设计评审 · 会议模块改版</span>
+                      <div class="mt-card__meta">
+                        <span class="mt-card__meta-item">
+                          <span>主持人：</span>
+                          <span class="mt-card__host-avatar" data-color="amber">黄</span>
+                          <span class="mt-card__host-name">黄京望</span>
+                        </span>
+                        <span class="mt-card__meta-divider"></span>
+                        <span class="mt-card__meta-item">
+                          <span>会议号：</span><span class="mt-card__meta-num">593 014 802</span>
+                        </span>
+                        <span class="mt-card__meta-divider"></span>
+                        <span class="mt-card__meta-item">
+                          <span>地点：</span><span class="mt-card__meta-num">三楼会议室</span>
+                        </span>
+                        <span class="mt-card__meta-divider"></span>
+                        <span class="mt-card__meta-item">
+                          <span>预计人数：</span><span class="mt-card__meta-num">7</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </section>
+
+            </div>
+          </div>
+
+          <!-- 右：单卡 3 段 -->
+          <aside class="mt-side">
+
+            <!-- 今日会议 -->
+            <section class="mt-side-section">
+              <div class="mt-side-section__head">
+                <span class="mt-side-section__title">今日会议</span>
+              </div>
+              <div class="mt-stats">
+                <div class="mt-stats__col">
+                  <span class="mt-stats__label">会议数量</span>
+                  <span class="mt-stats__num">4</span>
+                </div>
+                <div class="mt-stats__col">
+                  <span class="mt-stats__label">预计会议时长</span>
+                  <span class="mt-stats__num">3小时20分</span>
+                </div>
+              </div>
+            </section>
+
+            <!-- 今日待办 -->
+            <section class="mt-side-section">
+              <div class="mt-side-section__head">
+                <span class="mt-side-section__title">今日待办</span>
+                <span class="mt-side-section__action"><i class="cses-stratis-plus-01"></i>创建待办</span>
+              </div>
+              <div class="mt-ai-hint">
+                <i class="cses-stratis-stars"></i>
+                <span>内容根据会议描述通过AI生成，也可以手动创建</span>
+              </div>
+
+              <div class="mt-todo-group">
+                <div class="mt-todo-group__title">5月利润翻倍方案对齐 — 如何把握本周活动节点</div>
+                <div class="mt-todo-item">收集 4 月各业务线的实际利润数据，标注差异原因与预警指标。</div>
+                <div class="mt-todo-item">整理客户留存率、续费率最新数据，准备复盘材料。</div>
+              </div>
+
+              <div class="mt-todo-group">
+                <div class="mt-todo-group__title">开发部 5 月月度导向准备</div>
+                <div class="mt-todo-item">列出 5 月已完成的关键节点，输出一页可视化汇报材料。</div>
+                <div class="mt-todo-item">同步本月需求池中的高风险任务，并附上应对建议。</div>
+              </div>
+
+              <div class="mt-todo-group">
+                <div class="mt-todo-group__title">5 月发版需求最终评审</div>
+                <div class="mt-todo-item">完成会议号 705 829 144 的提前测试用例同步。</div>
+                <div class="mt-todo-item">准备 PRD 变更对比表，覆盖范围、影响面、回归测试。</div>
+              </div>
+            </section>
+
+            <!-- 今日会议文件 -->
+            <section class="mt-side-section">
+              <div class="mt-side-section__head">
+                <span class="mt-side-section__title">今日会议文件</span>
+              </div>
+              <div class="mt-file-list">
+                <div class="mt-file-row">
+                  <cs-file-icon data-type="xlsx"></cs-file-icon>
+                  <div class="mt-file-row__main">
+                    <span class="mt-file-row__name">5月利润看板.xlsx</span>
+                    <div class="mt-file-row__breadcrumb">
+                      <i class="cses-stratis-arrow-up-right"></i>
+                      <span>5月利润翻倍方案对齐</span>
+                    </div>
+                    <span class="mt-file-row__sub">2.34MB · v2.1</span>
+                  </div>
+                </div>
+
+                <div class="mt-file-row">
+                  <cs-file-icon data-type="pptx"></cs-file-icon>
+                  <div class="mt-file-row__main">
+                    <span class="mt-file-row__name">开发部5月月度导向汇报.pptx</span>
+                    <div class="mt-file-row__breadcrumb">
+                      <i class="cses-stratis-arrow-up-right"></i>
+                      <span>开发部5月月度导向</span>
+                    </div>
+                    <span class="mt-file-row__sub">8.72MB · v1.4</span>
+                  </div>
+                </div>
+
+                <div class="mt-file-row">
+                  <cs-file-icon data-type="docx"></cs-file-icon>
+                  <div class="mt-file-row__main">
+                    <span class="mt-file-row__name">发版需求变更对比.docx</span>
+                    <div class="mt-file-row__breadcrumb">
+                      <i class="cses-stratis-arrow-up-right"></i>
+                      <span>5月发版需求评审</span>
+                    </div>
+                    <span class="mt-file-row__sub">412KB · v3.0</span>
+                  </div>
+                </div>
+
+                <div class="mt-file-row">
+                  <cs-file-icon data-type="pdf"></cs-file-icon>
+                  <div class="mt-file-row__main">
+                    <span class="mt-file-row__name">客户反馈周报.pdf</span>
+                    <div class="mt-file-row__breadcrumb">
+                      <i class="cses-stratis-arrow-up-right"></i>
+                      <span>客户反馈周复盘</span>
+                    </div>
+                    <span class="mt-file-row__sub">1.12MB · v1.2</span>
+                  </div>
+                </div>
+
+                <div class="mt-file-row">
+                  <cs-file-icon data-type="png"></cs-file-icon>
+                  <div class="mt-file-row__main">
+                    <span class="mt-file-row__name">头脑风暴白板截图.png</span>
+                    <div class="mt-file-row__breadcrumb">
+                      <i class="cses-stratis-arrow-up-right"></i>
+                      <span>头脑风暴 · 盈利模式探索</span>
+                    </div>
+                    <span class="mt-file-row__sub">685KB · v1.0</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+          </aside>
+
+        </div>
+      </main>
+
+    </div>
+
+  </div>
+</cs-layout>
+
+
+
+<!-- ============ 视频会议浮窗（无蒙层，演示态白色主题）============ -->
+<div class="mt-conf-window" id="confWindow">
+
+  <!-- 顶栏：白底 + 圆形 macOS 控制 + 标题 + 时间 + 云录制中 + 全屏播放 -->
+  <div class="mt-conf__topbar" id="confDragHandle">
+    <div class="mt-conf__win-ctrl">
+      <span data-conf-close title="关闭"></span>
+      <span title="最小化"></span>
+      <span title="最大化"></span>
+    </div>
+    <div class="mt-conf__title-bar">
+      <span class="mt-conf__title">6月月度成果导向</span>
+      <i class="cses-stratis-information-circle-contained" style="font-size:14px;color:var(--cs-color-text-light2);"></i>
+      <span class="mt-conf__sep"></span>
+      <span class="mt-conf__duration">00：03：11</span>
+      <span class="mt-conf__sep"></span>
+      <span class="mt-conf__signal"><i class="cses-stratis-bar-chart-04"></i></span>
+      <span class="mt-conf__recording">云录制中</span>
+    </div>
+    <span class="mt-conf__fullscreen">
+      <i class="cses-stratis-arrow-expand-02"></i>
+      <span>全屏播放</span>
+    </span>
+  </div>
+
+  <div class="mt-conf__body">
+
+    <!-- 左：舞台 -->
+    <div class="mt-conf__stage">
+
+      <!-- 参会人缩略图横排 -->
+      <div class="mt-conf__self">
+        <div class="mt-conf__self-thumb">
+          <cs-avatar class="mt-conf__self-avatar" data-size="xl" data-shape="circle" data-color="blue">裴</cs-avatar>
+          <span class="mt-conf__self-pill">
+            <i class="mt-conf__self-mic mt-conf__self-mic--on cses-stratis-microphone-01"></i>
+            裴启妍（主持人，我）
+          </span>
+        </div>
+        <div class="mt-conf__self-thumb">
+          <cs-avatar class="mt-conf__self-avatar" data-size="xl" data-shape="circle" data-color="green">魏</cs-avatar>
+          <span class="mt-conf__self-pill">
+            <i class="mt-conf__self-mic mt-conf__self-mic--on cses-stratis-microphone-01"></i>
+            魏婉婷
+          </span>
+        </div>
+        <div class="mt-conf__self-thumb">
+          <cs-avatar class="mt-conf__self-avatar" data-size="xl" data-shape="circle" data-color="orange">王</cs-avatar>
+          <span class="mt-conf__self-pill">
+            <i class="mt-conf__self-mic mt-conf__self-mic--off cses-stratis-microphone-off-01"></i>
+            王俊虎
+          </span>
+        </div>
+        <div class="mt-conf__self-thumb">
+          <cs-avatar class="mt-conf__self-avatar" data-size="xl" data-shape="circle" data-color="purple">李</cs-avatar>
+          <span class="mt-conf__self-pill">
+            <i class="mt-conf__self-mic mt-conf__self-mic--on cses-stratis-microphone-01"></i>
+            李子萱
+          </span>
+        </div>
+        <div class="mt-conf__self-thumb">
+          <cs-avatar class="mt-conf__self-avatar" data-size="xl" data-shape="circle" data-color="pink">周</cs-avatar>
+          <span class="mt-conf__self-pill">
+            <i class="mt-conf__self-mic mt-conf__self-mic--off cses-stratis-microphone-off-01"></i>
+            周璐
+          </span>
+        </div>
+      </div>
+
+      <!-- 主舞台：演示画面 -->
+      <div class="mt-conf__main">
+        <!-- 顶部分享人标识 -->
+        <div class="mt-conf__sharer-tag">
+          <span class="mt-conf__sharer-tag-avatar">魏</span>
+          <span>魏婉婷</span>
+          <span style="color:rgba(255,255,255,0.75);">测试部/测试员</span>
+          <span class="sharing-pill">开始分享</span>
+        </div>
+
+        <!-- 浮层导航箭头 -->
+        <span class="mt-conf__nav-arrow mt-conf__nav-arrow--left"><i class="cses-stratis-chevron-left"></i></span>
+        <span class="mt-conf__nav-arrow mt-conf__nav-arrow--right"><i class="cses-stratis-chevron-right"></i></span>
+
+        <!-- 中央标题内容 -->
+        <div class="mt-conf__main-content">
+          <div class="mt-conf__company">中企云链（北京）信息科技有限公司</div>
+          <div class="mt-conf__main-title">6月月度成果导向分享会</div>
+          <div class="mt-conf__main-subtitle">YUEDU CHENGGUODAOXIANG FENXIANGHUI</div>
+        </div>
+
+        <!-- 演示者条 -->
+        <div class="mt-conf__presenter-bar">
+          <span class="mt-conf__presenter-label">分享人：</span>
+          <span class="mt-conf__presenter-avatar">魏</span>
+          <span class="mt-conf__presenter-name">魏婉婷</span>
+          <span class="mt-conf__presenter-dept">测试部/测试员</span>
+        </div>
+
+        <!-- 左下角弹幕 + CSES 运营生态 -->
+        <div class="mt-conf__stage-label">
+          <span class="mt-conf__stage-label-btn">弹</span>
+          <span>CSES 运营生态</span>
+        </div>
+      </div>
+
+      <!-- 底部白色工具栏 -->
+      <div class="mt-conf__toolbar">
+        <div class="mt-conf__tool-group">
+          <button class="mt-conf__tool" data-color="red-cross">
+            <i class="cses-stratis-video-off"></i>
+            <span>视频关闭</span>
+          </button>
+          <button class="mt-conf__tool" data-color="red-cross">
+            <i class="cses-stratis-bell-off-01"></i>
+            <span>语音关闭</span>
+          </button>
+        </div>
+        <div class="mt-conf__tool-group">
+          <button class="mt-conf__tool">
+            <i class="cses-stratis-user-profile-check"></i>
+            <span>入会审核</span>
+          </button>
+          <button class="mt-conf__tool" data-color="rec">
+            <i class="cses-stratis-stop-01"></i>
+            <span>结束录制</span>
+          </button>
+          <button class="mt-conf__tool">
+            <i class="cses-stratis-trash-01"></i>
+            <span>清屏</span>
+          </button>
+          <button class="mt-conf__tool">
+            <i class="cses-stratis-settings"></i>
+            <span>设置</span>
+          </button>
+          <button class="mt-conf__tool">
+            <i class="cses-stratis-menu-04"></i>
+            <span>更多</span>
+          </button>
+        </div>
+        <div class="mt-conf__tool-group">
+          <button class="mt-conf__tool mt-conf__tool--exit" data-conf-close type="button">
+            <i class="cses-stratis-arrow-up-right"></i>
+            <span>退出</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右：成员面板 -->
+    <div class="mt-conf__side">
+
+      <!-- 上：基本信息 / 聊天 两 pill tab -->
+      <div class="mt-conf__side-tabs">
+        <span class="mt-conf__side-tab" data-active>基本信息</span>
+        <span class="mt-conf__side-tab">聊天</span>
+      </div>
+
+      <!-- 下：分享人 / 会议详情 / 成员 三子 tab -->
+      <div class="mt-conf__side-subnav">
+        <span class="mt-conf__side-subnav-item" data-active>分享人</span>
+        <span class="mt-conf__side-subnav-item">会议详情</span>
+        <span class="mt-conf__side-subnav-item">成员</span>
+      </div>
+
+      <!-- 搜索 -->
+      <div class="mt-conf__side-search">
+        <i class="cses-stratis-search-01"></i>
+        <input type="text" placeholder="搜索">
+      </div>
+
+      <!-- 分组头 -->
+      <div class="mt-conf__group-head">
+        <i class="cses-stratis-chevron-down"></i>
+        <span>未分享(33)</span>
+      </div>
+
+      <!-- 成员列表 -->
+      <div class="mt-conf__members">
+
+        <div class="mt-conf__member">
+          <span class="mt-conf__member-drag"></span>
+          <div class="mt-conf__member-avatar" data-color="pink"><span>魏</span></div>
+          <div class="mt-conf__member-info">
+            <span class="mt-conf__member-name">魏婉婷</span>
+          </div>
+          <span class="mt-conf__member-status">未分享</span>
+          <div class="mt-conf__member-actions">
+            <button class="mt-conf__member-act mt-conf__member-act--primary">
+              <i class="cses-stratis-play-01"></i>
+              <span>分享</span>
+            </button>
+            <button class="mt-conf__member-act">详情</button>
+          </div>
+        </div>
+
+        <div class="mt-conf__member">
+          <span class="mt-conf__member-drag"></span>
+          <div class="mt-conf__member-avatar" data-color="purple"><span>庄</span></div>
+          <div class="mt-conf__member-info">
+            <span class="mt-conf__member-name">庄建齐</span>
+          </div>
+          <span class="mt-conf__member-status">未分享</span>
+          <div class="mt-conf__member-actions">
+            <button class="mt-conf__member-act mt-conf__member-act--primary">
+              <i class="cses-stratis-play-01"></i>
+              <span>分享</span>
+            </button>
+            <button class="mt-conf__member-act">详情</button>
+          </div>
+        </div>
+
+        <div class="mt-conf__member">
+          <span class="mt-conf__member-drag"></span>
+          <div class="mt-conf__member-avatar" data-color="orange"><span>郝</span></div>
+          <div class="mt-conf__member-info">
+            <span class="mt-conf__member-name">郝紫明</span>
+          </div>
+          <span class="mt-conf__member-status" data-state="ok">已分享</span>
+          <div class="mt-conf__member-actions">
+            <button class="mt-conf__member-act mt-conf__member-act--primary">
+              <i class="cses-stratis-play-01"></i>
+              <span>分享</span>
+            </button>
+            <button class="mt-conf__member-act">详情</button>
+          </div>
+        </div>
+
+        <div class="mt-conf__member">
+          <span class="mt-conf__member-drag"></span>
+          <div class="mt-conf__member-avatar" data-color="green"><span>郑</span></div>
+          <div class="mt-conf__member-info">
+            <span class="mt-conf__member-name">郑子哲</span>
+          </div>
+          <span class="mt-conf__member-status" data-state="ok">已分享</span>
+          <div class="mt-conf__member-actions">
+            <button class="mt-conf__member-act mt-conf__member-act--primary">
+              <i class="cses-stratis-play-01"></i>
+              <span>分享</span>
+            </button>
+            <button class="mt-conf__member-act">详情</button>
+          </div>
+        </div>
+
+        <div class="mt-conf__member">
+          <span class="mt-conf__member-drag"></span>
+          <div class="mt-conf__member-avatar" data-color="sky"><span>王</span></div>
+          <div class="mt-conf__member-info">
+            <span class="mt-conf__member-name">王超乐</span>
+          </div>
+          <span class="mt-conf__member-status" data-state="ok">已分享</span>
+          <div class="mt-conf__member-actions">
+            <button class="mt-conf__member-act mt-conf__member-act--primary">
+              <i class="cses-stratis-play-01"></i>
+              <span>分享</span>
+            </button>
+            <button class="mt-conf__member-act">详情</button>
+          </div>
+        </div>
+
+        <div class="mt-conf__member">
+          <span class="mt-conf__member-drag"></span>
+          <div class="mt-conf__member-avatar" data-color="blue"><span>刘</span></div>
+          <div class="mt-conf__member-info">
+            <span class="mt-conf__member-name">刘浩南</span>
+          </div>
+          <span class="mt-conf__member-status" data-state="ok">已分享</span>
+          <div class="mt-conf__member-actions">
+            <button class="mt-conf__member-act mt-conf__member-act--primary">
+              <i class="cses-stratis-play-01"></i>
+              <span>分享</span>
+            </button>
+            <button class="mt-conf__member-act">详情</button>
+          </div>
+        </div>
+
+        <div class="mt-conf__member">
+          <span class="mt-conf__member-drag"></span>
+          <div class="mt-conf__member-avatar" data-color="teal"><span>伍</span></div>
+          <div class="mt-conf__member-info">
+            <span class="mt-conf__member-name">伍逹胜</span>
+          </div>
+          <span class="mt-conf__member-status" data-state="ok">已分享</span>
+          <div class="mt-conf__member-actions">
+            <button class="mt-conf__member-act mt-conf__member-act--primary">
+              <i class="cses-stratis-play-01"></i>
+              <span>分享</span>
+            </button>
+            <button class="mt-conf__member-act">详情</button>
+          </div>
+        </div>
+
+        <div class="mt-conf__member">
+          <span class="mt-conf__member-drag"></span>
+          <div class="mt-conf__member-avatar" data-color="amber"><span>王</span></div>
+          <div class="mt-conf__member-info">
+            <span class="mt-conf__member-name">王利伟</span>
+          </div>
+          <span class="mt-conf__member-status" data-state="ok">已分享</span>
+          <div class="mt-conf__member-actions">
+            <button class="mt-conf__member-act mt-conf__member-act--primary">
+              <i class="cses-stratis-play-01"></i>
+              <span>分享</span>
+            </button>
+            <button class="mt-conf__member-act">详情</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openConfWindow()  {
+    var w = document.getElementById('confWindow');
+    if (!w) return;
+    w.classList.add('show');
+    // 兜底：直接设 display，避免被任何缓存样式压住
+    w.style.display = 'flex';
+  }
+  function closeConfWindow() {
+    var w = document.getElementById('confWindow');
+    if (!w) return;
+    w.classList.remove('show');
+    w.style.display = 'none';
+  }
+
+  // === 一个统一的 click 委托（关闭 + tabs + 缩略图）===
+  document.addEventListener('click', function (e) {
+    // 1. 关闭：红色 macOS 控制 + 「退出」按钮（捕获 closest 防止子元素挡住）
+    if (e.target.closest('[data-conf-close]')) {
+      e.preventDefault();
+      e.stopPropagation();
+      closeConfWindow();
+      return;
+    }
+    // 2. tabs / 子 tabs / 缩略图
+    var t = e.target.closest('.mt-conf__side-tab');
+    if (t) {
+      t.parentNode.querySelectorAll('.mt-conf__side-tab').forEach(function (x) { x.removeAttribute('data-active'); });
+      t.setAttribute('data-active', '');
+      return;
+    }
+    var s = e.target.closest('.mt-conf__side-subnav-item');
+    if (s) {
+      s.parentNode.querySelectorAll('.mt-conf__side-subnav-item').forEach(function (x) { x.removeAttribute('data-active'); });
+      s.setAttribute('data-active', '');
+      return;
+    }
+    var th = e.target.closest('.mt-conf__thumb');
+    if (th) {
+      th.parentNode.querySelectorAll('.mt-conf__thumb').forEach(function (x) { x.removeAttribute('data-active'); });
+      th.setAttribute('data-active', '');
+    }
+  });
+
+  // Esc 关闭
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeConfWindow();
+  });
+
+  // === 浮窗拖拽（避开关闭按钮等所有交互元素）===
+  (function () {
+    var handle = document.getElementById('confDragHandle');
+    var win = document.getElementById('confWindow');
+    if (!handle || !win) return;
+    var dragging = false, sx = 0, sy = 0, ox = 0, oy = 0;
+    handle.addEventListener('mousedown', function (e) {
+      // 关闭按钮、最小化/最大化球、全屏播放按钮：都不触发拖拽
+      if (e.target.closest('[data-conf-close], .mt-conf__win-ctrl, .mt-conf__fullscreen')) return;
+      dragging = true;
+      var rect = win.getBoundingClientRect();
+      ox = rect.left; oy = rect.top;
+      sx = e.clientX; sy = e.clientY;
+      win.style.transform = 'none';
+      win.style.left = ox + 'px';
+      win.style.top  = oy + 'px';
+      e.preventDefault();
+    });
+    document.addEventListener('mousemove', function (e) {
+      if (!dragging) return;
+      var dx = e.clientX - sx, dy = e.clientY - sy;
+      win.style.left = (ox + dx) + 'px';
+      win.style.top  = (oy + dy) + 'px';
+    });
+    document.addEventListener('mouseup', function () { dragging = false; });
+  })();
+</script>
+<script src="../shared.js"></script>
+</body>
+</html>

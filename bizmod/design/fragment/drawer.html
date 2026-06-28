@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>新建会议 - 会议弹窗</title>
+
+  <!-- Fragment 框架基础样式（base 内部 @import token + variable） -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../fonts/cses-icons.css?v=101">
+
+  <style>
+    /* ============================================================
+       本页补充令牌（设计稿专属，无系统等值变量时局部定义）
+       ============================================================ */
+    :root {
+      --td-required: #ff4d4f;                  /* Dust Red / 5 必填星标 */
+      --td-source-bg: var(--cs-color-fill-light);   /* #f5f5f5 来源条底色 */
+      --td-source-border: #ebebeb;             /* 来源条上下边框 */
+      --td-placeholder: rgba(153, 153, 153, 0.5);   /* 占位文字 */
+      --td-muted: #cccccc;                     /* 时间单位未选中文字 */
+      --td-divider: #e6e6e6;                   /* 竖向分隔线 */
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-family-cn);
+      min-height: 100vh;
+      /* 抽屉演示背景：模拟主内容被遮罩 */
+      background:
+        linear-gradient(180deg, #eef0f4 0%, #e7e9ef 100%);
+      display: flex;
+      justify-content: flex-end;   /* 抽屉靠右滑出 */
+      overflow: hidden;
+    }
+
+    /* 遮罩层 */
+    .td-backdrop {
+      position: fixed;
+      inset: 0;
+      background: var(--cs-color-bg-mask);
+      opacity: 1;
+      transition: opacity .25s ease;
+      z-index: 1;
+    }
+    .td-backdrop[hidden] { display: none; }
+
+    /* ============================================================
+       抽屉容器
+       ============================================================ */
+    .task-drawer {
+      position: relative;
+      z-index: 2;
+      width: 633px;
+      height: 100vh;
+      max-height: 1024px;
+      margin: auto 0;
+      background: var(--cs-color-white);
+      border-radius: 16px 0 0 16px;
+      box-shadow: -8px 0 32px rgba(0, 0, 0, .12);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      transform: translateX(0);
+      transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+    }
+    .task-drawer.is-closing { transform: translateX(100%); }
+
+    /* 上半部：可滚动内容 */
+    .td-scroll {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .td-scroll::-webkit-scrollbar { width: 6px; }
+    .td-scroll::-webkit-scrollbar-thumb {
+      background: #d8d8d8; border-radius: 3px;
+    }
+
+    /* ---------- 头部工具栏 ---------- */
+    .td-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 58px 8px 58px;
+    }
+    .td-toolbar__collapse {
+      font-size: 18px;
+      color: var(--cs-color-text);
+      cursor: pointer;
+      line-height: 1;
+    }
+    .td-toolbar__actions {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .td-toolbar__actions i {
+      font-size: 20px;
+      color: var(--cs-color-text-light);
+      cursor: pointer;
+      transition: color .15s ease;
+    }
+    .td-toolbar__actions i:hover { color: var(--cs-color-primary); }
+    .td-toolbar__actions i.is-active { color: var(--cs-color-primary); }
+
+    /* ---------- 任务名称 ---------- */
+    .td-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 20px 58px 20px 58px;
+      border-bottom: 1px solid var(--cs-color-border);
+      position: relative;
+    }
+    .td-title__icon {
+      font-size: 16px;
+      color: var(--cs-color-text-light2);
+      flex-shrink: 0;
+    }
+    .td-required {
+      color: var(--td-required);
+      font-size: 14px;
+      line-height: 1;
+    }
+    /* 必填星标放到左侧 gutter，不挤压图标列，让所有图标对齐 */
+    .td-title .td-required,
+    .td-field__label .td-required,
+    .td-desc__head .td-required {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--td-required);
+    }
+    /* td-title / td-desc__head 的父容器跨整宽度，需要用正数 left 落到 gutter */
+    .td-title .td-required,
+    .td-desc__head .td-required { left: 40px; }
+    /* td-field__label 自身就在 58px 处，向左偏移 -16px 即落入 gutter */
+    .td-field__label .td-required { left: -16px; }
+    .td-title__input {
+      flex: 1;
+      height: 24px;
+      padding: 0;
+      margin: 0;
+      border: none;
+      outline: none;
+      font-family: var(--font-family-cn);
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 1.4;
+      color: var(--cs-color-text);
+      background: transparent;
+    }
+    .td-title__input::placeholder { color: var(--cs-color-text-light2); font-weight: 600; }
+
+    /* ---------- 详情 + 描述外层 ---------- */
+    .td-detail-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* ---------- 来源条 ---------- */
+    .td-source {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 6px 58px 6px 58px;
+      background: var(--td-source-bg);
+      border-bottom: 1px solid var(--td-source-border);
+    }
+    .td-source__left {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+    }
+    .td-source__left i {
+      font-size: 16px;
+      color: var(--cs-color-text-light2);
+      flex-shrink: 0;
+    }
+    .td-source__text {
+      font-size: 14px;
+      color: var(--cs-color-text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .td-source__meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      color: var(--cs-color-text-light2);
+      flex-shrink: 0;
+    }
+
+    /* ---------- 详情 / 描述 内容区 ---------- */
+    .td-content {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    /* 详情卡 */
+    .td-detail {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      padding: 0 58px 0 58px;
+    }
+    .td-section-title {
+      font-weight: 600;
+      font-size: 16px;
+      color: var(--cs-color-text);
+    }
+
+    /* 字段行 */
+    .td-field {
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+      /* 悬浮时，从 label 之后绘制一条灰线作为底部分隔 */
+      background-image: linear-gradient(to right, transparent 150px, transparent 150px);
+      background-size: 100% 1px;
+      background-position: 0 100%;
+      background-repeat: no-repeat;
+      transition: background-image .15s ease;
+    }
+    .td-field:hover {
+      background-image: linear-gradient(to right, transparent 150px, var(--cs-color-border) 150px, var(--cs-color-border) 100%);
+    }
+    /* 字段内含 focus 元素时显示底部线（颜色用主题色，比 hover 更醒目） */
+    .td-field:focus-within {
+      background-image: linear-gradient(to right, transparent 150px, var(--cs-color-primary) 150px, var(--cs-color-primary) 100%);
+    }
+    /* 会议类型这类含分段控件的行：不显示 hover/focus 线，且不让控件撑高行 */
+    .td-field--static:hover,
+    .td-field--static:focus-within { background-image: none; }
+    .td-field--static .td-field__value { padding: 0; }
+    .td-field__label {
+      width: 150px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+    }
+    .td-field__label i {
+      font-size: 16px;
+      color: var(--cs-color-text-light2);
+    }
+    .td-field__label span {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--cs-color-text-light2);
+      white-space: nowrap;
+    }
+    .td-field__value {
+      width: 378px;
+      display: flex;
+      align-items: center;
+      padding: 12px 0;
+    }
+    .td-field__placeholder {
+      font-size: 14px;
+      line-height: 20px;
+      color: var(--td-placeholder);
+      cursor: pointer;
+    }
+    .td-field__text {
+      font-size: 14px;
+      line-height: 20px;
+      color: var(--cs-color-text);
+    }
+    .td-field__value:hover .td-field__placeholder { color: var(--cs-color-text-light2); }
+
+    /* 通用字段内联输入框：与 placeholder 风格一致 */
+    .td-field__input {
+      flex: 1;
+      width: 100%;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: var(--font-family-cn);
+      font-size: 14px;
+      line-height: 20px;
+      height: 20px;
+      color: var(--cs-color-text);
+      padding: 0;
+    }
+    .td-field__input::placeholder { color: var(--td-placeholder); }
+
+    .td-divider-v {
+      width: 1px;
+      height: 10px;
+      background: var(--td-divider);
+      flex-shrink: 0;
+    }
+
+    /* 时间字段：开始时间 → 结束时间 + 日历触发 */
+    .td-time-range {
+      width: 378px;
+      display: flex;
+      align-items: center;
+      padding: 12px 0;
+    }
+    .td-time-range__start { width: 45%; flex-shrink: 0; }
+    .td-time-range__mid {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+    .td-time-range__arrow { font-size: 14px; color: var(--td-placeholder); flex-shrink: 0; }
+    .td-time-range__cal {
+      font-size: 16px;
+      color: var(--cs-color-text-light2);
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .td-time-range__cal:hover { color: var(--cs-color-primary); }
+
+    /* ---------- 折叠分组 ---------- */
+    .td-group { display: flex; flex-direction: column; padding: 0 58px 0 58px; }
+    .td-group__head {
+      position: relative;
+      display: flex; align-items: center;
+      padding: 12px 0 8px;
+      cursor: pointer; user-select: none;
+    }
+    .td-group__caret {
+      position: absolute;
+      left: -16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 12px; color: var(--cs-color-text);
+      transition: transform .2s ease;
+    }
+    .td-group.is-collapsed .td-group__caret { transform: translateY(-50%) rotate(-90deg); }
+    .td-group__title {
+      font-weight: 600; font-size: 16px; color: var(--cs-color-text);
+    }
+    .td-group__sub {
+      font-size: 13px; color: var(--cs-color-text-light2);
+      padding: 0 0 12px 0;
+    }
+    .td-group__body { display: flex; flex-direction: column; gap: 2px; }
+    .td-group.is-collapsed .td-group__body { display: none; }
+
+    /* ---------- 分段控件 ---------- */
+    .td-seg {
+      display: inline-flex; align-items: center;
+      background: var(--cs-color-bg-light);
+      border-radius: 4px;
+      padding: 2px;
+      gap: 2px;
+    }
+    .td-seg__item {
+      padding: 2px 12px;
+      font-size: 13px; line-height: 20px;
+      color: var(--cs-color-text-light);
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all .15s ease;
+    }
+    .td-seg__item.is-active {
+      background: var(--cs-color-white);
+      color: var(--cs-color-text);
+      font-weight: 500;
+      box-shadow: 0 1px 2px rgba(0,0,0,.06);
+    }
+
+    /* 字段右侧链接按钮 */
+    .td-field__action {
+      margin-left: auto;
+      padding-left: 8px;
+      font-size: 14px;
+      color: var(--cs-color-primary);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .td-field__action:hover { color: var(--cs-color-primary-hover); }
+
+    /* 字段已填值（区别于 placeholder） */
+    .td-field__text {
+      font-size: 14px;
+      color: var(--cs-color-text);
+    }
+
+    /* 通用字段调整：让 value 在剩余空间内左对齐 */
+    .td-field--wide .td-field__value {
+      width: auto;
+      flex: 1;
+    }
+
+    /* ---------- 描述 ---------- */
+    .td-desc {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .td-desc__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 58px 0 58px;
+      position: relative;
+    }
+    .td-desc__head .td-section-title { display: flex; align-items: center; gap: 6px; }
+    .td-desc__expand {
+      font-size: 16px;
+      color: var(--cs-color-text-light);
+      cursor: pointer;
+    }
+    .td-desc__expand:hover { color: var(--cs-color-primary); }
+    .td-desc__editor {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 0 58px 0 58px;
+    }
+    .td-desc__tools {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .td-desc__tools i {
+      font-size: 16px;
+      color: var(--cs-color-text-light);
+      cursor: pointer;
+    }
+    .td-desc__tools i:hover { color: var(--cs-color-primary); }
+    .td-desc__input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+    }
+    .td-desc__input-wrap .td-divider-v { height: 16px; }
+    .td-desc__input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: var(--font-family-cn);
+      font-size: 14px;
+      color: var(--cs-color-text);
+    }
+    .td-desc__input::placeholder { color: var(--td-placeholder); }
+
+    /* ============================================================
+       底部固定区
+       ============================================================ */
+    .td-bottom { flex-shrink: 0; }
+
+    /* 快捷入口条 */
+    .td-quickbar {
+      position: relative;
+      border-top: 1px solid var(--cs-color-border);
+      padding: 6px 24px;
+    }
+    /* 顶部居中折叠把手 */
+    .td-handle {
+      position: absolute;
+      top: -16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 69px;
+      height: 16px;
+      background: var(--cs-color-white);
+      border: 1px solid var(--cs-color-border);
+      border-bottom: none;
+      border-radius: 8px 8px 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--cs-color-text-light2);
+    }
+    .td-handle i { font-size: 14px; transition: transform .2s ease; }
+    .td-handle.is-collapsed i { transform: rotate(180deg); }
+    .td-quick-items {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+    .td-quick {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+    .td-quick i { font-size: 16px; color: var(--cs-color-text-light2); }
+    .td-quick span {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--cs-color-text-light2);
+    }
+    .td-quick:hover i,
+    .td-quick:hover span { color: var(--cs-color-primary); }
+
+    /* 操作按钮栏 */
+    .td-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 16px;
+      padding: 24px 24px;
+      background: var(--cs-color-white);
+      border-top: 1px solid var(--cs-color-border);
+    }
+    .td-btn {
+      padding: 12px 32px;
+      border-radius: 4px;
+      font-size: 14px;
+      line-height: 16px;
+      cursor: pointer;
+      border: 1px solid var(--cs-color-border);
+      background: var(--cs-color-white);
+      color: var(--cs-color-text);
+      box-shadow: 0 0 2px rgba(0, 0, 0, .1);
+      font-family: var(--font-family-cn);
+      transition: all .15s ease;
+    }
+    .td-btn:hover { background: var(--cs-color-bg-light); }
+    .td-btn--primary {
+      background: var(--cs-color-primary);
+      color: var(--cs-color-white);
+      border-color: var(--cs-color-primary);
+      box-shadow: 0 0 1px rgba(0, 0, 0, .1);
+    }
+    .td-btn--primary:hover { background: var(--cs-color-primary-hover); }
+
+    /* ============================================================
+       人员选择控件（搜索 / 多选 / 键盘）
+       ============================================================ */
+    .td-picker {
+      position: absolute;
+      z-index: 100;
+      width: 460px;
+      max-height: 420px;
+      background: var(--cs-color-white);
+      border-radius: 8px;
+      border: 1px solid var(--cs-color-border);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, .14);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .td-picker.is-open { display: flex; }
+
+    /* 顶部提示行（"你可能想找" + ⌘↩ 多选 / 完成） */
+    .td-picker__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px 6px;
+      font-size: 13px;
+      color: var(--cs-color-text-light2);
+      flex-shrink: 0;
+    }
+    .td-picker__hint {
+      color: var(--cs-color-primary);
+      cursor: pointer;
+      user-select: none;
+      font-size: 13px;
+    }
+    .td-picker__hint:hover { color: var(--cs-color-primary-hover); }
+    /* 单选字段的 hint：灰色、不可点 */
+    .td-picker__hint.is-static {
+      color: var(--cs-color-text-light2);
+      cursor: default;
+    }
+    .td-picker__hint.is-static:hover { color: var(--cs-color-text-light2); }
+
+    /* 多选达上限：列表项灰掉、禁选 */
+    .td-picker__item.is-disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+    .td-picker__item.is-disabled:hover { background: transparent; }
+
+    /* 底部确认/取消栏（仅多选模式显示） */
+    .td-picker__footer {
+      display: none;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 10px 16px;
+      border-top: 1px solid var(--cs-color-border);
+      flex-shrink: 0;
+    }
+    .td-picker.is-batch .td-picker__footer { display: flex; }
+    .td-picker__btn {
+      padding: 6px 18px;
+      border: 1px solid var(--cs-color-border);
+      background: var(--cs-color-white);
+      border-radius: 999px;
+      font-size: 13px;
+      color: var(--cs-color-text);
+      cursor: pointer;
+      font-family: var(--font-family-cn);
+    }
+    .td-picker__btn:hover { background: var(--cs-color-bg-light); }
+    .td-picker__btn--primary {
+      background: var(--cs-color-primary);
+      color: var(--cs-color-white);
+      border-color: var(--cs-color-primary);
+    }
+    .td-picker__btn--primary:hover {
+      background: var(--cs-color-primary-hover);
+      color: var(--cs-color-white);
+    }
+
+    /* 多选模式：每项左侧 checkbox */
+    .td-picker__check {
+      width: 16px; height: 16px;
+      border-radius: 4px;
+      border: 1.5px solid #d9d9d9;
+      background: transparent;
+      display: none;
+      align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: all .15s ease;
+      position: relative;
+    }
+    .td-picker__check svg {
+      width: 11px; height: 11px;
+      stroke: var(--cs-color-white);
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      opacity: 0;
+      transition: opacity .12s ease;
+    }
+    .td-picker.is-batch .td-picker__check { display: flex; }
+    .td-picker__item.is-checked .td-picker__check {
+      background: var(--cs-color-primary);
+      border-color: var(--cs-color-primary);
+    }
+    .td-picker__item.is-checked .td-picker__check svg { opacity: 1; }
+    .td-picker__item:hover .td-picker__check {
+      border-color: var(--cs-color-primary);
+    }
+    .td-picker__item.is-checked:hover .td-picker__check {
+      border-color: var(--cs-color-primary);
+      background: var(--cs-color-primary-hover);
+    }
+
+    .td-picker__list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 6px 0 10px;
+    }
+    .td-picker__list::-webkit-scrollbar { width: 6px; }
+    .td-picker__list::-webkit-scrollbar-thumb { background: #d8d8d8; border-radius: 3px; }
+
+    .td-picker__item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: background .12s ease;
+    }
+    .td-picker__item.is-active { background: var(--cs-color-bg-light); }
+    /* 已选（非 batch 模式）：仅置灰文字，无底色 */
+    .td-picker__item.is-selected { background: transparent; }
+    .td-picker__item.is-selected .td-picker__name,
+    .td-picker__item.is-selected .td-picker__meta { color: var(--cs-color-text-light2); }
+    .td-picker__item.is-selected .td-picker__avatar { opacity: 0.5; }
+    .td-picker__item.is-selected:hover,
+    .td-picker__item.is-selected.is-active { background: var(--cs-color-bg-light); }
+
+    .td-picker__avatar {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--cs-color-white);
+      font-size: 15px;
+      font-weight: 600;
+      flex-shrink: 0;
+      background-size: cover;
+      background-position: center;
+    }
+    .td-picker__main { flex: 1; min-width: 0; }
+    .td-picker__name {
+      font-size: 16px;
+      color: var(--cs-color-text);
+      font-weight: 500;
+      line-height: 1.3;
+    }
+    .td-picker__meta {
+      font-size: 13px;
+      color: var(--cs-color-text-light2);
+      margin-top: 2px;
+    }
+    .td-picker__empty {
+      padding: 32px 16px;
+      text-align: center;
+      color: var(--cs-color-text-light2);
+      font-size: 14px;
+    }
+
+    /* 已选人员标签（在字段值区显示，最多 2 行，超出滚动） */
+    .td-people-tags {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      align-content: flex-start;
+      gap: 6px;
+      width: 100%;
+      max-height: 64px;
+      overflow-y: auto;
+    }
+    .td-people-tags::-webkit-scrollbar { width: 4px; }
+    .td-people-tags::-webkit-scrollbar-thumb { background: #d8d8d8; border-radius: 2px; }
+    .td-people-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 4px 2px 2px;
+      background: var(--cs-color-bg-light);
+      border-radius: 14px;
+      font-size: 13px;
+      color: var(--cs-color-text);
+      cursor: default;
+    }
+    .td-people-tag__avatar {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--cs-color-white);
+      font-size: 11px;
+      font-weight: 600;
+      flex-shrink: 0;
+      background-size: cover;
+      background-position: center;
+    }
+    .td-people-tag__remove {
+      width: 16px; height: 16px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: var(--cs-color-text-light2);
+      border-radius: 50%;
+    }
+    .td-people-tag__remove:hover {
+      background: var(--cs-color-bg-lighter);
+      color: var(--cs-color-text);
+    }
+    .td-people-tag__remove i { font-size: 12px; }
+
+    /* 选了人之后字段值不再显示 placeholder 的 cursor:pointer，但仍可点开追加 */
+    .td-field__value[data-people] { cursor: text; }
+
+    /* 人员字段：顶部对齐，让行高从顶向下增长；首行内容（label / value / action）保持垂直居中 */
+    .td-field[data-people-field] { align-items: flex-start; position: relative; }
+    .td-field[data-people-field] .td-field__label,
+    .td-field[data-people-field] .td-field__action {
+      min-height: 44px;
+    }
+    .td-field[data-people-field] .td-field__action {
+      display: flex;
+      align-items: center;
+    }
+
+    /* 字段内联输入框（用于搜索 / 添加成员） */
+    .td-people-input {
+      flex: 1;
+      min-width: 80px;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: var(--font-family-cn);
+      font-size: 14px;
+      line-height: 20px;
+      height: 20px;
+      color: var(--cs-color-text);
+      padding: 0;
+    }
+    .td-people-input::placeholder { color: var(--td-placeholder); }
+
+    /* 重新打开按钮（演示用） */
+    .td-reopen {
+      position: fixed;
+      left: 24px;
+      bottom: 24px;
+      z-index: 3;
+      padding: 10px 20px;
+      border-radius: 4px;
+      border: none;
+      background: var(--cs-color-primary);
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+      font-family: var(--font-family-cn);
+      box-shadow: var(--cs-shadow);
+      display: none;
+    }
+    .td-reopen.is-show { display: block; }
+  </style>
+</head>
+<body>
+
+  <!-- 遮罩 -->
+  <div class="td-backdrop" id="backdrop"></div>
+
+  <!-- 任务创建抽屉 -->
+  <aside class="task-drawer" id="drawer">
+
+    <!-- ===== 上半部：可滚动内容 ===== -->
+    <div class="td-scroll">
+
+      <!-- 标题 -->
+      <div class="td-title">
+        <span class="td-required">*</span>
+        <svg class="td-title__icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <!-- A 字 -->
+          <path d="M2 19 L8 5 L14 19 M4.2 14 L11.8 14"></path>
+          <!-- 三条短横线 ≡ -->
+          <path d="M16 9 H22"></path>
+          <path d="M16 13 H22"></path>
+          <path d="M16 17 H22"></path>
+        </svg>
+        <input class="td-title__input" type="text" placeholder="请输入标题" autofocus>
+      </div>
+
+      <!-- 详情 + 描述 -->
+      <div class="td-detail-wrap">
+
+        <div class="td-content">
+
+          <!-- 分组：基础信息 -->
+          <div class="td-group" id="groupBasic">
+            <div class="td-group__head">
+              <i class="cses-stratis-chevron-down td-group__caret"></i>
+              <span class="td-group__title">基础信息</span>
+            </div>
+            <div class="td-group__body">
+
+              <!-- 会议类型 -->
+              <div class="td-field td-field--wide td-field--static">
+                <div class="td-field__label">
+                  <i class="cses-stratis-grid-01"></i>
+                  <span>会议类型</span>
+                </div>
+                <div class="td-field__value">
+                  <div class="td-seg" id="meetingType">
+                    <span class="td-seg__item is-active">普通会议</span>
+                    <span class="td-seg__item">协同共创会</span>
+                    <span class="td-seg__item">成果导向会</span>
+                  </div>
+                </div>
+                <span class="td-field__action">会议设置</span>
+              </div>
+
+              <!-- 会议导向 -->
+              <div class="td-field td-field--wide">
+                <div class="td-field__label">
+                  <i class="cses-stratis-target-01"></i>
+                  <span>会议导向</span>
+                </div>
+                <div class="td-field__value">
+                  <input class="td-field__input" type="text" placeholder="请填写会议导向">
+                </div>
+              </div>
+
+              <!-- 主持人（必填） -->
+              <div class="td-field td-field--wide" data-people-field="host" data-multi="false">
+                <div class="td-field__label">
+                  <span class="td-required">*</span>
+                  <i class="cses-stratis-user-profile-01"></i>
+                  <span>主持人</span>
+                </div>
+                <div class="td-field__value" data-people>
+                  <span class="td-field__placeholder">请选择人员</span>
+                </div>
+                <span class="td-field__action">添加</span>
+              </div>
+
+              <!-- 参会人 -->
+              <div class="td-field td-field--wide" data-people-field="attendees" data-multi="true">
+                <div class="td-field__label">
+                  <i class="cses-stratis-users-profiles-01"></i>
+                  <span>参会人</span>
+                </div>
+                <div class="td-field__value" data-people>
+                  <span class="td-field__placeholder">请选择人员</span>
+                </div>
+                <span class="td-field__action">添加</span>
+              </div>
+
+              <!-- 起止时间（必填） -->
+              <div class="td-field td-field--wide">
+                <div class="td-field__label">
+                  <span class="td-required">*</span>
+                  <i class="cses-stratis-calendar-01"></i>
+                  <span>起止时间</span>
+                </div>
+                <div class="td-time-range" style="width:auto; flex:1;">
+                  <span class="td-field__placeholder td-time-range__start">开始时间</span>
+                  <div class="td-time-range__mid">
+                    <i class="cses-stratis-arrow-right td-time-range__arrow"></i>
+                    <span class="td-field__placeholder">结束时间</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 会议地点 -->
+              <div class="td-field td-field--wide">
+                <div class="td-field__label">
+                  <i class="cses-stratis-marker-01"></i>
+                  <span>会议地点</span>
+                </div>
+                <div class="td-field__value">
+                  <span class="td-field__text">线上</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 分组：附加信息（默认折叠） -->
+          <div class="td-group is-collapsed" id="groupExtra">
+            <div class="td-group__head">
+              <i class="cses-stratis-chevron-down td-group__caret"></i>
+              <span class="td-group__title">附加信息</span>
+            </div>
+            <div class="td-group__sub">包含联席主持人、语音宣导、提醒</div>
+            <div class="td-group__body">
+              <!-- 占位：可后续扩展 -->
+            </div>
+          </div>
+
+          <!-- 描述 -->
+          <div class="td-desc">
+            <div class="td-desc__head">
+              <div class="td-section-title">
+                <span>描述</span>
+              </div>
+              <i class="cses-stratis-arrow-expand-04 td-desc__expand" title="展开"></i>
+            </div>
+            <div class="td-desc__editor">
+              <div class="td-desc__input-wrap">
+                <input class="td-desc__input" type="text" placeholder="添加描述">
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 底部固定区 ===== -->
+    <div class="td-bottom">
+
+      <!-- 快捷入口条 -->
+      <div class="td-quickbar">
+        <div class="td-handle" id="handleBtn" title="折叠/展开">
+          <i class="cses-stratis-chevron-up"></i>
+        </div>
+        <div class="td-quick-items">
+          <div class="td-quick">
+            <i class="cses-stratis-link"></i>
+            <span>附件</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 操作按钮栏 -->
+      <div class="td-footer">
+        <button class="td-btn">关闭</button>
+        <button class="td-btn td-btn--primary">新建会议</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- 人员选择 Popover：head + list + footer -->
+  <div class="td-picker" id="picker">
+    <div class="td-picker__head">
+      <span>你可能想找</span>
+      <span class="td-picker__hint" id="pickerHint">多选(⌘↩)</span>
+    </div>
+    <div class="td-picker__list" id="pickerList"></div>
+    <div class="td-picker__footer">
+      <button class="td-picker__btn" id="pickerCancel">取消</button>
+      <button class="td-picker__btn td-picker__btn--primary" id="pickerConfirm">确定</button>
+    </div>
+  </div>
+
+  <!-- 演示：重新打开 -->
+  <button class="td-reopen" id="reopenBtn">重新打开会议抽屉</button>
+
+  <script>
+    const drawer = document.getElementById('drawer');
+    const backdrop = document.getElementById('backdrop');
+    const reopenBtn = document.getElementById('reopenBtn');
+
+    // 关闭抽屉（滑出）
+    function closeDrawer() {
+      drawer.classList.add('is-closing');
+      backdrop.style.opacity = '0';
+      setTimeout(() => {
+        backdrop.setAttribute('hidden', '');
+        reopenBtn.classList.add('is-show');
+      }, 300);
+    }
+    function openDrawer() {
+      backdrop.removeAttribute('hidden');
+      requestAnimationFrame(() => { backdrop.style.opacity = '1'; });
+      drawer.classList.remove('is-closing');
+      reopenBtn.classList.remove('is-show');
+      focusTitleInput();
+    }
+
+    function focusTitleInput() {
+      const titleInput = document.querySelector('.td-title__input');
+      if (titleInput) setTimeout(() => titleInput.focus(), 50);
+    }
+
+    // 页面加载即聚焦到标题输入框
+    focusTitleInput();
+
+    backdrop.addEventListener('click', closeDrawer);
+    reopenBtn.addEventListener('click', openDrawer);
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Escape') return;
+      // 优先关闭打开中的人员 picker
+      if (document.getElementById('picker').classList.contains('is-open')) {
+        e.preventDefault();
+        if (batchMode) exitBatchMode(false);
+        else closePicker();
+        return;
+      }
+      closeDrawer();
+    });
+
+    // 折叠把手
+    document.getElementById('handleBtn').addEventListener('click', function () {
+      this.classList.toggle('is-collapsed');
+    });
+
+    // 折叠分组（基础信息 / 附加信息）
+    document.querySelectorAll('.td-group__head').forEach(head => {
+      head.addEventListener('click', () => {
+        head.closest('.td-group').classList.toggle('is-collapsed');
+      });
+    });
+
+    // 会议类型 分段切换
+    document.getElementById('meetingType').addEventListener('click', e => {
+      const item = e.target.closest('.td-seg__item');
+      if (!item) return;
+      document.querySelectorAll('#meetingType .td-seg__item')
+        .forEach(i => i.classList.remove('is-active'));
+      item.classList.add('is-active');
+    });
+
+    /* ============================================================
+       人员选择控件
+       ============================================================ */
+    const PEOPLE = [
+      { id: 1, name: '王利伟', role: '后端开发', dept: '技术部', color: '#7c8eee' },
+      { id: 2, name: '王超乐', role: '后端开发', dept: '技术部', color: '#4857e2' },
+      { id: 3, name: '王俊虎', role: '测试员',   dept: '测试部', color: '#32bd79' },
+      { id: 4, name: '王晨宇', role: 'UI设计师', dept: '产品部', color: '#a4aeff' },
+      { id: 5, name: '王永泽', role: '运维',     dept: '运维部', color: '#ff9333' },
+      { id: 6, name: '李明',   role: '前端开发', dept: '技术部', color: '#fa4e4e' },
+      { id: 7, name: '张三',   role: '产品经理', dept: '产品部', color: '#576a95' },
+      { id: 8, name: '赵四',   role: '销售',     dept: '销售部', color: '#f6ad00' },
+      { id: 9, name: '钱五',   role: '财务',     dept: '财务部', color: '#8289ad' },
+      { id: 10, name: '孙六',  role: '人事',     dept: '人事部', color: '#f16c00' },
+      { id: 11, name: '姜乐乐', role: '运营',    dept: '运营部', color: '#7c8eee' },
+      { id: 12, name: '陈晨',  role: '运营',     dept: '运营部', color: '#32bd79' },
+    ];
+
+    // 每个字段独立保存所选 id
+    const selectionMap = new Map();   // key: fieldEl, value: Set<id>
+    const picker = document.getElementById('picker');
+    const pickerList = document.getElementById('pickerList');
+    const pickerHint = document.getElementById('pickerHint');
+    const pickerCancel = document.getElementById('pickerCancel');
+    const pickerConfirm = document.getElementById('pickerConfirm');
+    let activeField = null;     // 当前激活的字段 .td-field
+    let highlightIdx = 0;       // 键盘高亮索引
+    let filtered = [];          // 当前列表渲染数据
+    let batchMode = false;      // 多选 batch 模式
+    let stagedSet = null;       // batch 模式下临时所选集合（确定才提交）
+
+    function findPerson(id) { return PEOPLE.find(p => p.id === id); }
+
+    function getSelectedSet(fieldEl) {
+      if (!selectionMap.has(fieldEl)) selectionMap.set(fieldEl, new Set());
+      return selectionMap.get(fieldEl);
+    }
+
+    function getFieldInput(fieldEl) {
+      return fieldEl.querySelector('.td-people-input');
+    }
+
+    // 渲染字段值区：已选标签 + 内联输入框
+    function renderFieldTags(fieldEl) {
+      const valueEl = fieldEl.querySelector('.td-field__value');
+      const set = getSelectedSet(fieldEl);
+      const tagsHtml = Array.from(set).map(id => {
+        const p = findPerson(id); if (!p) return '';
+        return `<span class="td-people-tag">
+          <span class="td-people-tag__avatar" style="background:${p.color}">${p.name[0]}</span>
+          <span>${p.name}</span>
+          <span class="td-people-tag__remove" data-remove="${p.id}">
+            <i class="cses-stratis-x-01"></i>
+          </span>
+        </span>`;
+      }).join('');
+      const isMulti = fieldEl.dataset.multi === 'true';
+      const addPh = fieldEl.dataset.placeholderAdd || (isMulti ? '添加参会人' : '');
+      const placeholder = set.size === 0 ? '请选择人员' : addPh;
+      valueEl.innerHTML =
+        `<div class="td-people-tags">${tagsHtml}` +
+        `<input class="td-people-input" type="text" placeholder="${placeholder}">` +
+        `</div>`;
+      // 滚动到底部，让输入光标可见
+      const tagsEl = valueEl.querySelector('.td-people-tags');
+      tagsEl.scrollTop = tagsEl.scrollHeight;
+      bindFieldInput(fieldEl);
+    }
+
+    // 渲染 picker 列表
+    function renderPickerList() {
+      if (!activeField) return;
+      const currentSet = batchMode ? stagedSet : getSelectedSet(activeField);
+      const input = getFieldInput(activeField);
+      const q = (input ? input.value : '').trim().toLowerCase();
+      filtered = PEOPLE.filter(p =>
+        !q ||
+        p.name.toLowerCase().includes(q) ||
+        p.role.toLowerCase().includes(q) ||
+        p.dept.toLowerCase().includes(q)
+      );
+      if (filtered.length === 0) {
+        pickerList.innerHTML = '<div class="td-picker__empty">未找到匹配成员</div>';
+        return;
+      }
+      if (highlightIdx >= filtered.length) highlightIdx = 0;
+      const max = parseInt(activeField.dataset.max || '0');
+      const limitReached = max > 0 && currentSet.size >= max;
+      pickerList.innerHTML = filtered.map((p, i) => {
+        const selected = currentSet.has(p.id);
+        // 多选达上限：未选中的项禁用
+        const disabled = limitReached && !selected;
+        const cls = [
+          'td-picker__item',
+          i === highlightIdx ? 'is-active' : '',
+          selected && !batchMode ? 'is-selected' : '',
+          selected && batchMode ? 'is-checked' : '',
+          disabled ? 'is-disabled' : '',
+        ].filter(Boolean).join(' ');
+        const titleAttr = disabled ? ` title="最多选 ${max} 个"` : '';
+        return `<div class="${cls}" data-id="${p.id}"${titleAttr}>
+          <div class="td-picker__check"><svg viewBox="0 0 16 16"><polyline points="3.5 8.5 6.5 11.5 12.5 5"/></svg></div>
+          <div class="td-picker__avatar" style="background:${p.color}">${p.name[0]}</div>
+          <div class="td-picker__main">
+            <div class="td-picker__name">${p.name}</div>
+            <div class="td-picker__meta">${p.role} / ${p.dept}</div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    // 弹出 picker 并定位到字段下方（用整行 bottom，避免压到 focus 横线）
+    function openPicker(fieldEl) {
+      activeField = fieldEl;
+      const valueEl = fieldEl.querySelector('.td-field__value');
+      const valueRect = valueEl.getBoundingClientRect();
+      const fieldRect = fieldEl.getBoundingClientRect();
+      picker.style.left = valueRect.left + 'px';
+      picker.style.top = (fieldRect.bottom + 2) + 'px';
+      picker.style.width = Math.max(valueRect.width, 360) + 'px';
+      picker.classList.add('is-open');
+      // 根据字段类型设置 hint 文案
+      const isMulti = fieldEl.dataset.multi === 'true';
+      const max = parseInt(fieldEl.dataset.max || '0');
+      pickerHint.style.display = '';
+      if (isMulti) {
+        pickerHint.textContent = max > 0 ? `多选(⌘↩) · 最多 ${max} 个` : '多选(⌘↩)';
+        pickerHint.classList.remove('is-static');
+      } else {
+        pickerHint.textContent = '单选';
+        pickerHint.classList.add('is-static');
+      }
+      highlightIdx = 0;
+      renderPickerList();
+    }
+
+    function closePicker() {
+      picker.classList.remove('is-open');
+      // 退出 batch 模式
+      if (batchMode) {
+        batchMode = false;
+        stagedSet = null;
+        picker.classList.remove('is-batch');
+        pickerHint.textContent = '多选(⌘↩)';
+      }
+      // 注意：不主动 blur 输入框，保留光标让用户可继续编辑
+      activeField = null;
+    }
+
+    // 进入 batch 多选模式
+    function enterBatchMode() {
+      if (!activeField) return;
+      batchMode = true;
+      stagedSet = new Set(getSelectedSet(activeField));
+      picker.classList.add('is-batch');
+      pickerHint.textContent = '完成(⌘↩)';
+      renderPickerList();
+      const inp = getFieldInput(activeField);
+      if (inp) inp.focus();
+    }
+
+    // 退出 batch：commit=true 提交、false 取消
+    function exitBatchMode(commit) {
+      if (!batchMode) return;
+      const fieldEl = activeField;
+      if (commit && stagedSet) {
+        // 单选字段：只保留最后一个
+        const isMulti = fieldEl.dataset.multi === 'true';
+        const finalSet = isMulti ? stagedSet : new Set([Array.from(stagedSet).pop()].filter(Boolean));
+        selectionMap.set(fieldEl, finalSet);
+        renderFieldTags(fieldEl);
+      }
+      batchMode = false;
+      stagedSet = null;
+      picker.classList.remove('is-batch');
+      pickerHint.textContent = '多选(⌘↩)';
+      if (commit) {
+        closePicker();
+        // 重新拿到新生成的输入框并保持焦点，让用户可继续操作；
+        // 用 suppress 避免 focus 事件重新打开 picker
+        const inp = getFieldInput(fieldEl);
+        if (inp) { suppressNextFocus = true; inp.focus(); }
+      } else {
+        renderPickerList();
+        const inp = getFieldInput(fieldEl);
+        if (inp) inp.focus();
+      }
+    }
+
+    function toggleSelect(id) {
+      if (!activeField) return;
+      const fieldEl = activeField;
+      const max = parseInt(fieldEl.dataset.max || '0');
+      // batch 模式：操作 staged 集合，不立即提交
+      if (batchMode) {
+        if (stagedSet.has(id)) stagedSet.delete(id);
+        else {
+          if (max > 0 && stagedSet.size >= max) return; // 上限锁
+          stagedSet.add(id);
+        }
+        renderPickerList();
+        return;
+      }
+      // 正常模式
+      const multi = fieldEl.dataset.multi === 'true';
+      const set = getSelectedSet(fieldEl);
+      if (set.has(id)) {
+        set.delete(id);
+        renderFieldTags(fieldEl);
+        getFieldInput(fieldEl).focus();
+        renderPickerList();
+      } else {
+        if (!multi) set.clear();
+        else if (max > 0 && set.size >= max) return; // 上限锁
+        set.add(id);
+        renderFieldTags(fieldEl);
+        if (!multi) {
+          closePicker();
+        } else {
+          const inp = getFieldInput(fieldEl);
+          inp.value = '';
+          inp.focus();
+          openPicker(fieldEl);
+        }
+      }
+    }
+
+    let suppressNextFocus = false;   // 提交后 focus 输入框时不重新打开 picker
+
+    // 给字段内联输入框绑事件
+    function bindFieldInput(fieldEl) {
+      const inp = getFieldInput(fieldEl);
+      if (!inp) return;
+      inp.addEventListener('focus', () => {
+        if (suppressNextFocus) { suppressNextFocus = false; return; }
+        openPicker(fieldEl);
+      });
+      inp.addEventListener('input', () => {
+        if (activeField !== fieldEl) openPicker(fieldEl);
+        highlightIdx = 0;
+        renderPickerList();
+      });
+      inp.addEventListener('keydown', e => {
+        // Backspace 删除最后一个已选人员（无论 picker 是否打开）
+        if (e.key === 'Backspace' && inp.value === '') {
+          const set = getSelectedSet(fieldEl);
+          if (set.size > 0) {
+            e.preventDefault();
+            const last = Array.from(set).pop();
+            set.delete(last);
+            renderFieldTags(fieldEl);
+            getFieldInput(fieldEl).focus();
+            if (picker.classList.contains('is-open')) renderPickerList();
+            return;
+          }
+        }
+        if (!picker.classList.contains('is-open')) return;
+        // ⌘↩ / Ctrl+↩：进入/退出 batch 多选模式（仅多选字段）
+        if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+          if (fieldEl.dataset.multi !== 'true') return;
+          e.preventDefault();
+          if (batchMode) exitBatchMode(true);
+          else enterBatchMode();
+          return;
+        }
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          if (filtered.length === 0) return;
+          highlightIdx = (highlightIdx + 1) % filtered.length;
+          renderPickerList();
+          scrollHighlightedIntoView();
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          if (filtered.length === 0) return;
+          highlightIdx = (highlightIdx - 1 + filtered.length) % filtered.length;
+          renderPickerList();
+          scrollHighlightedIntoView();
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          if (filtered.length === 0) return;
+          toggleSelect(filtered[highlightIdx].id);
+        } else if (e.key === 'Escape') {
+          e.preventDefault();
+          e.stopPropagation();   // 不让事件冒泡触发抽屉关闭
+          if (batchMode) exitBatchMode(false);
+          else closePicker();
+          // 保留输入框焦点，让用户可继续编辑（再次输入会自动重开 picker）
+        }
+      });
+    }
+
+    // 字段点击：删除标签 / 聚焦输入框
+    document.querySelectorAll('[data-people-field]').forEach(fieldEl => {
+      // 初始渲染（输入框 + 空标签集）
+      renderFieldTags(fieldEl);
+      fieldEl.addEventListener('click', e => {
+        const removeBtn = e.target.closest('.td-people-tag__remove');
+        if (removeBtn) {
+          e.stopPropagation();
+          const id = +removeBtn.dataset.remove;
+          getSelectedSet(fieldEl).delete(id);
+          renderFieldTags(fieldEl);
+          getFieldInput(fieldEl).focus();
+          return;
+        }
+        if (e.target.closest('.td-people-tag')) return;
+        // 点击空白 → 聚焦输入框（input 的 focus 会触发 openPicker）
+        const inp = getFieldInput(fieldEl);
+        if (inp && document.activeElement !== inp) inp.focus();
+      });
+    });
+
+    // 列表点击 / hover
+    pickerList.addEventListener('click', e => {
+      const item = e.target.closest('.td-picker__item');
+      if (!item) return;
+      e.preventDefault();   // 避免 input 失焦
+      if (item.classList.contains('is-disabled')) return;
+      toggleSelect(+item.dataset.id);
+    });
+    pickerList.addEventListener('mousedown', e => {
+      // 阻止点击列表时 input 失焦关闭 picker
+      if (e.target.closest('.td-picker__item')) e.preventDefault();
+    });
+    pickerList.addEventListener('mousemove', e => {
+      const item = e.target.closest('.td-picker__item');
+      if (!item) return;
+      const idx = Array.from(pickerList.children).indexOf(item);
+      if (idx >= 0 && idx !== highlightIdx) {
+        highlightIdx = idx;
+        Array.from(pickerList.children).forEach((el, i) => {
+          el.classList.toggle('is-active', i === highlightIdx);
+        });
+      }
+    });
+
+    function scrollHighlightedIntoView() {
+      const el = pickerList.children[highlightIdx];
+      if (el) el.scrollIntoView({ block: 'nearest' });
+    }
+
+    // hint 点击：切换 batch 模式
+    pickerHint.addEventListener('mousedown', e => {
+      e.preventDefault();        // 不让 input 失焦
+      e.stopPropagation();
+    });
+    pickerHint.addEventListener('click', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      // 单选字段：hint 不可点
+      if (activeField && activeField.dataset.multi !== 'true') return;
+      if (batchMode) exitBatchMode(true);
+      else enterBatchMode();
+    });
+    // Cancel / Confirm 按钮
+    pickerCancel.addEventListener('mousedown', e => { e.preventDefault(); });
+    pickerCancel.addEventListener('click', e => { e.preventDefault(); exitBatchMode(false); });
+    pickerConfirm.addEventListener('mousedown', e => { e.preventDefault(); });
+    pickerConfirm.addEventListener('click', e => { e.preventDefault(); exitBatchMode(true); });
+
+    // 点外部关闭
+    document.addEventListener('mousedown', e => {
+      if (!picker.classList.contains('is-open')) return;
+      if (picker.contains(e.target)) return;
+      if (e.target.closest('[data-people-field]')) return;
+      // batch 模式下点外部 = 取消
+      if (batchMode) exitBatchMode(false);
+      else closePicker();
+    });
+  </script>
+
+</body>
+</html>

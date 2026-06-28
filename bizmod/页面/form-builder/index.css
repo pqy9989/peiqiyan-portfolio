@@ -1,0 +1,812 @@
+/* ============================================================
+   form-builder / 表单设计器 — 创建协同共创会议
+   ============================================================ */
+
+.main-content { background: var(--cs-color-bg-secondary) !important; }
+
+/* ===== 顶栏 ===== */
+.fb-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  height: 64px;
+  background: var(--cs-color-white);
+  border-bottom: 1px solid var(--cs-color-border);
+  flex-shrink: 0;
+}
+.fb-topbar__left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.fb-topbar__title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--cs-color-text);
+}
+.fb-topbar__title i {
+  font-size: 14px;
+  color: var(--cs-color-text-light2);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.fb-topbar__title i:hover { background: var(--cs-color-bg-light); color: var(--cs-color-primary); }
+
+.fb-topbar__version {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+
+.fb-topbar__center {
+  display: inline-flex;
+  align-items: center;
+  background: var(--cs-color-bg-light);
+  border-radius: 8px;
+  padding: 2px;
+}
+.fb-topbar__preview-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 32px;
+  border-radius: 6px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  color: var(--cs-color-text-light);
+  transition: background 0.18s ease, color 0.18s ease;
+}
+.fb-topbar__preview-btn i { font-size: 16px; }
+.fb-topbar__preview-btn[data-active] {
+  background: var(--cs-color-white);
+  color: var(--cs-color-primary);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+.fb-topbar__preview-btn:hover { color: var(--cs-color-primary); }
+
+.fb-topbar__right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.fb-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 6px;
+  border: 1px solid var(--cs-color-border);
+  background: var(--cs-color-white);
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text);
+  cursor: pointer;
+  transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+}
+.fb-btn:hover { border-color: var(--cs-color-primary); color: var(--cs-color-primary); }
+.fb-btn[data-variant="primary"] {
+  background: var(--cs-color-primary);
+  color: var(--cs-color-white);
+  border-color: var(--cs-color-primary);
+}
+.fb-btn[data-variant="primary"]:hover {
+  background: var(--cs-color-primary-hover);
+  color: var(--cs-color-white);
+  border-color: var(--cs-color-primary-hover);
+}
+.fb-btn i { font-size: 14px; }
+.fb-topbar__more {
+  width: 32px; height: 32px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 6px;
+  border: 1px solid var(--cs-color-border);
+  background: var(--cs-color-white);
+  cursor: pointer;
+  color: var(--cs-color-text-light);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.fb-topbar__more:hover { background: var(--cs-color-bg-light); color: var(--cs-color-primary); }
+
+
+/* ===== 三栏主体 ===== */
+.fb-body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 232px 1fr 344px;
+  background: var(--cs-color-bg-secondary);
+}
+
+/* ===== 左：数据源/大纲 ===== */
+.fb-left {
+  background: var(--cs-color-white);
+  border-right: 1px solid var(--cs-color-border);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.fb-left__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px 8px;
+  flex-shrink: 0;
+}
+.fb-left__tabs {
+  display: flex;
+  gap: 16px;
+}
+.fb-left__tab {
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text-light2);
+  cursor: pointer;
+  padding-bottom: 4px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.18s ease, border-color 0.18s ease;
+}
+.fb-left__tab:hover { color: var(--cs-color-text); }
+.fb-left__tab[data-active] {
+  color: var(--cs-color-text);
+  font-weight: var(--font-weight-semibold);
+  border-bottom-color: var(--cs-color-primary);
+}
+.fb-left__tools {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--cs-color-text-light2);
+}
+.fb-left__tools i {
+  font-size: 14px;
+  padding: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.fb-left__tools i:hover { background: var(--cs-color-bg-light); color: var(--cs-color-primary); }
+
+.fb-left__body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 4px 8px 16px;
+}
+.fb-left__body::-webkit-scrollbar { width: 6px; }
+.fb-left__body::-webkit-scrollbar-thumb { background: var(--cs-color-bg-lighter); border-radius: 3px; }
+
+/* 数据源树节点 */
+.fb-ds-node {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text);
+  transition: background 0.15s ease;
+}
+.fb-ds-node:hover { background: var(--cs-color-bg-light); }
+.fb-ds-node__caret {
+  width: 12px; height: 12px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  color: var(--cs-color-text-light2);
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+.fb-ds-node--collapsed .fb-ds-node__caret { transform: rotate(-90deg); }
+.fb-ds-node__type {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--cs-color-bg-light);
+  color: var(--cs-color-text-light);
+  font: var(--typo-cn-12-regular);
+  font-size: 11px;
+  flex-shrink: 0;
+}
+.fb-ds-node__type[data-tone="key"]  { background: #fff3d4; color: #b45309; }
+.fb-ds-node__type[data-tone="link"] { background: #ece7ff; color: #6c5ce7; }
+.fb-ds-node__type[data-tone="text"] { background: #e6f0ff; color: #2563eb; }
+.fb-ds-node__name {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fb-ds-node__count {
+  color: var(--cs-color-text-light2);
+  font-size: 12px;
+  margin-left: 2px;
+}
+.fb-ds-node[data-active] {
+  background: var(--cs-color-primary-a2);
+  color: var(--cs-color-primary);
+  font-weight: var(--font-weight-medium);
+}
+.fb-ds-node__add {
+  margin-left: auto;
+  width: 18px; height: 18px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 4px;
+  color: var(--cs-color-text-light2);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.fb-ds-node__add:hover { background: var(--cs-color-primary-a2); color: var(--cs-color-primary); }
+
+.fb-ds-children {
+  display: flex;
+  flex-direction: column;
+  padding-left: 18px;
+}
+.fb-ds-node--collapsed + .fb-ds-children { display: none; }
+.fb-ds-children .fb-ds-node { padding-left: 6px; }
+
+
+/* ===== 中：画布 ===== */
+.fb-center {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+.fb-center::-webkit-scrollbar { width: 6px; }
+.fb-center::-webkit-scrollbar-thumb { background: var(--cs-color-bg-lighter); border-radius: 3px; }
+
+.fb-canvas {
+  background: var(--cs-color-white);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  padding: 32px 40px 60px;
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.fb-canvas__title {
+  position: relative;
+  font-size: 22px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--cs-color-text);
+  padding: 4px 0 10px;
+  border-bottom: 1px solid var(--cs-color-border);
+}
+.fb-canvas__title-placeholder { color: var(--cs-color-text-light2); }
+.fb-canvas__req {
+  position: absolute;
+  left: -16px; top: 8px;
+  color: var(--cs-color-error);
+  font-size: 16px;
+}
+
+.fb-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+.fb-section__title {
+  font-size: 18px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--cs-color-text);
+  margin-bottom: 8px;
+}
+
+/* 表单字段（设计模式 - 可选中、可悬停） */
+.fb-field {
+  position: relative;
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  align-items: start;
+  gap: 16px;
+  padding: 14px 12px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  transition: border-color 0.18s ease, background 0.18s ease;
+  cursor: pointer;
+}
+.fb-field:hover {
+  border-color: var(--cs-color-border);
+  background: var(--cs-color-bg-secondary);
+}
+.fb-field[data-active] {
+  border-color: var(--cs-color-primary);
+  background: var(--cs-color-white);
+  box-shadow: 0 0 0 2px var(--cs-color-primary-a2);
+}
+.fb-field[data-active]:hover { background: var(--cs-color-white); }
+
+.fb-field__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text-light);
+  padding-top: 4px;
+  position: relative;
+}
+.fb-field__req {
+  color: var(--cs-color-error);
+  font-size: 12px;
+  position: absolute;
+  left: -10px;
+  top: 6px;
+}
+.fb-field__label i { font-size: 14px; color: var(--cs-color-text-light2); }
+.fb-field__label-text { white-space: nowrap; }
+
+.fb-field__value { min-width: 0; }
+.fb-field__value-input {
+  width: 100%;
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text);
+  border: 0;
+  outline: 0;
+  background: transparent;
+  border-bottom: 1px solid var(--cs-color-border);
+  padding: 6px 0;
+  transition: border-color 0.18s ease;
+}
+.fb-field__value-input::placeholder { color: var(--cs-color-text-light2); }
+.fb-field__value-input:focus { border-bottom-color: var(--cs-color-primary); }
+
+/* 字段右上悬停操作 */
+.fb-field__actions {
+  position: absolute;
+  top: -16px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px;
+  background: var(--cs-color-white);
+  border: 1px solid var(--cs-color-border);
+  border-radius: 6px;
+  color: var(--cs-color-text-light);
+  font-size: 14px;
+  box-shadow: 0 4px 12px -4px rgba(0,0,0,0.08);
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.fb-field[data-active] .fb-field__actions {
+  visibility: visible;
+  opacity: 1;
+}
+.fb-field__actions i {
+  padding: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.fb-field__actions i:hover { background: var(--cs-color-primary-a2); color: var(--cs-color-primary); }
+
+
+/* segmented (会议类型) */
+.fb-segmented {
+  display: inline-flex;
+  background: var(--cs-color-bg-light);
+  border-radius: 6px;
+  padding: 2px;
+}
+.fb-segmented__item {
+  padding: 6px 14px;
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text-light);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+.fb-segmented__item[data-active] {
+  background: var(--cs-color-white);
+  color: var(--cs-color-text);
+  font-weight: var(--font-weight-medium);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+.fb-segmented__item:hover:not([data-active]) { color: var(--cs-color-text); }
+
+/* 录制控件 */
+.fb-record {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text-light);
+  cursor: pointer;
+}
+.fb-record i { font-size: 14px; color: var(--cs-color-error); }
+.fb-record:hover { color: var(--cs-color-primary); }
+
+/* 时间字段（开始 → 结束） */
+.fb-daterange {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text-light2);
+}
+.fb-daterange__sep { color: var(--cs-color-text-light2); }
+.fb-daterange__input { color: var(--cs-color-text-light2); }
+
+/* 用户选择 chip (姓名 + 部门) */
+.fb-user-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px 4px 4px;
+  border-radius: 999px;
+  background: var(--cs-color-bg-light);
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text);
+}
+.fb-user-pill__avatar {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--color-blue-100, #e6f0ff);
+  color: var(--cs-color-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+}
+.fb-user-pill__name {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+.fb-user-pill__role {
+  font-size: 11px;
+  color: var(--cs-color-text-light2);
+}
+.fb-user-pill__close {
+  color: var(--cs-color-text-light2);
+  cursor: pointer;
+  font-size: 12px;
+}
+
+/* dropdown placeholder */
+.fb-dropdown {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text-light2);
+  border-bottom: 1px solid var(--cs-color-border);
+  cursor: pointer;
+}
+.fb-dropdown i { color: var(--cs-color-text-light2); font-size: 14px; }
+
+/* dashed input (drop target) */
+.fb-dropzone-input {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px dashed var(--cs-color-border);
+  border-radius: 6px;
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text-light2);
+}
+.fb-dropzone-input i { color: var(--cs-color-text-light2); font-size: 14px; }
+
+/* 底部 tab (设计 / YAML / JS) */
+.fb-mode-tabs {
+  position: fixed;
+  bottom: 24px;
+  left: 121px;
+  display: inline-flex;
+  background: rgba(44, 42, 58, 0.92);
+  border-radius: 8px;
+  padding: 4px;
+  z-index: 5;
+}
+.fb-mode-tabs__item {
+  padding: 6px 16px;
+  font: var(--typo-cn-12-regular);
+  color: rgba(255,255,255,0.6);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+.fb-mode-tabs__item[data-active] {
+  background: rgba(255,255,255,0.16);
+  color: var(--cs-color-white);
+  font-weight: var(--font-weight-medium);
+}
+.fb-mode-tabs__item:hover:not([data-active]) { color: var(--cs-color-white); }
+
+/* 提示 toast */
+.fb-hint-toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 16px;
+  background: rgba(44, 42, 58, 0.85);
+  border-radius: 6px;
+  color: var(--cs-color-white);
+  font: var(--typo-cn-12-regular);
+  pointer-events: none;
+  z-index: 5;
+}
+
+
+/* ===== 右：属性面板 ===== */
+.fb-right {
+  background: var(--cs-color-white);
+  border-left: 1px solid var(--cs-color-border);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow-y: auto;
+}
+.fb-right::-webkit-scrollbar { width: 6px; }
+.fb-right::-webkit-scrollbar-thumb { background: var(--cs-color-bg-lighter); border-radius: 3px; }
+
+.fb-prop-section {
+  border-bottom: 1px solid var(--cs-color-border);
+}
+.fb-prop-section__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  font-size: 14px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--cs-color-text);
+  cursor: pointer;
+  user-select: none;
+}
+.fb-prop-section__head i {
+  font-size: 14px;
+  color: var(--cs-color-text-light2);
+  transition: transform 0.2s ease;
+}
+.fb-prop-section--collapsed .fb-prop-section__head i { transform: rotate(-90deg); }
+.fb-prop-section__body {
+  padding: 0 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.fb-prop-section--collapsed .fb-prop-section__body { display: none; }
+
+.fb-prop-row {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  align-items: center;
+  gap: 12px;
+}
+.fb-prop-row--col {
+  grid-template-columns: 1fr;
+}
+.fb-prop-row__label {
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text-light);
+}
+.fb-prop-row__value { min-width: 0; }
+
+/* 文本框 + 字数 */
+.fb-input-wrap {
+  position: relative;
+}
+.fb-input {
+  width: 100%;
+  height: 32px;
+  padding: 0 36px 0 10px;
+  border: 1px solid var(--cs-color-border);
+  border-radius: 6px;
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text);
+  background: var(--cs-color-white);
+  outline: 0;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+.fb-input:focus {
+  border-color: var(--cs-color-primary);
+  box-shadow: 0 0 0 3px var(--cs-color-primary-a2);
+}
+.fb-input-wrap__count {
+  position: absolute;
+  right: 10px; top: 50%;
+  transform: translateY(-50%);
+  font: var(--typo-cn-12-regular);
+  font-size: 11px;
+  color: var(--cs-color-text-light2);
+}
+
+/* 自定义 checkbox 列 */
+.fb-check-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.fb-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text);
+  cursor: pointer;
+  user-select: none;
+}
+.fb-check__box {
+  width: 16px; height: 16px;
+  border-radius: 3px;
+  border: 1.5px solid var(--cs-color-border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cs-color-white);
+  font-size: 10px;
+  transition: background 0.18s ease, border-color 0.18s ease;
+  flex-shrink: 0;
+}
+.fb-check[data-checked] .fb-check__box {
+  background: var(--cs-color-primary);
+  border-color: var(--cs-color-primary);
+}
+.fb-check[data-checked] .fb-check__box::after {
+  content: "";
+  width: 8px;
+  height: 4px;
+  border-left: 2px solid var(--cs-color-white);
+  border-bottom: 2px solid var(--cs-color-white);
+  transform: rotate(-45deg) translate(1px, -1px);
+}
+.fb-check__action {
+  color: var(--cs-color-primary);
+  font: var(--typo-cn-12-regular);
+  cursor: pointer;
+}
+.fb-check__action:hover { text-decoration: underline; }
+
+/* 字段类型 grid 按钮 */
+.fb-type-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.fb-type-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 10px 4px;
+  border: 1px solid var(--cs-color-border);
+  border-radius: 6px;
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text);
+  background: var(--cs-color-white);
+  cursor: pointer;
+  transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+}
+.fb-type-btn i {
+  font-size: 18px;
+  color: var(--cs-color-text-light);
+  transition: color 0.18s ease;
+}
+.fb-type-btn:hover {
+  border-color: var(--cs-color-primary-light);
+  color: var(--cs-color-primary);
+}
+.fb-type-btn:hover i { color: var(--cs-color-primary); }
+.fb-type-btn[data-active] {
+  border-color: var(--cs-color-primary);
+  background: var(--cs-color-primary-a2);
+  color: var(--cs-color-primary);
+  font-weight: var(--font-weight-medium);
+}
+.fb-type-btn[data-active] i { color: var(--cs-color-primary); }
+
+/* 选择框 + 提示 */
+.fb-select {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--cs-color-border);
+  border-radius: 6px;
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text);
+  background: var(--cs-color-white);
+  cursor: pointer;
+  transition: border-color 0.18s ease;
+}
+.fb-select:hover { border-color: var(--cs-color-primary); }
+.fb-select i { color: var(--cs-color-text-light2); font-size: 14px; }
+.fb-select__placeholder { color: var(--cs-color-text-light2); }
+
+/* toggle 开关 */
+.fb-toggle {
+  position: relative;
+  width: 34px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--cs-color-border);
+  cursor: pointer;
+  transition: background 0.18s ease;
+  flex-shrink: 0;
+}
+.fb-toggle::after {
+  content: "";
+  position: absolute;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--cs-color-white);
+  top: 2px; left: 2px;
+  transition: left 0.18s ease;
+}
+.fb-toggle[data-on] {
+  background: var(--cs-color-primary);
+}
+.fb-toggle[data-on]::after { left: 16px; }
+
+/* radio */
+.fb-radio-row {
+  display: flex;
+  gap: 16px;
+}
+.fb-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text);
+  cursor: pointer;
+  user-select: none;
+}
+.fb-radio__dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--cs-color-border);
+  background: var(--cs-color-white);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.18s ease;
+}
+.fb-radio[data-on] .fb-radio__dot {
+  border-color: var(--cs-color-primary);
+}
+.fb-radio[data-on] .fb-radio__dot::after {
+  content: "";
+  width: 6px; height: 6px;
+  background: var(--cs-color-primary);
+  border-radius: 50%;
+}
+
+/* min~max 两个小输入 */
+.fb-range-inputs {
+  display: grid;
+  grid-template-columns: 1fr 16px 1fr;
+  align-items: center;
+  gap: 6px;
+}
+.fb-range-inputs__sep { text-align: center; color: var(--cs-color-text-light2); }
+.fb-range-inputs .fb-input { padding-right: 10px; }

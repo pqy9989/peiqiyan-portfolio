@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>会议室详情 · 望京 3F-A 大会议室 — CSES Meeting Room</title>
+
+  <!-- 1. 设计令牌（base = token + variable） -->
+  <link rel="stylesheet" href="../../design/css/base.css">
+  <!-- 2. 图标字体 -->
+  <link rel="stylesheet" href="../../design/fonts/cses-icons.css">
+  <!-- 3. 布局容器 -->
+  <link rel="stylesheet" href="../../design/fragment/fragment.css">
+  <!-- 4. page-shell 桥接（tabbar 内被删组件 + stratis 图标对齐） -->
+  <link rel="stylesheet" href="../../design/css/page-shell.css">
+
+  <!-- 5. 组件库（shell + 本页所需） -->
+  <link rel="stylesheet" href="../../design/components/window-control/window-control.css">
+  <link rel="stylesheet" href="../../design/components/search-input/search-input.css">
+  <link rel="stylesheet" href="../../design/components/tab/tab.css">
+  <link rel="stylesheet" href="../../design/components/avatar/avatar.css">
+  <link rel="stylesheet" href="../../design/components/badge/badge.css">
+  <link rel="stylesheet" href="../../design/components/button/button.css">
+  <link rel="stylesheet" href="../../design/components/search-trigger/search-trigger.css">
+  <link rel="stylesheet" href="../../design/components/status-badge/status-badge.css">
+
+  <!-- 6. 本模块私有样式 -->
+  <link rel="stylesheet" href="./shell.css">
+  <!-- 7. 本页私有样式 -->
+  <link rel="stylesheet" href="./room-detail.css">
+</head>
+<body>
+
+<!-- ============================================================
+     room-detail · 会议室详情页
+     - 父页：find-rooms.html
+     - 形态：独立 routed 页（PROTO-3.3）
+     - 主区结构：
+       上排 · 信息卡（60%）+ 操作区（40%）
+       中排 · mini 时间轴（今天 / 明天）
+       下排 · 我相关的预约
+     - 抽屉：body 末尾内联 booking-form 抽屉（cs-drawer + overlay）
+============================================================ -->
+<cs-layout>
+
+  <!-- ============================================================
+       ① tabbar — 顶部标签栏（沿用 shell 默认）
+  ============================================================ -->
+  <div class="tabbar">
+    <div class="tabbar-left">
+      <cs-window-control class="tabbar-window-control">
+        <span class="ctrl-close"></span>
+        <span class="ctrl-minimize"></span>
+        <span class="ctrl-maximize"></span>
+      </cs-window-control>
+      <cs-search-input class="tabbar-search" data-variant="gray" data-size="sm" style="border-radius:var(--radius-lg);">
+        <i class="search-icon cses-stratis-search-01"></i>
+        <input class="search-field" type="text" placeholder="搜索">
+      </cs-search-input>
+      <cs-tab data-active>
+        <span class="tab-label">会议室</span>
+        <i class="tab-close cses-stratis-x-01"></i>
+      </cs-tab>
+    </div>
+    <div class="tabbar-right">
+      <span class="tabbar-notice">
+        <i class="cses-stratis-bell-01 notice-icon"></i>
+        <span class="notice-badge">0</span>
+      </span>
+      <cs-avatar data-size="xs" data-shape="circle" data-color="blue">
+        <span class="avatar-text">张</span>
+      </cs-avatar>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       ② body
+  ============================================================ -->
+  <div class="body">
+
+    <!-- 一级 sidebar（fragment 默认 · 会议项 active） -->
+    <cs-sidebar>
+      <span class="logo">
+        <img src="../../design/assets/logo.png" alt="CSES">
+      </span>
+      <nav class="nav">
+        <div class="nav-group">
+          <a class="nav-item" href="#">
+            <span class="nav-icon"><i class="cses-stratis-home-01"></i></span>
+            <span class="nav-label">工作台</span>
+          </a>
+          <a class="nav-item" href="#">
+            <span class="nav-icon"><i class="cses-stratis-compass"></i></span>
+            <span class="nav-label">导向</span>
+          </a>
+          <a class="nav-item" href="#">
+            <span class="nav-icon"><i class="cses-stratis-message-circle"></i></span>
+            <span class="nav-label">消息</span>
+          </a>
+          <a class="nav-item" href="#">
+            <span class="nav-icon"><i class="cses-stratis-check-square-broken"></i></span>
+            <span class="nav-label">任务</span>
+          </a>
+          <a class="nav-item" data-active href="#">
+            <span class="nav-icon"><i class="cses-stratis-video-on"></i></span>
+            <span class="nav-label">会议</span>
+          </a>
+          <a class="nav-item" href="#">
+            <span class="nav-icon"><i class="cses-stratis-book-01"></i></span>
+            <span class="nav-label">文档</span>
+          </a>
+          <a class="nav-item" href="#">
+            <span class="nav-icon"><i class="cses-stratis-file-edit-01"></i></span>
+            <span class="nav-label">表单</span>
+          </a>
+          <a class="nav-item" href="#">
+            <span class="nav-icon"><i class="cses-stratis-file-check-01"></i></span>
+            <span class="nav-label">审批</span>
+          </a>
+        </div>
+      </nav>
+    </cs-sidebar>
+
+    <div class="content-wrapper">
+
+      <!-- 二级 navbar（会议室模块） -->
+      <cs-navbar>
+        <div class="inner">
+
+          <!-- 标题区 -->
+          <div class="slot-header" style="display:flex;flex-direction:column;gap:var(--space-3xs);">
+            <span style="font: var(--typo-cn-16-medium); color: var(--cs-color-text);">我的会议</span>
+            <span style="font: var(--typo-cn-12-regular); color: var(--cs-color-text-light2);">预约 · 查找 · 管理</span>
+          </div>
+
+          <!-- 主 CTA（slot-action） — 改为抽屉触发 -->
+          <div class="slot-action">
+            <cs-button data-variant="primary" data-size="lg" style="width:100%;" data-open="booking-drawer">
+              <i class="btn-icon cses-stratis-plus-01"></i>
+              <span class="btn-label">新建预约</span>
+            </cs-button>
+          </div>
+
+          <!-- 主菜单（slot-nav） — 找会议室 active（详情页继承父列表） -->
+          <div class="slot-nav" style="display:flex;flex-direction:column;gap:var(--space-2xs);padding-top:var(--space-xs);border-top:var(--line-width) solid var(--cs-color-border);">
+            <a class="nav-item" href="./my-bookings.html">
+              <span class="nav-icon"><i class="cses-stratis-calendar-01"></i></span>
+              <span class="nav-label">我的会议</span>
+            </a>
+            <a class="nav-item" data-active href="./find-rooms.html">
+              <span class="nav-icon"><i class="cses-stratis-search-01"></i></span>
+              <span class="nav-label">找会议室</span>
+            </a>
+          </div>
+
+          <!-- 副菜单留空 -->
+          <div class="slot-sub" aria-hidden="true"></div>
+
+          <!-- 管理后台 -->
+          <div class="slot-admin" style="display:flex;align-items:center;gap:var(--space-2xs);padding:var(--space-xs);cursor:pointer;border-top:var(--line-width) solid var(--cs-color-border);">
+            <i class="cses-stratis-settings" style="font-size:var(--cs-sem-size-icon-sm);color:var(--cs-color-text);"></i>
+            <span style="font: var(--typo-cn-14-regular); color: var(--cs-color-text);">管理后台</span>
+          </div>
+
+        </div>
+      </cs-navbar>
+
+      <!-- ============================================================
+           主内容区
+      ============================================================ -->
+      <main class="main-content">
+
+        <!-- content-header（详情型变体 B） -->
+        <cs-content-header>
+          <div class="slot-left rd-header-left">
+            <a class="rd-back" href="./find-rooms.html" aria-label="返回找会议室">
+              <i class="cses-stratis-arrow-left"></i>
+            </a>
+            <div class="rd-title-wrap">
+              <div class="rd-title-line">
+                <span class="page-title">望京 3F-A 大会议室</span>
+                <cs-status-badge data-status="in-progress" class="rd-status">ENABLED</cs-status-badge>
+              </div>
+              <span class="page-subtitle">北京 · 望京 · 3F · A 区</span>
+            </div>
+          </div>
+        </cs-content-header>
+
+        <!-- 业务主区 -->
+        <div class="rd-main">
+
+          <!-- ===== 上排：信息卡（左 60%）+ 操作区（右 40%） ===== -->
+          <section class="rd-top">
+
+            <!-- 信息卡 -->
+            <article class="rd-info-card">
+              <div class="rd-info-cover" aria-hidden="true">
+                <i class="cses-stratis-presentation-01 rd-cover-icon"></i>
+                <span class="rd-cover-tag">16:9 · 会议室照片</span>
+              </div>
+
+              <div class="rd-info-body">
+                <!-- 容量 -->
+                <div class="rd-info-row">
+                  <i class="cses-stratis-users-profiles-01 rd-info-icon"></i>
+                  <span class="rd-info-label">容量</span>
+                  <span class="rd-info-value">12 人</span>
+                </div>
+
+                <!-- 设备 -->
+                <div class="rd-info-row rd-info-row--equipment">
+                  <i class="cses-stratis-grid-01 rd-info-icon"></i>
+                  <span class="rd-info-label">设备</span>
+                  <div class="rd-equipment-list">
+                    <span class="rd-equip"><i class="cses-stratis-presentation-01"></i>投影</span>
+                    <span class="rd-equip"><i class="cses-stratis-edit-04"></i>白板</span>
+                    <span class="rd-equip"><i class="cses-stratis-video-on"></i>视频会议终端</span>
+                    <span class="rd-equip"><i class="cses-stratis-microphone-01"></i>麦克风</span>
+                    <span class="rd-equip"><i class="cses-stratis-camera-01"></i>摄像头</span>
+                  </div>
+                </div>
+
+                <!-- 备注 -->
+                <div class="rd-info-row rd-info-row--note">
+                  <i class="cses-stratis-information-circle-contained rd-info-icon"></i>
+                  <span class="rd-info-label">备注</span>
+                  <span class="rd-info-value rd-info-note">靠窗，自然光好。配备 4K 显示器和电话会议设备。</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- 操作区 -->
+            <aside class="rd-action-card">
+              <div class="rd-action-title">操作</div>
+              <div class="rd-action-list">
+                <cs-button data-variant="primary" data-size="lg" class="rd-action-btn rd-action-btn--primary" data-open="booking-drawer">
+                  <i class="btn-icon cses-stratis-calendar-plus"></i>
+                  <span class="btn-label">预订</span>
+                </cs-button>
+                <cs-button data-variant="secondary" data-size="lg" class="rd-action-btn">
+                  <i class="btn-icon cses-stratis-star-01"></i>
+                  <span class="btn-label">收藏</span>
+                </cs-button>
+              </div>
+            </aside>
+
+          </section>
+
+          <!-- ===== 中排：mini 时间轴 ===== -->
+          <section class="rd-axis-section">
+            <header class="rd-section-head">
+              <span class="rd-section-title">近期占用时间轴</span>
+              <span class="rd-section-sub">30 分钟刻度 · 08:00 ~ 20:00</span>
+            </header>
+
+            <div class="rd-axis">
+              <!-- 刻度尺 -->
+              <div class="rd-axis-ruler">
+                <span class="rd-axis-day-label"></span>
+                <div class="rd-axis-ticks">
+                  <span class="rd-tick">08</span>
+                  <span class="rd-tick">09</span>
+                  <span class="rd-tick">10</span>
+                  <span class="rd-tick">11</span>
+                  <span class="rd-tick">12</span>
+                  <span class="rd-tick">13</span>
+                  <span class="rd-tick">14</span>
+                  <span class="rd-tick">15</span>
+                  <span class="rd-tick">16</span>
+                  <span class="rd-tick">17</span>
+                  <span class="rd-tick">18</span>
+                  <span class="rd-tick">19</span>
+                  <span class="rd-tick">20</span>
+                </div>
+              </div>
+
+              <!-- 今天 -->
+              <div class="rd-axis-row">
+                <span class="rd-axis-day-label">今天</span>
+                <div class="rd-axis-track">
+                  <!-- 09:00-10:00 周会 -->
+                  <div class="rd-axis-block" style="left: 8.33%; width: 8.33%;" title="09:00-10:00 周会">
+                    <span class="rd-block-text">09:00 周会</span>
+                  </div>
+                  <!-- 14:00-16:00 产品评审 -->
+                  <div class="rd-axis-block" style="left: 50%; width: 16.67%;" title="14:00-16:00 产品评审">
+                    <span class="rd-block-text">14:00 产品评审</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 明天 -->
+              <div class="rd-axis-row">
+                <span class="rd-axis-day-label">明天</span>
+                <div class="rd-axis-track">
+                  <!-- 10:00-11:30 季度规划 -->
+                  <div class="rd-axis-block" style="left: 16.67%; width: 12.5%;" title="10:00-11:30 季度规划">
+                    <span class="rd-block-text">10:00 季度规划</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ===== 下排：我相关的预约 ===== -->
+          <section class="rd-related-section">
+            <header class="rd-section-head">
+              <span class="rd-section-title">我相关的预约</span>
+              <span class="rd-section-sub">作为预约人 / 参会人 · 3 条</span>
+            </header>
+
+            <ul class="rd-related-list">
+              <li class="rd-related-item">
+                <a class="rd-related-link" href="./booking-detail.html">
+                  <div class="rd-related-main">
+                    <div class="rd-related-title-line">
+                      <span class="rd-related-title">前端架构评审</span>
+                      <cs-status-badge data-status="in-progress">IN_PROGRESS</cs-status-badge>
+                    </div>
+                    <div class="rd-related-meta">
+                      <span class="rd-meta-item"><i class="cses-stratis-clock-01"></i>今天 14:00 ~ 16:00</span>
+                      <span class="rd-meta-item"><i class="cses-stratis-user-profile-01"></i>预约人：我</span>
+                      <span class="rd-meta-item"><i class="cses-stratis-users-profiles-01"></i>8 位参会人</span>
+                    </div>
+                  </div>
+                  <i class="cses-stratis-arrow-right rd-related-chev"></i>
+                </a>
+              </li>
+
+              <li class="rd-related-item">
+                <a class="rd-related-link" href="./booking-detail.html">
+                  <div class="rd-related-main">
+                    <div class="rd-related-title-line">
+                      <span class="rd-related-title">季度规划会</span>
+                      <cs-status-badge data-status="not-started">CONFIRMED</cs-status-badge>
+                    </div>
+                    <div class="rd-related-meta">
+                      <span class="rd-meta-item"><i class="cses-stratis-clock-01"></i>明天 10:00 ~ 11:30</span>
+                      <span class="rd-meta-item"><i class="cses-stratis-user-profile-01"></i>预约人：李文豪</span>
+                      <span class="rd-meta-item"><i class="cses-stratis-users-profiles-01"></i>12 位参会人</span>
+                    </div>
+                  </div>
+                  <i class="cses-stratis-arrow-right rd-related-chev"></i>
+                </a>
+              </li>
+
+              <li class="rd-related-item">
+                <a class="rd-related-link" href="./booking-detail.html">
+                  <div class="rd-related-main">
+                    <div class="rd-related-title-line">
+                      <span class="rd-related-title">部门周会</span>
+                      <cs-status-badge data-status="completed">COMPLETED</cs-status-badge>
+                    </div>
+                    <div class="rd-related-meta">
+                      <span class="rd-meta-item"><i class="cses-stratis-clock-01"></i>昨天 09:00 ~ 10:00</span>
+                      <span class="rd-meta-item"><i class="cses-stratis-user-profile-01"></i>预约人：王思源</span>
+                      <span class="rd-meta-item"><i class="cses-stratis-users-profiles-01"></i>6 位参会人</span>
+                    </div>
+                  </div>
+                  <i class="cses-stratis-arrow-right rd-related-chev"></i>
+                </a>
+              </li>
+            </ul>
+          </section>
+
+        </div>
+
+        <!-- ============================================================
+             booking-form 抽屉（inline overlay · 触发源：[新建预约] / [预订]）
+        ============================================================ -->
+        <cs-drawer-overlay id="bookingOverlay"></cs-drawer-overlay>
+        <cs-drawer id="bookingDrawer" data-width="lg" role="dialog" aria-modal="true" aria-labelledby="bookingDrawerTitle">
+
+          <div class="slot-header rd-drawer-header">
+            <div class="rd-drawer-title-wrap">
+              <span class="rd-drawer-title" id="bookingDrawerTitle">新建预约</span>
+              <span class="rd-drawer-sub">望京 3F-A 大会议室 · 北京 · 望京 · 3F · A 区</span>
+            </div>
+            <button type="button" class="rd-drawer-close" data-close="booking-drawer" aria-label="关闭抽屉">
+              <i class="cses-stratis-x-01"></i>
+            </button>
+          </div>
+
+          <div class="slot-body rd-drawer-body">
+            <form class="rd-form" onsubmit="return false;">
+
+              <!-- 主题 -->
+              <div class="rd-form-row">
+                <label class="rd-form-label rd-form-label--required" for="bf-subject">主题</label>
+                <input id="bf-subject" type="text" class="rd-form-input" placeholder="请输入会议主题" value="产品评审会">
+              </div>
+
+              <!-- 参会人 -->
+              <div class="rd-form-row">
+                <label class="rd-form-label rd-form-label--required" for="bf-attendees">参会人</label>
+                <input id="bf-attendees" type="text" class="rd-form-input" placeholder="搜索 / 选择人员" value="张三、李四、王五  +3">
+              </div>
+
+              <!-- 时间 -->
+              <div class="rd-form-row rd-form-row--double">
+                <div class="rd-form-col">
+                  <label class="rd-form-label rd-form-label--required" for="bf-start">开始时间</label>
+                  <input id="bf-start" type="text" class="rd-form-input" value="2026-06-26 14:00">
+                </div>
+                <div class="rd-form-col">
+                  <label class="rd-form-label rd-form-label--required" for="bf-end">结束时间</label>
+                  <input id="bf-end" type="text" class="rd-form-input" value="2026-06-26 16:00">
+                </div>
+              </div>
+
+              <!-- 会议室 -->
+              <div class="rd-form-row">
+                <label class="rd-form-label rd-form-label--required" for="bf-room">会议室</label>
+                <input id="bf-room" type="text" class="rd-form-input" value="望京 3F-A 大会议室" readonly>
+              </div>
+
+              <hr class="rd-form-divider">
+
+              <!-- 重复 toggle -->
+              <div class="rd-form-toggle">
+                <label class="rd-toggle-label">
+                  <input type="checkbox" class="rd-toggle-input">
+                  <span class="rd-toggle-text">重复（周期预约）</span>
+                </label>
+                <span class="rd-toggle-hint">打开后展开周期规则</span>
+              </div>
+
+              <!-- 线上会议 toggle -->
+              <div class="rd-form-toggle">
+                <label class="rd-toggle-label">
+                  <input type="checkbox" class="rd-toggle-input" checked>
+                  <span class="rd-toggle-text">开启线上会议</span>
+                </label>
+                <span class="rd-toggle-hint">提交后自动生成入会链接</span>
+              </div>
+
+              <hr class="rd-form-divider">
+
+              <!-- 描述（折叠区，简化展示） -->
+              <div class="rd-form-row">
+                <label class="rd-form-label" for="bf-desc">描述 / 附件</label>
+                <textarea id="bf-desc" class="rd-form-textarea" rows="3" placeholder="补充会议背景、议程、需要的物资…"></textarea>
+              </div>
+
+              <!-- 冲突提示区（demo · 默认隐藏，本页保留占位以演示位置） -->
+              <div class="rd-form-warning" hidden>
+                <i class="cses-stratis-information-circle-contained"></i>
+                <span>该时段与「产品评审」冲突，请调整时间或更换会议室。</span>
+              </div>
+            </form>
+          </div>
+
+          <div class="slot-footer rd-drawer-footer">
+            <cs-button data-variant="secondary" data-size="md" data-close="booking-drawer">
+              <span class="btn-label">取消</span>
+            </cs-button>
+            <cs-button data-variant="primary" data-size="md">
+              <span class="btn-label">提交预约</span>
+            </cs-button>
+          </div>
+
+        </cs-drawer>
+
+      </main>
+    </div>
+
+  </div>
+</cs-layout>
+
+<!-- 抽屉 toggle 脚本（inline · 仅本页） -->
+<script>
+  (function () {
+    const drawer = document.getElementById('bookingDrawer');
+    const overlay = document.getElementById('bookingOverlay');
+    if (!drawer || !overlay) return;
+
+    function open() {
+      drawer.setAttribute('data-open', '');
+      overlay.setAttribute('data-visible', '');
+    }
+    function close() {
+      drawer.removeAttribute('data-open');
+      overlay.removeAttribute('data-visible');
+    }
+
+    // 触发：所有 [data-open="booking-drawer"]
+    document.querySelectorAll('[data-open="booking-drawer"]').forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        e.preventDefault();
+        open();
+      });
+    });
+
+    // 关闭：所有 [data-close="booking-drawer"] + overlay
+    document.querySelectorAll('[data-close="booking-drawer"]').forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        e.preventDefault();
+        close();
+      });
+    });
+    overlay.addEventListener('click', close);
+
+    // Esc 关闭
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && drawer.hasAttribute('data-open')) close();
+    });
+  })();
+</script>
+
+</body>
+</html>

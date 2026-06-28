@@ -1,0 +1,85 @@
+/*
+ * 表单组组件 (Form Group)
+ * 标签：<cs-form-group>
+ *
+ * data 属性：
+ *   data-required          — 显示必填星号
+ *   data-direction="horizontal" — 水平排列（默认垂直）
+ *   data-error             — 错误状态（显示错误文案）
+ */
+
+/* ========== 基础样式（垂直排列） ========== */
+cs-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+/* ========== 标签 ========== */
+cs-form-group .form-label {
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text-light);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* ========== 必填星号 ==========
+ * 任何 form-label 都先占位 "*" 透明 → 文字起点对齐；
+ * 仅 [data-required] 时把星号显成红色。 */
+cs-form-group .form-label::before {
+  content: "*";
+  color: transparent;
+  margin-right: var(--space-3xs);
+}
+
+cs-form-group[data-required] .form-label::before {
+  color: var(--cs-color-error);
+}
+
+/* ========== 字段容器 ========== */
+cs-form-group .form-field {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========== 辅助文本 ========== */
+cs-form-group .form-helper {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+  margin-top: var(--space-3xs);
+}
+
+/* ========== 错误文本 ========== */
+cs-form-group .form-error {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-error);
+  margin-top: var(--space-3xs);
+  display: none;
+}
+
+cs-form-group[data-error] .form-error {
+  display: block;
+}
+
+/* 错误状态下隐藏辅助文本 */
+cs-form-group[data-error] .form-helper {
+  display: none;
+}
+
+/* ========== 水平排列变体 ========== */
+cs-form-group[data-direction="horizontal"] {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--spacing-10);
+}
+
+cs-form-group[data-direction="horizontal"] .form-label {
+  width: var(--spacing-64); /* closest var: 64px (Figma 原值 70px) */
+  flex-shrink: 0;
+  padding-top: var(--space-2xs);
+}
+
+cs-form-group[data-direction="horizontal"] .form-field {
+  flex: 1;
+  min-width: 0;
+}

@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>员工设备申请 · REQ · 2026-06-26</title>
+  <meta http-equiv="Cache-Control" content="no-cache">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    /* Editorial / Linear-Swiss tokens (与 design/fonts/index.html 一致)
+       hairline #ECECEC · medium #E5E5E5 · chrome #FAFAFA
+       text-1 #0A0A0A · text-2 #666 · text-3 #999 · accent #4857E2 */
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #FFFFFF;
+      font-family: "Inter", "PingFang SC", -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #0A0A0A;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== 顶部栏 ===== */
+    .doc-topbar {
+      position: sticky; top: 0; z-index: 10;
+      height: 52px;
+      background: #FFFFFF;
+      border-bottom: 0.5px solid #ECECEC;
+      display: flex; align-items: center;
+      padding: 0 28px;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+    .doc-topbar-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 14px; font-weight: 500; color: #0A0A0A;
+      letter-spacing: -0.2px; text-decoration: none;
+    }
+    .doc-topbar-logo-dot {
+      width: 20px; height: 20px; border-radius: 5px;
+      background: #0A0A0A;
+      display: flex; align-items: center; justify-content: center;
+      color: #FFFFFF; font-size: 10px; font-weight: 500;
+    }
+    .doc-topbar-divider { width: 1px; height: 14px; background: #ECECEC; }
+    .doc-topbar-subtitle { font-size: 12px; color: #666666; }
+    .doc-topbar-count {
+      margin-left: auto;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #999999;
+      letter-spacing: 0.8px; text-transform: uppercase;
+    }
+    .doc-topbar-link {
+      font-size: 11px; color: #666666; text-decoration: none;
+      padding: 5px 10px; border: 0.5px solid #E5E5E5; border-radius: 4px;
+      letter-spacing: 0.3px; text-transform: uppercase;
+      transition: all .15s;
+    }
+    .doc-topbar-link:hover { border-color: #0A0A0A; color: #0A0A0A; }
+
+    /* ===== 主体布局 ===== */
+    .doc-layout { flex: 1; display: flex; min-height: 0; }
+
+    /* ===== 左侧导航 ===== */
+    .doc-sidebar {
+      width: 240px; flex-shrink: 0;
+      background: #FFFFFF;
+      border-right: 0.5px solid #ECECEC;
+      position: sticky; top: 52px;
+      align-self: flex-start;
+      height: calc(100vh - 52px);
+      overflow-y: auto;
+    }
+    .doc-sidebar::-webkit-scrollbar { width: 4px; }
+    .doc-sidebar::-webkit-scrollbar-thumb { background: #ECECEC; }
+
+    .doc-nav-scroll { padding: 6px 0 24px; counter-reset: navnum; }
+    .doc-nav-group { padding: 16px 0 4px; }
+    .doc-nav-group:first-child { padding-top: 12px; }
+    .doc-nav-group-label {
+      padding: 4px 22px 10px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px; font-weight: 400; color: #999999;
+      letter-spacing: 1.2px; text-transform: uppercase;
+    }
+    .doc-nav-item {
+      display: flex; align-items: center;
+      padding: 7px 22px;
+      font-size: 12.5px; color: #666666;
+      cursor: pointer; transition: color .12s;
+      gap: 10px;
+      text-decoration: none;
+      counter-increment: navnum;
+    }
+    .doc-nav-item::before {
+      content: counter(navnum, decimal-leading-zero);
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px; color: #BBBBBB;
+      letter-spacing: 0.4px;
+      flex-shrink: 0;
+    }
+    .doc-nav-item:hover { color: #0A0A0A; }
+    .doc-nav-item.active { color: #0A0A0A; font-weight: 500; }
+    .doc-nav-item.active::before { color: #4857E2; }
+
+    /* ===== 右侧内容 ===== */
+    .doc-content {
+      flex: 1; min-width: 0;
+      background: #FFFFFF;
+    }
+    .page { padding: 44px 56px; max-width: 920px; }
+
+    /* 章节头 */
+    .section-block { padding-top: 56px; margin-top: 56px; border-top: 0.5px solid #ECECEC; }
+    .section-block:first-of-type { padding-top: 0; margin-top: 0; border-top: none; }
+
+    .page-title {
+      font-size: 32px; font-weight: 500; color: #0A0A0A;
+      display: flex; align-items: baseline; gap: 14px;
+      margin: 0 0 10px;
+      letter-spacing: -0.8px; line-height: 1.1;
+    }
+    .page-title-tag {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #999999;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      font-weight: 400;
+    }
+    .page-subtitle {
+      font-size: 13px; color: #666666;
+      line-height: 1.7; max-width: 620px;
+      margin: 0 0 28px;
+    }
+
+    .section-label {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #999999;
+      letter-spacing: 1.4px; text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    h2.section-title {
+      font-size: 22px; font-weight: 500; color: #0A0A0A;
+      margin: 0 0 14px;
+      letter-spacing: -0.4px; line-height: 1.2;
+      display: flex; align-items: baseline; gap: 12px;
+    }
+    h3.subsection-title {
+      font-size: 14px; font-weight: 500; color: #0A0A0A;
+      margin: 28px 0 12px;
+      letter-spacing: -0.1px;
+    }
+
+    /* ===== 概览数字 ===== */
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 0;
+      margin: 28px 0 12px;
+    }
+    .stat-card {
+      border-left: 0.5px solid #ECECEC;
+      padding: 4px 22px;
+    }
+    .stat-card:first-child { border-left: none; padding-left: 0; }
+    .stat-card-label {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px; color: #999999;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .stat-card-value {
+      font-size: 38px; font-weight: 500; color: #0A0A0A;
+      line-height: 1; letter-spacing: -1.4px;
+    }
+    .stat-card-unit { font-size: 14px; color: #999999; margin-left: 4px; }
+    .stat-card-hint {
+      margin-top: 10px;
+      font-size: 10px; color: #999999;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      letter-spacing: 0.4px;
+    }
+
+    /* ===== 内容元素 ===== */
+    p { margin: 0 0 14px; font-size: 13px; color: #0A0A0A; line-height: 1.75; }
+    .muted { color: #666; font-size: 12.5px; line-height: 1.7; }
+
+    dl.kv {
+      margin: 0;
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      row-gap: 12px; column-gap: 32px;
+      border-top: 0.5px solid #ECECEC;
+      padding-top: 18px;
+    }
+    dl.kv dt {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #999999;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      padding-top: 4px;
+    }
+    dl.kv dd { margin: 0; font-size: 13px; color: #0A0A0A; line-height: 1.7; }
+
+    ol.steps {
+      counter-reset: step;
+      list-style: none;
+      padding: 0; margin: 16px 0 0;
+    }
+    ol.steps li {
+      counter-increment: step;
+      padding: 12px 0 12px 56px;
+      border-bottom: 0.5px solid #ECECEC;
+      position: relative;
+      font-size: 13px; color: #0A0A0A; line-height: 1.6;
+    }
+    ol.steps li::before {
+      content: counter(step, decimal-leading-zero);
+      position: absolute; left: 0; top: 12px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #999999;
+      letter-spacing: 1.2px;
+      width: 40px;
+    }
+    ol.steps li:last-child { border-bottom: none; }
+
+    ul.dotted { padding-left: 16px; margin: 0; }
+    ul.dotted li {
+      list-style: none; position: relative;
+      padding: 4px 0; font-size: 13px; line-height: 1.65; color: #0A0A0A;
+    }
+    ul.dotted li::before {
+      content: '·';
+      position: absolute; left: -14px; top: 4px;
+      color: #999;
+    }
+
+    /* ===== F1 字段表 ===== */
+    table.fields {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+    }
+    table.fields th, table.fields td {
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 0.5px solid #ECECEC;
+      font-size: 12.5px;
+      vertical-align: top;
+    }
+    table.fields th {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px; color: #999;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      font-weight: 400;
+      background: transparent;
+      border-bottom: 0.5px solid #E5E5E5;
+    }
+    table.fields td.field-name { font-weight: 500; color: #0A0A0A; width: 28%; }
+    table.fields td.field-src code {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 11px; color: #4857E2;
+      background: transparent; padding: 0;
+    }
+    table.fields td.field-display { color: #666; }
+    table.fields tr.f1-special td.field-name::after {
+      content: 'OPTION-2';
+      margin-left: 8px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 9px; color: #4857E2;
+      letter-spacing: 0.8px;
+      vertical-align: middle;
+    }
+
+    /* ===== PROTO ASCII ===== */
+    .proto-block { margin: 16px 0 32px; }
+    .proto-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #4857E2;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .proto-tag .dot { width: 5px; height: 5px; background: #4857E2; border-radius: 50%; }
+    .proto-title {
+      font-size: 16px; font-weight: 500; color: #0A0A0A;
+      margin: 0 0 12px;
+    }
+    pre.ascii {
+      background: #FAFAFA;
+      border: 0.5px solid #ECECEC;
+      padding: 22px 24px;
+      margin: 0 0 18px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 11.5px; line-height: 1.55;
+      color: #0A0A0A;
+      overflow-x: auto;
+      white-space: pre;
+    }
+    .proto-meta {
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      row-gap: 10px; column-gap: 28px;
+      padding: 16px 0 0;
+      border-top: 0.5px dashed #ECECEC;
+    }
+    .proto-meta-label {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #999;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      padding-top: 3px;
+    }
+    .proto-meta-body { font-size: 12.5px; line-height: 1.7; color: #0A0A0A; }
+    .proto-meta-body ul { padding-left: 16px; margin: 0; }
+    .proto-meta-body li { margin: 2px 0; }
+
+    /* PROTO F1 落位小表 */
+    table.proto-fields {
+      width: 100%; border-collapse: collapse;
+      margin: 8px 0 0;
+    }
+    table.proto-fields td {
+      padding: 8px 0;
+      border-bottom: 0.5px solid #ECECEC;
+      font-size: 12.5px; color: #0A0A0A;
+      vertical-align: top;
+    }
+    table.proto-fields td:first-child { width: 36%; color: #666; }
+    table.proto-fields tr:last-child td { border-bottom: none; }
+
+    /* ===== EDGE 状态行 ===== */
+    .edge-row {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 28px;
+      padding: 14px 0;
+      border-bottom: 0.5px solid #ECECEC;
+    }
+    .edge-row:first-child { border-top: 0.5px solid #ECECEC; }
+    .edge-row-label {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 11px; color: #4857E2;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      padding-top: 2px;
+    }
+    .edge-row-body { font-size: 13px; line-height: 1.65; color: #0A0A0A; }
+
+    /* ===== 派单准备 卡 ===== */
+    .dispatch-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 0;
+      border-top: 0.5px solid #ECECEC;
+      border-left: 0.5px solid #ECECEC;
+    }
+    .dispatch-card {
+      border-right: 0.5px solid #ECECEC;
+      border-bottom: 0.5px solid #ECECEC;
+      padding: 24px 28px;
+    }
+    .dispatch-card-tag {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #4857E2;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .dispatch-card-title {
+      font-size: 14px; font-weight: 500; color: #0A0A0A; margin: 0 0 12px;
+    }
+    .dispatch-card-target {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 11px; color: #666; background: #FAFAFA;
+      padding: 6px 10px; border: 0.5px solid #ECECEC;
+      display: inline-block; margin-bottom: 12px;
+    }
+    .dispatch-card-desc { font-size: 12.5px; line-height: 1.65; color: #666; margin: 0; }
+
+    /* 警告条 */
+    .warn-banner {
+      display: flex; gap: 10px;
+      padding: 14px 18px;
+      background: #FFF9F0;
+      border: 0.5px solid #F0DCB0;
+      font-size: 12.5px; color: #6B5614;
+      line-height: 1.65;
+      margin: 18px 0;
+    }
+    .warn-banner::before {
+      content: '⚠';
+      flex-shrink: 0; color: #B58B1E;
+    }
+
+    /* 角标 */
+    .badge {
+      display: inline-block;
+      padding: 2px 7px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px; letter-spacing: 0.8px; text-transform: uppercase;
+      border: 0.5px solid #E5E5E5;
+      color: #666;
+      vertical-align: middle;
+    }
+    .badge.accent { color: #4857E2; border-color: #C3C9F1; }
+    .badge.ok { color: #1E7A2E; border-color: #BFE2C4; }
+
+    /* code inline */
+    code {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 11.5px;
+      background: #F5F5F5; padding: 1px 5px; border-radius: 2px;
+      color: #4857E2;
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部栏 -->
+  <header class="doc-topbar">
+    <a class="doc-topbar-logo" href="#overview">
+      <span class="doc-topbar-logo-dot">R</span>
+      员工设备申请
+    </a>
+    <span class="doc-topbar-divider"></span>
+    <span class="doc-topbar-subtitle">需求文档 · 2026-06-26</span>
+    <span class="doc-topbar-count">REQ · STATUS=CONFIRMED · v1</span>
+    <a class="doc-topbar-link" href="employee-device-apply-req.md">SOURCE.MD</a>
+  </header>
+
+  <div class="doc-layout">
+    <!-- 侧栏 -->
+    <aside class="doc-sidebar">
+      <nav class="doc-nav-scroll">
+        <div class="doc-nav-group">
+          <div class="doc-nav-group-label">概览</div>
+          <a class="doc-nav-item active" href="#overview">概览</a>
+        </div>
+        <div class="doc-nav-group">
+          <div class="doc-nav-group-label">6 段</div>
+          <a class="doc-nav-item" href="#why">WHY · 为什么存在</a>
+          <a class="doc-nav-item" href="#who">WHO · 给谁用</a>
+          <a class="doc-nav-item" href="#do">DO · 要做什么</a>
+          <a class="doc-nav-item" href="#show">SHOW · 呈现什么</a>
+          <a class="doc-nav-item" href="#proto">PROTO · 原型图</a>
+          <a class="doc-nav-item" href="#edge">EDGE · 边界与成功</a>
+        </div>
+        <div class="doc-nav-group">
+          <div class="doc-nav-group-label">下游</div>
+          <a class="doc-nav-item" href="#dispatch">派单准备</a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- 内容 -->
+    <main class="doc-content">
+      <div class="page">
+
+        <!-- 概览 -->
+        <section class="section-block" id="overview">
+          <h1 class="page-title">员工设备申请 <span class="page-title-tag">REQ · 2026-06-26 · v1</span></h1>
+          <p class="page-subtitle">新员工入职 3 天内 1 分钟内提交设备申请，IT 备货发货，到岗即可领齐装备。本文档是装配 <code>pages/employee-device-apply/</code> 的派单输入。</p>
+
+          <div class="overview-grid">
+            <div class="stat-card">
+              <div class="stat-card-label">主任务步骤</div>
+              <div class="stat-card-value">4</div>
+              <div class="stat-card-hint">STEPS</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">F1 必看字段</div>
+              <div class="stat-card-value">5</div>
+              <div class="stat-card-hint">FIELDS</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">PROTO 方案</div>
+              <div class="stat-card-value">2</div>
+              <div class="stat-card-hint">PARALLEL</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">视口</div>
+              <div class="stat-card-value">1440<span class="stat-card-unit">+</span></div>
+              <div class="stat-card-hint">DESKTOP ONLY</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">成功指标</div>
+              <div class="stat-card-value">80<span class="stat-card-unit">%</span></div>
+              <div class="stat-card-hint">3D DELIVERY</div>
+            </div>
+          </div>
+
+          <div class="section-label">REVISION</div>
+          <dl class="kv">
+            <dt>日期</dt><dd>2026-06-26</dd>
+            <dt>修订人</dt><dd>主会话</dd>
+            <dt>变更</dt><dd>首次采集（按 requirement-agent 6 段 SOP 5 轮对话）</dd>
+            <dt>状态</dt><dd><span class="badge ok">CONFIRMED</span></dd>
+          </dl>
+        </section>
+
+        <!-- WHY -->
+        <section class="section-block" id="why">
+          <div class="section-label">01 · WHY</div>
+          <h2 class="section-title">为什么存在</h2>
+          <dl class="kv">
+            <dt>价值</dt>
+            <dd>新员工入职 <strong>3 天内 1 分钟</strong>内提交设备申请，IT 备货发货，到岗即可领齐装备。</dd>
+            <dt>不做会怎样</dt>
+            <dd>邮件 / Slack / 口头流转，IT 无法预判库存，新员工到岗设备没准备好，影响入职体验。</dd>
+            <dt>上下游</dt>
+            <dd>上游 = 入职流程（HR 通知 / 排班） · 下游 = 审批中心 → IT 备货 / 发货 → 物流跟踪</dd>
+          </dl>
+        </section>
+
+        <!-- WHO -->
+        <section class="section-block" id="who">
+          <div class="section-label">02 · WHO</div>
+          <h2 class="section-title">给谁用</h2>
+          <dl class="kv">
+            <dt>主角色</dt>
+            <dd><strong>新入职员工</strong> · 低频赶时间（年度 1 次，入职第 1 周内填，希望几分钟完成）</dd>
+            <dt>次角色</dt>
+            <dd class="muted">—（部门长 / IT 审批由审批中心承担；老员工补领由本页兼容）</dd>
+          </dl>
+        </section>
+
+        <!-- DO -->
+        <section class="section-block" id="do">
+          <div class="section-label">03 · DO</div>
+          <h2 class="section-title">要做什么 + 怎么做</h2>
+
+          <dl class="kv">
+            <dt>唯一主任务</dt>
+            <dd>从入职套餐快选设备并提交申请</dd>
+            <dt>唯一主 CTA</dt>
+            <dd><code>+ 新建申请</code> 放在 <code>navbar.slot-action</code>（与卡片"一键领取"通往同一抽屉）</dd>
+            <dt>交互形态</dt>
+            <dd>右侧抽屉填表（不分步向导——赶时间用户优先少点击）</dd>
+          </dl>
+
+          <h3 class="subsection-title">最短步骤（4 步）</h3>
+          <ol class="steps">
+            <li>进入页面（首屏看到套餐 + 列表 / 工作台）</li>
+            <li>点击某个匹配岗位的套餐 / navbar <code>+ 新建申请</code></li>
+            <li>右侧抽屉打开，补 3 个字段：交付地址、期望到货日、备注</li>
+            <li>点"提交" → toast + 抽屉关闭 + 高亮新项</li>
+          </ol>
+
+          <h3 class="subsection-title">危险操作</h3>
+          <ul class="dotted">
+            <li>提交后撤回需二次确认（仅"待审批"可撤回）</li>
+            <li>删除草稿需二次确认</li>
+            <li>抽屉填到一半关闭时弹"保存草稿 / 放弃"</li>
+          </ul>
+        </section>
+
+        <!-- SHOW -->
+        <section class="section-block" id="show">
+          <div class="section-label">04 · SHOW</div>
+          <h2 class="section-title">呈现什么 + 怎么组织</h2>
+
+          <dl class="kv">
+            <dt>布局骨架</dt>
+            <dd>套餐展示区 + 右抽屉（具体卡片墙还是工作台见 PROTO 段）</dd>
+            <dt>数据量级</dt>
+            <dd>每位员工 1-2 张 / 年，无需分页 / 虚拟滚动</dd>
+            <dt>默认排序</dt>
+            <dd>创建时间 desc</dd>
+          </dl>
+
+          <h3 class="subsection-title">F1 字段（必看，5 个）</h3>
+          <table class="fields">
+            <thead>
+              <tr><th>字段</th><th>数据源</th><th>显示形式</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="field-name">套餐识别</td>
+                <td class="field-src"><code>套餐.name + 套餐.suitablePositions</code></td>
+                <td class="field-display">卡片主标题</td>
+              </tr>
+              <tr>
+                <td class="field-name">设备清单 + 库存状态</td>
+                <td class="field-src"><code>套餐.items[] / 套餐.stockStatus</code></td>
+                <td class="field-display">"笔记本 + 显示器 + 鼠键 · 现货可领"</td>
+              </tr>
+              <tr>
+                <td class="field-name">预估总价 + 期望到货日</td>
+                <td class="field-src"><code>套餐.price / 申请.expectedDate</code></td>
+                <td class="field-display">"¥ 18,500 · 2026-07-05"，tabular-nums</td>
+              </tr>
+              <tr>
+                <td class="field-name">申请状态徽标 + 审批进度</td>
+                <td class="field-src"><code>申请.status / 申请.approvalProgress</code></td>
+                <td class="field-display">草稿 / 待审批 / 已批准 / 发货中 / 已领取 / 已驳回 / 已取消（<code>cs-status-badge</code>）</td>
+              </tr>
+              <tr class="f1-special">
+                <td class="field-name">物流状态 + 预计到货日</td>
+                <td class="field-src"><code>申请.shippingStatus / 申请.eta</code></td>
+                <td class="field-display">"京东物流 · 预计 06-30 送达"</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 class="subsection-title">F2 字段（折叠 / 抽屉详情）</h3>
+          <p class="muted">审批人 / 创建时间 / 修改记录 / 联系电话 / 工号</p>
+
+          <h3 class="subsection-title">F3 字段（hover tooltip / 详情页）</h3>
+          <p class="muted">申请单 ID / SKU 编码 / 套餐内部编码</p>
+
+          <h3 class="subsection-title">菜单结构（navbar 二级导航 4 项）</h3>
+          <ol class="steps">
+            <li>套餐选择（<code>data-active</code> 入口）</li>
+            <li>我的申请</li>
+            <li>设备目录（浏览所有设备，不能从此页直接申请）</li>
+            <li>草稿箱</li>
+          </ol>
+
+          <h3 class="subsection-title">分组维度</h3>
+          <ul class="dotted">
+            <li><span class="badge accent">OPTION-1</span> <code>cs-filter-bar</code> tab 切状态（全部 / 草稿 / 待审批 / 已批准 / 发货中 / 已领取 / 已驳回）</li>
+            <li><span class="badge accent">OPTION-2</span> 工作台 3 卡块按生命周期切片（推荐 / 进行中 / 物流跟踪），<strong>无 filter-bar</strong></li>
+          </ul>
+        </section>
+
+        <!-- PROTO -->
+        <section class="section-block" id="proto">
+          <div class="section-label">05 · PROTO</div>
+          <h2 class="section-title">内容区域布局原型图</h2>
+          <p class="muted">方案数量 <span class="badge accent">多选 2 个并行</span> · 表达载体 <span class="badge">ASCII</span> · 验收方案需在结构层面有差异，<strong>不能</strong>只换配色字号。</p>
+
+          <!-- option-1 -->
+          <div class="proto-block">
+            <div class="proto-tag"><span class="dot"></span>OPTION-1 · 套餐卡片墙 + filter-bar + 右抽屉</div>
+            <h3 class="proto-title">扁平卡片墙 · 状态 tab 切换</h3>
+            <pre class="ascii">┌─ content-header ────────────────────────────────────────┐
+│ 标题：&lt;占位&gt;   ·   副标题：&lt;占位&gt;                          │
+├─ filter-bar（按申请状态切 tab）──────────────────────────┤
+│ [全部][草稿][待审批][已批准][发货中][已领取][已驳回]        │
+├─ 套餐卡片墙（3-4 列）─────────────────────────────────────┤
+│ ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐                     │
+│ │ F1·套餐识别                                             │
+│ │ F1·设备清单 + 库存徽标                                  │
+│ │ F1·预估总价 + 期望到货日                                │
+│ │ [次 CTA·领取]                                           │
+│ └──────┘ └──────┘ └──────┘ └──────┘                     │
+│ ▾ 我的申请（折叠区；F1·状态徽标 + 审批进度）              │
+└──────────────────────────────────────────────────────────┘
+       └─ 抽屉（点卡片 / navbar 主 CTA 打开同一个）─────────┐
+          │ 套餐预览 / 交付地址 / 期望到货日 / 备注          │
+          │ [次 CTA·保存草稿]            [次 CTA·提交]      │
+          └────────────────────────────────────────────────┘</pre>
+
+            <div class="proto-meta">
+              <div class="proto-meta-label">设计意图</div>
+              <div class="proto-meta-body">
+                <ul>
+                  <li>扁平卡片墙 + filter-bar 状态 tab 切换：用户先按状态过滤，再在剩余结果里挑套餐</li>
+                  <li>卡片本身是主信息密度区，状态过滤靠 tab</li>
+                  <li>"我的申请" 默认折叠，避免和套餐墙竞争注意力</li>
+                </ul>
+              </div>
+
+              <div class="proto-meta-label">F1 落位</div>
+              <div class="proto-meta-body">
+                <table class="proto-fields">
+                  <tr><td>套餐识别</td><td>卡片主标题</td></tr>
+                  <tr><td>设备清单 + 库存徽标</td><td>卡片正文</td></tr>
+                  <tr><td>预估总价 + 期望到货日</td><td>卡片底部价格区</td></tr>
+                  <tr><td>申请状态徽标 + 审批进度</td><td>"我的申请"折叠展开区</td></tr>
+                </table>
+              </div>
+
+              <div class="proto-meta-label">装配目标</div>
+              <div class="proto-meta-body">
+                <code>pages/employee-device-apply/employee-device-apply-option-1.{html,css,-RULES.md}</code>
+              </div>
+            </div>
+          </div>
+
+          <!-- option-2 -->
+          <div class="proto-block">
+            <div class="proto-tag"><span class="dot"></span>OPTION-2 · 工作台 3 卡块 + 右抽屉（无 filter-bar）</div>
+            <h3 class="proto-title">按生命周期切片 · 同屏看到所有阶段</h3>
+            <pre class="ascii">┌─ content-header ────────────────────────────────────────┐
+│ 标题：&lt;占位&gt;   ·   副标题：&lt;占位&gt;                          │
+├─ 工作台 3 卡块（按申请生命周期切片，替代状态 tab 切换）──┤
+│ ┌─ A·推荐角色 ─┐ ┌─ B·进行中角色 ─┐ ┌─ C·物流跟踪角色 ─┐ │
+│ │F1·套餐识别  │ │F1·套餐识别      │ │F1·套餐识别       │ │
+│ │F1·清单+库存 │ │F1·状态徽标+     │ │F1·物流状态+      │ │
+│ │F1·总价+到货 │ │  审批进度       │ │  预计到货日       │ │
+│ │[次 CTA·领取]│ │  进度条 n/N     │ │                  │ │
+│ │             │ │[次 CTA·撤回]    │ │[次 CTA·物流详情] │ │
+│ │             │ │[次 CTA·查看]    │ │[次 CTA·联系 IT]  │ │
+│ └─────────────┘ └─────────────────┘ └──────────────────┘ │
+└──────────────────────────────────────────────────────────┘
+       └─ 抽屉（点 A 次 CTA / navbar 主 CTA 打开）───────────┐
+          │ 套餐预览 / 交付地址 / 期望到货日 / 备注          │
+          │ [次 CTA·保存草稿]            [次 CTA·提交]      │
+          └────────────────────────────────────────────────┘</pre>
+
+            <div class="proto-meta">
+              <div class="proto-meta-label">设计意图</div>
+              <div class="proto-meta-body">
+                <ul>
+                  <li>按生命周期切片：3 卡块本身就是状态分组（推荐 / 进行中 / 物流跟踪），<strong>无需</strong> filter-bar</li>
+                  <li>同屏看到所有阶段：避免 tab 切换的视线跳动</li>
+                  <li>F1 字段分散到 3 卡块：每个卡块承担一类信息密度</li>
+                </ul>
+              </div>
+
+              <div class="proto-meta-label">F1 落位</div>
+              <div class="proto-meta-body">
+                <table class="proto-fields">
+                  <tr><td>套餐识别</td><td>卡块 A 主体 + 卡块 B/C 顶部识别行</td></tr>
+                  <tr><td>设备清单 + 库存</td><td>卡块 A</td></tr>
+                  <tr><td>预估总价 + 期望到货日</td><td>卡块 A 底部价格区</td></tr>
+                  <tr><td>申请状态徽标 + 审批进度</td><td>卡块 B（含进度条 step n/N）</td></tr>
+                  <tr><td>物流状态 + 预计到货日</td><td>卡块 C</td></tr>
+                </table>
+              </div>
+
+              <div class="proto-meta-label">装配目标</div>
+              <div class="proto-meta-body">
+                <code>pages/employee-device-apply/employee-device-apply-option-2.{html,css,-RULES.md}</code>
+              </div>
+            </div>
+          </div>
+
+          <div class="warn-banner">
+            PROTO 是发散阶段产物：仅画 <code>main-content</code> 内容区；<code>content-header</code> 禁画主 CTA；不 hardcode 业务文案（标题 / 副标题 / 按钮 / tab 名），统一写 <code>&lt;占位&gt;</code>。
+          </div>
+        </section>
+
+        <!-- EDGE -->
+        <section class="section-block" id="edge">
+          <div class="section-label">06 · EDGE</div>
+          <h2 class="section-title">边界 + 约束 + 成功</h2>
+
+          <h3 class="subsection-title">5 种状态</h3>
+          <div class="edge-row">
+            <div class="edge-row-label">EMPTY</div>
+            <div class="edge-row-body">插画 + 引导文案 + 大号主 CTA 高亮在 navbar.slot-action（option-2 时空态体现在卡块 A 推荐区）</div>
+          </div>
+          <div class="edge-row">
+            <div class="edge-row-label">LOADING</div>
+            <div class="edge-row-body">套餐卡片骨架屏（4 卡占位）；抽屉字段 <code>cs-skeleton</code></div>
+          </div>
+          <div class="edge-row">
+            <div class="edge-row-label">ERROR</div>
+            <div class="edge-row-body">网络异常 → 显示重试按钮 + 本地缓存（若可用）；字段校验失败 → 红色提示在表单</div>
+          </div>
+          <div class="edge-row">
+            <div class="edge-row-label">SUCCESS</div>
+            <div class="edge-row-body">toast + 抽屉关闭 + <strong>留在当前页</strong> + 高亮新项（淡蓝底 2s 渐消）</div>
+          </div>
+          <div class="edge-row">
+            <div class="edge-row-label">NO PERM</div>
+            <div class="edge-row-body">HR 入职登记未完成 → 引导联系 HR</div>
+          </div>
+
+          <h3 class="subsection-title">约束与指标</h3>
+          <dl class="kv">
+            <dt>私有 CSS 前缀</dt>
+            <dd><code>--eda-*</code> / <code>.eda-*</code>（employee-device-apply）</dd>
+            <dt>视口</dt>
+            <dd>仅桌面 1440+（6 列卷轴）</dd>
+            <dt>成功指标</dt>
+            <dd>
+              80% 新员工入职 3 天内提交设备申请<br>
+              从进页到 toast 弹出 < 90 秒（option-1 卡片墙）/ < 30 秒（option-2 一键领取场景）
+            </dd>
+          </dl>
+
+          <div class="warn-banner">
+            本节<strong>禁止列具体 cs-* 组件清单</strong>。组件选型是 page-agent 装配时的工作，REQ 只描述业务意图和约束。
+          </div>
+        </section>
+
+        <!-- 派单准备 -->
+        <section class="section-block" id="dispatch">
+          <div class="section-label">DISPATCH</div>
+          <h2 class="section-title">派单准备</h2>
+          <p class="muted">PROTO 多选 2 个 → 主会话<strong>并行</strong>派 2 个 page-agent，同目录共享文件命名按 <code>&lt;slug&gt;-option-&lt;N&gt;</code>。</p>
+
+          <div class="dispatch-grid">
+            <div class="dispatch-card">
+              <div class="dispatch-card-tag">PAGE-AGENT · A</div>
+              <h3 class="dispatch-card-title">option-1 · 套餐卡片墙</h3>
+              <div class="dispatch-card-target">pages/employee-device-apply/<br>employee-device-apply-option-1.{html,css,-RULES.md}</div>
+              <p class="dispatch-card-desc">读取 REQ 文件 + PROTO option-1 子段。复用 <code>cs-filter-bar</code> tab 切状态 + 套餐卡片墙 + 抽屉。禁止 read 兄弟 option 文件。</p>
+            </div>
+
+            <div class="dispatch-card">
+              <div class="dispatch-card-tag">PAGE-AGENT · B</div>
+              <h3 class="dispatch-card-title">option-2 · 工作台 3 卡块</h3>
+              <div class="dispatch-card-target">pages/employee-device-apply/<br>employee-device-apply-option-2.{html,css,-RULES.md}</div>
+              <p class="dispatch-card-desc">读取 REQ 文件 + PROTO option-2 子段。工作台 3 卡块按生命周期切片，<strong>无 filter-bar</strong> + 抽屉。禁止 read 兄弟 option 文件。</p>
+            </div>
+          </div>
+
+          <h3 class="subsection-title">下游流程</h3>
+          <ol class="steps">
+            <li>各 page-agent read <code>design/components/INDEX.md</code> 评估组件复用</li>
+            <li>缺失组件在 RULES.md 末尾列清单，<strong>不自行新建</strong></li>
+            <li>主会话收到两份报告后统一缺失组件命名（避免 <code>cs-step-tracker</code> vs <code>cs-stepper</code> 同物异名）</li>
+            <li>派 component-agent 新建后回头让 page-agent 重装</li>
+          </ol>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // 滚动高亮当前 section
+    const items = Array.from(document.querySelectorAll('.doc-nav-item'));
+    const sections = items.map(a => document.querySelector(a.getAttribute('href')));
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const id = '#' + e.target.id;
+          items.forEach(a => a.classList.toggle('active', a.getAttribute('href') === id));
+        }
+      });
+    }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
+    sections.forEach(s => s && observer.observe(s));
+  </script>
+</body>
+</html>

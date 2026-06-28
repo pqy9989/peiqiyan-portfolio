@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>待办任务 / 任务管理 — CSES</title>
+
+  <!-- 设计令牌 / 基础样式 -->
+  <link rel="stylesheet" href="../../css/base.css">
+  <link rel="stylesheet" href="../../css/token.css">
+  <link rel="stylesheet" href="../../css/variable.css">
+
+  <!-- 图标字体 -->
+  <link rel="stylesheet" href="../../fonts/cses-icons.css?v=101">
+
+  <!-- 布局骨架 -->
+  <link rel="stylesheet" href="../../fragment/fragment.css">
+  <link rel="stylesheet" href="../../css/page-shell.css">
+
+  <!-- 组件 -->
+  <link rel="stylesheet" href="../../components/search-input/search-input.css">
+  <link rel="stylesheet" href="../../components/avatar/avatar.css">
+  <link rel="stylesheet" href="../../components/button/button.css">
+  <link rel="stylesheet" href="../../components/checkbox/checkbox.css">
+  <link rel="stylesheet" href="../../components/status-badge/status-badge.css">
+  <link rel="stylesheet" href="../../components/tag/tag.css">
+
+  <!-- 页面私有 -->
+  <link rel="stylesheet" href="index.css">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: var(--font-family-cn), -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--cs-color-bg-app-dark);
+      color: var(--cs-color-text);
+      height: 100vh;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+</head>
+<body>
+
+<cs-layout>
+
+  <!-- ===== 1. 标签栏 ===== -->
+  <div class="tabbar">
+    <div class="tabbar-left">
+      <span class="win-ctrl tabbar-window-control">
+        <span class="ctrl-dot" data-c="close"></span>
+        <span class="ctrl-dot" data-c="min"></span>
+        <span class="ctrl-dot" data-c="max"></span>
+      </span>
+      <cs-search-input class="tabbar-search ah-top-search" data-variant="gray" data-size="sm">
+        <i class="search-icon cses-stratis-search-01"></i>
+        <input class="search-field" type="text" placeholder="搜索">
+      </cs-search-input>
+      <div class="page-tab"><span class="tab-label">消息</span><i class="tab-close cses-stratis-x-01"></i></div>
+      <div class="page-tab"><span class="tab-label">订单拓展</span><i class="tab-close cses-stratis-x-01"></i></div>
+      <div class="page-tab"><span class="tab-label">工作台</span><i class="tab-close cses-stratis-x-01"></i></div>
+      <div class="page-tab" data-active><span class="tab-label">项目运营</span><i class="tab-close cses-stratis-x-01"></i></div>
+      <div class="page-tab"><span class="tab-label">文档库</span><i class="tab-close cses-stratis-chevron-down"></i></div>
+    </div>
+    <div class="tabbar-right">
+      <span class="tabbar-notice">
+        <i class="cses-stratis-bell-01 notice-icon"></i>
+        <span class="notice-badge">2</span>
+      </span>
+      <cs-avatar data-size="xs" data-shape="circle" data-color="blue">张</cs-avatar>
+    </div>
+  </div>
+
+  <!-- ===== 2. 主体 ===== -->
+  <div class="body">
+
+    <!-- 2.1 一级导航 -->
+    <cs-sidebar>
+      <span class="logo">
+        <img src="../../assets/logo.png" alt="CSES">
+      </span>
+      <nav class="nav">
+        <div class="nav-group">
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-home-01"></i></span>
+            <span class="nav-label">工作台</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-compass"></i></span>
+            <span class="nav-label">导向</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-message-circle"></i></span>
+            <span class="nav-label">消息</span>
+          </a>
+          <a class="nav-item" data-active>
+            <span class="nav-icon"><i class="cses-stratis-check-square-broken"></i></span>
+            <span class="nav-label">任务</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-video-on"></i></span>
+            <span class="nav-label">会议</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-book-01"></i></span>
+            <span class="nav-label">文档</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-file-edit-01"></i></span>
+            <span class="nav-label">表单</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-file-check-01"></i></span>
+            <span class="nav-label">审批</span>
+          </a>
+        </div>
+      </nav>
+    </cs-sidebar>
+
+    <!-- 2.2 内容包裹 -->
+    <div class="content-wrapper">
+
+      <!-- 2.2.1 二级导航：项目运营 -->
+      <cs-navbar>
+        <div class="inner">
+          <!-- ① 标题 -->
+          <div class="slot-header" style="display:flex;flex-direction:column;gap:4px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:16px;font-weight:600;color:var(--cs-color-text);font-family:var(--font-family-cn);">项目运营</span>
+              <i class="cses-stratis-menu-01" style="font-size:16px;color:var(--cs-color-text-light2);cursor:pointer;"></i>
+            </div>
+            <span style="font-size:12px;color:var(--cs-color-text-light2);font-family:var(--font-family-cn);">让工作管理更高效</span>
+          </div>
+
+          <!-- ② 新建任务 主 CTA -->
+          <div class="slot-action" style="display:flex;align-items:center;gap:6px;">
+            <cs-button data-variant="primary" data-size="lg" style="flex:1;">
+              <i class="btn-icon cses-stratis-plus-01"></i>
+              <span class="btn-label">新建任务</span>
+            </cs-button>
+            <cs-button data-variant="primary" data-size="lg" style="width:32px;padding:0;">
+              <i class="cses-stratis-chevron-down" style="font-size:14px;"></i>
+            </cs-button>
+          </div>
+
+          <!-- ③ 主菜单 -->
+          <div class="slot-nav">
+            <div class="tl-nav-group">
+              <div class="tl-nav-group__head">
+                <i class="cses-stratis-check-square-broken"></i>
+                <span class="tl-side-item__label">我的任务</span>
+                <i class="cses-stratis-chevron-down" style="font-size:12px;color:var(--cs-color-text-light2);"></i>
+              </div>
+              <div class="tl-sub-item" data-active>
+                <span class="tl-sub-item__label">待办</span>
+                <span class="tl-side-item__warn">5条即将过期</span>
+              </div>
+              <div class="tl-sub-item">
+                <span class="tl-sub-item__label">已办</span>
+                <span class="tl-sub-item__count">3</span>
+              </div>
+              <div class="tl-sub-item">
+                <span class="tl-sub-item__label">我的创建</span>
+                <span class="tl-sub-item__count">3</span>
+              </div>
+              <div class="tl-sub-item">
+                <span class="tl-sub-item__label">我的检视</span>
+                <span class="tl-sub-item__count">3</span>
+              </div>
+            </div>
+
+            <div class="tl-side-item" style="margin-top:4px;">
+              <i class="tl-side-item__icon cses-stratis-alarm-01"></i>
+              <span class="tl-side-item__label">我的工时</span>
+            </div>
+            <div class="tl-side-item">
+              <i class="tl-side-item__icon cses-stratis-star-01"></i>
+              <span class="tl-side-item__label">我的关注</span>
+            </div>
+          </div>
+
+          <!-- ④ 副菜单：空间 -->
+          <div class="slot-sub">
+            <div class="tl-nav-group">
+              <div class="tl-nav-group__head">
+                <i class="cses-stratis-grid-01"></i>
+                <span class="tl-side-item__label">空间</span>
+                <span class="tl-side-item__actions" style="display:inline-flex;align-items:center;gap:6px;color:var(--cs-color-text-light2);font-size:14px;">
+                  <i class="cses-stratis-arrow-refresh-01" style="cursor:pointer;"></i>
+                  <i class="cses-stratis-chevron-down" style="font-size:12px;"></i>
+                </span>
+              </div>
+
+              <!-- XPA 空间 -->
+              <div class="tl-space-item">
+                <i class="tl-space-item__caret cses-stratis-chevron-down"></i>
+                <i class="cses-stratis-grid-01" style="color:var(--cs-color-primary);"></i>
+                <span class="tl-space-item__label">XPA空间</span>
+                <span class="tl-space-item__actions">
+                  <i class="cses-stratis-menu-04"></i>
+                  <i class="cses-stratis-plus-01"></i>
+                </span>
+              </div>
+              <div class="tl-folder-item">
+                <i class="tl-folder-item__icon cses-stratis-folder-open-01" style="color:var(--cs-color-warning);"></i>
+                <span class="tl-folder-item__label">任务管理开发项目</span>
+                <span class="tl-folder-item__count">9</span>
+              </div>
+              <div class="tl-task-item">
+                <i class="tl-task-item__icon cses-stratis-folder"></i>
+                <span class="tl-task-item__label">缺陷管理</span>
+                <span class="tl-task-item__count">3</span>
+              </div>
+              <div class="tl-task-item">
+                <i class="tl-task-item__icon cses-stratis-folder"></i>
+                <span class="tl-task-item__label">开发工作</span>
+                <span class="tl-task-item__count">3</span>
+              </div>
+              <div class="tl-task-item">
+                <i class="tl-task-item__icon cses-stratis-folder"></i>
+                <span class="tl-task-item__label">设计项目</span>
+                <cs-tag data-color="primary" data-size="sm" style="margin-left:auto;">in</cs-tag>
+                <span class="tl-task-item__count">3</span>
+              </div>
+              <div class="tl-folder-item">
+                <i class="tl-folder-item__icon cses-stratis-folder"></i>
+                <span class="tl-folder-item__label">任务列表名称</span>
+                <span class="tl-folder-item__count">3</span>
+              </div>
+
+              <!-- 商学院 空间 -->
+              <div class="tl-space-item" style="margin-top:4px;">
+                <i class="tl-space-item__caret cses-stratis-chevron-down"></i>
+                <i class="cses-stratis-grid-01" style="color:var(--cs-color-primary);"></i>
+                <span class="tl-space-item__label">商学院空间</span>
+                <span class="tl-space-item__actions">
+                  <i class="cses-stratis-menu-04"></i>
+                  <i class="cses-stratis-plus-01"></i>
+                </span>
+              </div>
+              <div class="tl-folder-item">
+                <i class="tl-folder-item__icon cses-stratis-folder"></i>
+                <span class="tl-folder-item__label">任务合集名称</span>
+                <span class="tl-folder-item__count">3</span>
+              </div>
+              <div class="tl-folder-item">
+                <i class="tl-folder-item__icon cses-stratis-folder"></i>
+                <span class="tl-folder-item__label">任务合集名称</span>
+                <span class="tl-folder-item__count">3</span>
+              </div>
+              <div class="tl-folder-item">
+                <i class="tl-folder-item__icon cses-stratis-folder"></i>
+                <span class="tl-folder-item__label">任务合集名称</span>
+                <span class="tl-folder-item__count">3</span>
+              </div>
+
+              <div class="tl-new-space">
+                <i class="cses-stratis-plus-01"></i>
+                <span>新建空间</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ⑥ 底部 -->
+          <div class="slot-bottom">
+            <div class="tl-settings">
+              <i class="cses-stratis-settings"></i>
+              <span>设置</span>
+            </div>
+          </div>
+        </div>
+      </cs-navbar>
+
+      <!-- 2.2.2 主内容区 -->
+      <main class="main-content">
+
+        <!-- 内容区头部 -->
+        <cs-content-header>
+          <div class="slot-left">
+            <span class="page-title">待办任务</span>
+          </div>
+          <div class="slot-right">
+            <cs-search-input data-variant="gray" data-size="sm">
+              <i class="search-icon cses-stratis-search-01"></i>
+              <input class="search-field" type="text" placeholder="请搜索任务名称">
+            </cs-search-input>
+          </div>
+        </cs-content-header>
+
+        <!-- 筛选区 -->
+        <cs-filter-bar data-variant="filters">
+          <div class="filter-left">
+            <span class="filter-count">
+              全部 <span class="count-num">5</span>
+            </span>
+            <span class="filter-count" data-active data-warn>
+              即将过期 <span class="count-num">4</span>
+              <i class="cses-stratis-chevron-down" style="font-size:12px;"></i>
+            </span>
+            <span class="filter-divider"></span>
+            <span class="tl-filter-dropdown">
+              <span>分组</span>
+              <i class="cses-stratis-chevron-down"></i>
+            </span>
+            <span class="tl-filter-dropdown">
+              <span>时间范围</span>
+              <i class="cses-stratis-chevron-down"></i>
+            </span>
+            <span class="tl-filter-dropdown">
+              <span>优先级</span>
+              <i class="cses-stratis-chevron-down"></i>
+            </span>
+            <span class="tl-filter-dropdown">
+              <span>项目</span>
+              <i class="cses-stratis-chevron-down"></i>
+            </span>
+            <span class="tl-filter-dropdown">
+              <span>任务合集</span>
+              <i class="cses-stratis-chevron-down"></i>
+            </span>
+          </div>
+          <div class="filter-right">
+            <span class="filter-tool" title="筛选">
+              <i class="cses-stratis-filter"></i>
+            </span>
+            <span class="filter-divider"></span>
+            <span class="filter-tool" title="设置">
+              <i class="cses-stratis-settings"></i>
+            </span>
+          </div>
+        </cs-filter-bar>
+
+        <!-- 表格 -->
+        <div class="tl-table">
+
+          <!-- 表头 -->
+          <div class="tl-row tl-row__head">
+            <div class="tl-cell tl-cell--checkbox">
+              <cs-checkbox></cs-checkbox>
+            </div>
+            <div class="tl-cell">
+              <i class="tl-cell__icon cses-stratis-menu-04"></i>
+              <span>任务名称</span>
+            </div>
+            <div class="tl-cell">
+              <i class="tl-cell__icon cses-stratis-check-square-contained"></i>
+              <span>状态</span>
+              <span class="tl-sort">
+                <i class="cses-stratis-chevron-up"></i>
+                <i class="cses-stratis-chevron-down"></i>
+              </span>
+            </div>
+            <div class="tl-cell">
+              <i class="tl-cell__icon cses-stratis-grid-01"></i>
+              <span>优先级</span>
+            </div>
+            <div class="tl-cell">
+              <i class="tl-cell__icon cses-stratis-calendar-number"></i>
+              <span>开始时间</span>
+            </div>
+            <div class="tl-cell">
+              <i class="tl-cell__icon cses-stratis-calendar-minus"></i>
+              <span>截止时间</span>
+            </div>
+            <div class="tl-cell">
+              <i class="tl-cell__icon cses-stratis-folder"></i>
+              <span>所属空间&amp;项目/任务合集</span>
+            </div>
+          </div>
+
+          <!-- 数据行 -->
+          <div class="tl-table__scroll">
+
+            <!-- Row 1 — 即将过期 + 紧急 -->
+            <div class="tl-row tl-row--body">
+              <div class="tl-cell tl-cell--checkbox"><cs-checkbox></cs-checkbox></div>
+              <div class="tl-cell">
+                <div class="tl-task">
+                  <div class="tl-task__title">
+                    <span class="tl-task__name">任务管理_我创建的改版</span>
+                    <cs-tag data-color="warning" data-size="sm">即将过期</cs-tag>
+                  </div>
+                  <div class="tl-task__meta">
+                    <cs-avatar data-size="xs" data-color="orange">王</cs-avatar>
+                    <span class="tl-task__meta-text">王明明修改了截止时间为"12.03 12:09"</span>
+                  </div>
+                </div>
+              </div>
+              <div class="tl-cell"><cs-status-badge data-status="in-progress">进行中</cs-status-badge></div>
+              <div class="tl-cell">
+                <span class="tl-priority" data-level="urgent">
+                  <span class="tl-priority__flag"><svg viewBox="0 0 12 14" xmlns="http://www.w3.org/2000/svg"><path d="M1 0h1.5v14H1V0zm1.5 0h7.2L8 3.5l1.7 3.5H2.5V0z"/></svg></span>紧急
+                </span>
+              </div>
+              <div class="tl-cell tl-time">09月22日 17:56</div>
+              <div class="tl-cell tl-time">09月30日 17:56</div>
+              <div class="tl-cell">
+                <span class="tl-space">
+                  <i class="cses-stratis-grid-01"></i>
+                  <span class="tl-space__text">XPA的空间</span>
+                  <span class="tl-space__sep">/</span>
+                  <span class="tl-space__folder">
+                    <i class="cses-stratis-folder"></i>
+                    <span class="tl-space__text">开发工作</span>
+                  </span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="tl-row tl-row--body">
+              <div class="tl-cell tl-cell--checkbox"><cs-checkbox></cs-checkbox></div>
+              <div class="tl-cell">
+                <div class="tl-task">
+                  <div class="tl-task__title">
+                    <span class="tl-task__name">任务管理_我创建的改版</span>
+                    <cs-tag data-color="warning" data-size="sm">即将过期</cs-tag>
+                    <span class="tl-task__actions">
+                      <span class="tl-task-action"><i class="cses-stratis-expand-02"></i>详情</span>
+                      <span class="tl-task-action"><i class="cses-stratis-menu-04"></i></span>
+                    </span>
+                  </div>
+                  <div class="tl-task__meta">
+                    <cs-avatar data-size="xs" data-color="green">王</cs-avatar>
+                    <span class="tl-task__meta-text">王伟变更任务状态为"进行中"</span>
+                  </div>
+                </div>
+              </div>
+              <div class="tl-cell"><cs-status-badge data-status="in-progress">进行中</cs-status-badge></div>
+              <div class="tl-cell">
+                <span class="tl-priority" data-level="important">
+                  <span class="tl-priority__flag"><svg viewBox="0 0 12 14" xmlns="http://www.w3.org/2000/svg"><path d="M1 0h1.5v14H1V0zm1.5 0h7.2L8 3.5l1.7 3.5H2.5V0z"/></svg></span>重要
+                </span>
+              </div>
+              <div class="tl-cell tl-time">09月22日 17:56</div>
+              <div class="tl-cell tl-time">09月28日 17:56</div>
+              <div class="tl-cell">
+                <span class="tl-space">
+                  <i class="cses-stratis-grid-01"></i>
+                  <span class="tl-space__text">XPA的空间</span>
+                  <span class="tl-space__sep">/</span>
+                  <span class="tl-space__folder">
+                    <i class="cses-stratis-folder"></i>
+                    <span class="tl-space__text">开发工作</span>
+                  </span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Row 3 -->
+            <div class="tl-row tl-row--body">
+              <div class="tl-cell tl-cell--checkbox"><cs-checkbox></cs-checkbox></div>
+              <div class="tl-cell">
+                <div class="tl-task">
+                  <div class="tl-task__title">
+                    <span class="tl-task__name">任务管理_我创建的改版</span>
+                  </div>
+                  <div class="tl-task__meta">
+                    <cs-avatar data-size="xs" data-color="purple">黄</cs-avatar>
+                    <span class="tl-task__meta-text">黄珊通过了检视点</span>
+                  </div>
+                </div>
+              </div>
+              <div class="tl-cell"><cs-status-badge data-status="in-progress">进行中</cs-status-badge></div>
+              <div class="tl-cell">
+                <span class="tl-priority" data-level="normal">
+                  <span class="tl-priority__flag"><svg viewBox="0 0 12 14" xmlns="http://www.w3.org/2000/svg"><path d="M1 0h1.5v14H1V0zm1.5 0h7.2L8 3.5l1.7 3.5H2.5V0z"/></svg></span>一般
+                </span>
+              </div>
+              <div class="tl-cell tl-time">09月22日 17:56</div>
+              <div class="tl-cell tl-time">09月27日 17:56</div>
+              <div class="tl-cell">
+                <span class="tl-space">
+                  <i class="cses-stratis-grid-01"></i>
+                  <span class="tl-space__text">XPA的空间</span>
+                  <span class="tl-space__sep">/</span>
+                  <span class="tl-space__folder">
+                    <i class="cses-stratis-folder"></i>
+                    <span class="tl-space__text">开发工作</span>
+                  </span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Row 4 -->
+            <div class="tl-row tl-row--body">
+              <div class="tl-cell tl-cell--checkbox"><cs-checkbox></cs-checkbox></div>
+              <div class="tl-cell">
+                <div class="tl-task">
+                  <div class="tl-task__title">
+                    <span class="tl-task__name">任务管理_我创建的改版</span>
+                    <cs-tag data-color="warning" data-size="sm">即将过期</cs-tag>
+                  </div>
+                  <div class="tl-task__meta">
+                    <cs-avatar data-size="xs" data-color="sky">王</cs-avatar>
+                    <span class="tl-task__meta-text">王维上传了3个文件</span>
+                  </div>
+                </div>
+              </div>
+              <div class="tl-cell"><cs-status-badge data-status="in-progress">进行中</cs-status-badge></div>
+              <div class="tl-cell">
+                <span class="tl-priority" data-level="low">
+                  <span class="tl-priority__flag"><svg viewBox="0 0 12 14" xmlns="http://www.w3.org/2000/svg"><path d="M1 0h1.5v14H1V0zm1.5 0h7.2L8 3.5l1.7 3.5H2.5V0z"/></svg></span>较低
+                </span>
+              </div>
+              <div class="tl-cell tl-time">09月22日 17:56</div>
+              <div class="tl-cell tl-time">09月26日 17:56</div>
+              <div class="tl-cell">
+                <span class="tl-space">
+                  <i class="cses-stratis-grid-01"></i>
+                  <span class="tl-space__text">XPA的空间</span>
+                  <span class="tl-space__sep">/</span>
+                  <span class="tl-space__folder">
+                    <i class="cses-stratis-folder"></i>
+                    <span class="tl-space__text">开发工作</span>
+                  </span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Row 5 (即将过期 / 进行中) -->
+            <div class="tl-row tl-row--body">
+              <div class="tl-cell tl-cell--checkbox"><cs-checkbox></cs-checkbox></div>
+              <div class="tl-cell">
+                <div class="tl-task">
+                  <div class="tl-task__title">
+                    <span class="tl-task__name">任务管理_我创建的改版</span>
+                    <cs-tag data-color="warning" data-size="sm">即将过期</cs-tag>
+                  </div>
+                </div>
+              </div>
+              <div class="tl-cell"><cs-status-badge data-status="in-progress">进行中</cs-status-badge></div>
+              <div class="tl-cell"><span class="tl-priority" data-level="low">较低</span></div>
+              <div class="tl-cell tl-time">09月22日 17:56</div>
+              <div class="tl-cell tl-time">09月26日 17:56</div>
+              <div class="tl-cell">
+                <span class="tl-space">
+                  <i class="cses-stratis-grid-01"></i>
+                  <span class="tl-space__text">XPA的空间</span>
+                  <span class="tl-space__sep">/</span>
+                  <span class="tl-space__folder">
+                    <i class="cses-stratis-folder"></i>
+                    <span class="tl-space__text">开发工作</span>
+                  </span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Row 6 (已过期) -->
+            <div class="tl-row tl-row--body">
+              <div class="tl-cell tl-cell--checkbox"><cs-checkbox></cs-checkbox></div>
+              <div class="tl-cell">
+                <div class="tl-task">
+                  <div class="tl-task__title">
+                    <span class="tl-task__name">任务管理_我创建的改版</span>
+                    <cs-tag data-color="danger" data-size="sm">已过期</cs-tag>
+                  </div>
+                  <div class="tl-task__meta">
+                    <cs-avatar data-size="xs" data-color="red">王</cs-avatar>
+                    <span class="tl-task__meta-text">王帅将你的任务设为前置任务</span>
+                  </div>
+                </div>
+              </div>
+              <div class="tl-cell"><cs-status-badge data-status="in-progress">进行中</cs-status-badge></div>
+              <div class="tl-cell"><span class="tl-priority" data-level="low">较低</span></div>
+              <div class="tl-cell tl-time">09月22日 17:56</div>
+              <div class="tl-cell tl-time">09月26日 17:56</div>
+              <div class="tl-cell">
+                <span class="tl-space">
+                  <i class="cses-stratis-grid-01"></i>
+                  <span class="tl-space__text">XPA的空间</span>
+                  <span class="tl-space__sep">/</span>
+                  <span class="tl-space__folder">
+                    <i class="cses-stratis-folder"></i>
+                    <span class="tl-space__text">开发工作</span>
+                  </span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Row 7 (已过期 / 进行中) -->
+            <div class="tl-row tl-row--body">
+              <div class="tl-cell tl-cell--checkbox"><cs-checkbox></cs-checkbox></div>
+              <div class="tl-cell">
+                <div class="tl-task">
+                  <div class="tl-task__title">
+                    <span class="tl-task__name">任务管理_我创建的改版</span>
+                    <cs-tag data-color="danger" data-size="sm">已过期</cs-tag>
+                  </div>
+                  <div class="tl-task__meta">
+                    <cs-avatar data-size="xs" data-color="purple">黄</cs-avatar>
+                    <span class="tl-task__meta-text">黄珊检视通过了检视点</span>
+                  </div>
+                </div>
+              </div>
+              <div class="tl-cell"><cs-status-badge data-status="in-progress">进行中</cs-status-badge></div>
+              <div class="tl-cell"><span class="tl-priority" data-level="low">较低</span></div>
+              <div class="tl-cell tl-time">09月22日 17:56</div>
+              <div class="tl-cell tl-time">09月25日 17:56</div>
+              <div class="tl-cell">
+                <span class="tl-space">
+                  <i class="cses-stratis-grid-01"></i>
+                  <span class="tl-space__text">XPA的空间</span>
+                  <span class="tl-space__sep">/</span>
+                  <span class="tl-space__folder">
+                    <i class="cses-stratis-folder"></i>
+                    <span class="tl-space__text">开发工作</span>
+                  </span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Row 8 (未开始 / 讨论) -->
+            <div class="tl-row tl-row--body">
+              <div class="tl-cell tl-cell--checkbox"><cs-checkbox></cs-checkbox></div>
+              <div class="tl-cell">
+                <div class="tl-task">
+                  <div class="tl-task__title">
+                    <span class="tl-task__name">任务管理_我创建的改版</span>
+                  </div>
+                  <div class="tl-task__meta">
+                    <span class="tl-avatars">
+                      <cs-avatar data-size="xs" data-color="pink">王</cs-avatar>
+                      <cs-avatar data-size="xs" data-color="orange">李</cs-avatar>
+                      <cs-avatar data-size="xs" data-color="green">陈</cs-avatar>
+                    </span>
+                    <span class="tl-task__meta-text">王美等5人的24条讨论未读</span>
+                  </div>
+                </div>
+              </div>
+              <div class="tl-cell"><cs-status-badge data-status="not-started">未开始</cs-status-badge></div>
+              <div class="tl-cell"><span class="tl-priority" data-level="low">较低</span></div>
+              <div class="tl-cell tl-time">09月22日 17:56</div>
+              <div class="tl-cell tl-time">09月24日 17:56</div>
+              <div class="tl-cell">
+                <span class="tl-space">
+                  <i class="cses-stratis-grid-01"></i>
+                  <span class="tl-space__text">XPA的空间</span>
+                  <span class="tl-space__sep">/</span>
+                  <span class="tl-space__folder">
+                    <i class="cses-stratis-folder"></i>
+                    <span class="tl-space__text">开发工作</span>
+                  </span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Row 9 -->
+            <div class="tl-row tl-row--body">
+              <div class="tl-cell tl-cell--checkbox"><cs-checkbox></cs-checkbox></div>
+              <div class="tl-cell">
+                <div class="tl-task">
+                  <div class="tl-task__title">
+                    <span class="tl-task__name">任务管理_我创建的改版</span>
+                  </div>
+                  <div class="tl-task__meta">
+                    <cs-avatar data-size="xs" data-color="pink">王</cs-avatar>
+                    <span class="tl-task__meta-text">王美：任务快延期了，大家加快啊</span>
+                  </div>
+                </div>
+              </div>
+              <div class="tl-cell"><cs-status-badge data-status="not-started">未开始</cs-status-badge></div>
+              <div class="tl-cell"><span class="tl-priority" data-level="low">较低</span></div>
+              <div class="tl-cell tl-time">09月22日 17:56</div>
+              <div class="tl-cell tl-time">09月23日 17:56</div>
+              <div class="tl-cell">
+                <span class="tl-space">
+                  <i class="cses-stratis-grid-01"></i>
+                  <span class="tl-space__text">XPA的空间</span>
+                  <span class="tl-space__sep">/</span>
+                  <span class="tl-space__folder">
+                    <i class="cses-stratis-folder"></i>
+                    <span class="tl-space__text">开发工作</span>
+                  </span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Row 10 -->
+            <div class="tl-row tl-row--body">
+              <div class="tl-cell tl-cell--checkbox"><cs-checkbox></cs-checkbox></div>
+              <div class="tl-cell">
+                <div class="tl-task">
+                  <div class="tl-task__title">
+                    <span class="tl-task__name">任务管理_我创建的改版</span>
+                  </div>
+                  <div class="tl-task__meta">
+                    <cs-avatar data-size="xs" data-color="pink">王</cs-avatar>
+                    <span class="tl-task__meta-text">王美：任务快延期了，大家加快啊</span>
+                  </div>
+                </div>
+              </div>
+              <div class="tl-cell"><cs-status-badge data-status="not-started">未开始</cs-status-badge></div>
+              <div class="tl-cell"><span class="tl-priority" data-level="low">较低</span></div>
+              <div class="tl-cell tl-time">09月22日 17:56</div>
+              <div class="tl-cell tl-time">09月23日 17:56</div>
+              <div class="tl-cell">
+                <span class="tl-space">
+                  <i class="cses-stratis-grid-01"></i>
+                  <span class="tl-space__text">XPA的空间</span>
+                  <span class="tl-space__sep">/</span>
+                  <span class="tl-space__folder">
+                    <i class="cses-stratis-folder"></i>
+                    <span class="tl-space__text">开发工作</span>
+                  </span>
+                </span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 底部状态栏 18px -->
+        <div class="tl-bottom-bar">
+          <span class="tl-scroll-indicator"></span>
+        </div>
+
+      </main>
+
+    </div>
+
+    <!-- 2.3 右侧悬浮栏 -->
+    <aside class="tl-right-rail">
+      <div class="tl-rail__group">
+        <span class="tl-rail__icon" title="消息"><i class="cses-stratis-message-typing"></i></span>
+        <span class="tl-rail__icon" title="便签"><i class="cses-stratis-annotation"></i></span>
+        <span class="tl-rail__icon" title="图片"><i class="cses-stratis-file"></i></span>
+      </div>
+      <div class="tl-rail__divider"></div>
+      <span class="tl-rail__icon" title="新建"><i class="cses-stratis-plus-01"></i></span>
+      <div class="tl-rail__divider"></div>
+      <div class="tl-rail__chip" title="张静远提交申请">
+        <i class="cses-stratis-file-check-01"></i>
+        <span class="tl-rail__chip-text">张静远提交申请</span>
+      </div>
+      <div class="tl-rail__chip" title="订单拓展">
+        <i class="cses-stratis-folder"></i>
+        <span class="tl-rail__chip-text">订单拓展</span>
+      </div>
+      <div class="tl-rail__divider"></div>
+      <span class="tl-rail__icon" title="截图"><i class="cses-stratis-file"></i></span>
+      <span class="tl-rail__icon" title="截图"><i class="cses-stratis-file"></i></span>
+
+      <div class="tl-rail__bottom">
+        <span class="tl-rail__msg" title="未读消息 3">
+          <i class="cses-stratis-message-circle"></i>
+          <span class="tl-rail__msg-dot"></span>
+        </span>
+      </div>
+    </aside>
+
+  </div><!-- /.body -->
+
+</cs-layout>
+
+</body>
+</html>

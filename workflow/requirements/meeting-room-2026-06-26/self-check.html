@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>页面装配 · 自检流程 · 2026-06-26</title>
+  <meta http-equiv="Cache-Control" content="no-cache">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #FFFFFF;
+      font-family: "Inter", "PingFang SC", -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #0A0A0A;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== 顶部栏 ===== */
+    .doc-topbar {
+      position: sticky; top: 0; z-index: 10;
+      height: 52px;
+      background: #FFFFFF;
+      border-bottom: 0.5px solid #ECECEC;
+      display: flex; align-items: center;
+      padding: 0 28px;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+    .doc-topbar-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 14px; font-weight: 500; color: #0A0A0A;
+      letter-spacing: -0.2px; text-decoration: none;
+    }
+    .doc-topbar-logo-dot {
+      width: 20px; height: 20px; border-radius: 5px;
+      background: #0A0A0A;
+      display: flex; align-items: center; justify-content: center;
+      color: #FFFFFF; font-size: 10px; font-weight: 500;
+    }
+    .doc-topbar-divider { width: 1px; height: 14px; background: #ECECEC; }
+    .doc-topbar-subtitle { font-size: 12px; color: #666666; }
+    .doc-topbar-count {
+      margin-left: auto;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #999999;
+      letter-spacing: 0.8px; text-transform: uppercase;
+    }
+    .doc-topbar-link {
+      font-size: 11px; color: #666666; text-decoration: none;
+      padding: 5px 10px; border: 0.5px solid #E5E5E5; border-radius: 4px;
+      letter-spacing: 0.3px; text-transform: uppercase;
+      transition: all .15s;
+    }
+    .doc-topbar-link:hover { border-color: #0A0A0A; color: #0A0A0A; }
+
+    .doc-layout { flex: 1; display: flex; min-height: 0; }
+
+    .doc-sidebar {
+      width: 240px; flex-shrink: 0;
+      background: #FFFFFF;
+      border-right: 0.5px solid #ECECEC;
+      position: sticky; top: 52px;
+      align-self: flex-start;
+      height: calc(100vh - 52px);
+      overflow-y: auto;
+    }
+    .doc-sidebar::-webkit-scrollbar { width: 4px; }
+    .doc-sidebar::-webkit-scrollbar-thumb { background: #ECECEC; }
+
+    .doc-nav-scroll { padding: 6px 0 24px; }
+    .doc-nav-group { padding: 16px 0 4px; }
+    .doc-nav-group:first-child { padding-top: 12px; }
+    .doc-nav-group-label {
+      padding: 4px 22px 10px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px; font-weight: 400; color: #999999;
+      letter-spacing: 1.2px; text-transform: uppercase;
+    }
+    .doc-nav-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 7px 22px;
+      font-size: 12.5px; color: #666666;
+      cursor: pointer; transition: color .12s;
+      text-decoration: none;
+    }
+    .doc-nav-item .nav-tag {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px; color: #BBBBBB;
+      letter-spacing: 0.6px;
+    }
+    .doc-nav-item:hover { color: #0A0A0A; }
+    .doc-nav-item.active { color: #0A0A0A; font-weight: 500; }
+    .doc-nav-item.active .nav-tag { color: #4857E2; }
+
+    .doc-content { flex: 1; min-width: 0; background: #FFFFFF; }
+    .page { padding: 44px 56px; max-width: 920px; }
+
+    .section-block { padding-top: 56px; margin-top: 56px; border-top: 0.5px solid #ECECEC; }
+    .section-block:first-of-type { padding-top: 0; margin-top: 0; border-top: none; }
+
+    .page-title {
+      font-size: 32px; font-weight: 500; color: #0A0A0A;
+      display: flex; align-items: baseline; gap: 14px;
+      margin: 0 0 10px;
+      letter-spacing: -0.8px; line-height: 1.1;
+    }
+    .page-title-tag {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #999999;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      font-weight: 400;
+    }
+    .page-subtitle {
+      font-size: 13px; color: #666666;
+      line-height: 1.7; max-width: 620px;
+      margin: 0 0 28px;
+    }
+
+    .section-label {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #999999;
+      letter-spacing: 1.4px; text-transform: uppercase;
+      margin-bottom: 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-label::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: #999; }
+    .section-label.accent { color: #4857E2; }
+    .section-label.accent::before { background: #4857E2; }
+    .section-label.muted { color: #B58B1E; }
+    .section-label.muted::before { background: #B58B1E; }
+    .section-label.danger { color: #DC2626; }
+    .section-label.danger::before { background: #DC2626; }
+
+    h2.section-title {
+      font-size: 22px; font-weight: 500; color: #0A0A0A;
+      margin: 0 0 8px;
+      letter-spacing: -0.4px; line-height: 1.25;
+    }
+    h3.subsection-title {
+      font-size: 14px; font-weight: 500; color: #0A0A0A;
+      margin: 28px 0 12px;
+      letter-spacing: -0.1px;
+      display: flex; align-items: baseline; gap: 10px;
+    }
+    h3.subsection-title .tag {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #999;
+      letter-spacing: 1px; font-weight: 400;
+    }
+    .section-hint {
+      font-size: 12.5px; color: #666; line-height: 1.6;
+      margin: 0 0 20px;
+    }
+
+    /* ===== 概览 stats ===== */
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 0;
+      margin: 28px 0 12px;
+    }
+    .stat-card { border-left: 0.5px solid #ECECEC; padding: 4px 22px; }
+    .stat-card:first-child { border-left: none; padding-left: 0; }
+    .stat-card-label {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px; color: #999999;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .stat-card-value {
+      font-size: 38px; font-weight: 500; color: #0A0A0A;
+      line-height: 1; letter-spacing: -1.4px;
+    }
+    .stat-card-hint {
+      margin-top: 10px;
+      font-size: 10px; color: #999999;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      letter-spacing: 0.4px;
+    }
+
+    /* ===== 检查卡 ===== */
+    .check-card {
+      border-top: 0.5px solid #ECECEC;
+      padding: 24px 0 22px;
+    }
+    .check-card:first-of-type { border-top: 0.5px solid #0A0A0A; }
+    .check-card-head {
+      display: flex; align-items: baseline; gap: 16px;
+      margin-bottom: 6px;
+    }
+    .check-card-num {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 11px; color: #4857E2;
+      letter-spacing: 1.4px; text-transform: uppercase;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+    .check-card-title {
+      font-size: 16px; font-weight: 500; color: #0A0A0A;
+      margin: 0;
+      letter-spacing: -0.2px;
+    }
+    .check-card-why {
+      font-size: 12.5px; color: #666;
+      line-height: 1.65; margin: 0 0 14px;
+    }
+    .check-card-why::before {
+      content: '为什么';
+      font-family: "JetBrains Mono", monospace;
+      font-size: 9px; color: #999;
+      letter-spacing: 1px;
+      margin-right: 8px;
+      text-transform: uppercase;
+    }
+
+    /* 检查项行 */
+    .check-list {
+      margin: 12px 0 12px;
+      border: 0.5px solid #ECECEC;
+    }
+    .check-row {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      align-items: start;
+      padding: 12px 16px;
+      border-bottom: 0.5px solid #ECECEC;
+      font-size: 13px;
+      color: #0A0A0A;
+      line-height: 1.55;
+    }
+    .check-row:last-child { border-bottom: none; }
+    .check-row .check-mark {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 12px; color: #1E7A2E;
+      font-weight: 600;
+    }
+    .check-row.fail .check-mark { color: #DC2626; }
+    .check-row .check-text { color: #0A0A0A; }
+    .check-row .check-text code {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 11.5px;
+      background: #F5F5F5; padding: 1px 5px; border-radius: 2px;
+      color: #4857E2;
+    }
+    .check-row .check-method {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 11px; color: #999;
+      margin-top: 4px;
+    }
+
+    /* 失败处理 banner */
+    .fix-banner {
+      display: flex; gap: 10px;
+      padding: 12px 14px;
+      background: #FFF9F0;
+      border: 0.5px solid #F0DCB0;
+      font-size: 12.5px; color: #6B5614;
+      line-height: 1.65;
+      margin: 8px 0;
+    }
+    .fix-banner::before { content: '↳ 失败修法'; font-family: "JetBrains Mono", monospace; font-size: 9px; color: #B58B1E; letter-spacing: 1px; margin-right: 8px; flex-shrink: 0; }
+
+    /* 报告模板 */
+    pre.template {
+      background: #FAFAFA;
+      border: 0.5px solid #ECECEC;
+      padding: 20px 22px;
+      margin: 16px 0;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 12px; line-height: 1.65;
+      color: #0A0A0A;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    /* 流程图 */
+    .flow {
+      margin: 20px 0;
+      padding: 24px;
+      background: #FAFAFA;
+      border: 0.5px solid #ECECEC;
+    }
+    .flow pre {
+      margin: 0;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 12px; line-height: 1.75;
+      color: #0A0A0A;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    /* 表 */
+    table.simple {
+      width: 100%; border-collapse: collapse;
+      margin: 12px 0;
+    }
+    table.simple th, table.simple td {
+      text-align: left;
+      padding: 11px 14px;
+      border-bottom: 0.5px solid #ECECEC;
+      font-size: 12.5px;
+      vertical-align: top;
+      color: #0A0A0A;
+    }
+    table.simple th {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px; color: #999;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      font-weight: 400;
+      border-bottom: 0.5px solid #E5E5E5;
+    }
+    table.simple td.mono {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 11px; color: #4857E2;
+    }
+    table.simple td.muted { color: #666; }
+    table.simple td.ok { color: #1E7A2E; font-weight: 500; }
+    table.simple td.fail { color: #DC2626; font-weight: 500; }
+
+    code {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 11.5px;
+      background: #F5F5F5; padding: 1px 5px; border-radius: 2px;
+      color: #4857E2;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="doc-topbar">
+    <a class="doc-topbar-logo" href="md.html">
+      <span class="doc-topbar-logo-dot">✓</span>
+      页面装配 · 自检流程
+    </a>
+    <span class="doc-topbar-divider"></span>
+    <span class="doc-topbar-subtitle">page-agent 装配后必跑的强约束检查 · 2026-06-26</span>
+    <span class="doc-topbar-count">9 检查项 · 32 检查点</span>
+    <a class="doc-topbar-link" href="md.html">REQ</a>
+    <a class="doc-topbar-link" href="q-bank.html" style="margin-left: 8px;">Q-BANK</a>
+  </header>
+
+  <div class="doc-layout">
+
+    <aside class="doc-sidebar">
+      <nav class="doc-nav-scroll">
+        <div class="doc-nav-group">
+          <div class="doc-nav-group-label">概览</div>
+          <a class="doc-nav-item active" href="#overview"><span>概览</span><span class="nav-tag">0</span></a>
+          <a class="doc-nav-item" href="#when"><span>何时跑</span><span class="nav-tag">RULE</span></a>
+          <a class="doc-nav-item" href="#flow"><span>流程图</span><span class="nav-tag">FLOW</span></a>
+        </div>
+        <div class="doc-nav-group">
+          <div class="doc-nav-group-label">9 检查项</div>
+          <a class="doc-nav-item" href="#c1"><span>C1 · fragment 容器</span><span class="nav-tag">3</span></a>
+          <a class="doc-nav-item" href="#c2"><span>C2 · 三大区域职责</span><span class="nav-tag">5</span></a>
+          <a class="doc-nav-item" href="#c3"><span>C3 · 令牌使用</span><span class="nav-tag">4</span></a>
+          <a class="doc-nav-item" href="#c4"><span>C4 · 图标声明</span><span class="nav-tag">2</span></a>
+          <a class="doc-nav-item" href="#c5"><span>C5 · 私有命名空间</span><span class="nav-tag">3</span></a>
+          <a class="doc-nav-item" href="#c6"><span>C6 · 引用顺序</span><span class="nav-tag">3</span></a>
+          <a class="doc-nav-item" href="#c7"><span>C7 · 跨页约束</span><span class="nav-tag">3</span></a>
+          <a class="doc-nav-item" href="#c8"><span>C8 · overlay 属性</span><span class="nav-tag">4</span></a>
+          <a class="doc-nav-item" href="#c9"><span>C9 · demo 数据</span><span class="nav-tag">2</span></a>
+        </div>
+        <div class="doc-nav-group">
+          <div class="doc-nav-group-label">收尾</div>
+          <a class="doc-nav-item" href="#report"><span>报告格式</span><span class="nav-tag">TPL</span></a>
+          <a class="doc-nav-item" href="#fail"><span>失败处理</span><span class="nav-tag">FIX</span></a>
+        </div>
+      </nav>
+    </aside>
+
+    <main class="doc-content">
+      <div class="page">
+
+        <!-- 概览 -->
+        <section class="section-block" id="overview">
+          <h1 class="page-title">page-agent 自检流程 <span class="page-title-tag">9 ITEMS · 32 CHECKS</span></h1>
+          <p class="page-subtitle">page-agent 每次装配完成后、向主会话报告 [PAGE-COMPLETION] 之前，必须按本清单逐条自检并把结果写进报告。覆盖 fragment 容器、三大区域职责、令牌、图标、命名空间、引用顺序、跨页约束、overlay 属性、demo 数据 9 类共 32 个检查点。</p>
+
+          <div class="overview-grid">
+            <div class="stat-card">
+              <div class="stat-card-label">检查项</div>
+              <div class="stat-card-value">9</div>
+              <div class="stat-card-hint">CATEGORIES</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">检查点</div>
+              <div class="stat-card-value">32</div>
+              <div class="stat-card-hint">POINTS</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">必过项</div>
+              <div class="stat-card-value">27</div>
+              <div class="stat-card-hint">MUST-PASS</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">允许偏差</div>
+              <div class="stat-card-value">5</div>
+              <div class="stat-card-hint">DEGRADABLE</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">失败修法</div>
+              <div class="stat-card-value">3</div>
+              <div class="stat-card-hint">FIX-RULE</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 何时跑 -->
+        <section class="section-block" id="when">
+          <div class="section-label accent">何时跑</div>
+          <h2 class="section-title">触发时机</h2>
+
+          <table class="simple">
+            <thead>
+              <tr><th style="width:35%">触发场景</th><th>跑哪些检查项</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>单页面 page-agent 装配完成</td><td class="muted">C1~C9 全部</td></tr>
+              <tr><td>多页面 Stage 1 装 shell.html</td><td class="muted">C1 / C2 / C3 / C4 / C5 / C6（无业务内容，跳过 C7~C9）</td></tr>
+              <tr><td>多页面 Stage 2 各页 main-area</td><td class="muted">C1~C9 全部 + 额外的 shell 克隆完整性检查</td></tr>
+              <tr><td>多页面 Stage 3 整合 index.html</td><td class="muted">C6 引用顺序 + C7 跨页 href 接通</td></tr>
+              <tr><td>page-agent 失败重试</td><td class="muted">失败项重跑 + 完整 C1~C9 复审</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- 流程图 -->
+        <section class="section-block" id="flow">
+          <div class="section-label accent">流程图</div>
+          <h2 class="section-title">装配 → 自检 → 报告 / 重试</h2>
+
+          <div class="flow">
+            <pre>┌──────────────────────────────┐
+│  page-agent 装配完成          │
+│  (HTML + CSS 写入磁盘)         │
+└──────────────┬───────────────┘
+               ↓
+┌──────────────────────────────┐
+│  C1~C9 自检（并行 grep / read）│
+│  ──────────────────────────   │
+│  C1 fragment 容器              │
+│  C2 三大区域职责                │
+│  C3 令牌使用                   │
+│  C4 图标声明                   │
+│  C5 私有命名空间                │
+│  C6 引用顺序                   │
+│  C7 跨页约束                   │
+│  C8 overlay 属性               │
+│  C9 demo 数据                  │
+└──────────────┬───────────────┘
+               ↓
+        ┌──────────┐
+        │ 全过?    │
+        └─┬──────┬─┘
+       是 │      │ 否
+          ↓      ↓
+   ┌─────────┐  ┌──────────────────┐
+   │ 报告    │  │ 修正 → 重跑自检   │
+   │ 模板    │  │ ──────────────   │
+   │ 写出    │  │ 缺组件/缺图标 →   │
+   └────┬────┘  │ 列在"偏差"里告知  │
+        ↓      │ 主会话决定派人补  │
+   [PAGE-       └────────┬─────────┘
+   COMPLETION]            ↓
+                    （回到自检）</pre>
+          </div>
+        </section>
+
+        <!-- C1 fragment 容器 -->
+        <section class="section-block" id="c1">
+          <div class="section-label accent">C1 · fragment 容器</div>
+          <h2 class="section-title">不修改 fragment 容器的几何 / 结构</h2>
+
+          <div class="check-card">
+            <div class="check-card-head">
+              <span class="check-card-num">C1.1~1.3</span>
+              <h3 class="check-card-title">3 个检查点</h3>
+            </div>
+            <p class="check-card-why">fragment.html 是统一框架的源头，页面层修改 navbar / sidebar / content-header 的几何（padding / margin / gap / height）会让多页面节奏失控，且无法被其他页享受。</p>
+
+            <div class="check-list">
+              <div class="check-row">
+                <span class="check-mark">1.1</span>
+                <div>
+                  <div class="check-text">未自创 layout class（<code>.nav-link</code> / <code>.nb-item</code> / <code>.ss-item</code> 等）</div>
+                  <div class="check-method">grep "class=\"" *.html 与 fragment.css 比对</div>
+                </div>
+              </div>
+              <div class="check-row">
+                <span class="check-mark">1.2</span>
+                <div>
+                  <div class="check-text">未在 page 层覆盖 fragment 容器的几何（含给槽位加 padding/margin）</div>
+                  <div class="check-method">grep "cs-navbar\|cs-sidebar\|cs-content-header\|.slot-" page.css</div>
+                </div>
+              </div>
+              <div class="check-row">
+                <span class="check-mark">1.3</span>
+                <div>
+                  <div class="check-text">未在 <code>.slot-left</code> 上手写 <code>flex-direction: column</code>（依赖 fragment.css <code>:has(.page-subtitle)</code> 自动 column 逻辑）</div>
+                  <div class="check-method">grep "slot-left" + "flex-direction" page.css</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="fix-banner">默认间距不合用 → 反馈 fragment-agent 改 fragment.css，不在 page 层 patch</div>
+          </div>
+        </section>
+
+        <!-- C2 三大区域职责 -->
+        <section class="section-block" id="c2">
+          <div class="section-label accent">C2 · 三大区域职责切分</div>
+          <h2 class="section-title">slot-action / slot-right / filter-bar 互斥</h2>
+
+          <div class="check-card">
+            <div class="check-card-head">
+              <span class="check-card-num">C2.1~2.5</span>
+              <h3 class="check-card-title">5 个检查点</h3>
+            </div>
+            <p class="check-card-why">三大区域是 fragment 的强约束，决定页面的视觉一致性。一旦混放，主 CTA / 视图切换 / 筛选 会重复或错位，所有页面失去节奏感。</p>
+
+            <div class="check-list">
+              <div class="check-row">
+                <span class="check-mark">2.1</span>
+                <div>
+                  <div class="check-text"><code>cs-navbar.slot-action</code> 只放 1 个主 CTA（<code>cs-button data-variant="primary"</code>）</div>
+                  <div class="check-method">grep "slot-action" + count cs-button</div>
+                </div>
+              </div>
+              <div class="check-row">
+                <span class="check-mark">2.2</span>
+                <div>
+                  <div class="check-text"><code>cs-content-header.slot-right</code> 只放搜索（<code>cs-search-trigger</code> / <code>cs-search-input</code>），禁止视图切换 / 筛选 / 新建</div>
+                  <div class="check-method">grep "slot-right" 内容</div>
+                </div>
+              </div>
+              <div class="check-row">
+                <span class="check-mark">2.3</span>
+                <div>
+                  <div class="check-text"><code>cs-filter-bar</code> 内不放新建 / 主 CTA 按钮</div>
+                  <div class="check-method">grep "cs-filter-bar" ~ "/cs-filter-bar" 内 cs-button data-variant="primary"</div>
+                </div>
+              </div>
+              <div class="check-row">
+                <span class="check-mark">2.4</span>
+                <div>
+                  <div class="check-text">视图切换 / 筛选 / 排序 都放在 <code>cs-filter-bar</code>，不放 content-header 右上</div>
+                  <div class="check-method">grep "view-switch\|filter" + 出现位置</div>
+                </div>
+              </div>
+              <div class="check-row">
+                <span class="check-mark">2.5</span>
+                <div>
+                  <div class="check-text">搜索互斥：默认在 content-header；若 <code>cs-filter-bar[data-variant="search"]</code>，则 slot-right 留空</div>
+                  <div class="check-method">grep "data-variant=\"search\"" + slot-right 内容</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- C3 令牌 -->
+        <section class="section-block" id="c3">
+          <div class="section-label accent">C3 · 令牌使用</div>
+          <h2 class="section-title">无硬编码 · 无 undefined token</h2>
+
+          <div class="check-card">
+            <div class="check-card-head">
+              <span class="check-card-num">C3.1~3.4</span>
+              <h3 class="check-card-title">4 个检查点</h3>
+            </div>
+            <p class="check-card-why">硬编码会让深浅色 / Figma 变量切换失效；引用不存在的令牌（如 <code>--radius-md</code> 未声明）会静默 fallback 到 0，圆角 / 间距彻底失效但不报错。</p>
+
+            <div class="check-list">
+              <div class="check-row">
+                <span class="check-mark">3.1</span>
+                <div>
+                  <div class="check-text">无硬编码颜色（<code>#xxx</code> / <code>rgb()</code> / <code>rgba()</code>）</div>
+                  <div class="check-method">grep -E "#[0-9a-f]{3,6}|rgba?\(" page.css</div>
+                </div>
+              </div>
+              <div class="check-row">
+                <span class="check-mark">3.2</span>
+                <div>
+                  <div class="check-text">无硬编码像素值（除框架透传需要的容器宽度）</div>
+                  <div class="check-method">grep -E "[0-9]+px" page.css 后人工核</div>
+                </div>
+              </div>
+              <div class="check-row">
+                <span class="check-mark">3.3</span>
+                <div>
+                  <div class="check-text">未引用未声明的令牌（典型陷阱：<code>--radius-md</code>、<code>--space-lg</code>）</div>
+                  <div class="check-method">grep "var(--" page.css → 与 variable.css 比对</div>
+                </div>
+              </div>
+              <div class="check-row">
+                <span class="check-mark">3.4</span>
+                <div>
+                  <div class="check-text">所有 var() 引用都能被 base.css 解析（无 fallback 到 0）</div>
+                  <div class="check-method">preview eval: getComputedStyle 验证关键属性非空</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="fix-banner">缺令牌 → 反馈 css-agent 在 variable.css 加；不在 page 层硬编码兜底</div>
+          </div>
+        </section>
+
+        <!-- C4 图标 -->
+        <section class="section-block" id="c4">
+          <div class="section-label accent">C4 · 图标声明</div>
+          <h2 class="section-title">只用已声明的 cses-* class</h2>
+
+          <div class="check-card">
+            <div class="check-card-head">
+              <span class="check-card-num">C4.1~4.2</span>
+              <h3 class="check-card-title">2 个检查点</h3>
+            </div>
+            <p class="check-card-why">图标字体的 class 必须在 <code>cses-icons.css</code> 中实际声明，否则页面渲染成空白方框（无报错）。凭印象写图标名（如 <code>cses-stratis-check-01</code>）是常见陷阱。</p>
+
+            <div class="check-list">
+              <div class="check-row">
+                <span class="check-mark">4.1</span>
+                <div>
+                  <div class="check-text">所有 <code>cses-*</code> class 都在 <code>cses-icons.css</code> 中实际声明</div>
+                  <div class="check-method">grep "cses-" page.html → 与 cses-icons.css 内 class 列表比对</div>
+                </div>
+              </div>
+              <div class="check-row">
+                <span class="check-mark">4.2</span>
+                <div>
+                  <div class="check-text">找不到的语义图标降级为通用图标 + 颜色 / 文字区分（不留空）</div>
+                  <div class="check-method">人工 review 偏差表里的图标降级是否合理</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="fix-banner">缺图标 → 反馈 font-agent 在 cses-icons.css 加；本次装配先用降级图标 + 在偏差表里说明</div>
+          </div>
+        </section>
+
+        <!-- C5 命名空间 -->
+        <section class="section-block" id="c5">
+          <div class="section-label accent">C5 · 私有命名空间</div>
+          <h2 class="section-title">前缀隔离 · 不污染设计系统</h2>
+
+          <div class="check-card">
+            <div class="check-card-head">
+              <span class="check-card-num">C5.1~5.3</span>
+              <h3 class="check-card-title">3 个检查点</h3>
+            </div>
+            <p class="check-card-why">页面层私有变量 / class 必须用模块前缀（<code>--meeting-room-*</code> / <code>.mr-*</code>），否则会污染全局命名空间，可能与其他模块或组件冲突。</p>
+
+            <div class="check-list">
+              <div class="check-row">
+                <span class="check-mark">5.1</span>
+                <div>
+                  <div class="check-text">所有页内私有 CSS 变量用模块前缀（<code>--meeting-room-*</code> / <code>--meeting-room-&lt;page-slug&gt;-*</code>）</div>
+                  <div class="check-method">grep "^\s*--" page.css 后核前缀</div>
+                </div>
+              </div>
+              <div class="check-row">
+                <span class="check-mark">5.2</span>
+                <div>
+                  <div class="check-text">所有自创 class 用模块前缀（<code>.mr-*</code> / <code>.meet-find__*</code> 等）</div>
+                  <div class="check-method">grep "^\\." page.css 后核前缀</div>
+                </div>
+              </div>
+              <div class="check-row">
+                <span class="check-mark">5.3</span>
+                <div>
+                  <div class="check-text">未覆盖 fragment.css / 组件 CSS 的官方 class（cs-*）的几何</div>
+                  <div class="check-method">grep "cs-[a-z-]*\s*{" page.css 后人工核</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- C6 引用顺序 -->
+        <section class="section-block" id="c6">
+          <div class="section-label accent">C6 · 引用顺序</div>
+          <h2 class="section-title">link 顺序固定 · 优先级正确</h2>
+
+          <div class="check-card">
+            <div class="check-card-head">
+              <span class="check-card-num">C6.1~6.3</span>
+              <h3 class="check-card-title">3 个检查点</h3>
+            </div>
+            <p class="check-card-why">CSS 引用顺序决定级联优先级。颠倒会让令牌、图标、fragment 容器失效或部分失效。</p>
+
+            <div class="check-list">
+              <div class="check-row">
+                <span class="check-mark">6.1</span>
+                <div>
+                  <div class="check-text">link 顺序：<code>base.css</code> → <code>cses-icons.css</code> → <code>fragment.css</code> → <code>page-shell.css</code> → 组件 CSS → shell.css → 页私有.css</div>
+                  <div class="check-method">grep "&lt;link" page.html 后逐行核</div>
+                </div>
+              </div>
+              <div class="check-row">
+                <span class="check-mark">6.2</span>
+                <div>
+                  <div class="check-text">所有静态资源路径返回 HTTP 200</div>
+                  <div class="check-method">preview 加载页面，看 console / network 无 404</div>
+                </div>
+              </div>
+              <div class="check-row">
+                <span class="check-mark">6.3</span>
+                <div>
+                  <div class="check-text">路径前缀正确（<code>../../design/</code> 两级，相对于 <code>pages/&lt;module&gt;/</code>）</div>
+                  <div class="check-method">grep "href=\"\\." page.html</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- C7 跨页 -->
+        <section class="section-block" id="c7">
+          <div class="section-label accent">C7 · 跨页约束</div>
+          <h2 class="section-title">不读兄弟 · 不复用页面 · href 接通</h2>
+
+          <div class="check-card">
+            <div class="check-card-head">
+              <span class="check-card-num">C7.1~7.3</span>
+              <h3 class="check-card-title">3 个检查点</h3>
+            </div>
+            <p class="check-card-why">「不读兄弟页面」是为了避免业务结构互相污染（如所有页的卡片都变成同一样子）。但允许 read shell.html，因为它是统一框架。</p>
+
+            <div class="check-list">
+              <div class="check-row">
+                <span class="check-mark">7.1</span>
+                <div>
+                  <div class="check-text">未 read 兄弟页面 HTML（<code>pages/&lt;module&gt;/&lt;其它-page-slug&gt;.html</code>）</div>
+                  <div class="check-method">复盘装配过程的 Read 调用历史</div>
+                </div>
+              </div>
+              <div class="check-row">
+                <span class="check-mark">7.2</span>
+                <div>
+                  <div class="check-text">多页面 Stage 2 各页 read 并克隆 <code>shell.html</code>（这是允许且必须的例外）</div>
+                  <div class="check-method">grep doctype / cs-layout / tabbar / sidebar / navbar 结构完整性</div>
+                </div>
+              </div>
+              <div class="check-row">
+                <span class="check-mark">7.3</span>
+                <div>
+                  <div class="check-text">跨页 <code>&lt;a href&gt;</code> 都指向真实兄弟页（sidebar 菜单 / 列表行 / 详情按钮 / 通知项）</div>
+                  <div class="check-method">grep "href=\"./" page.html → 核每个目标文件存在</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- C8 overlay -->
+        <section class="section-block" id="c8">
+          <div class="section-label accent">C8 · overlay 属性正确性</div>
+          <h2 class="section-title">默认 closed = 不写属性</h2>
+
+          <div class="check-card">
+            <div class="check-card-head">
+              <span class="check-card-num">C8.1~8.4</span>
+              <h3 class="check-card-title">4 个检查点 <span style="color:#DC2626;font-size:10px;letter-spacing:1px;margin-left:8px;">HIGH-RISK</span></h3>
+            </div>
+            <p class="check-card-why">fragment.css 用 <code>[data-open]</code> / <code>[data-visible]</code> 这种<strong>属性存在选择器</strong>。写 <code>data-open="false"</code> 会被 CSS 当成"打开"，抽屉默认就显示。这是高发陷阱。</p>
+
+            <div class="check-list">
+              <div class="check-row">
+                <span class="check-mark">8.1</span>
+                <div>
+                  <div class="check-text"><code>cs-drawer</code> / <code>cs-modal</code> 默认关闭时<strong>不写</strong> <code>data-open</code> 属性（不是 <code>data-open="false"</code>）</div>
+                  <div class="check-method">grep "data-open=\"false\"" page.html → 必须 0 命中</div>
+                </div>
+              </div>
+              <div class="check-row">
+                <span class="check-mark">8.2</span>
+                <div>
+                  <div class="check-text"><code>cs-drawer-overlay</code> 默认关闭时<strong>不写</strong> <code>data-visible</code> 属性</div>
+                  <div class="check-method">grep "data-visible=\"false\"" page.html → 必须 0 命中</div>
+                </div>
+              </div>
+              <div class="check-row">
+                <span class="check-mark">8.3</span>
+                <div>
+                  <div class="check-text">JS toggle 用 <code>setAttribute('data-open', '')</code> + <code>removeAttribute('data-open')</code>，不是 set 'true'/'false'</div>
+                  <div class="check-method">grep "setAttribute.*data-open" + "removeAttribute"</div>
+                </div>
+              </div>
+              <div class="check-row">
+                <span class="check-mark">8.4</span>
+                <div>
+                  <div class="check-text">overlay 自身点击 / Esc / 关闭按钮 都能把属性 remove 掉</div>
+                  <div class="check-method">preview 实际点 / 按 Esc / 看 overlay attribute 变化</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- C9 demo 数据 -->
+        <section class="section-block" id="c9">
+          <div class="section-label accent">C9 · demo 数据</div>
+          <h2 class="section-title">真实场景词 · 不字面 &lt;占位&gt;</h2>
+
+          <div class="check-card">
+            <div class="check-card-head">
+              <span class="check-card-num">C9.1~9.2</span>
+              <h3 class="check-card-title">2 个检查点</h3>
+            </div>
+            <p class="check-card-why">字面 <code>&lt;占位&gt;</code> 让 review 时完全没法判断信息密度 / 字段长度 / 视觉重量。装配时必须用真实感的中文 demo 数据（"望京 3F-A 大会议室" / "Q3 OKR 复盘" 这种）。</p>
+
+            <div class="check-list">
+              <div class="check-row">
+                <span class="check-mark">9.1</span>
+                <div>
+                  <div class="check-text">所有列表行 / 详情字段 / 抽屉表单值 用真实感的中文 demo</div>
+                  <div class="check-method">grep "&lt;占位&gt;\|&lt;F1·" page.html → 应集中在系统级标题 / 不可知运营文案</div>
+                </div>
+              </div>
+              <div class="check-row">
+                <span class="check-mark">9.2</span>
+                <div>
+                  <div class="check-text">demo 数据覆盖典型场景（不同状态、不同长度、含极端值）</div>
+                  <div class="check-method">人工 review：是否含至少 1 个 confirmed / 1 个 cancelled / 1 个 long 主题</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 报告模板 -->
+        <section class="section-block" id="report">
+          <div class="section-label accent">报告格式</div>
+          <h2 class="section-title">[PAGE-COMPLETION] 模板</h2>
+          <p class="section-hint">自检通过后向主会话报告。模板字段固定，主会话根据"装配中的疑问 / 偏差"决定是否需要补派 component-agent / font-agent / css-agent。</p>
+
+          <pre class="template">## 产物
+- HTML 路径：/Users/xm/Desktop/workflow/pages/&lt;module&gt;/&lt;page-slug&gt;.html
+- CSS 路径：/Users/xm/Desktop/workflow/pages/&lt;module&gt;/&lt;page-slug&gt;.css
+- 行数：HTML XXX 行 / CSS XXX 行
+
+## 自检（9 项 32 点）
+| 项 | 结果 |
+|---|---|
+| C1 fragment 容器  | ✓ |
+| C2 三大区域职责    | ✓ |
+| C3 令牌使用       | ✓ |
+| C4 图标声明       | ✓ |
+| C5 私有命名空间    | ✓ |
+| C6 引用顺序       | ✓ |
+| C7 跨页约束       | ✓ |
+| C8 overlay 属性   | ✓ |
+| C9 demo 数据      | ✓ |
+
+## 装配中的偏差（如有）
+1. cses-stratis-check-01 不存在 → 已替换为 cses-stratis-check-broken
+2. cs-status-badge 缺 confirmed 枚举 → 已用 .mr-status 自创替代
+   建议：派 component-agent 在 cs-status-badge 增 5 种状态变体
+
+## 待 QA 关注点
+1. ...
+2. ...
+3. ...
+
+[PAGE-COMPLETION]</pre>
+        </section>
+
+        <!-- 失败处理 -->
+        <section class="section-block" id="fail">
+          <div class="section-label danger">失败处理</div>
+          <h2 class="section-title">FIX-RULE · 3 类失败 3 种处理</h2>
+
+          <table class="simple">
+            <thead>
+              <tr><th style="width:30%">失败类型</th><th style="width:35%">处理</th><th>谁来修</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="fail">A. 装配错误</td>
+                <td>page-agent 修正后重跑自检</td>
+                <td class="muted">page-agent 自己（不向主会话报错）</td>
+              </tr>
+              <tr>
+                <td class="fail">B. 缺资源（组件 / 图标 / 令牌）</td>
+                <td>在"偏差"里列出，使用降级方案完成本次装配</td>
+                <td class="muted">主会话决定是否派 component-agent / font-agent / css-agent 后回头重装</td>
+              </tr>
+              <tr>
+                <td class="fail">C. 强约束冲突（PROTO 跟 fragment 互相打架）</td>
+                <td>暂停装配，向主会话报告需要 PROTO 调整 或 fragment 调整</td>
+                <td class="muted">主会话回到需求阶段或 fragment-agent</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="fix-banner">永远不要静默忽略自检失败：所有偏差必须写进报告，让主会话知情决策。</div>
+        </section>
+
+      </div>
+    </main>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,666 @@
+/* =====================================================
+   expense-home — 报销中心首页（强发票管理）
+   私有命名空间：--ex-* / .ex-*
+   ===================================================== */
+
+:root {
+  --ex-card-radius: var(--radius-lg);
+  --ex-card-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 8px rgba(0, 0, 0, 0.03);
+  --ex-card-shadow-hover: 0 2px 6px rgba(0, 0, 0, 0.06), 0 6px 18px rgba(0, 0, 0, 0.05);
+  --ex-invoice-paper: #fffdf6;
+  --ex-invoice-paper-edge: #f4e9c6;
+  --ex-budget-track-bg: var(--cs-color-bg-light);
+  --ex-budget-reimbursed: var(--cs-color-primary);
+  --ex-budget-pending: var(--cs-color-warning);
+  --ex-budget-remaining: var(--cs-color-success);
+}
+
+/* ============ 整体 ============ */
+.ex-page {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--spacing-20) var(--spacing-24) var(--spacing-32);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-32);
+  background: var(--cs-color-bg-secondary);
+}
+
+.ex-page::-webkit-scrollbar { width: 8px; }
+.ex-page::-webkit-scrollbar-thumb { background: #d8d8d8; border-radius: 4px; }
+
+/* 区块共用 */
+.ex-section {
+  background: var(--cs-color-white);
+  border-radius: var(--ex-card-radius);
+  padding: var(--spacing-20) var(--spacing-24);
+  box-shadow: var(--ex-card-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.ex-section__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-12);
+}
+.ex-section__title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--cs-color-text);
+  font-family: var(--font-family-cn);
+}
+.ex-section__hint {
+  font-size: 12px;
+  color: var(--cs-color-text-light2);
+}
+.ex-section__more {
+  font-size: 13px;
+  color: var(--cs-color-primary);
+  text-decoration: none;
+}
+.ex-section__more:hover { color: var(--cs-color-primary-hover); }
+
+/* ============ 1. 资金概览 — 轻量横条 ============ */
+.ex-budget-bar {
+  background: var(--cs-color-white);
+  border-radius: var(--ex-card-radius);
+  padding: var(--space-md) var(--spacing-20);
+  box-shadow: var(--ex-card-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+}
+.ex-budget-bar__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ex-budget-bar__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cs-color-text);
+  font-family: var(--font-family-cn);
+}
+.ex-budget-bar__cycle {
+  font-size: 12px;
+  color: var(--cs-color-text-light2);
+}
+.ex-budget-bar__row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-24);
+}
+/* 进度条 */
+.ex-budget-track {
+  position: relative;
+  flex: 1;
+  height: 12px;
+  background: var(--ex-budget-track-bg);
+  border-radius: 999px;
+  overflow: hidden;
+  display: flex;
+}
+.ex-budget-track__fill {
+  height: 100%;
+}
+.ex-budget-track__fill--reimbursed {
+  background: var(--ex-budget-reimbursed);
+}
+.ex-budget-track__fill--pending {
+  background: var(--ex-budget-pending);
+}
+
+/* legend */
+.ex-budget-bar__legend {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-20);
+  flex-shrink: 0;
+}
+.ex-budget-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  font-size: 12px;
+  color: var(--cs-color-text-light);
+}
+.ex-budget-legend__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ex-budget-legend__dot--reimbursed { background: var(--ex-budget-reimbursed); }
+.ex-budget-legend__dot--pending { background: var(--ex-budget-pending); }
+.ex-budget-legend__dot--remaining { background: var(--ex-budget-remaining); }
+.ex-budget-legend__label {
+  color: var(--cs-color-text-light);
+}
+.ex-budget-legend__value {
+  font-weight: 600;
+  color: var(--cs-color-text);
+  font-variant-numeric: tabular-nums;
+  margin-left: 2px;
+}
+
+/* ============ 2. 报销类别快捷入口 ============ */
+.ex-cat-grid {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: var(--spacing-12);
+}
+@media (max-width: 1440px) {
+  .ex-cat-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.ex-cat {
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--cs-color-white);
+  border: 1px solid var(--cs-color-border);
+  border-radius: var(--ex-card-radius);
+  padding: var(--spacing-20) var(--spacing-12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-12);
+  cursor: pointer;
+  transition: all .15s ease;
+  font-family: var(--font-family-cn);
+  text-align: center;
+}
+.ex-cat:hover {
+  border-color: var(--cs-color-primary);
+  box-shadow: var(--ex-card-shadow-hover);
+  transform: translateY(-1px);
+}
+.ex-cat__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.ex-cat__icon--blue   { background: var(--color-blue-100);   color: var(--color-blue-700); }
+.ex-cat__icon--orange { background: var(--color-orange-100); color: var(--color-orange-700); }
+.ex-cat__icon--purple { background: var(--color-purple-100); color: var(--color-purple-700); }
+.ex-cat__icon--green  { background: var(--color-green-100);  color: var(--color-green-700); }
+.ex-cat__icon--sky    { background: var(--color-sky-100);    color: var(--color-sky-700); }
+.ex-cat__icon--pink   { background: var(--color-pink-100);   color: var(--color-pink-700); }
+.ex-cat__icon--red    { background: var(--color-red-100);    color: var(--color-red-700); }
+.ex-cat__icon--ghost  { background: var(--cs-color-bg-light); color: var(--cs-color-text-light2); }
+.ex-cat__name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cs-color-text);
+}
+.ex-cat__sub {
+  font-size: 12px;
+  color: var(--cs-color-text-light2);
+  line-height: 1.4;
+}
+.ex-cat--more .ex-cat__name { color: var(--cs-color-text-light); }
+
+/* ============ 3. 发票库 ============ */
+
+/* OCR 上传条 */
+.ex-ocr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-20);
+  padding: var(--space-md) var(--spacing-20);
+  background: linear-gradient(135deg, #f1f3ff 0%, #fff7ec 100%);
+  border: 1px solid var(--cs-color-primary-a2);
+  border-radius: var(--ex-card-radius);
+}
+.ex-ocr__left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-12);
+  flex: 1;
+  min-width: 0;
+}
+.ex-ocr__badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--cs-color-primary);
+  color: var(--cs-color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(72, 87, 226, 0.3);
+}
+.ex-ocr__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  min-width: 0;
+}
+.ex-ocr__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cs-color-text);
+}
+.ex-ocr__sub {
+  font-size: 12px;
+  color: var(--cs-color-text-light);
+}
+.ex-ocr__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  flex-shrink: 0;
+}
+
+/* 状态分类 tab */
+.ex-invoice-tabs { margin-top: var(--space-md); }
+
+/* 发票网格 */
+.ex-invoice-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--space-md);
+}
+@media (max-width: 1440px) {
+  .ex-invoice-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (max-width: 1100px) {
+  .ex-invoice-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+.ex-invoice {
+  background: var(--cs-color-white);
+  border: 1px solid var(--cs-color-border);
+  border-radius: var(--ex-card-radius);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all .15s ease;
+  display: flex;
+  flex-direction: column;
+}
+.ex-invoice:hover {
+  border-color: var(--cs-color-primary);
+  box-shadow: var(--ex-card-shadow-hover);
+  transform: translateY(-2px);
+}
+
+/* 缩略图区（关键：发票视觉，区别于文件缩略图） */
+.ex-invoice__thumb {
+  position: relative;
+  height: 124px;
+  background:
+    repeating-linear-gradient(135deg, #fafafa 0 8px, #f3f3f3 8px 9px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-12);
+  border-bottom: 1px dashed var(--cs-color-border);
+}
+
+/* 发票微缩样式 — 增值税/普票 */
+.ex-invoice-mini {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: var(--ex-invoice-paper);
+  border: 1px solid var(--ex-invoice-paper-edge);
+  border-radius: 4px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-family: 'Courier New', monospace;
+  /* 发票边缘细齿 */
+  background-image:
+    linear-gradient(var(--ex-invoice-paper), var(--ex-invoice-paper)),
+    repeating-linear-gradient(90deg, var(--ex-invoice-paper-edge) 0 4px, transparent 4px 8px);
+  background-size: 100% calc(100% - 4px), 100% 2px;
+  background-position: top, bottom;
+  background-repeat: no-repeat;
+}
+.ex-invoice-mini__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px;
+}
+.ex-invoice-mini__title {
+  font-family: var(--font-family-cn);
+  font-size: 10px;
+  font-weight: 600;
+  color: #8a6a2c;
+  letter-spacing: 0.5px;
+}
+.ex-invoice-mini__code {
+  font-size: 9px;
+  color: #b58c40;
+}
+.ex-invoice-mini__amount {
+  font-size: 18px;
+  font-weight: 700;
+  color: #c5390f;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.5px;
+}
+.ex-invoice-mini__seal {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid #d63d3d;
+  border-radius: 50%;
+  color: #d63d3d;
+  font-family: var(--font-family-cn);
+  font-size: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.65;
+  transform: rotate(-12deg);
+}
+
+/* 电子发票变体 — 浅蓝 */
+.ex-invoice-mini--electronic {
+  background: linear-gradient(135deg, #f5f9ff 0%, #ffffff 100%);
+  border-color: #c9d8f0;
+  background-image: none;
+}
+.ex-invoice-mini--electronic .ex-invoice-mini__title { color: #2a4d8f; }
+.ex-invoice-mini--electronic .ex-invoice-mini__code { color: #5b7bb0; font-style: italic; }
+
+/* 滴滴/高德行程单变体 */
+.ex-invoice-mini--ride {
+  background: linear-gradient(135deg, #fff5e6 0%, #ffffff 100%);
+  border-color: #ffd9a8;
+  background-image: none;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+.ex-invoice-mini__brand {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: #ff7d00;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family-cn);
+  font-size: 16px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.ex-invoice-mini__brand--amap {
+  background: #00b42a;
+}
+.ex-invoice-mini--ride-amap {
+  background: linear-gradient(135deg, #e6f9ec 0%, #ffffff 100%);
+  border-color: #b8e6c5;
+}
+.ex-invoice-mini__rideinfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+  font-family: var(--font-family-cn);
+}
+.ex-invoice-mini__route {
+  font-size: 11px;
+  color: var(--cs-color-text);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ex-invoice-mini__amount-sm {
+  font-size: 14px;
+  font-weight: 700;
+  color: #c5390f;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 状态角标（覆盖在缩略图右上） */
+.ex-invoice__corner {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 2px var(--space-xs);
+  border-radius: var(--radius);
+  font-size: 11px;
+  font-weight: 500;
+  font-family: var(--font-family-cn);
+  pointer-events: none;
+}
+.ex-invoice__corner--warning {
+  background: var(--sem-bg-warning);
+  color: var(--sem-text-warning);
+}
+.ex-invoice__corner--danger {
+  background: var(--sem-bg-error);
+  color: var(--sem-text-error);
+}
+.ex-invoice__corner--info {
+  background: var(--sem-status-info-light);
+  color: var(--sem-status-info);
+}
+
+/* 勾选框（右上角） */
+.ex-invoice__pick {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 4px;
+  padding: 2px;
+}
+
+/* 缩略图状态外框 */
+.ex-invoice__thumb--unclaimed { background:
+  repeating-linear-gradient(135deg, #fff7eb 0 8px, #fff1d9 8px 9px); }
+.ex-invoice__thumb--duplicate { background:
+  repeating-linear-gradient(135deg, #fff0f0 0 8px, #ffe1e1 8px 9px); }
+.ex-invoice__thumb--unfiled { background:
+  repeating-linear-gradient(135deg, #f0f7ff 0 8px, #e0eeff 8px 9px); }
+
+/* 卡片底部 meta */
+.ex-invoice__meta {
+  padding: var(--space-xs) var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+.ex-invoice__row1 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xs);
+}
+.ex-invoice__amt {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cs-color-text);
+  font-variant-numeric: tabular-nums;
+}
+.ex-invoice__row2 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xs);
+  font-size: 12px;
+  color: var(--cs-color-text-light2);
+  font-family: var(--font-family-cn);
+}
+.ex-invoice__vendor {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ex-invoice__date {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 批量操作条 */
+.ex-invoice-bulk {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--cs-color-bg-secondary);
+  border: 1px dashed var(--cs-color-border);
+  border-radius: var(--ex-card-radius);
+  margin-top: var(--space-xs);
+}
+.ex-invoice-bulk__info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 13px;
+  color: var(--cs-color-text);
+  font-family: var(--font-family-cn);
+}
+.ex-invoice-bulk__info i {
+  font-size: 16px;
+  color: var(--cs-color-primary);
+}
+.ex-invoice-bulk__info strong {
+  color: var(--cs-color-primary);
+  font-weight: 600;
+}
+.ex-invoice-bulk__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+/* ============ 4. 待处理报销列表 ============ */
+.ex-pending-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.ex-pending-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2.4fr) 120px minmax(0, 1.6fr) 140px;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--spacing-12) var(--space-md);
+  background: var(--cs-color-white);
+  border: 1px solid var(--cs-color-border);
+  border-radius: var(--ex-card-radius);
+  cursor: pointer;
+  transition: all .15s ease;
+}
+.ex-pending-row:hover {
+  border-color: var(--cs-color-primary);
+  background: var(--cs-color-primary-a2);
+}
+
+/* 左：图标 + 标题 */
+.ex-pending-row__lead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-width: 0;
+}
+.ex-pending-row__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.ex-pending-row__icon--blue   { background: var(--color-blue-100);   color: var(--color-blue-700); }
+.ex-pending-row__icon--orange { background: var(--color-orange-100); color: var(--color-orange-700); }
+.ex-pending-row__icon--purple { background: var(--color-purple-100); color: var(--color-purple-700); }
+.ex-pending-row__icon--sky    { background: var(--color-sky-100);    color: var(--color-sky-700); }
+.ex-pending-row__title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  min-width: 0;
+}
+.ex-pending-row__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cs-color-text);
+  font-family: var(--font-family-cn);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ex-pending-row__meta {
+  font-size: 12px;
+  color: var(--cs-color-text-light2);
+}
+
+/* 中：金额 */
+.ex-pending-row__amt {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--cs-color-text);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* 状态列 */
+.ex-pending-row__status {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  min-width: 0;
+}
+.ex-pending-row__step {
+  font-size: 12px;
+  color: var(--cs-color-text-light);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 右：操作按钮 */
+.ex-pending-row__action {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ============ 响应式（窄屏堆叠） ============ */
+@media (max-width: 1180px) {
+  .ex-pending-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "lead amt"
+      "status action";
+    row-gap: var(--space-xs);
+  }
+  .ex-pending-row__lead   { grid-area: lead; }
+  .ex-pending-row__amt    { grid-area: amt; }
+  .ex-pending-row__status { grid-area: status; }
+  .ex-pending-row__action { grid-area: action; }
+}
+
+@media (max-width: 960px) {
+  .ex-budget-bar__row { flex-direction: column; align-items: stretch; }
+  .ex-budget-bar__legend { flex-wrap: wrap; }
+  .ex-ocr { flex-direction: column; align-items: stretch; }
+  .ex-ocr__actions { justify-content: flex-end; }
+}

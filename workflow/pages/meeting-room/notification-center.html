@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>通知中心 — CSES 会议室预订</title>
+
+  <!-- 1. 设计令牌（base = token + variable） -->
+  <link rel="stylesheet" href="../../design/css/base.css">
+  <!-- 2. 图标字体 -->
+  <link rel="stylesheet" href="../../design/fonts/cses-icons.css">
+  <!-- 3. 布局容器 -->
+  <link rel="stylesheet" href="../../design/fragment/fragment.css">
+  <!-- 4. page-shell 桥接 -->
+  <link rel="stylesheet" href="../../design/css/page-shell.css">
+
+  <!-- 5. 组件库 -->
+  <link rel="stylesheet" href="../../design/components/window-control/window-control.css">
+  <link rel="stylesheet" href="../../design/components/search-input/search-input.css">
+  <link rel="stylesheet" href="../../design/components/tab/tab.css">
+  <link rel="stylesheet" href="../../design/components/tab-nav/tab-nav.css">
+  <link rel="stylesheet" href="../../design/components/avatar/avatar.css">
+  <link rel="stylesheet" href="../../design/components/badge/badge.css">
+  <link rel="stylesheet" href="../../design/components/button/button.css">
+  <link rel="stylesheet" href="../../design/components/search-trigger/search-trigger.css">
+
+  <!-- 6. 本模块 shell + 本页私有样式 -->
+  <link rel="stylesheet" href="./shell.css">
+  <link rel="stylesheet" href="./notification-center.css">
+</head>
+<body>
+
+<cs-layout>
+
+  <!-- ============================================================
+       ① tabbar
+  ============================================================ -->
+  <div class="tabbar">
+    <div class="tabbar-left">
+      <cs-window-control class="tabbar-window-control">
+        <span class="ctrl-close"></span>
+        <span class="ctrl-minimize"></span>
+        <span class="ctrl-maximize"></span>
+      </cs-window-control>
+      <cs-search-input class="tabbar-search" data-variant="gray" data-size="sm" style="border-radius:var(--radius-lg);">
+        <i class="search-icon cses-stratis-search-01"></i>
+        <input class="search-field" type="text" placeholder="搜索">
+      </cs-search-input>
+      <cs-tab data-active>
+        <span class="tab-label">会议室</span>
+        <i class="tab-close cses-stratis-x-01"></i>
+      </cs-tab>
+    </div>
+    <div class="tabbar-right">
+      <span class="tabbar-notice">
+        <i class="cses-stratis-bell-01 notice-icon"></i>
+        <span class="notice-badge">3</span>
+      </span>
+      <cs-avatar data-size="xs" data-shape="circle" data-color="blue">
+        <span class="avatar-text">张</span>
+      </cs-avatar>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       ② body
+  ============================================================ -->
+  <div class="body">
+
+    <!-- ② -1 sidebar — 通知中心不在 sidebar，无 active -->
+    <cs-sidebar>
+      <span class="logo">
+        <img src="../../design/assets/logo.png" alt="CSES">
+      </span>
+      <nav class="nav">
+        <div class="nav-group">
+          <a class="nav-item" href="#">
+            <span class="nav-icon"><i class="cses-stratis-home-01"></i></span>
+            <span class="nav-label">工作台</span>
+          </a>
+          <a class="nav-item" href="#">
+            <span class="nav-icon"><i class="cses-stratis-compass"></i></span>
+            <span class="nav-label">导向</span>
+          </a>
+          <a class="nav-item" href="#">
+            <span class="nav-icon"><i class="cses-stratis-message-circle"></i></span>
+            <span class="nav-label">消息</span>
+          </a>
+          <a class="nav-item" href="#">
+            <span class="nav-icon"><i class="cses-stratis-check-square-broken"></i></span>
+            <span class="nav-label">任务</span>
+          </a>
+          <a class="nav-item" href="./my-bookings.html">
+            <span class="nav-icon"><i class="cses-stratis-video-on"></i></span>
+            <span class="nav-label">会议</span>
+          </a>
+          <a class="nav-item" href="#">
+            <span class="nav-icon"><i class="cses-stratis-book-01"></i></span>
+            <span class="nav-label">文档</span>
+          </a>
+          <a class="nav-item" href="#">
+            <span class="nav-icon"><i class="cses-stratis-file-edit-01"></i></span>
+            <span class="nav-label">表单</span>
+          </a>
+          <a class="nav-item" href="#">
+            <span class="nav-icon"><i class="cses-stratis-file-check-01"></i></span>
+            <span class="nav-label">审批</span>
+          </a>
+        </div>
+      </nav>
+    </cs-sidebar>
+
+    <div class="content-wrapper">
+
+      <!-- ============================================================
+           ② -2 navbar — 通知中心不在 navbar slot-nav 上 active
+      ============================================================ -->
+      <cs-navbar>
+        <div class="inner">
+
+          <div class="slot-header" style="display:flex;flex-direction:column;gap:var(--space-3xs);">
+            <span style="font: var(--typo-cn-16-medium); color: var(--cs-color-text);">会议室</span>
+            <span style="font: var(--typo-cn-12-regular); color: var(--cs-color-text-light2);">高效预订 · 集中管理</span>
+          </div>
+
+          <!-- 主 CTA — 点开 booking-form 抽屉 -->
+          <div class="slot-action">
+            <cs-button data-variant="primary" data-size="lg" style="width:100%;" data-open="booking-drawer">
+              <i class="btn-icon cses-stratis-plus-01"></i>
+              <span class="btn-label">新建预约</span>
+            </cs-button>
+          </div>
+
+          <div class="slot-nav" style="display:flex;flex-direction:column;gap:var(--space-2xs);padding-top:var(--space-xs);border-top:var(--line-width) solid var(--cs-color-border);">
+            <a class="nav-item" href="./my-bookings.html">
+              <span class="nav-icon"><i class="cses-stratis-calendar-01"></i></span>
+              <span class="nav-label">我的预约</span>
+            </a>
+            <a class="nav-item" href="./find-rooms.html">
+              <span class="nav-icon"><i class="cses-stratis-search-01"></i></span>
+              <span class="nav-label">找会议室</span>
+            </a>
+          </div>
+
+          <div class="slot-sub" aria-hidden="true"></div>
+
+          <div class="slot-admin" style="display:flex;align-items:center;gap:var(--space-2xs);padding:var(--space-xs);cursor:pointer;border-top:var(--line-width) solid var(--cs-color-border);">
+            <i class="cses-stratis-settings" style="font-size:var(--cs-sem-size-icon-sm);color:var(--cs-color-text);"></i>
+            <span style="font: var(--typo-cn-14-regular); color: var(--cs-color-text);">管理后台</span>
+          </div>
+
+        </div>
+      </cs-navbar>
+
+      <!-- ============================================================
+           ② -3 main-content — 通知中心主区
+      ============================================================ -->
+      <main class="main-content">
+
+        <!-- content-header · 列表型 -->
+        <cs-content-header>
+          <div class="slot-left">
+            <span class="page-title">通知中心</span>
+            <span class="page-subtitle">会议室相关的全部通知</span>
+          </div>
+          <div class="slot-right">
+            <cs-search-trigger>
+              <span class="trigger-text">搜索通知</span>
+              <i class="trigger-icon cses-stratis-search-01"></i>
+            </cs-search-trigger>
+          </div>
+        </cs-content-header>
+
+        <!-- ⑤ 主区 -->
+        <div class="meeting-room-notification-center">
+
+          <!-- tab-bar：5 个分类 + 未读数 -->
+          <cs-tab-nav class="meeting-room-notification-center__tabs">
+            <a class="tab-item" data-active href="#tab-all">
+              <span>全部</span>
+              <span class="tab-badge">12</span>
+            </a>
+            <a class="tab-item" href="#tab-booking">
+              <span>预约相关</span>
+              <span class="tab-badge">5</span>
+            </a>
+            <a class="tab-item" href="#tab-room">
+              <span>会议室变化</span>
+              <span class="tab-badge">3</span>
+            </a>
+            <a class="tab-item" href="#tab-cancel">
+              <span>强制取消</span>
+              <span class="tab-badge">2</span>
+            </a>
+            <a class="tab-item" href="#tab-system">
+              <span>系统</span>
+              <span class="tab-badge">2</span>
+            </a>
+          </cs-tab-nav>
+
+          <!-- filter-bar：左 [未读/已读] [日期] + 右 [全部标已读] -->
+          <cs-filter-bar data-variant="dropdowns">
+            <div class="filter-left">
+              <div class="meeting-room-notification-center__filter">
+                <span class="meeting-room-notification-center__filter-label">状态</span>
+                <span class="meeting-room-notification-center__filter-value">全部</span>
+                <i class="cses-stratis-chevron-down"></i>
+              </div>
+              <div class="meeting-room-notification-center__filter">
+                <span class="meeting-room-notification-center__filter-label">日期</span>
+                <span class="meeting-room-notification-center__filter-value">近 30 天</span>
+                <i class="cses-stratis-chevron-down"></i>
+              </div>
+            </div>
+            <div class="filter-right">
+              <button type="button" class="meeting-room-notification-center__mark-all">
+                <i class="cses-stratis-check-broken"></i>
+                <span>全部标已读</span>
+              </button>
+            </div>
+          </cs-filter-bar>
+
+          <!-- 通知列表 -->
+          <ul class="meeting-room-notification-center__list">
+
+            <!-- ① 未读 · 预约相关 -->
+            <li class="meeting-room-notification-center__item" data-unread="true" data-type="booking">
+              <a class="meeting-room-notification-center__link" href="./booking-detail.html">
+                <span class="meeting-room-notification-center__unread-dot" aria-hidden="true"></span>
+                <span class="meeting-room-notification-center__icon" data-type="booking">
+                  <i class="cses-stratis-calendar-check"></i>
+                </span>
+                <div class="meeting-room-notification-center__body">
+                  <div class="meeting-room-notification-center__head">
+                    <span class="meeting-room-notification-center__title">你创建的预约「Q3 OKR 复盘」已确认</span>
+                    <span class="meeting-room-notification-center__time">3 分钟前</span>
+                  </div>
+                  <div class="meeting-room-notification-center__summary">2026-06-29 14:00-16:00 · 望京 3F-A 大会议室（容纳 20 人）· 参会人 12 名</div>
+                </div>
+              </a>
+            </li>
+
+            <!-- ② 未读 · 强制取消 -->
+            <li class="meeting-room-notification-center__item" data-unread="true" data-type="cancel">
+              <a class="meeting-room-notification-center__link" href="./booking-detail.html">
+                <span class="meeting-room-notification-center__unread-dot" aria-hidden="true"></span>
+                <span class="meeting-room-notification-center__icon" data-type="cancel">
+                  <i class="cses-stratis-x-circle-contained"></i>
+                </span>
+                <div class="meeting-room-notification-center__body">
+                  <div class="meeting-room-notification-center__head">
+                    <span class="meeting-room-notification-center__title">你预订的「客户拜访 - ABC 集团」已被会议室管理员强制取消</span>
+                    <span class="meeting-room-notification-center__time">28 分钟前</span>
+                  </div>
+                  <div class="meeting-room-notification-center__summary">原定 2026-06-30 10:00-12:00 · 望京 3F-A 大会议室 · 原因：临时禁用会议室进行设备维护</div>
+                </div>
+              </a>
+            </li>
+
+            <!-- ③ 未读 · 会议室变化 -->
+            <li class="meeting-room-notification-center__item" data-unread="true" data-type="room">
+              <a class="meeting-room-notification-center__link" href="./room-detail.html">
+                <span class="meeting-room-notification-center__unread-dot" aria-hidden="true"></span>
+                <span class="meeting-room-notification-center__icon" data-type="room">
+                  <i class="cses-stratis-alert-triangle"></i>
+                </span>
+                <div class="meeting-room-notification-center__body">
+                  <div class="meeting-room-notification-center__head">
+                    <span class="meeting-room-notification-center__title">你预订的会议室「望京 3F-A 大会议室」将于 2026-07-01 临时禁用</span>
+                    <span class="meeting-room-notification-center__time">2 小时前</span>
+                  </div>
+                  <div class="meeting-room-notification-center__summary">原因：设备维护（升级视频会议终端）· 涉及你的 1 条预约，建议提前改约</div>
+                </div>
+              </a>
+            </li>
+
+            <!-- ④ 已读 · 预约相关（修改） -->
+            <li class="meeting-room-notification-center__item" data-type="booking">
+              <a class="meeting-room-notification-center__link" href="./booking-detail.html">
+                <span class="meeting-room-notification-center__icon" data-type="booking">
+                  <i class="cses-stratis-calendar-02"></i>
+                </span>
+                <div class="meeting-room-notification-center__body">
+                  <div class="meeting-room-notification-center__head">
+                    <span class="meeting-room-notification-center__title">「双周技术分享」时间已变更</span>
+                    <span class="meeting-room-notification-center__time">昨天 18:42</span>
+                  </div>
+                  <div class="meeting-room-notification-center__summary">由 王经理 修改为 2026-06-27 16:00-17:30 · 望京 2F-C 培训室 · 你是参会人</div>
+                </div>
+              </a>
+            </li>
+
+            <!-- ⑤ 已读 · 系统 -->
+            <li class="meeting-room-notification-center__item" data-type="system">
+              <a class="meeting-room-notification-center__link" href="#">
+                <span class="meeting-room-notification-center__icon" data-type="system">
+                  <i class="cses-stratis-check-contained"></i>
+                </span>
+                <div class="meeting-room-notification-center__body">
+                  <div class="meeting-room-notification-center__head">
+                    <span class="meeting-room-notification-center__title">你的代订请求已通过审批</span>
+                    <span class="meeting-room-notification-center__time">昨天 14:08</span>
+                  </div>
+                  <div class="meeting-room-notification-center__summary">为 李总监 代订的「Q3 战略沟通」（2026-07-02 09:30-11:30 · 望京 5F-旗舰厅）已生效</div>
+                </div>
+              </a>
+            </li>
+
+            <!-- ⑥ 已读 · 预约相关（即将开始提醒） -->
+            <li class="meeting-room-notification-center__item" data-type="booking">
+              <a class="meeting-room-notification-center__link" href="./booking-detail.html">
+                <span class="meeting-room-notification-center__icon" data-type="booking">
+                  <i class="cses-stratis-clock-forward"></i>
+                </span>
+                <div class="meeting-room-notification-center__body">
+                  <div class="meeting-room-notification-center__head">
+                    <span class="meeting-room-notification-center__title">「周一晨会」将在 15 分钟后开始</span>
+                    <span class="meeting-room-notification-center__time">2 天前</span>
+                  </div>
+                  <div class="meeting-room-notification-center__summary">2026-06-24 09:00-09:30 · 望京 3F-B 小会议室 · 入会码 386 521 942</div>
+                </div>
+              </a>
+            </li>
+
+            <!-- ⑦ 已读 · 会议室变化（恢复启用） -->
+            <li class="meeting-room-notification-center__item" data-type="room">
+              <a class="meeting-room-notification-center__link" href="./room-detail.html">
+                <span class="meeting-room-notification-center__icon" data-type="room">
+                  <i class="cses-stratis-check-contained"></i>
+                </span>
+                <div class="meeting-room-notification-center__body">
+                  <div class="meeting-room-notification-center__head">
+                    <span class="meeting-room-notification-center__title">会议室「望京 4F-媒体演示厅」已恢复启用</span>
+                    <span class="meeting-room-notification-center__time">2 天前</span>
+                  </div>
+                  <div class="meeting-room-notification-center__summary">维护工单 #M-2026-0612 已完成，现可正常预订 · 设备：4K 投影 / 录制摄像头 / 麦克风阵列</div>
+                </div>
+              </a>
+            </li>
+
+            <!-- ⑧ 已读 · 强制取消 -->
+            <li class="meeting-room-notification-center__item" data-type="cancel">
+              <a class="meeting-room-notification-center__link" href="./booking-detail.html">
+                <span class="meeting-room-notification-center__icon" data-type="cancel">
+                  <i class="cses-stratis-x-circle-contained"></i>
+                </span>
+                <div class="meeting-room-notification-center__body">
+                  <div class="meeting-room-notification-center__head">
+                    <span class="meeting-room-notification-center__title">你预订的「校招二面 Round 3」已被取消</span>
+                    <span class="meeting-room-notification-center__time">3 天前</span>
+                  </div>
+                  <div class="meeting-room-notification-center__summary">原定 2026-06-22 14:00-18:00 · 望京 4F-面试间 D · 由 HR 系统统一调整为线上面试，无需会议室</div>
+                </div>
+              </a>
+            </li>
+
+            <!-- ⑨ 已读 · 预约相关（参会人加入） -->
+            <li class="meeting-room-notification-center__item" data-type="booking">
+              <a class="meeting-room-notification-center__link" href="./booking-detail.html">
+                <span class="meeting-room-notification-center__icon" data-type="booking">
+                  <i class="cses-stratis-users-profiles-01"></i>
+                </span>
+                <div class="meeting-room-notification-center__body">
+                  <div class="meeting-room-notification-center__head">
+                    <span class="meeting-room-notification-center__title">陈晨 已接受你的会议邀请「产品周会」</span>
+                    <span class="meeting-room-notification-center__time">6 月 20 日</span>
+                  </div>
+                  <div class="meeting-room-notification-center__summary">2026-06-26 10:00-11:00 · 望京 3F-A 大会议室 · 当前参会人 8 / 已邀请 10</div>
+                </div>
+              </a>
+            </li>
+
+            <!-- ⑩ 已读 · 系统（周期预约创建成功） -->
+            <li class="meeting-room-notification-center__item" data-type="system">
+              <a class="meeting-room-notification-center__link" href="./booking-detail.html">
+                <span class="meeting-room-notification-center__icon" data-type="system">
+                  <i class="cses-stratis-calendar-plus"></i>
+                </span>
+                <div class="meeting-room-notification-center__body">
+                  <div class="meeting-room-notification-center__head">
+                    <span class="meeting-room-notification-center__title">周期预约「双周技术分享」已创建</span>
+                    <span class="meeting-room-notification-center__time">6 月 18 日</span>
+                  </div>
+                  <div class="meeting-room-notification-center__summary">每两周一次 · 共 12 期 · 起 2026-06-25 至 2026-12-10 · 望京 2F-C 培训室</div>
+                </div>
+              </a>
+            </li>
+
+            <!-- ⑪ 已读 · 会议室变化（设备更新） -->
+            <li class="meeting-room-notification-center__item" data-type="room">
+              <a class="meeting-room-notification-center__link" href="./room-detail.html">
+                <span class="meeting-room-notification-center__icon" data-type="room">
+                  <i class="cses-stratis-bell-ringing-01"></i>
+                </span>
+                <div class="meeting-room-notification-center__body">
+                  <div class="meeting-room-notification-center__head">
+                    <span class="meeting-room-notification-center__title">会议室「望京 3F-A 大会议室」新增白板</span>
+                    <span class="meeting-room-notification-center__time">6 月 17 日</span>
+                  </div>
+                  <div class="meeting-room-notification-center__summary">新增设备：智能白板（86 寸 · 支持手写识别），现可在筛选条件中按"白板"查找</div>
+                </div>
+              </a>
+            </li>
+
+            <!-- ⑫ 已读 · 预约相关（会议结束） -->
+            <li class="meeting-room-notification-center__item" data-type="booking">
+              <a class="meeting-room-notification-center__link" href="./booking-detail.html">
+                <span class="meeting-room-notification-center__icon" data-type="booking">
+                  <i class="cses-stratis-clock-check"></i>
+                </span>
+                <div class="meeting-room-notification-center__body">
+                  <div class="meeting-room-notification-center__head">
+                    <span class="meeting-room-notification-center__title">「客户演示 - XYZ 公司」已结束</span>
+                    <span class="meeting-room-notification-center__time">6 月 15 日</span>
+                  </div>
+                  <div class="meeting-room-notification-center__summary">实际时长 1h 23min · 望京 5F-旗舰厅 · 你可在详情查看会议纪要并归档</div>
+                </div>
+              </a>
+            </li>
+
+          </ul>
+
+        </div>
+
+      </main>
+    </div>
+
+  </div>
+</cs-layout>
+
+<!-- ============================================================
+     抽屉 inline · booking-form（由 sidebar 「+ 新建预约」唤起）
+     - 默认不显示；点 [+ 新建预约] 后展开
+     - 点遮罩 / [×] / [取消] / Esc 关闭
+============================================================ -->
+<cs-drawer-overlay id="bookingOverlay"></cs-drawer-overlay>
+<cs-drawer id="bookingDrawer" data-width="lg" data-mode="standard">
+  <div class="slot-header meeting-room-notification-center__drawer-header">
+    <div>
+      <div class="meeting-room-notification-center__drawer-title">新建预约</div>
+      <div class="meeting-room-notification-center__drawer-sub">填写预约信息，提交后通知所有参会人</div>
+    </div>
+    <button type="button" class="meeting-room-notification-center__drawer-close" data-close="booking-drawer" aria-label="关闭">
+      <i class="cses-stratis-x-01"></i>
+    </button>
+  </div>
+  <div class="slot-body meeting-room-notification-center__drawer-body">
+    <div class="meeting-room-notification-center__drawer-section">
+      <label class="meeting-room-notification-center__drawer-label">会议主题 <span class="meeting-room-notification-center__drawer-required">*</span></label>
+      <input type="text" class="meeting-room-notification-center__drawer-input" placeholder="请输入会议主题，例：Q3 OKR 复盘">
+    </div>
+    <div class="meeting-room-notification-center__drawer-section">
+      <label class="meeting-room-notification-center__drawer-label">参会人 <span class="meeting-room-notification-center__drawer-required">*</span></label>
+      <div class="meeting-room-notification-center__drawer-input meeting-room-notification-center__drawer-placeholder">搜索同事姓名 / 部门 / 工号</div>
+    </div>
+    <div class="meeting-room-notification-center__drawer-grid">
+      <div class="meeting-room-notification-center__drawer-section">
+        <label class="meeting-room-notification-center__drawer-label">开始时间 <span class="meeting-room-notification-center__drawer-required">*</span></label>
+        <div class="meeting-room-notification-center__drawer-input meeting-room-notification-center__drawer-placeholder">2026-06-29 14:00</div>
+      </div>
+      <div class="meeting-room-notification-center__drawer-section">
+        <label class="meeting-room-notification-center__drawer-label">结束时间 <span class="meeting-room-notification-center__drawer-required">*</span></label>
+        <div class="meeting-room-notification-center__drawer-input meeting-room-notification-center__drawer-placeholder">2026-06-29 16:00</div>
+      </div>
+    </div>
+    <div class="meeting-room-notification-center__drawer-section">
+      <label class="meeting-room-notification-center__drawer-label">会议室 <span class="meeting-room-notification-center__drawer-required">*</span></label>
+      <div class="meeting-room-notification-center__drawer-input meeting-room-notification-center__drawer-placeholder">选择会议室或前往「找会议室」</div>
+    </div>
+    <div class="meeting-room-notification-center__drawer-toggle">
+      <label class="meeting-room-notification-center__drawer-toggle-row">
+        <input type="checkbox">
+        <span>重复（周期预约）</span>
+      </label>
+      <label class="meeting-room-notification-center__drawer-toggle-row">
+        <input type="checkbox">
+        <span>开启线上会议</span>
+      </label>
+    </div>
+    <div class="meeting-room-notification-center__drawer-section">
+      <label class="meeting-room-notification-center__drawer-label">描述</label>
+      <textarea class="meeting-room-notification-center__drawer-textarea" rows="3" placeholder="会议议程、需要提前准备的材料等"></textarea>
+    </div>
+  </div>
+  <div class="slot-footer meeting-room-notification-center__drawer-footer">
+    <cs-button data-variant="secondary" data-size="lg" data-close="booking-drawer">
+      <span class="btn-label">取消</span>
+    </cs-button>
+    <cs-button data-variant="primary" data-size="lg">
+      <span class="btn-label">提交预约</span>
+    </cs-button>
+  </div>
+</cs-drawer>
+
+<script>
+  // ============================================================
+  // booking-drawer 唤起 / 关闭
+  // ============================================================
+  (function () {
+    var drawer = document.getElementById('bookingDrawer');
+    var overlay = document.getElementById('bookingOverlay');
+    if (!drawer || !overlay) return;
+
+    function openDrawer() {
+      drawer.setAttribute('data-open', '');
+      overlay.setAttribute('data-visible', '');
+    }
+    function closeDrawer() {
+      drawer.removeAttribute('data-open');
+      overlay.removeAttribute('data-visible');
+    }
+
+    document.querySelectorAll('[data-open="booking-drawer"]').forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        e.preventDefault();
+        openDrawer();
+      });
+    });
+    document.querySelectorAll('[data-close="booking-drawer"]').forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        e.preventDefault();
+        closeDrawer();
+      });
+    });
+    overlay.addEventListener('click', closeDrawer);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && drawer.hasAttribute('data-open')) closeDrawer();
+    });
+  })();
+</script>
+
+</body>
+</html>

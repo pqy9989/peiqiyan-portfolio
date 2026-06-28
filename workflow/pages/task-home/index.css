@@ -1,0 +1,834 @@
+/* ============================================================
+ * pages/task-home/index.css — 任务工作台首页·私有样式
+ *
+ * 约束自检：
+ *  - 不重写 fragment.css 已定义的 .nav-item / .slot-* / cs-content-header
+ *  - navbar.slot-action 只放唯一的"+ 新建任务"，本文件强制全宽
+ *  - content-header.slot-left 用标题 + .page-subtitle，借助 fragment.css 的
+ *    `:has(.page-subtitle)` 自动 column + flex-start，不在本文件覆盖布局
+ *  - filter-bar 使用 data-variant="filters"，不再放搜索 / 新建
+ *  - 颜色 / 字号 / 间距 / 圆角 / 阴影一律使用 var(--cs-*)
+ *  - 私有令牌前缀 --task-
+ * ============================================================ */
+
+:root {
+  /* ---- 任务首页私有令牌 ---- */
+  --task-card-radius: var(--radius-lg);                 /* 8px */
+  --task-card-bg: var(--cs-color-white);
+  --task-card-border: var(--cs-color-border);
+  --task-card-shadow: 0 1px 2px rgba(28, 31, 56, 0.04);
+  --task-card-padding: var(--space-md);                 /* 16px */
+
+  --task-section-gap: var(--space-md);                  /* 16px 模块间距 */
+  --task-row-gap: var(--space-sm);                      /* 12px 行内组件间距 */
+
+  /* 项目色点配色（仅用于"我负责的项目"圆点 / 副菜单点） */
+  --task-dot-primary: var(--cs-color-primary);
+  --task-dot-warning: var(--cs-color-warning);
+  --task-dot-success: var(--cs-color-success);
+  --task-dot-purple: var(--color-purple-500);
+  --task-dot-sky: var(--color-sky-500);
+  --task-dot-pink: var(--color-pink-500);
+}
+
+/* ============================================================
+ * 1. 全局重置 / 防溢出
+ * ============================================================ */
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--cs-color-bg-app-dark);
+  font-family: var(--font-family-cn);
+}
+
+a { color: inherit; text-decoration: none; cursor: pointer; }
+button { font-family: inherit; }
+
+/* ============================================================
+ * 2. 二级导航：navbar 私有细节
+ *    — 不动 fragment 几何，只补本页特有的标题 / 分组 / 全宽 CTA
+ * ============================================================ */
+
+/* slot-action 内 CTA 全宽（navbar 规范） */
+cs-navbar .slot-action cs-button { width: 100%; }
+
+/* 标题区：字体由本页定，槽位间距由 fragment.css gap:16 提供，不在 page 层补丁 */
+.navbar-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.navbar-title {
+  font: var(--typo-cn-16-medium);
+  font-weight: var(--font-weight-semibold);
+  color: var(--cs-color-text);
+}
+.navbar-collapse {
+  font-size: var(--cs-sem-size-icon-md);
+  color: var(--cs-color-text-light2);
+  cursor: pointer;
+}
+.navbar-collapse:hover { color: var(--cs-color-primary); }
+
+.navbar-subtitle {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+
+/* 主菜单区域：fragment 给 flex-shrink:0，本页只补 nav-item 之间的内部 gap，
+   不在槽位上叠加 padding/border —— 槽位间距由 fragment.css 的 16px gap 统一管 */
+cs-navbar .slot-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+
+/* nav-item 默认 / hover / 选中样式由 fragment.css 提供（fragment.md §4 navbar 规范）；
+   这里仅补充 nav-suffix 计数样式 */
+cs-navbar .slot-nav .nav-item .nav-suffix {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+}
+cs-navbar .nav-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 var(--space-2xs);
+  border-radius: var(--radius);
+  background: var(--cs-color-primary-a2);
+  color: var(--cs-color-primary);
+  font: var(--typo-cn-12-regular);
+  font-weight: var(--font-weight-medium);
+}
+
+/* 副菜单（slot-sub）：分组结构。槽位间距由 fragment.css gap:16 管，
+   本页只设 slot-sub 内 group 之间的内部 gap */
+cs-navbar .slot-sub {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.navbar-group { display: flex; flex-direction: column; gap: var(--space-2xs); }
+.navbar-group__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  padding: var(--space-2xs) var(--space-xs);
+  color: var(--cs-color-text-light2);
+  cursor: pointer;
+  user-select: none;
+}
+.navbar-group__caret {
+  font-size: 12px;
+  transition: transform .2s ease;
+}
+.navbar-group__title {
+  flex: 1;
+  font: var(--typo-cn-12-regular);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: .3px;
+}
+.navbar-group__add {
+  font-size: 14px;
+  color: var(--cs-color-text-light2);
+  opacity: 0;
+  transition: opacity .15s ease, color .15s ease;
+}
+.navbar-group__head:hover .navbar-group__add { opacity: 1; }
+.navbar-group__add:hover { color: var(--cs-color-primary); }
+
+.navbar-group__body { display: flex; flex-direction: column; gap: 2px; }
+
+/* 副菜单项里的色点（替代图标） */
+.nav-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin: 0 var(--space-2xs);
+  background: var(--task-dot-primary);
+}
+.nav-dot[data-color="primary"] { background: var(--task-dot-primary); }
+.nav-dot[data-color="warning"] { background: var(--task-dot-warning); }
+.nav-dot[data-color="success"] { background: var(--task-dot-success); }
+.nav-dot[data-color="purple"]  { background: var(--task-dot-purple); }
+
+/* slot-admin / slot-bottom 的视觉间距由 fragment.css gap:16 管，
+   本页不再给槽位叠加 padding / border — 业务装饰直接写在内部容器上 */
+.storage-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+.storage-extra { color: var(--cs-color-primary); cursor: pointer; }
+
+/* ============================================================
+ * 3. content-header 私有：标题 + 副标题（自动 column 由 fragment 处理）
+ * ============================================================ */
+
+.page-title {
+  font-size: 18px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--cs-color-text);
+  line-height: 1.4;
+}
+.page-subtitle {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+.page-subtitle b {
+  color: var(--cs-color-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ============================================================
+ * 4. filter-bar 私有补充
+ *    — fragment.css 已定义 filter-count / filter-tool / view-icon
+ *    — 这里补"逾期/临期"计数数字颜色 + 下拉间距
+ * ============================================================ */
+
+.task-num-warning {
+  color: var(--cs-color-warning);
+  font-weight: var(--font-weight-medium);
+}
+.task-num-danger {
+  color: var(--cs-color-error);
+  font-weight: var(--font-weight-medium);
+}
+
+/* 收紧筛选下拉宽度，避免 4 个并排过宽（约束的是 cs-select 自身宽度，不是 filter-bar 间距） */
+.task-filter-select {
+  min-width: 96px;
+}
+
+/* ============================================================
+ * 5. 主滚动容器
+ * ============================================================ */
+
+.main-content { background: var(--cs-color-bg-secondary); }
+
+.task-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 var(--space-md) var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--task-section-gap);
+}
+.task-scroll::-webkit-scrollbar { width: 6px; }
+.task-scroll::-webkit-scrollbar-thumb {
+  background: var(--cs-color-bg-lighter);
+  border-radius: 3px;
+}
+
+/* ============================================================
+ * 6. KPI 行
+ * ============================================================ */
+
+.task-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-sm);
+}
+
+.task-kpi-card {
+  background: var(--task-card-bg);
+  border: 1px solid var(--task-card-border);
+  border-radius: var(--task-card-radius);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  box-shadow: var(--task-card-shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 顶部细色条按 kind 区分 */
+.task-kpi-card::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 3px;
+  background: var(--cs-color-primary);
+}
+.task-kpi-card[data-kind="in-progress"]::before { background: var(--cs-color-primary); }
+.task-kpi-card[data-kind="not-started"]::before { background: var(--cs-color-text-light2); }
+.task-kpi-card[data-kind="overdue"]::before    { background: var(--cs-color-error); }
+.task-kpi-card[data-kind="completed"]::before  { background: var(--cs-color-success); }
+
+.task-kpi-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  color: var(--cs-color-text-light);
+}
+.task-kpi-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius);
+  background: var(--cs-color-primary-a2);
+  color: var(--cs-color-primary);
+  font-size: 14px;
+}
+.task-kpi-card[data-kind="not-started"] .task-kpi-icon {
+  background: var(--cs-color-bg-light);
+  color: var(--cs-color-text-light);
+}
+.task-kpi-card[data-kind="overdue"] .task-kpi-icon {
+  background: var(--cs-sem-bg-error);
+  color: var(--cs-color-error);
+}
+.task-kpi-card[data-kind="completed"] .task-kpi-icon {
+  background: var(--cs-sem-bg-success);
+  color: var(--cs-color-success);
+}
+
+.task-kpi-label {
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text-light);
+}
+
+.task-kpi-value {
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: var(--font-weight-semibold);
+  color: var(--cs-color-text);
+  letter-spacing: -0.5px;
+}
+.task-kpi-unit {
+  font-size: 14px;
+  font-weight: var(--font-weight-regular);
+  color: var(--cs-color-text-light2);
+  margin-left: var(--space-2xs);
+}
+
+.task-kpi-foot {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+.task-foot-danger { color: var(--cs-color-error); }
+.task-foot-danger i { font-size: 12px; }
+
+.task-kpi-bar {
+  flex: 1;
+  height: 4px;
+  background: var(--cs-color-bg-light);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+.task-kpi-bar__fill {
+  display: block;
+  height: 100%;
+  background: var(--cs-color-success);
+  border-radius: inherit;
+}
+.task-kpi-bar__text {
+  font-weight: var(--font-weight-medium);
+  color: var(--cs-color-success);
+}
+
+/* ============================================================
+ * 7. 通用卡片骨架
+ * ============================================================ */
+
+.task-grid-2col {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: var(--space-sm);
+}
+
+.task-card {
+  background: var(--task-card-bg);
+  border: 1px solid var(--task-card-border);
+  border-radius: var(--task-card-radius);
+  box-shadow: var(--task-card-shadow);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.task-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md) var(--space-md) var(--space-xs);
+}
+.task-card__head-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.task-card__title {
+  font-size: 15px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--cs-color-text);
+  line-height: 1.4;
+}
+.task-card__sub {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+.task-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3xs);
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-primary);
+  flex-shrink: 0;
+}
+.task-card__link i { font-size: 12px; }
+.task-card__link:hover { color: var(--cs-color-primary-hover); }
+
+.task-card__body {
+  display: flex;
+  flex-direction: column;
+  padding: 0 var(--space-md) var(--space-sm);
+}
+
+/* ============================================================
+ * 8. 今日任务（左卡）— 按时段分组
+ * ============================================================ */
+
+.task-card--today .task-card__body { gap: var(--space-md); padding-bottom: var(--space-md); }
+
+.task-timegroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.task-timegroup__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-2xs);
+  color: var(--cs-color-text-light);
+  border-bottom: 1px solid var(--cs-color-border);
+}
+.task-timegroup__head i { font-size: 14px; color: var(--cs-color-warning); }
+.task-timegroup__name {
+  font: var(--typo-cn-14-regular);
+  font-weight: var(--font-weight-medium);
+  color: var(--cs-color-text);
+}
+.task-timegroup__count {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+  margin-left: auto;
+}
+
+/* 任务行作为子项的微调：标题行小图标颜色等已由组件控制；
+   这里仅控制行容器层 padding 与组件本身保持 16px 一致 */
+.task-card--today cs-task-row {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* ============================================================
+ * 9. 临期/逾期红区（右卡）
+ * ============================================================ */
+
+.task-alert-list {
+  gap: 2px;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: var(--space-md);
+}
+
+.task-alert-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-xs) var(--space-sm) var(--space-md);
+  border-radius: var(--radius);
+  transition: background .15s ease;
+}
+.task-alert-row:hover { background: var(--cs-color-bg-hover); }
+
+.task-alert-rule {
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: var(--radius-pill);
+  background: var(--cs-color-error);
+}
+.task-alert-row--warning .task-alert-rule { background: var(--cs-color-warning); }
+
+.task-alert-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+}
+.task-alert-line1 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+}
+.task-alert-title {
+  font: var(--typo-cn-14-regular);
+  font-weight: var(--font-weight-medium);
+  color: var(--cs-color-text);
+}
+.task-alert-line2 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+.task-alert-line2 i { font-size: 12px; }
+.task-alert-dot { padding: 0 var(--space-3xs); }
+
+.task-alert-cta {
+  flex-shrink: 0;
+  padding: var(--space-3xs) var(--space-sm);
+  border: 1px solid var(--cs-color-border);
+  border-radius: var(--radius);
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text);
+  background: var(--cs-color-white);
+  transition: all .15s ease;
+}
+.task-alert-cta:hover {
+  border-color: var(--cs-color-primary);
+  color: var(--cs-color-primary);
+}
+
+.task-alert-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin: var(--space-xs) 0;
+}
+.task-alert-divider__line {
+  flex: 1;
+  height: 1px;
+  background: var(--cs-color-border);
+}
+.task-alert-divider__text {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+
+/* ============================================================
+ * 10. 我负责的项目（左卡） — 2 列网格小卡片
+ * ============================================================ */
+
+.task-project-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-sm);
+  padding-bottom: var(--space-md);
+}
+
+.task-project {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-sm);
+  border: 1px solid var(--cs-color-border);
+  border-radius: var(--radius);
+  background: var(--cs-color-white);
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.task-project:hover {
+  border-color: var(--cs-color-primary);
+  box-shadow: 0 2px 8px rgba(72, 87, 226, 0.08);
+}
+
+.task-project__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+.task-project__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--task-dot-primary);
+}
+.task-project__dot[data-color="primary"] { background: var(--task-dot-primary); }
+.task-project__dot[data-color="warning"] { background: var(--task-dot-warning); }
+.task-project__dot[data-color="success"] { background: var(--task-dot-success); }
+.task-project__dot[data-color="purple"]  { background: var(--task-dot-purple); }
+
+.task-project__name {
+  flex: 1;
+  font: var(--typo-cn-14-regular);
+  font-weight: var(--font-weight-medium);
+  color: var(--cs-color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.task-project__meta {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+  flex-shrink: 0;
+}
+
+.task-project__bar {
+  height: 4px;
+  background: var(--cs-color-bg-light);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+.task-project__bar-fill {
+  display: block;
+  height: 100%;
+  background: var(--cs-color-primary);
+  border-radius: inherit;
+}
+
+.task-project__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xs);
+}
+.task-project__members {
+  display: flex;
+  align-items: center;
+}
+.task-project__members cs-avatar {
+  margin-left: -6px;
+  border: 2px solid var(--cs-color-white);
+  border-radius: 50%;
+}
+.task-project__members cs-avatar:first-child { margin-left: 0; }
+.task-project__more {
+  margin-left: var(--space-2xs);
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+.task-project__progress {
+  font: var(--typo-cn-12-regular);
+  font-weight: var(--font-weight-medium);
+  color: var(--cs-color-text);
+}
+
+/* ============================================================
+ * 11. 最近动态（右卡）— 时间线列表
+ * ============================================================ */
+
+.task-activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding-bottom: var(--space-md);
+}
+
+.task-activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-xs);
+  padding: var(--space-xs);
+  border-radius: var(--radius);
+  transition: background .15s ease;
+}
+.task-activity-item:hover { background: var(--cs-color-bg-hover); }
+
+.task-activity-stamp {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.task-activity-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+}
+
+.task-activity-text {
+  font: var(--typo-cn-13-regular);
+  color: var(--cs-color-text);
+  line-height: 1.6;
+}
+.task-activity-text b {
+  font-weight: var(--font-weight-semibold);
+  color: var(--cs-color-text);
+  margin-right: var(--space-3xs);
+}
+.task-activity-link {
+  color: var(--cs-color-primary);
+  font-weight: var(--font-weight-medium);
+}
+.task-activity-link:hover { text-decoration: underline; }
+
+.task-activity-mention {
+  display: inline-block;
+  padding: 0 var(--space-2xs);
+  margin: 0 var(--space-3xs);
+  border-radius: var(--radius);
+  background: var(--cs-color-primary-a2);
+  color: var(--cs-color-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.task-activity-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+.task-activity-meta i { font-size: 12px; }
+
+.task-activity-cta {
+  align-self: center;
+  flex-shrink: 0;
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-primary);
+  padding: var(--space-3xs) var(--space-xs);
+  opacity: 0;
+  transition: opacity .15s ease;
+}
+.task-activity-item:hover .task-activity-cta { opacity: 1; }
+
+/* ============================================================
+ * 12. 底部：快捷创建条（次级动作，非主 CTA）
+ * ============================================================ */
+
+.task-shortcut-bar {
+  background: var(--task-card-bg);
+  border: 1px solid var(--task-card-border);
+  border-radius: var(--task-card-radius);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  box-shadow: var(--task-card-shadow);
+}
+
+.task-shortcut-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  color: var(--cs-color-text-light);
+  font: var(--typo-cn-12-regular);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: .3px;
+  text-transform: uppercase;
+}
+.task-shortcut-head i {
+  font-size: 14px;
+  color: var(--cs-color-warning);
+}
+
+.task-shortcut-list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-sm);
+}
+
+.task-shortcut {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+  border: 1px dashed var(--cs-color-border);
+  border-radius: var(--radius);
+  background: var(--cs-color-bg-secondary);
+  transition: all .15s ease;
+}
+.task-shortcut:hover {
+  border-color: var(--cs-color-primary);
+  border-style: solid;
+  background: var(--cs-color-white);
+  box-shadow: 0 2px 8px rgba(72, 87, 226, 0.08);
+}
+
+.task-shortcut__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius);
+  background: var(--cs-color-white);
+  border: 1px solid var(--cs-color-border);
+  color: var(--cs-color-primary);
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.task-shortcut__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.task-shortcut__title {
+  font: var(--typo-cn-14-regular);
+  font-weight: var(--font-weight-medium);
+  color: var(--cs-color-text);
+}
+.task-shortcut__sub {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ============================================================
+ * 13. 底部状态栏（fragment 规范 H:18 flex-shrink:0）
+ * ============================================================ */
+
+.task-statusbar {
+  flex-shrink: 0;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-md);
+  background: var(--cs-color-white);
+  border-top: 1px solid var(--cs-color-border);
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+.task-statusbar__right {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+}
+.task-statusbar__right i { font-size: 12px; }
+
+/* ============================================================
+ * 14. 响应式微调（窄屏时双列变单列）
+ * ============================================================ */
+
+@media (max-width: 1280px) {
+  .task-kpi-row { grid-template-columns: repeat(2, 1fr); }
+  .task-shortcut-list { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 1080px) {
+  .task-grid-2col { grid-template-columns: 1fr; }
+  .task-project-grid { grid-template-columns: 1fr; }
+}

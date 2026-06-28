@@ -1,0 +1,471 @@
+/* ============================================================
+ * meeting-room · booking-detail.css
+ *
+ * 预约详情页 私有样式
+ *   - 沿用 my-bookings 的卡片节奏（白底 + 1px border + radius-lg + hover 阴影）
+ *   - label-value 字段布局：不用灰色胶囊包字段
+ *   - 文件 / 入会信息：白底浅边，不用深色 input 框
+ *   - 复用 my-bookings.css：.mr-status / .mr-divider / .mr-btn / .mr-link / 抽屉相关
+ *   - 视口：仅桌面 1440+
+ * ============================================================ */
+
+
+/* ─────────────────────────────────────────────────
+ * 本页 content-header 横向 padding 对齐 24px（match 卡片）
+ * ───────────────────────────────────────────────── */
+.main-content > cs-content-header {
+  padding-left: var(--spacing-24);
+  padding-right: var(--spacing-24);
+}
+
+
+/* ─────────────────────────────────────────────────
+ * 页面私有令牌
+ * ───────────────────────────────────────────────── */
+:root {
+  --meeting-room-detail-card-radius:  var(--radius-lg);   /* 8px */
+  --meeting-room-detail-card-border:  var(--cs-color-border);
+  --meeting-room-detail-card-pad-x:   var(--spacing-24);
+  --meeting-room-detail-card-pad-y:   var(--spacing-20);
+
+  --meeting-room-detail-label-color:  var(--cs-color-text-light2);
+  --meeting-room-detail-value-color:  var(--cs-color-text);
+
+  --meeting-room-detail-danger:       #f53f3f;
+}
+
+
+/* ─────────────────────────────────────────────────
+ * content-header · 详情型扩展
+ *   - 返回箭头 + 标题 + 状态徽标横排
+ *   - 副标题在标题下（用 fragment.css :has(.page-subtitle) 自动 column 处理 .mr-detail-head 内部）
+ *   - 右侧动作组
+ * ───────────────────────────────────────────────── */
+cs-content-header .slot-left {
+  display: flex;
+  flex-direction: row !important;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+.mr-back {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  color: var(--cs-color-text);
+  text-decoration: none;
+  transition: background .12s ease;
+}
+.mr-back:hover { background: var(--cs-color-bg-light); }
+.mr-back i { font-size: 18px; }
+
+.mr-detail-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  min-width: 0;
+  flex: 1;
+}
+.mr-detail-head__title-row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+.mr-detail-head .page-subtitle {
+  font: var(--typo-cn-13-regular);
+  color: var(--cs-color-text-light2);
+}
+
+/* content-header 右侧动作组：按钮组并排 */
+cs-content-header .slot-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+}
+
+
+/* ─────────────────────────────────────────────────
+ * 详情滚动容器
+ * ───────────────────────────────────────────────── */
+.mr-detail-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--spacing-20) var(--spacing-24) var(--spacing-24);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+}
+
+
+/* ─────────────────────────────────────────────────
+ * 卡片容器 — 沿用 my-bookings 节奏
+ * ───────────────────────────────────────────────── */
+.mr-card {
+  background: var(--cs-color-white);
+  border: var(--line-width) solid var(--meeting-room-detail-card-border);
+  border-radius: var(--meeting-room-detail-card-radius);
+  transition: box-shadow .12s ease;
+}
+.mr-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,.04); }
+
+.mr-card__head {
+  padding: var(--spacing-16) var(--meeting-room-detail-card-pad-x);
+  border-bottom: var(--line-width) solid var(--cs-color-border);
+}
+.mr-card__title {
+  margin: 0;
+  font: var(--typo-cn-14-regular);
+  font-weight: var(--font-weight-semibold);
+  color: var(--cs-color-text);
+}
+
+.mr-card__body {
+  padding: var(--meeting-room-detail-card-pad-y) var(--meeting-room-detail-card-pad-x);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+}
+
+
+/* ─────────────────────────────────────────────────
+ * 字段网格 — label-value 上下结构（2 列）
+ * ───────────────────────────────────────────────── */
+.mr-fields-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-16) var(--spacing-24);
+}
+
+.mr-fld {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  min-width: 0;
+}
+.mr-fld--full {
+  grid-column: 1 / -1;
+}
+
+.mr-fld__label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3xs);
+  font: var(--typo-cn-12-regular);
+  color: var(--meeting-room-detail-label-color);
+}
+.mr-fld__label i {
+  font-size: 14px;
+  color: var(--meeting-room-detail-label-color);
+}
+.mr-fld__count {
+  margin-left: var(--space-3xs);
+  padding: 0 var(--space-2xs);
+  background: var(--cs-color-bg-light);
+  border-radius: 9px;
+  font-size: 11px;
+  line-height: 16px;
+  color: var(--cs-color-text-light2);
+}
+
+.mr-fld__value {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+  font: var(--typo-cn-14-regular);
+  color: var(--meeting-room-detail-value-color);
+  min-width: 0;
+}
+.mr-fld__value--text {
+  display: block;
+  line-height: 1.6;
+}
+.mr-fld__sub {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+
+
+/* ─────────────────────────────────────────────────
+ * 人员展示 — 单人 / chip / 列表
+ * ───────────────────────────────────────────────── */
+.mr-person {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text);
+}
+.mr-person__avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cs-color-white);
+  font-size: 11px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.mr-attendee-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2xs);
+}
+.mr-person-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 4px 4px;
+  background: var(--cs-color-bg-light);
+  border-radius: 16px;
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text);
+}
+.mr-person-chip--group {
+  padding: 4px 10px;
+}
+.mr-person-chip--group > i:first-child {
+  font-size: 14px;
+  color: var(--cs-color-text-light);
+}
+.mr-person-chip__tag {
+  padding: 0 6px;
+  background: var(--cs-color-white);
+  border: var(--line-width) solid var(--cs-color-border);
+  border-radius: 8px;
+  font-size: 11px;
+  line-height: 16px;
+  color: var(--cs-color-text-light2);
+}
+
+
+/* ─────────────────────────────────────────────────
+ * 行内链接（字段值里使用）
+ * ───────────────────────────────────────────────── */
+.mr-link-inline {
+  color: var(--cs-color-primary);
+  text-decoration: none;
+}
+.mr-link-inline:hover { text-decoration: underline; }
+
+
+/* ─────────────────────────────────────────────────
+ * 文件列表 — 简洁文件行（图标 + 名 + 大小 + 操作）
+ *   - 白底浅边（hover bg-light），不用深色背景
+ * ───────────────────────────────────────────────── */
+.mr-file-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+
+.mr-file-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--spacing-12) var(--spacing-16);
+  background: var(--cs-color-white);
+  border: var(--line-width) solid var(--cs-color-border);
+  border-radius: var(--radius-sm);
+  transition: background .12s ease, border-color .12s ease;
+}
+.mr-file-row:hover {
+  background: var(--cs-color-bg-light);
+  border-color: var(--cs-color-primary-a2, rgba(72,87,226,0.2));
+}
+
+.mr-file-row__icon {
+  font-size: 20px;
+  color: var(--cs-color-primary);
+  flex-shrink: 0;
+}
+
+.mr-file-row__main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.mr-file-row__name {
+  font: var(--typo-cn-14-regular);
+  font-weight: var(--font-weight-semibold);
+  color: var(--cs-color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mr-file-row__meta {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+
+.mr-file-row__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  flex-shrink: 0;
+}
+
+
+/* ─────────────────────────────────────────────────
+ * 入会信息 — 白底浅边，行式 key-value
+ * ───────────────────────────────────────────────── */
+.mr-meeting-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  padding: var(--spacing-12) var(--spacing-16);
+  background: var(--cs-color-white);
+  border: var(--line-width) solid var(--cs-color-border);
+  border-radius: var(--radius-sm);
+}
+.mr-meeting-info__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+.mr-meeting-info__k {
+  flex-shrink: 0;
+  width: 80px;
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+.mr-meeting-info__v {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+/* ─────────────────────────────────────────────────
+ * 文字按钮（行内操作：预览 / 下载 / 复制）
+ * ───────────────────────────────────────────────── */
+.mr-link-btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3xs);
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font: var(--typo-cn-14-regular);
+  font-family: var(--font-family-cn);
+  color: var(--cs-color-primary);
+  cursor: pointer;
+  transition: opacity .12s ease;
+  flex-shrink: 0;
+}
+.mr-link-btn > i { font-size: var(--cs-sem-size-icon-xs, 14px); }
+.mr-link-btn:hover { opacity: 0.75; }
+
+
+/* ─────────────────────────────────────────────────
+ * 状态时间线（简版）
+ * ───────────────────────────────────────────────── */
+.mr-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.mr-timeline__item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  padding: var(--space-2xs) 0 var(--spacing-16);
+}
+.mr-timeline__item:last-child { padding-bottom: 0; }
+/* 连接线 */
+.mr-timeline__item:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 18px;
+  bottom: 0;
+  width: 1px;
+  background: var(--cs-color-border);
+}
+
+.mr-timeline__dot {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  width: 11px;
+  height: 11px;
+  margin-top: 6px;
+  border-radius: 50%;
+  background: var(--cs-color-white);
+  border: 2px solid var(--cs-color-border);
+}
+.mr-timeline__dot--done {
+  background: var(--cs-color-bg-light);
+  border-color: var(--cs-color-text-light2);
+}
+.mr-timeline__dot--current {
+  background: var(--cs-color-primary);
+  border-color: var(--cs-color-primary);
+  box-shadow: 0 0 0 3px var(--cs-color-primary-a2, rgba(72,87,226,0.16));
+}
+
+.mr-timeline__main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.mr-timeline__title {
+  font: var(--typo-cn-14-regular);
+  font-weight: var(--font-weight-semibold);
+  color: var(--cs-color-text);
+}
+.mr-timeline__item--current .mr-timeline__title { color: var(--cs-color-primary); }
+.mr-timeline__meta {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+
+
+/* ─────────────────────────────────────────────────
+ * 危险按钮变体（取消预约）— 沿用 .mr-btn 几何
+ * ───────────────────────────────────────────────── */
+.mr-btn.mr-btn--danger {
+  color: var(--meeting-room-detail-danger);
+  border-color: var(--cs-color-border);
+}
+.mr-btn.mr-btn--danger:hover {
+  color: var(--cs-color-white);
+  background: var(--meeting-room-detail-danger);
+  border-color: var(--meeting-room-detail-danger);
+}
+
+/* content-header 内的 .mr-btn 调小一档对齐头部高度 32px */
+cs-content-header .slot-right .mr-btn {
+  height: 32px;
+  padding: 0 var(--spacing-12);
+  font: var(--typo-cn-14-regular);
+  font-family: var(--font-family-cn);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3xs);
+}
+cs-content-header .slot-right .mr-btn i { font-size: 14px; }

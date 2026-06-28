@@ -1,0 +1,88 @@
+/* ============================================================
+ * meeting-room · shell.css
+ *
+ * 会议室预订模块统一框架私有样式
+ *   - 仅声明本模块私有变量（前缀 --meeting-room-*）
+ *   - 仅给业务自创私有 class 设几何（占位区）
+ *   - 不覆盖任何 fragment.css / page-shell.css 的官方 class 几何
+ *   - 视口：仅桌面 1440+
+ *
+ * 阶段 1（shell）覆盖：占位主区视觉
+ * 阶段 2（各 page main-area）由各 page 自己的 css 接管
+ * ============================================================ */
+
+
+/* ─────────────────────────────────────────────────
+ * 模块私有令牌
+ *   - 仅在阶段 2 / 3 真正需要时启用，shell 阶段先备好通道
+ *   - 颜色 / 字号 / 间距如需扩展，应直接复用 --cs-* 令牌；
+ *     真正业务上需要覆盖时再把别名落到这里。
+ * ───────────────────────────────────────────────── */
+:root {
+  /* 状态徽标颜色映射 — 来自 REQ EDGE，待阶段 2 各页 status 组件复用 */
+  --meeting-room-status-confirmed:  var(--cs-color-primary);   /* CONFIRMED 蓝 */
+  --meeting-room-status-progress:   #00b42a;                   /* IN_PROGRESS 绿 */
+  --meeting-room-status-completed:  var(--cs-color-text-light2); /* COMPLETED 灰 */
+  --meeting-room-status-cancelled:  var(--cs-color-text-light2); /* CANCELLED 灰 + 删除线，删除线在 page 层加 */
+  --meeting-room-status-released:   #f7ba1e;                   /* RELEASED 黄 */
+
+  /* 时间轴占用 / 空闲色（阶段 2 找会议室 / 会议室详情用） */
+  --meeting-room-axis-free:     var(--cs-color-bg-light);
+  --meeting-room-axis-busy:     var(--cs-color-primary-a2);
+  --meeting-room-axis-busy-text: var(--cs-color-primary);
+}
+
+
+/* ─────────────────────────────────────────────────
+ * 页面 body / 全局重置（与 fragment baseline 一致）
+ * ───────────────────────────────────────────────── */
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100vh;
+  font-family: var(--font-family-cn);
+  color: var(--cs-color-text);
+  background: var(--cs-color-bg-app-dark);
+}
+
+
+/* ─────────────────────────────────────────────────
+ * shell 阶段主区占位
+ *   - 仅 shell 文件可见，阶段 2 各 page main-area 装配时会替换
+ *   - 用业务私有 class 设几何，禁止覆盖 .main-content / cs-content-header
+ * ───────────────────────────────────────────────── */
+.meeting-room-placeholder {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--spacing-24);
+  background: var(--cs-color-bg-secondary);
+  border: 1px dashed var(--cs-color-border);
+  border-radius: var(--radius-lg);
+  margin: var(--space-md);
+  text-align: center;
+}
+
+.meeting-room-placeholder__icon {
+  font-size: var(--cs-sem-size-icon-3xl);
+  color: var(--cs-color-text-light2);
+  line-height: 1;
+}
+
+.meeting-room-placeholder__title {
+  font: var(--typo-cn-16-medium);
+  font-weight: var(--font-weight-semibold);
+  color: var(--cs-color-text);
+}
+
+.meeting-room-placeholder__desc {
+  max-width: 480px;
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text-light2);
+  line-height: 1.6;
+}

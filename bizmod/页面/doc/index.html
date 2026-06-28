@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>文档库 — CSES</title>
+
+  <link rel="stylesheet" href="../../design/css/base.css">
+  <link rel="stylesheet" href="../../design/css/token.css">
+  <link rel="stylesheet" href="../../design/css/variable.css">
+  <link rel="stylesheet" href="../../design/fonts/cses-icons.css?v=101">
+  <link rel="stylesheet" href="../../design/fragment/fragment.css">
+  <link rel="stylesheet" href="../../design/css/page-shell.css">
+
+  <link rel="stylesheet" href="../../design/components/search-input/search-input.css">
+  <link rel="stylesheet" href="../../design/components/avatar/avatar.css">
+  <link rel="stylesheet" href="../../design/components/button/button.css">
+  <link rel="stylesheet" href="../../design/components/checkbox/checkbox.css">
+  <link rel="stylesheet" href="../../design/components/file-icon/file-icon.css">
+
+  <link rel="stylesheet" href="./index.css">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: var(--font-family-cn), -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--cs-color-bg-app-dark);
+      color: var(--cs-color-text);
+      height: 100vh;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+</head>
+<body data-module="doc">
+
+<cs-layout>
+
+  <!-- 标签栏 -->
+  <div class="tabbar">
+    <div class="tabbar-left">
+      <span class="win-ctrl tabbar-window-control">
+        <span class="ctrl-dot" data-c="close"></span>
+        <span class="ctrl-dot" data-c="min"></span>
+        <span class="ctrl-dot" data-c="max"></span>
+      </span>
+      <cs-search-input class="tabbar-search ah-top-search" data-variant="gray" data-size="sm">
+        <i class="search-icon cses-stratis-search-01"></i>
+        <input class="search-field" type="text" placeholder="搜索">
+      </cs-search-input>
+      <div class="tabbar-tabs"></div>
+    </div>
+    <div class="tabbar-right">
+      <span class="tabbar-notice">
+        <i class="cses-stratis-bell-01 notice-icon"></i>
+        <span class="notice-badge">2</span>
+      </span>
+      <cs-avatar data-size="xs" data-shape="circle" data-color="blue">张</cs-avatar>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- 一级导航 -->
+    <cs-sidebar>
+      <span class="logo">
+        <img src="../../design/assets/logo.png" alt="CSES">
+      </span>
+      <nav class="nav">
+        <div class="nav-group">
+          <a class="nav-item" data-module="workspace">
+            <span class="nav-icon"><i class="cses-stratis-home-01"></i></span>
+            <span class="nav-label">工作台</span>
+          </a>
+          <a class="nav-item" data-module="guide">
+            <span class="nav-icon"><i class="cses-stratis-compass"></i></span>
+            <span class="nav-label">导向</span>
+          </a>
+          <a class="nav-item" data-module="message">
+            <span class="nav-icon"><i class="cses-stratis-message-circle"></i></span>
+            <span class="nav-label">消息</span>
+          </a>
+          <a class="nav-item" data-module="task-list">
+            <span class="nav-icon"><i class="cses-stratis-check-square-broken"></i></span>
+            <span class="nav-label">任务</span>
+          </a>
+          <a class="nav-item" data-module="meeting">
+            <span class="nav-icon"><i class="cses-stratis-video-on"></i></span>
+            <span class="nav-label">会议</span>
+          </a>
+          <a class="nav-item" data-active data-module="doc">
+            <span class="nav-icon"><i class="cses-stratis-book-01"></i></span>
+            <span class="nav-label">文档</span>
+          </a>
+          <a class="nav-item" data-module="form">
+            <span class="nav-icon"><i class="cses-stratis-file-edit-01"></i></span>
+            <span class="nav-label">表单</span>
+          </a>
+          <a class="nav-item" data-module="approval">
+            <span class="nav-icon"><i class="cses-stratis-file-check-01"></i></span>
+            <span class="nav-label">审批</span>
+          </a>
+        </div>
+      </nav>
+    </cs-sidebar>
+
+    <!-- 内容包裹 -->
+    <div class="content-wrapper" style="position:relative;">
+
+      <!-- 二级导航：文档库 -->
+      <cs-navbar>
+        <div class="inner">
+
+          <!-- 顶部：文档库标题 + 搜索框 -->
+          <div class="slot-header">
+            <div class="dl-navbar-head">
+              <span class="dl-navbar-title">文档库</span>
+              <div class="dl-search">
+                <i class="cses-stratis-search-01"></i>
+                <input class="dl-search__field" type="text" placeholder="搜索">
+                <span class="dl-search__shortcut">⌘J</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 主菜单 -->
+          <div class="slot-nav">
+            <div class="dl-side-item" data-active>
+              <i class="dl-side-item__icon cses-stratis-home-01"></i>
+              <span class="dl-side-item__label">首页</span>
+            </div>
+            <div class="dl-side-item">
+              <i class="dl-side-item__icon cses-stratis-share"></i>
+              <span class="dl-side-item__label">共享</span>
+            </div>
+            <div class="dl-side-item">
+              <i class="dl-side-item__icon cses-stratis-star-01"></i>
+              <span class="dl-side-item__label">收藏</span>
+            </div>
+          </div>
+
+          <!-- 空间分组 -->
+          <div class="slot-sub">
+            <div class="dl-space-group">
+              <div class="dl-space-group__head">
+                <i class="cses-stratis-chevron-down"></i>
+                <span>空间</span>
+              </div>
+              <div class="dl-space-item">
+                <span class="dl-space-item__icon" data-tone="blue"><i class="cses-stratis-grid-01"></i></span>
+                <span>个人空间</span>
+              </div>
+              <div class="dl-space-item">
+                <span class="dl-space-item__icon" data-tone="green"><i class="cses-stratis-grid-01"></i></span>
+                <span>企业空间</span>
+              </div>
+              <div class="dl-space-item">
+                <span class="dl-space-item__icon" data-tone="sky"><i class="cses-stratis-grid-01"></i></span>
+                <span>CSES空间</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </cs-navbar>
+
+      <!-- 主内容区 -->
+      <main class="main-content">
+
+        <!-- 顶栏：首页 + 刷新 -->
+        <cs-content-header>
+          <div class="slot-left">
+            <span class="page-title">首页</span>
+          </div>
+          <div class="slot-right">
+            <button class="dl-refresh-btn">
+              <i class="cses-stratis-arrow-refresh-01"></i>
+              <span>刷新</span>
+            </button>
+          </div>
+        </cs-content-header>
+
+        <!-- 内容滚动区 -->
+        <div class="dl-page">
+
+          <!-- 开始：4 个快捷卡 -->
+          <section class="dl-section">
+            <div class="dl-section__title">开始</div>
+            <div class="dl-start-row">
+              <div class="dl-start-card" data-tone="blue" id="dlNewCard">
+                <span class="dl-start-card__icon"><i class="cses-stratis-plus-01"></i></span>
+                <div class="dl-start-card__main">
+                  <span class="dl-start-card__title">新建</span>
+                  <span class="dl-start-card__desc">新建文档开始协作</span>
+                </div>
+              </div>
+              <div class="dl-start-card" data-tone="orange">
+                <span class="dl-start-card__icon"><i class="cses-stratis-annotation-information"></i></span>
+                <div class="dl-start-card__main">
+                  <span class="dl-start-card__title">新手引导</span>
+                  <span class="dl-start-card__desc">快速了解文档库功能</span>
+                </div>
+              </div>
+              <div class="dl-start-card" data-tone="pink">
+                <span class="dl-start-card__icon"><i class="cses-stratis-file-01"></i></span>
+                <div class="dl-start-card__main">
+                  <span class="dl-start-card__title">更新日志</span>
+                  <span class="dl-start-card__desc">查看最新功能与优化</span>
+                </div>
+              </div>
+              <div class="dl-start-card" data-tone="green">
+                <span class="dl-start-card__icon"><i class="cses-stratis-arrow-up-right"></i></span>
+                <div class="dl-start-card__main">
+                  <span class="dl-start-card__title">用户反馈</span>
+                  <span class="dl-start-card__desc">您的建议对我们很重要</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 快速 -->
+          <section class="dl-section">
+            <div class="dl-section__title">快速</div>
+
+            <div class="dl-quick__head">
+              <div class="dl-quick__tabs">
+                <button class="dl-quick__tab" data-active type="button">浏览过</button>
+                <button class="dl-quick__tab" type="button">编辑过</button>
+                <button class="dl-quick__tab" type="button">我点赞的</button>
+              </div>
+              <div class="dl-quick__view">
+                <span class="dl-quick__view-icon" data-active><i class="cses-stratis-menu-01"></i></span>
+                <span class="dl-quick__view-icon"><i class="cses-stratis-menu-04"></i></span>
+              </div>
+            </div>
+
+            <div class="dl-list">
+
+              <div class="dl-list-row dl-list-row--head">
+                <div class="dl-cell"></div>
+                <div class="dl-cell">
+                  <span class="dl-list-cell-head">
+                    <span>所有类型</span>
+                    <i class="cses-stratis-chevron-down"></i>
+                  </span>
+                </div>
+                <div class="dl-cell">
+                  <span class="dl-list-cell-head">
+                    <span>不限归属</span>
+                    <i class="cses-stratis-chevron-down"></i>
+                  </span>
+                </div>
+                <div class="dl-cell">
+                  <span class="dl-list-cell-head"><span>所属空间</span></span>
+                </div>
+                <div class="dl-cell">
+                  <span class="dl-list-cell-head"><span>浏览时间</span><i class="cses-stratis-arrow-down-contained-01"></i></span>
+                </div>
+                <div class="dl-cell"></div>
+              </div>
+
+              <!-- 数据行 -->
+              <div class="dl-list-row dl-list-row--body">
+                <div class="dl-list__check"><cs-checkbox></cs-checkbox></div>
+                <div class="dl-list__name">
+                  <cs-file-icon data-type="notebook" data-size="md" class="dl-list__icon"></cs-file-icon>
+                  <span class="dl-list__title">新品上市</span>
+                </div>
+                <div class="dl-list__owner">
+                  <cs-avatar data-size="xs" data-color="orange">王</cs-avatar>
+                  <span class="dl-list__owner-name">王俊虎</span>
+                </div>
+                <div class="dl-list__space">王俊虎的空间</div>
+                <div class="dl-list__time">06-27 16:49</div>
+                <div class="dl-list__more"><i class="cses-stratis-menu-04"></i></div>
+              </div>
+
+              <div class="dl-list-row dl-list-row--body">
+                <div class="dl-list__check"><cs-checkbox></cs-checkbox></div>
+                <div class="dl-list__name">
+                  <cs-file-icon data-type="notebook" data-size="md" class="dl-list__icon"></cs-file-icon>
+                  <span class="dl-list__title">文档库改版</span>
+                </div>
+                <div class="dl-list__owner">
+                  <cs-avatar data-size="xs" data-color="purple">裴</cs-avatar>
+                  <span class="dl-list__owner-name">裴启妍</span>
+                </div>
+                <div class="dl-list__space">个人空间</div>
+                <div class="dl-list__time">06-27 16:47</div>
+                <div class="dl-list__more"><i class="cses-stratis-menu-04"></i></div>
+              </div>
+
+              <div class="dl-list-row dl-list-row--body">
+                <div class="dl-list__check"><cs-checkbox></cs-checkbox></div>
+                <div class="dl-list__name">
+                  <cs-file-icon data-type="sheet" data-size="md" class="dl-list__icon"></cs-file-icon>
+                  <span class="dl-list__title">缺陷记录</span>
+                </div>
+                <div class="dl-list__owner">
+                  <cs-avatar data-size="xs" data-color="orange">王</cs-avatar>
+                  <span class="dl-list__owner-name">王俊虎</span>
+                </div>
+                <div class="dl-list__space">企业空间</div>
+                <div class="dl-list__time">06-27 16:45</div>
+                <div class="dl-list__more"><i class="cses-stratis-menu-04"></i></div>
+              </div>
+
+              <div class="dl-list-row dl-list-row--body">
+                <div class="dl-list__check"><cs-checkbox></cs-checkbox></div>
+                <div class="dl-list__name">
+                  <cs-file-icon data-type="notebook" data-size="md" class="dl-list__icon"></cs-file-icon>
+                  <span class="dl-list__title">未命名文档</span>
+                </div>
+                <div class="dl-list__owner">
+                  <cs-avatar data-size="xs" data-color="purple">裴</cs-avatar>
+                  <span class="dl-list__owner-name">裴启妍</span>
+                </div>
+                <div class="dl-list__space">个人空间</div>
+                <div class="dl-list__time">06-27 16:45</div>
+                <div class="dl-list__more"><i class="cses-stratis-menu-04"></i></div>
+              </div>
+
+              <div class="dl-list-row dl-list-row--body">
+                <div class="dl-list__check"><cs-checkbox></cs-checkbox></div>
+                <div class="dl-list__name">
+                  <cs-file-icon data-type="notebook" data-size="md" class="dl-list__icon"></cs-file-icon>
+                  <span class="dl-list__title">会议室管理 use case V2</span>
+                </div>
+                <div class="dl-list__owner">
+                  <cs-avatar data-size="xs" data-color="green">仝</cs-avatar>
+                  <span class="dl-list__owner-name">仝帅威</span>
+                </div>
+                <div class="dl-list__space">仝帅威的空间</div>
+                <div class="dl-list__time">06-26 23:34</div>
+                <div class="dl-list__more"><i class="cses-stratis-menu-04"></i></div>
+              </div>
+
+              <div class="dl-list-row dl-list-row--body">
+                <div class="dl-list__check"><cs-checkbox></cs-checkbox></div>
+                <div class="dl-list__name">
+                  <cs-file-icon data-type="pptx" data-size="md" class="dl-list__icon"></cs-file-icon>
+                  <span class="dl-list__title">产品演示内部稿</span>
+                </div>
+                <div class="dl-list__owner">
+                  <cs-avatar data-size="xs" data-color="purple">裴</cs-avatar>
+                  <span class="dl-list__owner-name">裴启妍</span>
+                </div>
+                <div class="dl-list__space">个人空间</div>
+                <div class="dl-list__time">06-23 22:43</div>
+                <div class="dl-list__more"><i class="cses-stratis-menu-04"></i></div>
+              </div>
+
+              <div class="dl-list-row dl-list-row--body">
+                <div class="dl-list__check"><cs-checkbox></cs-checkbox></div>
+                <div class="dl-list__name">
+                  <cs-file-icon data-type="sheet" data-size="md" class="dl-list__icon"></cs-file-icon>
+                  <span class="dl-list__title">6.18 问题记录</span>
+                </div>
+                <div class="dl-list__owner">
+                  <cs-avatar data-size="xs" data-color="pink">魏</cs-avatar>
+                  <span class="dl-list__owner-name">魏婉婷</span>
+                </div>
+                <div class="dl-list__space">魏婉婷的空间</div>
+                <div class="dl-list__time">06-22 14:01</div>
+                <div class="dl-list__more"><i class="cses-stratis-menu-04"></i></div>
+              </div>
+
+              <div class="dl-list-row dl-list-row--body" data-unread>
+                <div class="dl-list__check"><cs-checkbox></cs-checkbox></div>
+                <div class="dl-list__name">
+                  <cs-file-icon data-type="pptx" data-size="md" class="dl-list__icon"></cs-file-icon>
+                  <span class="dl-list__title">产品演示-设计导向</span>
+                </div>
+                <div class="dl-list__owner">
+                  <cs-avatar data-size="xs" data-color="blue">张</cs-avatar>
+                  <span class="dl-list__owner-name">张竞元</span>
+                </div>
+                <div class="dl-list__space">企业空间</div>
+                <div class="dl-list__time">06-18 10:02</div>
+                <div class="dl-list__more"><i class="cses-stratis-menu-04"></i></div>
+              </div>
+
+              <div class="dl-list-row dl-list-row--body">
+                <div class="dl-list__check"><cs-checkbox></cs-checkbox></div>
+                <div class="dl-list__name">
+                  <cs-file-icon data-type="kanban" data-size="md" class="dl-list__icon"></cs-file-icon>
+                  <span class="dl-list__title">设计迭代排期计划</span>
+                </div>
+                <div class="dl-list__owner">
+                  <cs-avatar data-size="xs" data-color="purple">裴</cs-avatar>
+                  <span class="dl-list__owner-name">裴启妍</span>
+                </div>
+                <div class="dl-list__space">个人空间</div>
+                <div class="dl-list__time">06-18 09:53</div>
+                <div class="dl-list__more"><i class="cses-stratis-menu-04"></i></div>
+              </div>
+
+            </div>
+          </section>
+
+        </div>
+
+      </main>
+
+    </div>
+
+  </div>
+</cs-layout>
+
+
+<!-- 新建文档下拉菜单 -->
+<div class="dl-new-menu" id="dlNewMenu">
+  <div class="dl-new-menu__item" data-href="./untitled.html">
+    <span class="dl-new-menu__icon" data-tone="blue"><i class="cses-stratis-file-01"></i></span>
+    <span>我的文档</span>
+  </div>
+  <div class="dl-new-menu__item">
+    <span class="dl-new-menu__icon" data-tone="sheet"><i class="cses-stratis-file-01"></i></span>
+    <span>需求文档</span>
+  </div>
+  <div class="dl-new-menu__item">
+    <span class="dl-new-menu__icon" data-tone="green"><i class="cses-stratis-grid-01"></i></span>
+    <span>表格</span>
+  </div>
+  <div class="dl-new-menu__item">
+    <span class="dl-new-menu__icon" data-tone="violet"><i class="cses-stratis-grid-01"></i></span>
+    <span>表格</span>
+  </div>
+  <div class="dl-new-menu__item">
+    <span class="dl-new-menu__icon" data-tone="orange"><i class="cses-stratis-bar-chart-04"></i></span>
+    <span>演示文档</span>
+  </div>
+
+  <div class="dl-new-menu__sep"></div>
+
+  <div class="dl-new-menu__item">
+    <span class="dl-new-menu__icon" data-tone="folder"><i class="cses-stratis-folder"></i></span>
+    <span>文件夹</span>
+  </div>
+
+  <div class="dl-new-menu__sep"></div>
+
+  <div class="dl-new-menu__item" data-href="./board.html">
+    <span class="dl-new-menu__icon" data-tone="board"><i class="cses-stratis-edit-01"></i></span>
+    <span>画板</span>
+  </div>
+  <div class="dl-new-menu__item">
+    <span class="dl-new-menu__icon" data-tone="mindmap"><i class="cses-stratis-menu-04"></i></span>
+    <span>思维导图</span>
+  </div>
+  <div class="dl-new-menu__item">
+    <span class="dl-new-menu__icon" data-tone="flow"><i class="cses-stratis-share"></i></span>
+    <span>流程图</span>
+  </div>
+  <div class="dl-new-menu__item">
+    <span class="dl-new-menu__icon" data-tone="gray"><i class="cses-stratis-annotation"></i></span>
+    <span>模版库</span>
+  </div>
+
+  <div class="dl-new-menu__sep"></div>
+
+  <div class="dl-new-menu__item">
+    <span class="dl-new-menu__icon" data-tone="upload"><i class="cses-stratis-arrow-up-right"></i></span>
+    <span>上传</span>
+  </div>
+</div>
+
+
+<script>
+  // 快速 tab 切换
+  document.querySelectorAll('.dl-quick__tab').forEach(function (t) {
+    t.addEventListener('click', function () {
+      document.querySelectorAll('.dl-quick__tab').forEach(function (x) { x.removeAttribute('data-active'); });
+      t.setAttribute('data-active', '');
+    });
+  });
+  // 视图切换
+  document.querySelectorAll('.dl-quick__view-icon').forEach(function (v) {
+    v.addEventListener('click', function () {
+      document.querySelectorAll('.dl-quick__view-icon').forEach(function (x) { x.removeAttribute('data-active'); });
+      v.setAttribute('data-active', '');
+    });
+  });
+
+  // ===== 新建文档下拉菜单 =====
+  (function () {
+    var card = document.getElementById('dlNewCard');
+    var menu = document.getElementById('dlNewMenu');
+    if (!card || !menu) return;
+
+    function openMenu() {
+      var rect = card.getBoundingClientRect();
+      menu.style.left = rect.left + 'px';
+      menu.style.top = (rect.bottom + 6) + 'px';
+      menu.classList.add('is-open');
+    }
+    function closeMenu() {
+      menu.classList.remove('is-open');
+    }
+
+    card.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (menu.classList.contains('is-open')) closeMenu();
+      else openMenu();
+    });
+
+    // 菜单项点击：有 data-href 的跳转，没有的关闭菜单
+    menu.addEventListener('click', function (e) {
+      var item = e.target.closest('.dl-new-menu__item');
+      if (!item) return;
+      var href = item.getAttribute('data-href');
+      if (href) { window.location.href = href; return; }
+      closeMenu();
+    });
+
+    // 点外部关闭
+    document.addEventListener('mousedown', function (e) {
+      if (!menu.classList.contains('is-open')) return;
+      if (menu.contains(e.target) || card.contains(e.target)) return;
+      closeMenu();
+    });
+    // Esc 关闭
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeMenu();
+    });
+    // 滚动 / resize 时关闭（位置会失效）
+    window.addEventListener('scroll', closeMenu, true);
+    window.addEventListener('resize', closeMenu);
+  })();
+</script>
+<script src="../shared.js"></script>
+</body>
+</html>

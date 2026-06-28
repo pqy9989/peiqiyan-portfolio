@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>未命名文档 — CSES</title>
+
+  <link rel="stylesheet" href="../../design/css/base.css">
+  <link rel="stylesheet" href="../../design/css/token.css">
+  <link rel="stylesheet" href="../../design/css/variable.css">
+  <link rel="stylesheet" href="../../design/fonts/cses-icons.css?v=101">
+  <link rel="stylesheet" href="../../design/fragment/fragment.css">
+  <link rel="stylesheet" href="../../design/css/page-shell.css">
+
+  <link rel="stylesheet" href="../../design/components/search-input/search-input.css">
+  <link rel="stylesheet" href="../../design/components/avatar/avatar.css">
+  <link rel="stylesheet" href="../../design/components/button/button.css">
+
+  <link rel="stylesheet" href="./untitled.css">
+  <link rel="stylesheet" href="./task-drawer.css">
+  <link rel="stylesheet" href="../meeting/index.css">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: var(--font-family-cn), -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--cs-color-bg-app-dark);
+      color: var(--cs-color-text);
+      height: 100vh;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+</head>
+<body data-module="doc">
+
+<cs-layout>
+
+  <!-- 标签栏 -->
+  <div class="tabbar">
+    <div class="tabbar-left">
+      <span class="win-ctrl tabbar-window-control">
+        <span class="ctrl-dot" data-c="close"></span>
+        <span class="ctrl-dot" data-c="min"></span>
+        <span class="ctrl-dot" data-c="max"></span>
+      </span>
+      <cs-search-input class="tabbar-search ah-top-search" data-variant="gray" data-size="sm">
+        <i class="search-icon cses-stratis-search-01"></i>
+        <input class="search-field" type="text" placeholder="搜索">
+      </cs-search-input>
+      <div class="tabbar-tabs"></div>
+    </div>
+    <div class="tabbar-right">
+      <span class="tabbar-notice">
+        <i class="cses-stratis-bell-01 notice-icon"></i>
+        <span class="notice-badge">2</span>
+      </span>
+      <cs-avatar data-size="xs" data-shape="circle" data-color="blue">张</cs-avatar>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- 一级导航 -->
+    <cs-sidebar>
+      <span class="logo">
+        <img src="../../design/assets/logo.png" alt="CSES">
+      </span>
+      <nav class="nav">
+        <div class="nav-group">
+          <a class="nav-item" data-module="workspace">
+            <span class="nav-icon"><i class="cses-stratis-home-01"></i></span>
+            <span class="nav-label">工作台</span>
+          </a>
+          <a class="nav-item" data-module="guide">
+            <span class="nav-icon"><i class="cses-stratis-compass"></i></span>
+            <span class="nav-label">导向</span>
+          </a>
+          <a class="nav-item" data-module="message">
+            <span class="nav-icon"><i class="cses-stratis-message-circle"></i></span>
+            <span class="nav-label">消息</span>
+          </a>
+          <a class="nav-item" data-module="task-list">
+            <span class="nav-icon"><i class="cses-stratis-check-square-broken"></i></span>
+            <span class="nav-label">任务</span>
+          </a>
+          <a class="nav-item" data-module="meeting">
+            <span class="nav-icon"><i class="cses-stratis-video-on"></i></span>
+            <span class="nav-label">会议</span>
+          </a>
+          <a class="nav-item" data-active data-module="doc">
+            <span class="nav-icon"><i class="cses-stratis-book-01"></i></span>
+            <span class="nav-label">文档</span>
+          </a>
+          <a class="nav-item" data-module="form">
+            <span class="nav-icon"><i class="cses-stratis-file-edit-01"></i></span>
+            <span class="nav-label">表单</span>
+          </a>
+          <a class="nav-item" data-module="approval">
+            <span class="nav-icon"><i class="cses-stratis-file-check-01"></i></span>
+            <span class="nav-label">审批</span>
+          </a>
+        </div>
+      </nav>
+    </cs-sidebar>
+
+    <div class="content-wrapper" style="position:relative;">
+
+      <!-- 文档编辑器（无二级导航，main-content 占满）-->
+      <main class="main-content">
+
+        <!-- 顶部面包屑栏 -->
+        <div class="dt-breadcrumb-bar">
+          <div class="dt-breadcrumb">
+            <i class="cses-stratis-home-01 dt-bc-home" title="返回文档库首页" onclick="window.location.href='./index.html'"></i>
+            <a><i class="cses-stratis-grid-01" style="color:var(--cs-color-primary);"></i>个人空间</a>
+            <span class="dt-bc-sep">/</span>
+            <span class="dt-bc-current">未命名文档</span>
+            <i class="dt-bc-star cses-stratis-star-01"></i>
+            <span class="dt-bc-sync">
+              <i class="cses-stratis-check-broken" style="color:#16a34a;"></i>
+              <span>云端已同步</span>
+            </span>
+          </div>
+          <div class="dt-actions">
+            <button class="dt-action-btn" data-variant="primary">
+              <i class="cses-stratis-share"></i>
+              <span>分享</span>
+            </button>
+            <button class="dt-action-btn">
+              <i class="cses-stratis-edit-01"></i>
+              <span>编辑</span>
+              <i class="cses-stratis-chevron-down"></i>
+            </button>
+            <span class="dt-action-icon"><i class="cses-stratis-menu-04"></i></span>
+          </div>
+        </div>
+
+        <!-- 编辑工具栏 -->
+        <div class="dt-toolbar">
+          <span class="dt-tool" title="撤销"><i class="cses-stratis-arrow-rotate-left-01"></i></span>
+          <span class="dt-tool" title="重做"><i class="cses-stratis-arrow-rotate-right-01"></i></span>
+          <span class="dt-tool-sep"></span>
+          <span class="dt-tool dt-tool--text">
+            <span>正文</span>
+            <i class="cses-stratis-chevron-down"></i>
+          </span>
+          <span class="dt-tool" title="文字颜色"><span style="font-weight:bold;">T</span></span>
+          <span class="dt-tool dt-tool--text">
+            <span>1×</span>
+            <i class="cses-stratis-chevron-down"></i>
+          </span>
+          <span class="dt-tool-sep"></span>
+          <span class="dt-tool" title="加粗"><span class="b">B</span></span>
+          <span class="dt-tool" title="斜体"><span class="i">I</span></span>
+          <span class="dt-tool" title="下划线"><span class="u">U</span></span>
+          <span class="dt-tool" title="删除线"><span class="s">S</span></span>
+          <span class="dt-tool-sep"></span>
+          <span class="dt-tool" title="代码">&lt;/&gt;</span>
+          <span class="dt-tool" title="上标"><span>T<sup>1</sup></span></span>
+          <span class="dt-tool" title="下标"><span>T<sub>1</sub></span></span>
+          <span class="dt-tool-sep"></span>
+          <span class="dt-tool" title="高亮"><i class="cses-stratis-edit-01"></i></span>
+          <span class="dt-tool" title="清除格式"><i class="cses-stratis-x-circle-contained"></i></span>
+          <span class="dt-tool" title="锁定"><i class="cses-stratis-eye-closed"></i></span>
+          <span class="dt-tool-sep"></span>
+          <span class="dt-tool" title="任务列表"><i class="cses-stratis-check-square-contained"></i></span>
+          <span class="dt-tool" title="无序列表"><i class="cses-stratis-menu-04"></i></span>
+          <span class="dt-tool" title="有序列表"><i class="cses-stratis-menu-01"></i></span>
+          <span class="dt-tool-sep"></span>
+          <span class="dt-tool" title="左对齐" data-active><i class="cses-stratis-align-left"></i></span>
+          <span class="dt-tool" title="居中"><i class="cses-stratis-align-center"></i></span>
+          <span class="dt-tool" title="右对齐"><i class="cses-stratis-align-right"></i></span>
+          <span class="dt-tool-sep"></span>
+          <span class="dt-tool" title="链接"><i class="cses-stratis-link"></i></span>
+          <span class="dt-tool" title="公式"><span style="font-style:italic;">fₓ</span></span>
+          <span class="dt-tool" title="附件"><i class="cses-stratis-paperclip"></i></span>
+          <span class="dt-tool dt-tool--text" title="表格">
+            <i class="cses-stratis-grid-01"></i>
+            <i class="cses-stratis-chevron-down"></i>
+          </span>
+          <span class="dt-tool dt-tool--text" title="分栏">
+            <span>⫶⫶</span>
+            <i class="cses-stratis-chevron-down"></i>
+          </span>
+          <span class="dt-tool" title="插图"><i class="cses-stratis-file-01"></i></span>
+          <span class="dt-tool dt-tool--text" title="更多块">
+            <span>{ }</span>
+            <i class="cses-stratis-chevron-down"></i>
+          </span>
+        </div>
+
+        <!-- 编辑器主体 -->
+        <div class="dt-editor-wrap">
+
+          <div class="dt-outline-toggle">
+            <i class="cses-stratis-menu-04" title="大纲"></i>
+          </div>
+
+          <div class="dt-editor">
+            <h1 class="dt-title" style="color:var(--cs-color-text);">文档库改版</h1>
+
+            <div class="dt-meta">
+              <span class="dt-meta__author">
+                <span class="dt-meta__avatar">裴</span>
+                <span class="dt-meta__name">裴启妍</span>
+                <span class="dt-meta__role">产品部/UI设计师</span>
+              </span>
+              <span class="dt-meta__sep"></span>
+              <span>最后由 <span style="color:var(--cs-color-text);">裴启妍</span> 创建于 06-27 16:47</span>
+            </div>
+
+            <div class="dt-body">
+
+              <!-- 一、改版目标 -->
+              <h2 class="dt-h1">一、改版目标</h2>
+              <p class="dt-p">围绕文档库当前存在的查找效率低、版本管理混乱、协作成本高等问题，本次设计改版聚焦以下四个核心目标：</p>
+              <ul class="dt-ul">
+                <li>缩短查找路径重构信息架构，让用户能在3步内定位目标文档</li>
+                <li>提升阅读体验优化排版与视觉层次，降低长时间阅读的认知负担</li>
+                <li>降低协作门槛：将编辑、评论、审核等操作直观化，减少学习成本</li>
+                <li>建立反馈闭环：将问题记录与优化机制融入界面，支撑产品持续进化</li>
+              </ul>
+
+              <!-- 二、待办任务 -->
+              <h2 class="dt-h1">二、待办任务</h2>
+
+              <h3 class="dt-h2">任务一：导航与信息架构重构</h3>
+              <ul class="dt-task-list">
+                <li>
+                  <span>重新梳理文档分类体系，设计一级导航（全部文档 / 我的文档 / 团队文档 / 回收站）</span>
+                  <i class="cses-stratis-link" title="创建任务"></i>
+                </li>
+                <li>
+                  <span>设计侧边栏层级结构，支持展开/收起，清晰展示目录层级关系</span>
+                  <i class="cses-stratis-link" title="创建任务"></i>
+                </li>
+                <li>
+                  <span>设计面包屑导航，帮助用户随时了解当前位置</span>
+                  <i class="cses-stratis-link" title="创建任务"></i>
+                </li>
+                <li>
+                  <span>设计最近访问快捷入口，减少重复查找路径</span>
+                  <i class="cses-stratis-link" title="创建任务"></i>
+                </li>
+              </ul>
+
+              <h3 class="dt-h2">任务二：检索与筛选功能设计</h3>
+              <ul class="dt-task-list">
+                <li>
+                  <span>设计全局搜索框（置于顶部导航栏固定位置），支持按标题、正文、标签、作者等多维度检索</span>
+                  <i class="cses-stratis-link" title="创建任务"></i>
+                </li>
+                <li>
+                  <span>设计筛选面板（按文档类型、创建时间、标签、负责人等多维度筛选）</span>
+                  <i class="cses-stratis-link" title="创建任务"></i>
+                </li>
+                <li>
+                  <span>设计搜索高亮与结果预览，帮助用户快速判断是否为所需内容</span>
+                  <i class="cses-stratis-link" title="创建任务"></i>
+                </li>
+                <li>
+                  <span>设计搜索结果排序选项（按相关度、更新时间、创建时间）</span>
+                  <i class="cses-stratis-link" title="创建任务"></i>
+                </li>
+              </ul>
+
+
+              <!-- ==== 嵌入式任务列表（参考任务模块） ==== -->
+              <div class="dt-tasklist-block">
+
+                <!-- 头部：面包屑 + 视图切换 -->
+                <div class="dt-tl-head">
+                  <div class="dt-tl-bc">
+                    <i class="cses-stratis-grid-01"></i>
+                    <span>企业空间</span>
+                    <span class="dt-tl-bc__sep">/</span>
+                    <i class="cses-stratis-users-profiles-01"></i>
+                    <span>CSES缺陷</span>
+                    <i class="dt-tl-bc__chev cses-stratis-chevron-down"></i>
+                  </div>
+                  <div class="dt-tl-views">
+                    <span class="dt-tl-view" data-active>
+                      <i class="cses-stratis-menu-04"></i>
+                      <span>列表</span>
+                    </span>
+                    <span class="dt-tl-view">
+                      <i class="cses-stratis-grid-01"></i>
+                      <span>泳道</span>
+                    </span>
+                    <span class="dt-tl-view">
+                      <i class="cses-stratis-horizontal-chart-02"></i>
+                      <span>甘特图</span>
+                    </span>
+                  </div>
+                </div>
+
+                <!-- 工具栏 -->
+                <div class="dt-tl-toolbar">
+                  <div class="dt-tl-tb-left">
+                    <span>分组</span>
+                    <span class="dt-tl-group-btn">
+                      <span>不分组</span>
+                      <i class="cses-stratis-chevron-down"></i>
+                    </span>
+                  </div>
+                  <div class="dt-tl-tb-right">
+                    <span class="dt-tl-tb-icon" title="筛选"><i class="cses-stratis-filter"></i></span>
+                    <span class="dt-tl-tb-icon" title="搜索"><i class="cses-stratis-search-01"></i></span>
+                    <span class="dt-tl-tb-icon" title="设置"><i class="cses-stratis-settings"></i></span>
+                    <span class="dt-tl-tb-icon" data-active title="选择"><i class="cses-stratis-check-square-contained"></i></span>
+                    <span class="dt-tl-tb-icon" title="刷新"><i class="cses-stratis-arrow-refresh-01"></i></span>
+                  </div>
+                </div>
+
+                <!-- 横向滚动容器：表头 + 数据行一起滚 -->
+                <div class="dt-tl-scroll">
+
+                <!-- 表头 -->
+                <div class="dt-tl-row dt-tl-row--head">
+                  <div class="dt-tl-cell"></div>
+                  <div class="dt-tl-cell"></div>
+                  <div class="dt-tl-cell"><span class="dt-tl-cell-label"><i class="cses-stratis-menu-04"></i>任务名称</span></div>
+                  <div class="dt-tl-cell"><span class="dt-tl-cell-label"><i class="cses-stratis-check-square-contained"></i>状态</span></div>
+                  <div class="dt-tl-cell"><span class="dt-tl-cell-label"><i class="cses-stratis-grid-01"></i>优先级<span class="dt-tl-sort"><i>▲</i><i>▼</i></span></span></div>
+                  <div class="dt-tl-cell"><span class="dt-tl-cell-label"><i class="cses-stratis-calendar-number"></i>开始时间<span class="dt-tl-sort"><i>▲</i><i>▼</i></span></span></div>
+                  <div class="dt-tl-cell"><span class="dt-tl-cell-label"><i class="cses-stratis-calendar-minus"></i>截止时间<span class="dt-tl-sort"><i>▲</i><i>▼</i></span></span></div>
+                </div>
+
+                <!-- 数据行 -->
+                <!-- 1 -->
+                <div class="dt-tl-row dt-tl-row--body">
+                  <div class="dt-tl-cell dt-tl-num">1</div>
+                  <div class="dt-tl-cell dt-tl-status-icon" data-state="pass"><i>✓</i></div>
+                  <div class="dt-tl-cell">
+                    <div class="dt-tl-name">
+                      <span class="dt-tl-name__text">点击主页和 检查更新 ...</span>
+                      <span class="dt-tl-tag" data-tone="bug">功能错误</span>
+                      <span class="dt-tl-tag" data-tone="test">测试5</span>
+                      <span class="dt-tl-tag-more">+...</span>
+                    </div>
+                  </div>
+                  <div class="dt-tl-cell"><span class="dt-tl-status-pill" data-status="pass">验证通过</span></div>
+                  <div class="dt-tl-cell">
+                    <span class="dt-tl-priority" data-level="normal">
+                      <svg viewBox="0 0 12 14"><path d="M1 0h1.5v14H1V0zm1.5 0h7.2L8 3.5l1.7 3.5H2.5V0z"/></svg>
+                      一般
+                    </span>
+                  </div>
+                  <div class="dt-tl-cell dt-tl-time">01月28日 09:28</div>
+                  <div class="dt-tl-cell dt-tl-time" data-overdue>01月28日 18:00</div>
+                </div>
+
+                <!-- 2 -->
+                <div class="dt-tl-row dt-tl-row--body">
+                  <div class="dt-tl-cell dt-tl-num">2</div>
+                  <div class="dt-tl-cell dt-tl-status-icon" data-state="pass"><i>✓</i></div>
+                  <div class="dt-tl-cell">
+                    <div class="dt-tl-name">
+                      <span class="dt-tl-name__text">下拉框错...</span>
+                      <span class="dt-tl-tag" data-tone="display">显示问题</span>
+                    </div>
+                  </div>
+                  <div class="dt-tl-cell"><span class="dt-tl-status-pill" data-status="pass">验证通过</span></div>
+                  <div class="dt-tl-cell">
+                    <span class="dt-tl-priority" data-level="important">
+                      <svg viewBox="0 0 12 14"><path d="M1 0h1.5v14H1V0zm1.5 0h7.2L8 3.5l1.7 3.5H2.5V0z"/></svg>
+                      重要
+                    </span>
+                  </div>
+                  <div class="dt-tl-cell dt-tl-time">04月14日 14:01</div>
+                  <div class="dt-tl-cell dt-tl-time" data-overdue>04月14日 14:30</div>
+                </div>
+
+                <!-- 3 -->
+                <div class="dt-tl-row dt-tl-row--body">
+                  <div class="dt-tl-cell dt-tl-num">3</div>
+                  <div class="dt-tl-cell dt-tl-status-icon" data-state="pass"><i>✓</i></div>
+                  <div class="dt-tl-cell">
+                    <div class="dt-tl-name">
+                      <span class="dt-tl-name__text">登陆后 右上角图片加...</span>
+                      <span class="dt-tl-tag" data-tone="display">显示问题</span>
+                    </div>
+                  </div>
+                  <div class="dt-tl-cell"><span class="dt-tl-status-pill" data-status="pass">验证通过</span></div>
+                  <div class="dt-tl-cell">
+                    <span class="dt-tl-priority" data-level="normal">
+                      <svg viewBox="0 0 12 14"><path d="M1 0h1.5v14H1V0zm1.5 0h7.2L8 3.5l1.7 3.5H2.5V0z"/></svg>
+                      一般
+                    </span>
+                  </div>
+                  <div class="dt-tl-cell dt-tl-time dt-tl-time-empty">—</div>
+                  <div class="dt-tl-cell dt-tl-time dt-tl-time-empty">—</div>
+                </div>
+
+                <!-- 4 -->
+                <div class="dt-tl-row dt-tl-row--body">
+                  <div class="dt-tl-cell dt-tl-num">4</div>
+                  <div class="dt-tl-cell dt-tl-status-icon" data-state="pass"><i>✓</i></div>
+                  <div class="dt-tl-cell">
+                    <div class="dt-tl-name">
+                      <span class="dt-tl-name__text">任务详情抽屉 失焦无法...</span>
+                      <span class="dt-tl-tag" data-tone="display">显示问题</span>
+                      <span class="dt-tl-tag" data-tone="bug">功能错误</span>
+                    </div>
+                  </div>
+                  <div class="dt-tl-cell"><span class="dt-tl-status-pill" data-status="pass">验证通过</span></div>
+                  <div class="dt-tl-cell">
+                    <span class="dt-tl-priority" data-level="normal">
+                      <svg viewBox="0 0 12 14"><path d="M1 0h1.5v14H1V0zm1.5 0h7.2L8 3.5l1.7 3.5H2.5V0z"/></svg>
+                      一般
+                    </span>
+                  </div>
+                  <div class="dt-tl-cell dt-tl-time dt-tl-time-empty">—</div>
+                  <div class="dt-tl-cell dt-tl-time dt-tl-time-empty">—</div>
+                </div>
+
+                <!-- 5 -->
+                <div class="dt-tl-row dt-tl-row--body">
+                  <div class="dt-tl-cell dt-tl-num">5</div>
+                  <div class="dt-tl-cell dt-tl-status-icon" data-state="pass"><i>✓</i></div>
+                  <div class="dt-tl-cell">
+                    <div class="dt-tl-name">
+                      <span class="dt-tl-name__text">文档内直接关联任务，打通工作...</span>
+                    </div>
+                  </div>
+                  <div class="dt-tl-cell"><span class="dt-tl-status-pill" data-status="pass">验证通过</span></div>
+                  <div class="dt-tl-cell">
+                    <span class="dt-tl-priority" data-level="normal">
+                      <svg viewBox="0 0 12 14"><path d="M1 0h1.5v14H1V0zm1.5 0h7.2L8 3.5l1.7 3.5H2.5V0z"/></svg>
+                      一般
+                    </span>
+                  </div>
+                  <div class="dt-tl-cell dt-tl-time dt-tl-time-empty">—</div>
+                  <div class="dt-tl-cell dt-tl-time dt-tl-time-empty">—</div>
+                </div>
+
+                <!-- 6 -->
+                <div class="dt-tl-row dt-tl-row--body">
+                  <div class="dt-tl-cell dt-tl-num">6</div>
+                  <div class="dt-tl-cell dt-tl-status-icon" data-state="pass"><i>✓</i></div>
+                  <div class="dt-tl-cell">
+                    <div class="dt-tl-name">
+                      <span class="dt-tl-name__text">入库单读取信息 需要能够读到 货位 批次 /d...</span>
+                    </div>
+                  </div>
+                  <div class="dt-tl-cell"><span class="dt-tl-status-pill" data-status="pass">验证通过</span></div>
+                  <div class="dt-tl-cell">
+                    <span class="dt-tl-priority" data-level="normal">
+                      <svg viewBox="0 0 12 14"><path d="M1 0h1.5v14H1V0zm1.5 0h7.2L8 3.5l1.7 3.5H2.5V0z"/></svg>
+                      一般
+                    </span>
+                  </div>
+                  <div class="dt-tl-cell dt-tl-time dt-tl-time-empty">—</div>
+                  <div class="dt-tl-cell dt-tl-time dt-tl-time-empty">—</div>
+                </div>
+
+                <!-- 7 待讨论 -->
+                <div class="dt-tl-row dt-tl-row--body">
+                  <div class="dt-tl-cell dt-tl-num">7</div>
+                  <div class="dt-tl-cell dt-tl-status-icon" data-state="open"><i></i></div>
+                  <div class="dt-tl-cell">
+                    <div class="dt-tl-name">
+                      <span class="dt-tl-name__text">全屏后的消息通知显...</span>
+                    </div>
+                  </div>
+                  <div class="dt-tl-cell"><span class="dt-tl-status-pill" data-status="discuss">待讨论</span></div>
+                  <div class="dt-tl-cell">
+                    <span class="dt-tl-priority" data-level="normal">
+                      <svg viewBox="0 0 12 14"><path d="M1 0h1.5v14H1V0zm1.5 0h7.2L8 3.5l1.7 3.5H2.5V0z"/></svg>
+                      一般
+                    </span>
+                  </div>
+                  <div class="dt-tl-cell dt-tl-time dt-tl-time-empty">—</div>
+                  <div class="dt-tl-cell dt-tl-time dt-tl-time-empty">—</div>
+                </div>
+
+                <!-- 8 -->
+                <div class="dt-tl-row dt-tl-row--body">
+                  <div class="dt-tl-cell dt-tl-num">8</div>
+                  <div class="dt-tl-cell dt-tl-status-icon" data-state="pass"><i>✓</i></div>
+                  <div class="dt-tl-cell">
+                    <div class="dt-tl-name">
+                      <span class="dt-tl-name__text">引用订单，没有商品名称等字...</span>
+                    </div>
+                  </div>
+                  <div class="dt-tl-cell"><span class="dt-tl-status-pill" data-status="pass">验证通过</span></div>
+                  <div class="dt-tl-cell">
+                    <span class="dt-tl-priority" data-level="normal">
+                      <svg viewBox="0 0 12 14"><path d="M1 0h1.5v14H1V0zm1.5 0h7.2L8 3.5l1.7 3.5H2.5V0z"/></svg>
+                      一般
+                    </span>
+                  </div>
+                  <div class="dt-tl-cell dt-tl-time dt-tl-time-empty">—</div>
+                  <div class="dt-tl-cell dt-tl-time dt-tl-time-empty">—</div>
+                </div>
+
+                <!-- 9 已修复 + 重要 -->
+                <div class="dt-tl-row dt-tl-row--body">
+                  <div class="dt-tl-cell dt-tl-num">9</div>
+                  <div class="dt-tl-cell dt-tl-status-icon" data-state="closed"><i>✕</i></div>
+                  <div class="dt-tl-cell">
+                    <div class="dt-tl-name">
+                      <span class="dt-tl-name__text">新创建群聊 客户端无法发送消息 客户端收...</span>
+                    </div>
+                  </div>
+                  <div class="dt-tl-cell"><span class="dt-tl-status-pill" data-status="fixed">已修复</span></div>
+                  <div class="dt-tl-cell">
+                    <span class="dt-tl-priority" data-level="important">
+                      <svg viewBox="0 0 12 14"><path d="M1 0h1.5v14H1V0zm1.5 0h7.2L8 3.5l1.7 3.5H2.5V0z"/></svg>
+                      重要
+                    </span>
+                  </div>
+                  <div class="dt-tl-cell dt-tl-time">02月05日 17:42</div>
+                  <div class="dt-tl-cell dt-tl-time" data-overdue>02月27日 18:00</div>
+                </div>
+
+                <!-- 10 -->
+                <div class="dt-tl-row dt-tl-row--body">
+                  <div class="dt-tl-cell dt-tl-num">10</div>
+                  <div class="dt-tl-cell dt-tl-status-icon" data-state="closed"><i>✕</i></div>
+                  <div class="dt-tl-cell">
+                    <div class="dt-tl-name">
+                      <span class="dt-tl-name__text">订单标签、订单工作状...</span>
+                    </div>
+                  </div>
+                  <div class="dt-tl-cell"><span class="dt-tl-status-pill" data-status="fixed">已修复</span></div>
+                  <div class="dt-tl-cell">
+                    <span class="dt-tl-priority" data-level="normal">
+                      <svg viewBox="0 0 12 14"><path d="M1 0h1.5v14H1V0zm1.5 0h7.2L8 3.5l1.7 3.5H2.5V0z"/></svg>
+                      一般
+                    </span>
+                  </div>
+                  <div class="dt-tl-cell dt-tl-time dt-tl-time-empty">—</div>
+                  <div class="dt-tl-cell dt-tl-time dt-tl-time-empty">—</div>
+                </div>
+
+                </div><!-- /.dt-tl-scroll -->
+
+              </div>
+
+
+              <!-- ==== 会议卡片 ==== -->
+              <div class="dt-mtg-block">
+                <div class="dt-mtg-block__title">会议</div>
+                <div class="dt-mtg-card" id="docMtgCard">
+                  <span class="dt-mtg-card__icon">
+                    <i class="cses-stratis-users-profiles-01"></i>
+                  </span>
+                  <div class="dt-mtg-card__main">
+                    <div class="dt-mtg-card__title">会议</div>
+                    <div class="dt-mtg-card__meta">
+                      <span class="dt-mtg-status" id="docMtgStatus" data-state="pending">未开始</span>
+                      <span>06-27 17:01</span>
+                      <span>裴启妍</span>
+                      <span>1人</span>
+                    </div>
+                  </div>
+                  <button class="dt-mtg-card__action" id="docMtgEnterBtn" type="button">进入会议</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </main>
+
+    </div>
+
+  </div>
+</cs-layout>
+
+
+<!-- ============ 会议浮窗（复用 meeting 模块的样式）============ -->
+<div class="mt-conf-window" id="docMtgWindow">
+
+  <div class="mt-conf__topbar" id="docMtgDragHandle">
+    <div class="mt-conf__win-ctrl">
+      <span data-mtg-close title="关闭"></span>
+      <span title="最小化"></span>
+      <span title="最大化"></span>
+    </div>
+    <div class="mt-conf__title-bar">
+      <span class="mt-conf__title">会议</span>
+      <span class="mt-conf__sep"></span>
+      <span class="mt-conf__duration" id="docMtgDuration">00：00：00</span>
+      <span class="mt-conf__sep"></span>
+      <span class="mt-conf__signal"><i class="cses-stratis-bar-chart-04"></i></span>
+      <span class="mt-conf__recording">云录制中</span>
+    </div>
+    <span class="mt-conf__fullscreen">
+      <i class="cses-stratis-arrow-expand-02"></i>
+      <span>全屏播放</span>
+    </span>
+  </div>
+
+  <div class="mt-conf__body">
+
+    <div class="mt-conf__stage">
+      <div class="mt-conf__self">
+        <div class="mt-conf__self-thumb">
+          <div class="mt-conf__self-avatar"><i class="cses-stratis-user-profile-01"></i></div>
+          <span class="mt-conf__self-pill">裴启妍（主持人，我）</span>
+        </div>
+      </div>
+
+      <div class="mt-conf__main">
+        <span class="mt-conf__nav-arrow mt-conf__nav-arrow--left"><i class="cses-stratis-chevron-left"></i></span>
+        <span class="mt-conf__nav-arrow mt-conf__nav-arrow--right"><i class="cses-stratis-chevron-right"></i></span>
+
+        <div class="mt-conf__main-content">
+          <div class="mt-conf__company">文档库改版讨论</div>
+          <div class="mt-conf__main-title">会议进行中</div>
+          <div class="mt-conf__main-subtitle">MEETING IN PROGRESS</div>
+        </div>
+
+        <div class="mt-conf__presenter-bar">
+          <span class="mt-conf__presenter-label">主持人：</span>
+          <span class="mt-conf__presenter-avatar">裴</span>
+          <span class="mt-conf__presenter-name">裴启妍</span>
+          <span class="mt-conf__presenter-dept">产品部/UI设计师</span>
+        </div>
+      </div>
+
+      <div class="mt-conf__toolbar">
+        <div class="mt-conf__tool-group">
+          <button class="mt-conf__tool" data-color="red-cross"><i class="cses-stratis-video-off"></i><span>视频关闭</span></button>
+          <button class="mt-conf__tool" data-color="red-cross"><i class="cses-stratis-bell-off-01"></i><span>语音关闭</span></button>
+        </div>
+        <div class="mt-conf__tool-group">
+          <button class="mt-conf__tool" data-color="rec"><i class="cses-stratis-stop-01"></i><span>结束录制</span></button>
+          <button class="mt-conf__tool"><i class="cses-stratis-trash-01"></i><span>清屏</span></button>
+          <button class="mt-conf__tool"><i class="cses-stratis-settings"></i><span>设置</span></button>
+          <button class="mt-conf__tool"><i class="cses-stratis-menu-04"></i><span>更多</span></button>
+        </div>
+        <div class="mt-conf__tool-group">
+          <button class="mt-conf__tool mt-conf__tool--exit" data-mtg-close type="button">
+            <i class="cses-stratis-arrow-up-right"></i><span>退出</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-conf__side">
+      <div class="mt-conf__side-tabs">
+        <span class="mt-conf__side-tab" data-active>基本信息</span>
+        <span class="mt-conf__side-tab">聊天</span>
+      </div>
+      <div class="mt-conf__side-subnav">
+        <span class="mt-conf__side-subnav-item" data-active>成员(1)</span>
+      </div>
+      <div class="mt-conf__members">
+        <div class="mt-conf__member">
+          <div class="mt-conf__member-avatar"><span>裴</span></div>
+          <div class="mt-conf__member-info">
+            <div class="mt-conf__member-line">
+              <span class="mt-conf__member-name">裴启妍</span>
+              <span class="mt-conf__member-role" data-role="host">主持人</span>
+            </div>
+            <span class="mt-conf__member-dept">产品部/UI设计师</span>
+          </div>
+          <span class="mt-conf__member-actions">
+            <i class="cses-stratis-message-circle is-on"></i>
+            <i class="cses-stratis-video-on is-on"></i>
+          </span>
+        </div>
+      </div>
+      <div class="mt-conf__side-footer">
+        <button class="mt-conf__footer-btn">全体静音</button>
+        <button class="mt-conf__footer-btn">邀请成员</button>
+        <button class="mt-conf__footer-btn mt-conf__footer-btn--primary">
+          <span>会议管控</span><i class="cses-stratis-chevron-down"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var card     = document.getElementById('docMtgCard');
+  var statusEl = document.getElementById('docMtgStatus');
+  var enterBtn = document.getElementById('docMtgEnterBtn');
+  var win      = document.getElementById('docMtgWindow');
+  var dur      = document.getElementById('docMtgDuration');
+  if (!card || !enterBtn || !win) return;
+
+  var startTime = 0, durTimer = null;
+
+  function setStatus(state, text) {
+    statusEl.dataset.state = state;
+    statusEl.textContent = text;
+  }
+  function fmtTime(s) {
+    var h = Math.floor(s / 3600);
+    var m = Math.floor((s % 3600) / 60);
+    var sec = s % 60;
+    function p(n) { return n < 10 ? '0' + n : '' + n; }
+    return p(h) + '：' + p(m) + '：' + p(sec);
+  }
+
+  function openMtg() {
+    win.classList.add('show');
+    setStatus('live', '进行中');
+    enterBtn.textContent = '进行中';
+    enterBtn.setAttribute('data-state', 'live');
+    startTime = Math.floor((typeof performance !== 'undefined' ? performance.now() : 0) / 1000);
+    var seconds = 0;
+    dur.textContent = fmtTime(0);
+    if (durTimer) clearInterval(durTimer);
+    durTimer = setInterval(function () {
+      seconds++;
+      dur.textContent = fmtTime(seconds);
+    }, 1000);
+  }
+  function closeMtg() {
+    win.classList.remove('show');
+    setStatus('done', '已完成');
+    enterBtn.textContent = '已完成';
+    enterBtn.setAttribute('data-state', 'done');
+    if (durTimer) { clearInterval(durTimer); durTimer = null; }
+  }
+
+  // 点击「进入会议」→ 打开浮窗 + 进入"进行中"
+  enterBtn.addEventListener('click', function (e) {
+    e.preventDefault();
+    if (enterBtn.getAttribute('data-state') === 'done') return; // 已完成不再打开
+    openMtg();
+  });
+
+  // 浮窗关闭按钮（红球 / 退出）→ 进入"已完成"
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('[data-mtg-close]')) {
+      e.preventDefault(); e.stopPropagation();
+      closeMtg();
+    }
+  });
+  // Esc 关闭
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && win.classList.contains('show')) closeMtg();
+  });
+
+  // 浮窗拖拽
+  (function () {
+    var handle = document.getElementById('docMtgDragHandle');
+    if (!handle || !win) return;
+    var dragging = false, sx = 0, sy = 0, ox = 0, oy = 0;
+    handle.addEventListener('mousedown', function (e) {
+      if (e.target.closest('[data-mtg-close], .mt-conf__win-ctrl, .mt-conf__fullscreen')) return;
+      dragging = true;
+      var rect = win.getBoundingClientRect();
+      ox = rect.left; oy = rect.top;
+      sx = e.clientX; sy = e.clientY;
+      win.style.transform = 'none';
+      win.style.left = ox + 'px';
+      win.style.top  = oy + 'px';
+      e.preventDefault();
+    });
+    document.addEventListener('mousemove', function (e) {
+      if (!dragging) return;
+      win.style.left = (ox + (e.clientX - sx)) + 'px';
+      win.style.top  = (oy + (e.clientY - sy)) + 'px';
+    });
+    document.addEventListener('mouseup', function () { dragging = false; });
+  })();
+})();
+</script>
+
+
+<!-- ============ 任务创建抽屉 ============ -->
+<div class="td-backdrop" id="taskBackdrop"></div>
+
+<aside class="task-drawer" id="taskDrawer">
+
+  <div class="td-scroll">
+
+    <!-- 来源条 -->
+    <div class="td-source">
+      <div class="td-source__left">
+        <i class="cses-stratis-grid-01" style="color:var(--cs-color-primary);"></i>
+        <span>企业空间</span>
+        <span class="sep">/</span>
+        <i class="cses-stratis-users-profiles-01"></i>
+        <span>CSES缺陷</span>
+      </div>
+      <div class="td-source__right">
+        <i class="cses-stratis-chevron-down"></i>
+      </div>
+    </div>
+
+    <!-- 标题 -->
+    <div class="td-title">
+      <svg class="td-title__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M2 19 L8 5 L14 19 M4.2 14 L11.8 14"/>
+        <path d="M16 9 H22"/><path d="M16 13 H22"/><path d="M16 17 H22"/>
+      </svg>
+      <input class="td-title__input" id="taskTitleInput" type="text" placeholder="请输入标题">
+    </div>
+
+    <!-- 基础信息 -->
+    <div class="td-section-title">基础信息</div>
+    <div class="td-fields">
+
+      <!-- 当前状态 -->
+      <div class="td-field">
+        <div class="td-field__label">
+          <span class="td-required">*</span>
+          <i class="cses-stratis-share"></i>
+          <span>当前状态</span>
+        </div>
+        <div class="td-field__value">
+          <span class="td-status-pill">已提交</span>
+        </div>
+      </div>
+
+      <!-- 负责人 -->
+      <div class="td-field" data-people-field="owner" data-multi="false">
+        <div class="td-field__label">
+          <span style="font-size:13px;color:var(--cs-color-text-light2);font-weight:400;">To</span>
+          <span>负责人</span>
+        </div>
+        <div class="td-field__value" data-people>
+          <span class="td-field__placeholder">请选择成员</span>
+        </div>
+      </div>
+
+      <!-- 参与人 -->
+      <div class="td-field" data-people-field="participants" data-multi="true">
+        <div class="td-field__label">
+          <span style="font-size:13px;color:var(--cs-color-text-light2);font-weight:400;">Cc</span>
+          <span>参与人</span>
+        </div>
+        <div class="td-field__value" data-people>
+          <span class="td-field__placeholder">请选择成员</span>
+        </div>
+      </div>
+
+      <!-- 时间 -->
+      <div class="td-field">
+        <div class="td-field__label">
+          <i class="cses-stratis-calendar-number"></i>
+          <span>时间</span>
+        </div>
+        <div class="td-time-range">
+          <span class="td-time-range__start">开始时间</span>
+          <i class="cses-stratis-arrow-right td-time-range__arrow"></i>
+          <span class="td-time-range__end">结束时间</span>
+          <i class="cses-stratis-calendar-01 td-time-range__cal"></i>
+        </div>
+      </div>
+
+      <!-- 优先级 -->
+      <div class="td-field">
+        <div class="td-field__label">
+          <i class="cses-stratis-stars"></i>
+          <span>优先级</span>
+        </div>
+        <div class="td-field__value">
+          <span class="td-field__placeholder">▷ 请选择</span>
+        </div>
+      </div>
+
+      <!-- 标签 -->
+      <div class="td-field">
+        <div class="td-field__label">
+          <i class="cses-stratis-tag"></i>
+          <span>标签</span>
+        </div>
+        <div class="td-field__value">
+          <input class="td-tag-input" type="text" placeholder="点击输入添加新标签">
+        </div>
+      </div>
+
+      <!-- 预估工时 -->
+      <div class="td-field">
+        <div class="td-field__label">
+          <i class="cses-stratis-alarm-01"></i>
+          <span>预估工时</span>
+        </div>
+        <div class="td-field__value">
+          <input class="td-field__input" type="text" placeholder="请输入预估工时">
+        </div>
+      </div>
+
+      <!-- 任务进度 -->
+      <div class="td-field">
+        <div class="td-field__label">
+          <i class="cses-stratis-bar-chart-04"></i>
+          <span>任务进度</span>
+        </div>
+        <div class="td-field__value">
+          <div class="td-progress">
+            <div class="td-progress__bar" id="progressBar">
+              <div class="td-progress__fill" id="progressFill"></div>
+              <div class="td-progress__knob" id="progressKnob"></div>
+            </div>
+            <span class="td-progress__pct" id="progressPct">0 %</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 问题类型 -->
+      <div class="td-field">
+        <div class="td-field__label">
+          <i class="cses-stratis-annotation-information"></i>
+          <span>问题类型</span>
+        </div>
+        <div class="td-field__value">
+          <span class="td-field__placeholder">请选择</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 描述 -->
+    <div class="td-desc">
+      <div class="td-desc__head">
+        <span class="td-desc__title">描述</span>
+      </div>
+      <input class="td-desc__input" type="text" placeholder="添加描述...">
+    </div>
+
+  </div>
+
+  <!-- 底部 -->
+  <div class="td-bottom">
+    <div class="td-quickbar">
+      <div class="td-handle"><i class="cses-stratis-chevron-up"></i></div>
+      <div class="td-quick-items">
+        <div class="td-quick">
+          <i class="cses-stratis-paperclip"></i>
+          <span>文件</span>
+        </div>
+        <div class="td-quick">
+          <i class="cses-stratis-share"></i>
+          <span>子任务</span>
+        </div>
+        <div class="td-quick">
+          <i class="cses-stratis-link"></i>
+          <span>依赖关系</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="td-footer">
+      <button class="td-btn" id="taskCancelBtn">取消</button>
+      <button class="td-btn td-btn--primary" id="taskSaveBtn">保存</button>
+    </div>
+  </div>
+</aside>
+
+<!-- 人员选择 picker -->
+<div class="td-picker" id="taskPicker">
+  <div class="td-picker__head">
+    <span>你可能想找</span>
+    <span class="td-picker__hint" id="taskPickerHint">多选(⌘↩)</span>
+  </div>
+  <div class="td-picker__list" id="taskPickerList"></div>
+  <div class="td-picker__footer">
+    <button class="td-picker__btn" id="taskPickerCancel">取消</button>
+    <button class="td-picker__btn td-picker__btn--primary" id="taskPickerConfirm">确定</button>
+  </div>
+</div>
+
+
+<script>
+(function () {
+  // ===== DOM =====
+  var backdrop = document.getElementById('taskBackdrop');
+  var drawer = document.getElementById('taskDrawer');
+  var titleInput = document.getElementById('taskTitleInput');
+  var cancelBtn = document.getElementById('taskCancelBtn');
+  var saveBtn = document.getElementById('taskSaveBtn');
+
+  // ===== 任务数据存储 =====
+  // 给每个任务 <li> 编号
+  document.querySelectorAll('.dt-task-list li').forEach(function (li, i) {
+    li.setAttribute('data-task-id', 't' + i);
+  });
+  // taskId -> { title, ownerId, participantIds, status, ... }
+  var taskStore = {};
+  var currentTaskId = null;  // 抽屉当前编辑的任务
+
+  // 默认预填第一条任务的数据（让用户能看到"已创建"形态）
+  function seedDefaultTask() {
+    var firstLi = document.querySelector('.dt-task-list li[data-task-id="t0"]');
+    if (!firstLi) return;
+    taskStore['t0'] = {
+      title: firstLi.querySelector('span').textContent.trim(),
+      ownerId: 3,                       // 王俊虎
+      participantIds: [1, 6, 11],       // 王利伟、李明、姜乐乐
+      status: '已提交'
+    };
+    renderTaskMeta(firstLi, taskStore['t0']);
+  }
+
+  // ===== 打开 / 关闭 =====
+  function openDrawerForTask(taskLi) {
+    var id = taskLi.getAttribute('data-task-id');
+    currentTaskId = id;
+    var saved = taskStore[id];
+    var text = taskLi.querySelector('span').textContent.trim();
+
+    // 标题
+    titleInput.value = saved ? (saved.title || text) : text;
+
+    // 负责人 / 参与人：清空再灌入
+    document.querySelectorAll('[data-people-field]').forEach(function (fieldEl) {
+      var set = getSelectedSet(fieldEl);
+      set.clear();
+      if (saved) {
+        var key = fieldEl.dataset.peopleField === 'owner' ? 'ownerId' : 'participantIds';
+        var ids = saved[key];
+        if (key === 'ownerId' && ids != null) set.add(ids);
+        if (key === 'participantIds' && Array.isArray(ids)) ids.forEach(function (x) { set.add(x); });
+      }
+      renderFieldTags(fieldEl);
+    });
+
+    // 状态 pill：始终回显当前保存的状态（默认 已提交）
+    var statusEl = drawer.querySelector('.td-status-pill');
+    if (statusEl) statusEl.textContent = (saved && saved.status) || '已提交';
+
+    backdrop.classList.add('is-open');
+    drawer.classList.add('is-open');
+    setTimeout(function () { titleInput.focus(); titleInput.select(); }, 250);
+  }
+
+  function closeDrawer() {
+    backdrop.classList.remove('is-open');
+    drawer.classList.remove('is-open');
+    closePicker();
+    currentTaskId = null;
+  }
+
+  // ===== 保存：写入 store + 渲染行末标识 =====
+  function saveCurrentTask() {
+    if (!currentTaskId) return closeDrawer();
+    var li = document.querySelector('.dt-task-list li[data-task-id="' + currentTaskId + '"]');
+    if (!li) return closeDrawer();
+
+    var ownerField = drawer.querySelector('[data-people-field="owner"]');
+    var partField  = drawer.querySelector('[data-people-field="participants"]');
+    var ownerSet = getSelectedSet(ownerField);
+    var partSet  = getSelectedSet(partField);
+    var statusEl = drawer.querySelector('.td-status-pill');
+
+    taskStore[currentTaskId] = {
+      title: titleInput.value.trim(),
+      ownerId: ownerSet.size ? Array.from(ownerSet)[0] : null,
+      participantIds: Array.from(partSet),
+      status: (statusEl ? statusEl.textContent.trim() : '已提交')
+    };
+
+    renderTaskMeta(li, taskStore[currentTaskId]);
+    closeDrawer();
+  }
+
+  // 在任务行末追加 头像 + 状态 pill
+  function renderTaskMeta(li, data) {
+    var existing = li.querySelector('.dt-task-meta');
+    if (existing) existing.remove();
+    // 拿到第一个负责人作为头像（没选则用首字"未"）
+    var owner = data.ownerId ? findPerson(data.ownerId) : null;
+    var avatar = owner
+      ? '<span class="dt-task-meta__avatar" style="background:' + owner.color + '">' + owner.name[0] + '</span>'
+      : '<span class="dt-task-meta__avatar" style="background:#cbd5e1;color:#475569;">未</span>';
+    var meta = document.createElement('span');
+    meta.className = 'dt-task-meta';
+    meta.title = '查看任务详情';
+    meta.innerHTML = avatar + '<span class="dt-task-meta__status">' + (data.status || '已提交') + '</span>';
+    li.appendChild(meta);
+  }
+
+  // ===== 点击触发：🔗 图标 + 已创建标识 → 打开抽屉 =====
+  document.addEventListener('click', function (e) {
+    // 1. 点击已创建任务的「头像+状态」→ 重新打开（带已填数据）
+    var meta = e.target.closest('.dt-task-meta');
+    if (meta) {
+      e.preventDefault(); e.stopPropagation();
+      var li = meta.closest('li');
+      if (li) openDrawerForTask(li);
+      return;
+    }
+    // 2. 点击行末🔗图标 → 新建（用任务文字作为标题）
+    var icon = e.target.closest('.dt-task-list li > i');
+    if (icon) {
+      e.preventDefault(); e.stopPropagation();
+      var liNew = icon.closest('li');
+      if (liNew) openDrawerForTask(liNew);
+      return;
+    }
+  });
+
+  backdrop.addEventListener('click', closeDrawer);
+  cancelBtn.addEventListener('click', closeDrawer);
+  saveBtn.addEventListener('click', saveCurrentTask);
+
+  // ===== 进度条拖拽 =====
+  var bar = document.getElementById('progressBar');
+  var fill = document.getElementById('progressFill');
+  var knob = document.getElementById('progressKnob');
+  var pct = document.getElementById('progressPct');
+  function setProgress(p) {
+    p = Math.max(0, Math.min(100, p));
+    fill.style.width = p + '%';
+    knob.style.left = p + '%';
+    pct.textContent = Math.round(p) + ' %';
+  }
+  function fromMouse(e) {
+    var rect = bar.getBoundingClientRect();
+    var p = ((e.clientX - rect.left) / rect.width) * 100;
+    setProgress(p);
+  }
+  var dragging = false;
+  bar.addEventListener('mousedown', function (e) {
+    dragging = true; fromMouse(e); e.preventDefault();
+  });
+  document.addEventListener('mousemove', function (e) { if (dragging) fromMouse(e); });
+  document.addEventListener('mouseup', function () { dragging = false; });
+
+  // ===== 人员选择控件（picker）— 复刻 drawer.html 的交互 =====
+  var PEOPLE = [
+    { id: 1, name: '王利伟', role: '后端开发', dept: '技术部', color: '#7c8eee' },
+    { id: 2, name: '王超乐', role: '后端开发', dept: '技术部', color: '#4857e2' },
+    { id: 3, name: '王俊虎', role: '测试员',   dept: '测试部', color: '#32bd79' },
+    { id: 4, name: '王晨宇', role: 'UI设计师', dept: '产品部', color: '#a4aeff' },
+    { id: 5, name: '王永泽', role: '运维',     dept: '运维部', color: '#ff9333' },
+    { id: 6, name: '李明',   role: '前端开发', dept: '技术部', color: '#fa4e4e' },
+    { id: 7, name: '张三',   role: '产品经理', dept: '产品部', color: '#576a95' },
+    { id: 8, name: '赵四',   role: '销售',     dept: '销售部', color: '#f6ad00' },
+    { id: 9, name: '钱五',   role: '财务',     dept: '财务部', color: '#8289ad' },
+    { id:10, name: '孙六',   role: '人事',     dept: '人事部', color: '#f16c00' },
+    { id:11, name: '姜乐乐', role: '运营',     dept: '运营部', color: '#7c8eee' },
+    { id:12, name: '陈晨',   role: '运营',     dept: '运营部', color: '#32bd79' }
+  ];
+
+  var selectionMap = new Map();
+  var picker = document.getElementById('taskPicker');
+  var pickerList = document.getElementById('taskPickerList');
+  var pickerHint = document.getElementById('taskPickerHint');
+  var pickerCancel = document.getElementById('taskPickerCancel');
+  var pickerConfirm = document.getElementById('taskPickerConfirm');
+  var activeField = null;
+  var highlightIdx = 0;
+  var filtered = [];
+  var batchMode = false;
+  var stagedSet = null;
+  var suppressNextFocus = false;
+
+  function findPerson(id) { return PEOPLE.find(function (p) { return p.id === id; }); }
+  function getSelectedSet(fieldEl) {
+    if (!selectionMap.has(fieldEl)) selectionMap.set(fieldEl, new Set());
+    return selectionMap.get(fieldEl);
+  }
+  function getFieldInput(fieldEl) { return fieldEl.querySelector('.td-people-input'); }
+
+  function renderFieldTags(fieldEl) {
+    var valueEl = fieldEl.querySelector('.td-field__value');
+    var set = getSelectedSet(fieldEl);
+    var tagsHtml = Array.from(set).map(function (id) {
+      var p = findPerson(id); if (!p) return '';
+      return '<span class="td-people-tag">' +
+        '<span class="td-people-tag__avatar" style="background:' + p.color + '">' + p.name[0] + '</span>' +
+        '<span>' + p.name + '</span>' +
+        '<span class="td-people-tag__remove" data-remove="' + p.id + '">' +
+          '<i class="cses-stratis-x-01"></i>' +
+        '</span>' +
+      '</span>';
+    }).join('');
+    var isMulti = fieldEl.dataset.multi === 'true';
+    var placeholder = set.size === 0 ? '请选择成员' : (isMulti ? '添加参与人' : '');
+    valueEl.innerHTML =
+      '<div class="td-people-tags">' + tagsHtml +
+      '<input class="td-people-input" type="text" placeholder="' + placeholder + '">' +
+      '</div>';
+    bindFieldInput(fieldEl);
+  }
+
+  function renderPickerList() {
+    if (!activeField) return;
+    var currentSet = batchMode ? stagedSet : getSelectedSet(activeField);
+    var input = getFieldInput(activeField);
+    var q = (input ? input.value : '').trim().toLowerCase();
+    filtered = PEOPLE.filter(function (p) {
+      return !q || p.name.toLowerCase().includes(q) ||
+        p.role.toLowerCase().includes(q) || p.dept.toLowerCase().includes(q);
+    });
+    if (filtered.length === 0) {
+      pickerList.innerHTML = '<div class="td-picker__empty">未找到匹配成员</div>';
+      return;
+    }
+    if (highlightIdx >= filtered.length) highlightIdx = 0;
+    pickerList.innerHTML = filtered.map(function (p, i) {
+      var selected = currentSet.has(p.id);
+      var cls = ['td-picker__item',
+        i === highlightIdx ? 'is-active' : '',
+        selected && !batchMode ? 'is-selected' : '',
+        selected && batchMode ? 'is-checked' : ''
+      ].filter(Boolean).join(' ');
+      return '<div class="' + cls + '" data-id="' + p.id + '">' +
+        '<div class="td-picker__check"><svg viewBox="0 0 16 16"><polyline points="3.5 8.5 6.5 11.5 12.5 5"/></svg></div>' +
+        '<div class="td-picker__avatar" style="background:' + p.color + '">' + p.name[0] + '</div>' +
+        '<div class="td-picker__main">' +
+          '<div class="td-picker__name">' + p.name + '</div>' +
+          '<div class="td-picker__meta">' + p.role + ' / ' + p.dept + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function openPicker(fieldEl) {
+    activeField = fieldEl;
+    var valueEl = fieldEl.querySelector('.td-field__value');
+    var valueRect = valueEl.getBoundingClientRect();
+    var fieldRect = fieldEl.getBoundingClientRect();
+    picker.style.left = valueRect.left + 'px';
+    picker.style.top = (fieldRect.bottom + 2) + 'px';
+    picker.style.width = Math.max(valueRect.width, 360) + 'px';
+    picker.classList.add('is-open');
+    var isMulti = fieldEl.dataset.multi === 'true';
+    pickerHint.textContent = isMulti ? '多选(⌘↩)' : '单选';
+    pickerHint.classList.toggle('is-static', !isMulti);
+    highlightIdx = 0;
+    renderPickerList();
+  }
+
+  function closePicker() {
+    picker.classList.remove('is-open');
+    if (batchMode) {
+      batchMode = false; stagedSet = null;
+      picker.classList.remove('is-batch');
+      pickerHint.textContent = '多选(⌘↩)';
+    }
+    activeField = null;
+  }
+
+  function enterBatchMode() {
+    if (!activeField) return;
+    batchMode = true;
+    stagedSet = new Set(getSelectedSet(activeField));
+    picker.classList.add('is-batch');
+    pickerHint.textContent = '完成(⌘↩)';
+    renderPickerList();
+    var inp = getFieldInput(activeField);
+    if (inp) inp.focus();
+  }
+  function exitBatchMode(commit) {
+    if (!batchMode) return;
+    var fieldEl = activeField;
+    if (commit && stagedSet) {
+      var isMulti = fieldEl.dataset.multi === 'true';
+      var finalSet = isMulti ? stagedSet : new Set([Array.from(stagedSet).pop()].filter(Boolean));
+      selectionMap.set(fieldEl, finalSet);
+      renderFieldTags(fieldEl);
+    }
+    batchMode = false; stagedSet = null;
+    picker.classList.remove('is-batch');
+    pickerHint.textContent = '多选(⌘↩)';
+    if (commit) {
+      closePicker();
+      var inp = getFieldInput(fieldEl);
+      if (inp) { suppressNextFocus = true; inp.focus(); }
+    } else {
+      renderPickerList();
+      var inp2 = getFieldInput(fieldEl);
+      if (inp2) inp2.focus();
+    }
+  }
+
+  function toggleSelect(id) {
+    if (!activeField) return;
+    var fieldEl = activeField;
+    if (batchMode) {
+      if (stagedSet.has(id)) stagedSet.delete(id); else stagedSet.add(id);
+      renderPickerList();
+      return;
+    }
+    var multi = fieldEl.dataset.multi === 'true';
+    var set = getSelectedSet(fieldEl);
+    if (set.has(id)) {
+      set.delete(id);
+      renderFieldTags(fieldEl);
+      getFieldInput(fieldEl).focus();
+      renderPickerList();
+    } else {
+      if (!multi) set.clear();
+      set.add(id);
+      renderFieldTags(fieldEl);
+      if (!multi) closePicker();
+      else {
+        var inp = getFieldInput(fieldEl);
+        inp.value = ''; inp.focus();
+        openPicker(fieldEl);
+      }
+    }
+  }
+
+  function bindFieldInput(fieldEl) {
+    var inp = getFieldInput(fieldEl);
+    if (!inp) return;
+    inp.addEventListener('focus', function () {
+      if (suppressNextFocus) { suppressNextFocus = false; return; }
+      openPicker(fieldEl);
+    });
+    inp.addEventListener('input', function () {
+      if (activeField !== fieldEl) openPicker(fieldEl);
+      highlightIdx = 0;
+      renderPickerList();
+    });
+    inp.addEventListener('keydown', function (e) {
+      if (e.key === 'Backspace' && inp.value === '') {
+        var set = getSelectedSet(fieldEl);
+        if (set.size > 0) {
+          e.preventDefault();
+          var last = Array.from(set).pop();
+          set.delete(last);
+          renderFieldTags(fieldEl);
+          getFieldInput(fieldEl).focus();
+          if (picker.classList.contains('is-open')) renderPickerList();
+          return;
+        }
+      }
+      if (!picker.classList.contains('is-open')) return;
+      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+        if (fieldEl.dataset.multi !== 'true') return;
+        e.preventDefault();
+        if (batchMode) exitBatchMode(true); else enterBatchMode();
+        return;
+      }
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (filtered.length === 0) return;
+        highlightIdx = (highlightIdx + 1) % filtered.length;
+        renderPickerList();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (filtered.length === 0) return;
+        highlightIdx = (highlightIdx - 1 + filtered.length) % filtered.length;
+        renderPickerList();
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (filtered.length === 0) return;
+        toggleSelect(filtered[highlightIdx].id);
+      } else if (e.key === 'Escape') {
+        e.preventDefault(); e.stopPropagation();
+        if (batchMode) exitBatchMode(false); else closePicker();
+      }
+    });
+  }
+
+  // 初始化人员字段
+  document.querySelectorAll('[data-people-field]').forEach(function (fieldEl) {
+    renderFieldTags(fieldEl);
+    fieldEl.addEventListener('click', function (e) {
+      var removeBtn = e.target.closest('.td-people-tag__remove');
+      if (removeBtn) {
+        e.stopPropagation();
+        var id = +removeBtn.dataset.remove;
+        getSelectedSet(fieldEl).delete(id);
+        renderFieldTags(fieldEl);
+        getFieldInput(fieldEl).focus();
+        return;
+      }
+      if (e.target.closest('.td-people-tag')) return;
+      var inp = getFieldInput(fieldEl);
+      if (inp && document.activeElement !== inp) inp.focus();
+    });
+  });
+
+  pickerList.addEventListener('click', function (e) {
+    var item = e.target.closest('.td-picker__item');
+    if (!item) return;
+    e.preventDefault();
+    toggleSelect(+item.dataset.id);
+  });
+  pickerList.addEventListener('mousedown', function (e) {
+    if (e.target.closest('.td-picker__item')) e.preventDefault();
+  });
+  pickerList.addEventListener('mousemove', function (e) {
+    var item = e.target.closest('.td-picker__item');
+    if (!item) return;
+    var idx = Array.from(pickerList.children).indexOf(item);
+    if (idx >= 0 && idx !== highlightIdx) {
+      highlightIdx = idx;
+      Array.from(pickerList.children).forEach(function (el, i) {
+        el.classList.toggle('is-active', i === highlightIdx);
+      });
+    }
+  });
+
+  pickerHint.addEventListener('mousedown', function (e) { e.preventDefault(); e.stopPropagation(); });
+  pickerHint.addEventListener('click', function (e) {
+    e.preventDefault(); e.stopPropagation();
+    if (activeField && activeField.dataset.multi !== 'true') return;
+    if (batchMode) exitBatchMode(true); else enterBatchMode();
+  });
+  pickerCancel.addEventListener('mousedown', function (e) { e.preventDefault(); });
+  pickerCancel.addEventListener('click', function (e) { e.preventDefault(); exitBatchMode(false); });
+  pickerConfirm.addEventListener('mousedown', function (e) { e.preventDefault(); });
+  pickerConfirm.addEventListener('click', function (e) { e.preventDefault(); exitBatchMode(true); });
+
+  document.addEventListener('mousedown', function (e) {
+    if (!picker.classList.contains('is-open')) return;
+    if (picker.contains(e.target)) return;
+    if (e.target.closest('[data-people-field]')) return;
+    if (batchMode) exitBatchMode(false); else closePicker();
+  });
+
+  // Esc 关闭
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    if (picker.classList.contains('is-open')) return;
+    if (drawer.classList.contains('is-open')) closeDrawer();
+  });
+
+  // 启动：默认填充第一条任务
+  seedDefaultTask();
+})();
+</script>
+
+<script src="../shared.js"></script>
+</body>
+</html>

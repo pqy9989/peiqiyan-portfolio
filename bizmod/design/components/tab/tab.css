@@ -1,0 +1,70 @@
+/*
+ * 标签页分子组件 (Tab Molecule)
+ * 自定义标签: <cs-tab>
+ * Figma 节点：node-id=12-2345 内 Frame 1000007593
+ * 尺寸：160 x 44
+ *
+ * 用于顶部标签栏的单个标签项
+ * 依赖原子：Icon
+ *
+ * 状态：default / [data-active]
+ */
+
+/* Figma: 160x44, bg=#413f50, r=12, p=16,8,16,8, justify space-between */
+cs-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 160px;
+  height: 44px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-family: var(--font-family-cn, 'PingFang SC', sans-serif);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+  background: transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+cs-tab:hover {
+  color: #FFFFFF;
+}
+
+/* 激活态 */
+cs-tab[data-active] {
+  background: #413F50;
+  color: #FFFFFF;
+}
+
+/* 标签文字 */
+cs-tab .label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+/* 关闭按钮 */
+/* Figma: guanbi 1, 10x10, #ffffff */
+cs-tab .close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 10px;
+  height: 10px;
+  cursor: pointer;
+  color: #FFFFFF;
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+  font-size: 10px;
+}
+
+cs-tab .close:hover {
+  opacity: 0.6;
+}

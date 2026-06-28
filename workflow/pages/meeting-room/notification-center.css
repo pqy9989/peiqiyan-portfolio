@@ -1,0 +1,408 @@
+/* ============================================================
+ * meeting-room · notification-center.css
+ *
+ * 通知中心独立页主区私有样式
+ *   - 仅本页可见
+ *   - 前缀：--meeting-room-notification-center-*
+ *   - 不覆盖任何 fragment / shell 官方 class 几何
+ *   - 视口：仅桌面 1440+
+ * ============================================================ */
+
+
+/* ─────────────────────────────────────────────────
+ * 本页私有令牌
+ * ───────────────────────────────────────────────── */
+:root {
+  --meeting-room-notification-center-icon-bg-booking: var(--cs-color-primary-a2);
+  --meeting-room-notification-center-icon-color-booking: var(--cs-color-primary);
+
+  --meeting-room-notification-center-icon-bg-room: #fff7e6;
+  --meeting-room-notification-center-icon-color-room: #f7ba1e;
+
+  --meeting-room-notification-center-icon-bg-cancel: #ffeded;
+  --meeting-room-notification-center-icon-color-cancel: #ff4d4f;
+
+  --meeting-room-notification-center-icon-bg-system: #e6f7e9;
+  --meeting-room-notification-center-icon-color-system: #00b42a;
+
+  --meeting-room-notification-center-unread-dot: var(--cs-color-primary);
+}
+
+
+/* ─────────────────────────────────────────────────
+ * 主区容器
+ * ───────────────────────────────────────────────── */
+.meeting-room-notification-center {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+
+/* ─────────────────────────────────────────────────
+ * tab-bar
+ *   - 沿用 cs-tab-nav 容器样式；本层只调左右内边距与底部分隔
+ * ───────────────────────────────────────────────── */
+.meeting-room-notification-center__tabs {
+  padding: 0 var(--space-md);
+  flex-shrink: 0;
+}
+
+
+/* ─────────────────────────────────────────────────
+ * filter-bar 内的下拉触发块
+ *   - cs-filter-bar 自带左右槽位，本层只画 chip 样式
+ * ───────────────────────────────────────────────── */
+.meeting-room-notification-center__filter {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  padding: var(--spacing-6) var(--space-sm);
+  border: var(--line-width) solid var(--cs-color-border);
+  border-radius: var(--radius);
+  background: var(--cs-color-white);
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+  user-select: none;
+}
+
+.meeting-room-notification-center__filter:hover {
+  border-color: var(--cs-color-primary);
+  color: var(--cs-color-primary);
+}
+
+.meeting-room-notification-center__filter-label {
+  color: var(--cs-color-text-light2);
+}
+
+.meeting-room-notification-center__filter-value {
+  font-weight: var(--font-weight-medium);
+}
+
+.meeting-room-notification-center__filter i {
+  font-size: 12px;
+  color: var(--cs-color-text-light2);
+}
+
+
+/* ─────────────────────────────────────────────────
+ * 全部标已读
+ * ───────────────────────────────────────────────── */
+.meeting-room-notification-center__mark-all {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  padding: var(--spacing-6) var(--space-sm);
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-primary);
+  cursor: pointer;
+  border-radius: var(--radius);
+  transition: background 0.15s ease;
+}
+
+.meeting-room-notification-center__mark-all:hover {
+  background: var(--cs-color-primary-a2);
+}
+
+.meeting-room-notification-center__mark-all i {
+  font-size: 14px;
+}
+
+
+/* ─────────────────────────────────────────────────
+ * 通知列表
+ * ───────────────────────────────────────────────── */
+.meeting-room-notification-center__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.meeting-room-notification-center__item {
+  position: relative;
+  border-bottom: var(--line-width) solid var(--cs-color-border);
+  transition: background 0.15s ease;
+}
+
+.meeting-room-notification-center__item:hover {
+  background: var(--cs-color-bg-hover);
+}
+
+.meeting-room-notification-center__item[data-unread="true"] {
+  background: rgba(72, 87, 226, 0.03);
+}
+
+.meeting-room-notification-center__item[data-unread="true"]:hover {
+  background: rgba(72, 87, 226, 0.06);
+}
+
+
+/* 链接整行 */
+.meeting-room-notification-center__link {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-md) var(--space-md) var(--spacing-32);
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+}
+
+
+/* 未读蓝点（左侧固定 12px 内边距处） */
+.meeting-room-notification-center__unread-dot {
+  position: absolute;
+  left: var(--space-sm);
+  top: calc(var(--space-md) + 8px);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--meeting-room-notification-center-unread-dot);
+  flex-shrink: 0;
+}
+
+
+/* 类型图标徽标 */
+.meeting-room-notification-center__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.meeting-room-notification-center__icon i {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.meeting-room-notification-center__icon[data-type="booking"] {
+  background: var(--meeting-room-notification-center-icon-bg-booking);
+  color: var(--meeting-room-notification-center-icon-color-booking);
+}
+
+.meeting-room-notification-center__icon[data-type="room"] {
+  background: var(--meeting-room-notification-center-icon-bg-room);
+  color: var(--meeting-room-notification-center-icon-color-room);
+}
+
+.meeting-room-notification-center__icon[data-type="cancel"] {
+  background: var(--meeting-room-notification-center-icon-bg-cancel);
+  color: var(--meeting-room-notification-center-icon-color-cancel);
+}
+
+.meeting-room-notification-center__icon[data-type="system"] {
+  background: var(--meeting-room-notification-center-icon-bg-system);
+  color: var(--meeting-room-notification-center-icon-color-system);
+}
+
+
+/* 通知正文 */
+.meeting-room-notification-center__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+
+.meeting-room-notification-center__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.meeting-room-notification-center__title {
+  font: var(--typo-cn-14-regular);
+  font-weight: var(--font-weight-medium);
+  color: var(--cs-color-text);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meeting-room-notification-center__item[data-unread="true"] .meeting-room-notification-center__title {
+  font-weight: var(--font-weight-semibold);
+}
+
+.meeting-room-notification-center__time {
+  flex-shrink: 0;
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+
+.meeting-room-notification-center__summary {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+  line-height: 1.6;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+
+/* ─────────────────────────────────────────────────
+ * booking-form 抽屉（inline，由 sidebar 「+ 新建预约」唤起）
+ *   - 复用 fragment.css 的 cs-drawer / cs-drawer-overlay 容器
+ *   - 本页只补 header / body / footer 内部排版
+ * ───────────────────────────────────────────────── */
+.meeting-room-notification-center__drawer-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--spacing-20) var(--spacing-24);
+}
+
+.meeting-room-notification-center__drawer-title {
+  font: var(--typo-cn-16-medium);
+  font-weight: var(--font-weight-semibold);
+  color: var(--cs-color-text);
+}
+
+.meeting-room-notification-center__drawer-sub {
+  margin-top: var(--space-3xs);
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+
+.meeting-room-notification-center__drawer-close {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  background: transparent;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--cs-color-text-light2);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.meeting-room-notification-center__drawer-close:hover {
+  background: var(--cs-color-bg-hover);
+  color: var(--cs-color-text);
+}
+
+.meeting-room-notification-center__drawer-close i {
+  font-size: 16px;
+}
+
+
+.meeting-room-notification-center__drawer-body {
+  padding: var(--spacing-20) var(--spacing-24);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-20);
+}
+
+.meeting-room-notification-center__drawer-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+
+.meeting-room-notification-center__drawer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+.meeting-room-notification-center__drawer-label {
+  font: var(--typo-cn-14-regular);
+  font-weight: var(--font-weight-medium);
+  color: var(--cs-color-text);
+}
+
+.meeting-room-notification-center__drawer-required {
+  color: #ff4d4f;
+  margin-left: var(--space-3xs);
+}
+
+.meeting-room-notification-center__drawer-input {
+  height: var(--cs-sem-size-interactive-md);
+  padding: var(--space-xs) var(--space-sm);
+  border: var(--line-width) solid var(--cs-color-border);
+  border-radius: var(--radius);
+  background: var(--cs-color-white);
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  outline: none;
+}
+
+.meeting-room-notification-center__drawer-input:focus,
+.meeting-room-notification-center__drawer-input:hover {
+  border-color: var(--cs-color-primary);
+}
+
+.meeting-room-notification-center__drawer-placeholder {
+  color: var(--cs-color-text-light2);
+  cursor: pointer;
+}
+
+.meeting-room-notification-center__drawer-textarea {
+  padding: var(--space-xs) var(--space-sm);
+  border: var(--line-width) solid var(--cs-color-border);
+  border-radius: var(--radius);
+  background: var(--cs-color-white);
+  font: var(--typo-cn-14-regular);
+  font-family: var(--font-family-cn);
+  color: var(--cs-color-text);
+  resize: vertical;
+  outline: none;
+}
+
+.meeting-room-notification-center__drawer-textarea:focus,
+.meeting-room-notification-center__drawer-textarea:hover {
+  border-color: var(--cs-color-primary);
+}
+
+.meeting-room-notification-center__drawer-toggle {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-sm) 0;
+  border-top: var(--line-width) dashed var(--cs-color-border);
+  border-bottom: var(--line-width) dashed var(--cs-color-border);
+}
+
+.meeting-room-notification-center__drawer-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text);
+  cursor: pointer;
+  user-select: none;
+}
+
+
+.meeting-room-notification-center__drawer-footer {
+  padding: var(--space-md) var(--spacing-24);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+}

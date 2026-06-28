@@ -1,0 +1,168 @@
+/* ============================================================
+ * page-shell.css — 桥接被删组件的最小补丁
+ *
+ * 原则：fragment.css 已提供完整 sidebar / navbar 内子元素的官方
+ * 样式（.nav-item / .nav-icon / .nav-label / .logo
+ * / .top-left / .top-right 等），
+ * 页面层禁止重写这些 class。本文件只补齐被删组件无样式可继承的 slot：
+ *
+ *   1) cs-window-control 删 → tabbar 左上角用 .win-ctrl + .ctrl-dot
+ *   2) cs-search-trigger 删 → tabbar 中用 cs-search-input.ah-top-search
+ *   3) cs-tab            删 → tabbar 中用 .page-tab
+ *   4) tabbar 通知铃 + 红点角标（baseline 也用类名，统一沉到这里）
+ *
+ * 已删除的 cs-nav-item / cs-nav-group / cs-nav-action-btn / cs-storage-info
+ * 不需要桥接 — 用 fragment 官方的 .nav-item / 内联 style 即可。
+ * ============================================================ */
+
+
+/* 1) macOS 风格窗口控制（替代 cs-window-control） */
+.tabbar .win-ctrl {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: 65px;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+.tabbar .ctrl-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+/* 三色为 macOS 平台规范，硬编码允许 */
+.tabbar .ctrl-dot[data-c="close"] { background: #FF6E5C; }
+.tabbar .ctrl-dot[data-c="min"]   { background: #F4BE4F; }
+.tabbar .ctrl-dot[data-c="max"]   { background: #61C654; }
+
+
+/* 2) tabbar 内的搜索（替代 cs-search-trigger，用 cs-search-input） */
+.tabbar .ah-top-search,
+.tabbar .ah-top-search[data-variant="gray"] {
+  width: 232px;
+  height: 30px;
+  padding: 4px 16px;
+  flex-shrink: 0;
+  background: transparent;
+  border: 1px solid var(--cs-color-divider-dark);
+  border-radius: var(--radius);
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.tabbar .ah-top-search .search-icon {
+  font-size: 14px;
+  color: var(--cs-color-text-dark-muted);
+  flex-shrink: 0;
+}
+.tabbar .ah-top-search .search-field {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--cs-color-text-dark-primary);
+  background: transparent;
+  border: 0;
+  outline: 0;
+  flex: 1;
+  min-width: 0;
+}
+.tabbar .ah-top-search .search-field::placeholder {
+  color: var(--cs-color-text-dark-secondary);
+}
+
+
+/* 3) tabbar 内的页签（替代 cs-tab）— 内部 SPACE_BETWEEN：文字左 / 关闭按钮右 */
+.tabbar .page-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2xs);
+  height: 44px;
+  min-width: 160px;
+  padding: 0 var(--space-md);
+  border-radius: var(--radius-sm);
+  color: var(--cs-color-text-dark-secondary);
+  font: var(--typo-cn-14-regular);
+  cursor: pointer;
+  user-select: none;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+.tabbar .page-tab.is-active,
+.tabbar .page-tab[data-active] {
+  background: var(--cs-color-bg-input-dark);
+  color: var(--cs-color-text-dark-primary);
+}
+.tabbar .page-tab .tab-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: inherit;
+}
+.tabbar .page-tab .tab-close {
+  flex-shrink: 0;
+  font-size: 12px;
+  color: inherit;
+  opacity: 0.7;
+  cursor: pointer;
+}
+.tabbar .page-tab .tab-close:hover {
+  opacity: 1;
+}
+
+
+/* 4) tabbar 右侧通知铃 + 红点角标（baseline 通用类） */
+.tabbar .notice-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+.tabbar .notice-icon {
+  font-size: 20px;
+  color: var(--cs-color-text-dark-muted);
+}
+.tabbar .notice-badge {
+  position: absolute;
+  top: -4px;
+  right: -7px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--cs-color-error);
+  color: var(--cs-color-text-inverse);
+  font-size: 10px;
+  line-height: 16px;
+  font-weight: 600;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+
+/* ─────────────────────────────────────────────────
+ * 8) Stratis 线性图标尺寸归一化（与字体图标视觉对齐）
+ *
+ * fragment.css 给 cs-sidebar .nav-icon 设 font-size:24px。
+ * 字体图标 glyph 内有内边距，视觉上只占 ~20px；
+ * 但 Stratis mask-image (width:1em + mask-size:contain) 满占 24px。
+ * 故需在容器中收缩 stratis 图标到约 20px (0.83em) 与字体图标视觉一致。
+ * ───────────────────────────────────────────────── */
+
+cs-sidebar .nav-icon i[class^="cses-stratis-"]::before,
+cs-sidebar .nav-icon i[class*=" cses-stratis-"]::before {
+  width: 0.83em;
+  height: 0.83em;
+}
+
+/* navbar 内同理（虽然 navbar 字体小一些，stratis 也对应缩小） */
+cs-navbar .side-item i[class^="cses-stratis-"]::before,
+cs-navbar .side-item i[class*=" cses-stratis-"]::before,
+cs-navbar .sub-item i[class^="cses-stratis-"]::before,
+cs-navbar .sub-item i[class*=" cses-stratis-"]::before {
+  width: 0.86em;
+  height: 0.86em;
+}

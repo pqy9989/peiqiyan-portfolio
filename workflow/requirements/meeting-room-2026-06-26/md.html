@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>会议室预订 · 用户端 · REQ · 2026-06-26</title>
+  <meta http-equiv="Cache-Control" content="no-cache">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #FFFFFF;
+      font-family: "Inter", "PingFang SC", -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #0A0A0A;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== 顶部栏 ===== */
+    .doc-topbar {
+      position: sticky; top: 0; z-index: 10;
+      height: 52px;
+      background: #FFFFFF;
+      border-bottom: 0.5px solid #ECECEC;
+      display: flex; align-items: center;
+      padding: 0 28px;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+    .doc-topbar-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 14px; font-weight: 500; color: #0A0A0A;
+      letter-spacing: -0.2px; text-decoration: none;
+    }
+    .doc-topbar-logo-dot {
+      width: 20px; height: 20px; border-radius: 5px;
+      background: #0A0A0A;
+      display: flex; align-items: center; justify-content: center;
+      color: #FFFFFF; font-size: 10px; font-weight: 500;
+    }
+    .doc-topbar-divider { width: 1px; height: 14px; background: #ECECEC; }
+    .doc-topbar-subtitle { font-size: 12px; color: #666666; }
+    .doc-topbar-count {
+      margin-left: auto;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #999999;
+      letter-spacing: 0.8px; text-transform: uppercase;
+    }
+    .doc-topbar-link {
+      font-size: 11px; color: #666666; text-decoration: none;
+      padding: 5px 10px; border: 0.5px solid #E5E5E5; border-radius: 4px;
+      letter-spacing: 0.3px; text-transform: uppercase;
+      transition: all .15s;
+    }
+    .doc-topbar-link:hover { border-color: #0A0A0A; color: #0A0A0A; }
+
+    /* ===== 主体布局 ===== */
+    .doc-layout { flex: 1; display: flex; min-height: 0; }
+
+    .doc-sidebar {
+      width: 240px; flex-shrink: 0;
+      background: #FFFFFF;
+      border-right: 0.5px solid #ECECEC;
+      position: sticky; top: 52px;
+      align-self: flex-start;
+      height: calc(100vh - 52px);
+      overflow-y: auto;
+    }
+    .doc-sidebar::-webkit-scrollbar { width: 4px; }
+    .doc-sidebar::-webkit-scrollbar-thumb { background: #ECECEC; }
+
+    .doc-nav-scroll { padding: 6px 0 24px; counter-reset: navnum; }
+    .doc-nav-group { padding: 16px 0 4px; }
+    .doc-nav-group:first-child { padding-top: 12px; }
+    .doc-nav-group-label {
+      padding: 4px 22px 10px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px; font-weight: 400; color: #999999;
+      letter-spacing: 1.2px; text-transform: uppercase;
+    }
+    .doc-nav-item {
+      display: flex; align-items: center;
+      padding: 7px 22px;
+      font-size: 12.5px; color: #666666;
+      cursor: pointer; transition: color .12s;
+      gap: 10px;
+      text-decoration: none;
+      counter-increment: navnum;
+    }
+    .doc-nav-item::before {
+      content: counter(navnum, decimal-leading-zero);
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px; color: #BBBBBB;
+      letter-spacing: 0.4px;
+      flex-shrink: 0;
+    }
+    .doc-nav-item:hover { color: #0A0A0A; }
+    .doc-nav-item.active { color: #0A0A0A; font-weight: 500; }
+    .doc-nav-item.active::before { color: #4857E2; }
+
+    .doc-content { flex: 1; min-width: 0; background: #FFFFFF; }
+    .page { padding: 44px 56px; max-width: 920px; }
+
+    /* 章节 */
+    .section-block { padding-top: 56px; margin-top: 56px; border-top: 0.5px solid #ECECEC; }
+    .section-block:first-of-type { padding-top: 0; margin-top: 0; border-top: none; }
+
+    .page-title {
+      font-size: 32px; font-weight: 500; color: #0A0A0A;
+      display: flex; align-items: baseline; gap: 14px;
+      margin: 0 0 10px;
+      letter-spacing: -0.8px; line-height: 1.1;
+    }
+    .page-title-tag {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #999999;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      font-weight: 400;
+    }
+    .page-subtitle {
+      font-size: 13px; color: #666666;
+      line-height: 1.7; max-width: 620px;
+      margin: 0 0 28px;
+    }
+
+    .section-label {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #999999;
+      letter-spacing: 1.4px; text-transform: uppercase;
+      margin-bottom: 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-label::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: #999; }
+    .section-label.accent { color: #4857E2; }
+    .section-label.accent::before { background: #4857E2; }
+
+    h2.section-title {
+      font-size: 22px; font-weight: 500; color: #0A0A0A;
+      margin: 0 0 14px;
+      letter-spacing: -0.4px; line-height: 1.2;
+    }
+    h3.subsection-title {
+      font-size: 14px; font-weight: 500; color: #0A0A0A;
+      margin: 28px 0 12px;
+      letter-spacing: -0.1px;
+      display: flex; align-items: baseline; gap: 10px;
+    }
+    h3.subsection-title .tag {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #999;
+      letter-spacing: 1px;
+      font-weight: 400;
+    }
+
+    .section-hint {
+      font-size: 12.5px; color: #666; line-height: 1.6;
+      margin: 0 0 20px;
+    }
+
+    /* ===== 概览 stats ===== */
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 0;
+      margin: 28px 0 12px;
+    }
+    .stat-card {
+      border-left: 0.5px solid #ECECEC;
+      padding: 4px 22px;
+    }
+    .stat-card:first-child { border-left: none; padding-left: 0; }
+    .stat-card-label {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px; color: #999999;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .stat-card-value {
+      font-size: 38px; font-weight: 500; color: #0A0A0A;
+      line-height: 1; letter-spacing: -1.4px;
+    }
+    .stat-card-hint {
+      margin-top: 10px;
+      font-size: 10px; color: #999999;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      letter-spacing: 0.4px;
+    }
+
+    /* 普通文本 */
+    p { margin: 0 0 14px; font-size: 13px; color: #0A0A0A; line-height: 1.75; }
+    .muted { color: #666; font-size: 12.5px; line-height: 1.7; }
+    strong { font-weight: 500; }
+
+    /* kv 字段对 */
+    dl.kv {
+      margin: 0;
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      row-gap: 12px; column-gap: 32px;
+      border-top: 0.5px solid #ECECEC;
+      padding-top: 18px;
+    }
+    dl.kv dt {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #999999;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      padding-top: 4px;
+    }
+    dl.kv dd { margin: 0; font-size: 13px; color: #0A0A0A; line-height: 1.7; }
+
+    ul.dotted { padding: 0; margin: 8px 0 0; list-style: none; }
+    ul.dotted li {
+      position: relative;
+      padding: 4px 0 4px 14px;
+      font-size: 13px; line-height: 1.65; color: #0A0A0A;
+    }
+    ul.dotted li::before {
+      content: '·';
+      position: absolute; left: 0; top: 4px;
+      color: #999;
+    }
+    ul.dotted li.chosen {
+      color: #0A0A0A;
+    }
+    ul.dotted li.chosen::before {
+      content: '◆';
+      color: #4857E2;
+      font-size: 10px;
+      top: 5px;
+    }
+    ul.dotted li.muted-li {
+      color: #999;
+    }
+
+    /* PAGES 表 */
+    table.simple {
+      width: 100%; border-collapse: collapse;
+      margin: 16px 0;
+    }
+    table.simple th, table.simple td {
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 0.5px solid #ECECEC;
+      font-size: 12.5px;
+      vertical-align: top;
+      color: #0A0A0A;
+    }
+    table.simple th {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px; color: #999;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      font-weight: 400;
+      border-bottom: 0.5px solid #E5E5E5;
+    }
+    table.simple td.mono {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 11px; color: #4857E2;
+    }
+    table.simple td.muted { color: #666; }
+    table.simple td.ok { color: #1E7A2E; }
+    table.simple td.warn { color: #B58B1E; }
+
+    /* PROTO ASCII */
+    .proto-block { margin: 16px 0 32px; }
+    .proto-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #4857E2;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .proto-tag .dot { width: 5px; height: 5px; background: #4857E2; border-radius: 50%; }
+    .proto-title {
+      font-size: 15px; font-weight: 500; color: #0A0A0A;
+      margin: 0 0 12px;
+    }
+    pre.ascii {
+      background: #FAFAFA;
+      border: 0.5px solid #ECECEC;
+      padding: 22px 24px;
+      margin: 0 0 18px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 11.5px; line-height: 1.55;
+      color: #0A0A0A;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    /* EDGE row */
+    .edge-row {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 28px;
+      padding: 14px 0;
+      border-bottom: 0.5px solid #ECECEC;
+    }
+    .edge-row:first-child { border-top: 0.5px solid #ECECEC; }
+    .edge-row-label {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 11px; color: #4857E2;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      padding-top: 2px;
+    }
+    .edge-row-body { font-size: 13px; line-height: 1.7; color: #0A0A0A; }
+    .edge-row-body ul { padding: 0; margin: 0; list-style: none; }
+    .edge-row-body ul li { padding: 2px 0 2px 14px; position: relative; font-size: 12.5px; }
+    .edge-row-body ul li::before { content: '·'; position: absolute; left: 0; color: #999; }
+
+    /* 状态徽标色 */
+    .badge {
+      display: inline-block;
+      padding: 1px 8px;
+      font-size: 11px;
+      border-radius: 3px;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+    .badge.confirmed { background: rgba(72,87,226,0.12); color: #4857E2; }
+    .badge.progress  { background: rgba(0,180,42,0.12); color: #00B42A; }
+    .badge.completed { background: #F5F5F5; color: #999; }
+    .badge.cancelled { background: #F5F5F5; color: #999; text-decoration: line-through; }
+    .badge.released  { background: rgba(247,186,30,0.16); color: #B58B1E; }
+
+    /* warn banner */
+    .warn-banner {
+      display: flex; gap: 10px;
+      padding: 14px 18px;
+      background: #FFF9F0;
+      border: 0.5px solid #F0DCB0;
+      font-size: 12.5px; color: #6B5614;
+      line-height: 1.65;
+      margin: 18px 0;
+    }
+    .warn-banner::before {
+      content: '⚠';
+      flex-shrink: 0; color: #B58B1E;
+    }
+    .info-banner {
+      display: flex; gap: 10px;
+      padding: 14px 18px;
+      background: #F5F6FD;
+      border: 0.5px solid #C3C9F1;
+      font-size: 12.5px; color: #2A3499;
+      line-height: 1.65;
+      margin: 18px 0;
+    }
+
+    /* 派单 */
+    .dispatch-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 0;
+      border-top: 0.5px solid #ECECEC;
+      border-left: 0.5px solid #ECECEC;
+      margin-top: 20px;
+    }
+    .dispatch-card {
+      border-right: 0.5px solid #ECECEC;
+      border-bottom: 0.5px solid #ECECEC;
+      padding: 22px 24px;
+    }
+    .dispatch-card-tag {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #4857E2;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .dispatch-card-title {
+      font-size: 14px; font-weight: 500; color: #0A0A0A; margin: 0 0 12px;
+    }
+    .dispatch-card-target {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 11px; color: #666; background: #FAFAFA;
+      padding: 6px 10px; border: 0.5px solid #ECECEC;
+      display: inline-block; margin-bottom: 12px;
+    }
+    .dispatch-card-desc { font-size: 12.5px; line-height: 1.65; color: #666; margin: 0; }
+
+    code {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 11.5px;
+      background: #F5F5F5; padding: 1px 5px; border-radius: 2px;
+      color: #4857E2;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="doc-topbar">
+    <a class="doc-topbar-logo" href="meeting-room-multi-req.md">
+      <span class="doc-topbar-logo-dot">M</span>
+      会议室预订 · 用户端
+    </a>
+    <span class="doc-topbar-divider"></span>
+    <span class="doc-topbar-subtitle">多页面 REQ · 2026-06-26 · draft</span>
+    <span class="doc-topbar-count">6 页 · 11 决策 · 4-题 Q-Bank</span>
+    <a class="doc-topbar-link" href="meeting-room-multi-req.md">SOURCE.MD</a>
+    <a class="doc-topbar-link" href="q-bank.html" style="margin-left: 8px;">Q-BANK</a>
+  </header>
+
+  <div class="doc-layout">
+
+    <aside class="doc-sidebar">
+      <nav class="doc-nav-scroll">
+        <div class="doc-nav-group">
+          <div class="doc-nav-group-label">概览</div>
+          <a class="doc-nav-item active" href="#overview">概览</a>
+          <a class="doc-nav-item" href="#why">WHY · 价值与覆盖</a>
+        </div>
+        <div class="doc-nav-group">
+          <div class="doc-nav-group-label">Q-Bank 决策</div>
+          <a class="doc-nav-item" href="#q1">Q1 · 角色 + 场景</a>
+          <a class="doc-nav-item" href="#q2">Q2 · 合并/拆分</a>
+          <a class="doc-nav-item" href="#q3">Q3 · 导航 + 落地</a>
+          <a class="doc-nav-item" href="#q4">Q4 · 承载形态</a>
+          <a class="doc-nav-item" href="#q5">Q5 · 画原型前澄清</a>
+        </div>
+        <div class="doc-nav-group">
+          <div class="doc-nav-group-label">产出</div>
+          <a class="doc-nav-item" href="#pages">PAGES · 页面清单</a>
+          <a class="doc-nav-item" href="#proto-1">PROTO-1 · sidebar</a>
+          <a class="doc-nav-item" href="#proto-2">PROTO-2 · header</a>
+          <a class="doc-nav-item" href="#proto-3">PROTO-3 · 各页原型</a>
+          <a class="doc-nav-item" href="#edge">EDGE · 项目级约束</a>
+        </div>
+        <div class="doc-nav-group">
+          <div class="doc-nav-group-label">派单</div>
+          <a class="doc-nav-item" href="#dispatch">派单准备</a>
+        </div>
+      </nav>
+    </aside>
+
+    <main class="doc-content">
+      <div class="page">
+
+        <!-- 概览 -->
+        <section class="section-block" id="overview">
+          <h1 class="page-title">会议室预订 · 用户端 <span class="page-title-tag">META · DRAFT</span></h1>
+          <p class="page-subtitle">多页面 brief。让企业员工在桌面端独立完成会议室预约 —— 提前排周会/季度会，随时查自己今天/本周要去哪间会议室。基于《会议室管理 use case V2.pdf》用户端范围。</p>
+
+          <div class="overview-grid">
+            <div class="stat-card">
+              <div class="stat-card-label">页面数</div>
+              <div class="stat-card-value">6</div>
+              <div class="stat-card-hint">5 ROUTED + 1 DRAWER</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">服务角色</div>
+              <div class="stat-card-value">1</div>
+              <div class="stat-card-hint">EMPLOYEE</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">高频场景</div>
+              <div class="stat-card-value">2</div>
+              <div class="stat-card-hint">PLAN + SELF-VIEW</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">视口</div>
+              <div class="stat-card-value">1440</div>
+              <div class="stat-card-hint">DESKTOP ONLY</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">CSS 前缀</div>
+              <div class="stat-card-value" style="font-size:18px;letter-spacing:-0.3px;font-family:'JetBrains Mono',monospace;">--meeting<wbr>-room-*</div>
+              <div class="stat-card-hint">PRIVATE TOKEN</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- WHY -->
+        <section class="section-block" id="why">
+          <div class="section-label accent">WHY · 这组页面为什么存在</div>
+          <h2 class="section-title">价值 · 不做会怎样 · 覆盖范围</h2>
+
+          <dl class="kv">
+            <dt>价值</dt>
+            <dd>让企业员工在桌面端独立完成会议室预约 —— 提前排周会/季度会，随时查自己今天/本周要去哪间会议室</dd>
+
+            <dt>不做会怎样</dt>
+            <dd>员工只能在 IM 群口头协商或用 Excel 表抢房，冲突频发、责任难追、无法批量管理</dd>
+
+            <dt>覆盖 UC</dt>
+            <dd class="muted">
+              UC1.5~7 普通预订策略 · UC2 层级（读取）· UC3.7~8 用户端会议室列表/详情 · UC5 预约 CRUD/查询/详情 · UC6.1~2 线上会议复用 · UC8.1~3 会议开始/结束 · UC9 周期预约 · UC10 通知
+            </dd>
+
+            <dt>不覆盖</dt>
+            <dd class="muted">
+              <strong>去管理端</strong>：UC1.1~4 管理权限、UC1.8~10 预订管理员、UC2.2~4 层级 CRUD、UC3.1~6/9~10 会议室管理、UC4 配置中心、UC11 任务、UC12 统计、UC13 审计<br>
+              <strong>已删除</strong>：UC7 KR 全部、UC5/UC6 中 KR 相关子流程<br>
+              <strong>后续规划</strong>：UC4.4 签到、UC4.6 主题可见配置、UC8.4 抢占、位置变化通知
+            </dd>
+          </dl>
+        </section>
+
+        <!-- Q1 -->
+        <section class="section-block" id="q1">
+          <div class="section-label accent">Q1 · 角色 + 高频场景</div>
+          <h2 class="section-title">决定默认落地页 · 首屏重心 · 是否角色变体</h2>
+
+          <h3 class="subsection-title">服务角色 <span class="tag">SINGLE-ROLE</span></h3>
+          <ul class="dotted">
+            <li class="chosen"><strong>仅员工</strong>（单一角色）</li>
+            <li class="muted-li">主角色 + 次角色 · 同套页面按差异展示</li>
+            <li class="muted-li">多角色合并视角</li>
+          </ul>
+
+          <h3 class="subsection-title">角色清单</h3>
+          <dl class="kv">
+            <dt>主角色</dt>
+            <dd>普通员工（含代他人预约 —— PDF UC5.2 明确说代订只需操作者的普通预订权限）</dd>
+            <dt>心智状态</dt>
+            <dd class="muted">日常办公场景中临时穿插的"订房子事"，希望快速搞定</dd>
+            <dt>使用频次</dt>
+            <dd class="muted">每月 2~10 次</dd>
+          </dl>
+
+          <h3 class="subsection-title">最高频 2~3 个场景 <span class="tag">MULTI-CHOICE</span></h3>
+          <ul class="dotted">
+            <li class="chosen"><strong>提前排会</strong> —— 提前几天/几周订周会、季度会、外部会谈（依赖日历选择器 + 参会人选择器 + 周期预约）</li>
+            <li class="chosen"><strong>查自己的会</strong> —— 看今天/本周要去哪间会议室、几点开始、和谁开</li>
+            <li class="muted-li">当下救急订房</li>
+            <li class="muted-li">临时变更（改时间/换房/取消/提前结束）</li>
+          </ul>
+        </section>
+
+        <!-- Q2 -->
+        <section class="section-block" id="q2">
+          <div class="section-label accent">Q2 · UC 合并/拆分策略</div>
+          <h2 class="section-title">决定页数减法</h2>
+
+          <h3 class="subsection-title">能力重叠 UC</h3>
+          <ul class="dotted">
+            <li class="chosen"><strong>UC3.7 找会议室列表 + UC5.8 占用时间轴</strong> → 合一页 + 顶部 view 切换（"找会议室"）</li>
+            <li><strong>UC5.1 查询可用会议室</strong> 不单独成页 —— 是"找会议室"页的筛选行为</li>
+            <li>单独成页：UC3.8 会议室详情 · UC5.9 预约详情 · UC5.7 我的预约 · UC10 通知中心</li>
+          </ul>
+
+          <h3 class="subsection-title">主 + 衍生 <span class="tag">TOGGLE</span></h3>
+          <ul class="dotted">
+            <li class="chosen"><strong>同一表单 + toggle 展开</strong></li>
+            <li>单次预约 / 周期预约 在同一抽屉，"重复" toggle 展开周期规则</li>
+            <li>创建 / 编辑预约 共用同一抽屉，按是否带预约 ID 决定模式</li>
+            <li>落位：<code>booking-form</code> 抽屉</li>
+          </ul>
+        </section>
+
+        <!-- Q3 -->
+        <section class="section-block" id="q3">
+          <div class="section-label accent">Q3 · 一级导航 + 默认落地页</div>
+          <h2 class="section-title">决定页面骨架</h2>
+
+          <h3 class="subsection-title">一级导航项 <span class="tag">SIDEBAR · 2 入口</span></h3>
+          <ul class="dotted">
+            <li>入口 1：<strong>📅 我的预约</strong></li>
+            <li>入口 2：<strong>🔍 找会议室</strong></li>
+            <li class="muted-li">不进 sidebar：通知（顶栏右上 🔔）、管理后台（仅有权限时显示在 sidebar 底部）</li>
+          </ul>
+
+          <h3 class="subsection-title">默认落地页</h3>
+          <ul class="dotted">
+            <li class="chosen"><strong>📅 我的预约</strong> ← 高频"查自己的会"配对推荐</li>
+          </ul>
+        </section>
+
+        <!-- Q4 -->
+        <section class="section-block" id="q4">
+          <div class="section-label accent">Q4 · 表单 + 详情 + 轻量功能 的承载形态</div>
+          <h2 class="section-title">决定哪些是独立页面 · 页数最终定下来</h2>
+
+          <h3 class="subsection-title">主要创建/编辑表单</h3>
+          <ul class="dotted">
+            <li class="chosen"><strong>右侧抽屉</strong> —— <code>booking-form</code>，叠加在任何页之上</li>
+          </ul>
+
+          <h3 class="subsection-title">业务对象详情</h3>
+          <ul class="dotted">
+            <li class="chosen"><strong>跳独立页</strong> —— <code>room-detail</code>、<code>booking-detail</code> 都是独立 routed 页</li>
+            <li>理由：动作多（编辑/取消/提前结束/开线上）、内容多、需要分享链接</li>
+          </ul>
+
+          <h3 class="subsection-title">轻量常用功能（通知）</h3>
+          <ul class="dotted">
+            <li class="chosen"><strong>右上铃铛 + 下拉面板 + 「查看全部」跳独立通知中心页</strong></li>
+          </ul>
+        </section>
+
+        <!-- Q5 -->
+        <section class="section-block" id="q5">
+          <div class="section-label accent">Q5 · 画原型前的最后澄清</div>
+          <h2 class="section-title">最后闸门</h2>
+          <p class="section-hint">Q1~Q4 答完后，在产出 PAGES 表和 PROTO 之前再过一遍。</p>
+
+          <h3 class="subsection-title">常见盲点（自检）</h3>
+          <table class="simple">
+            <thead><tr><th style="width:40%">盲点</th><th>状态</th></tr></thead>
+            <tbody>
+              <tr><td>字段优先级 F1/F2</td><td class="ok">✅ 已在 PROTO 阶段对齐（参会人摘要 F2 折叠、附件 F2、状态时间线作为附加区块）</td></tr>
+              <tr><td>详情页附加区块</td><td class="ok">✅ 预约详情带"状态时间线（简版）"；会议室详情带"近期占用时间轴 + 我相关的预约"</td></tr>
+              <tr><td>筛选默认值 + 排序</td><td class="warn">⚠️ 待定，留装配阶段定</td></tr>
+              <tr><td>空态 / 极端数据进 PROTO</td><td class="ok">✅ 不进，PROTO 只画"有数据"，空态在 EDGE 描述</td></tr>
+              <tr><td>sidebar 底部入口</td><td class="ok">✅ 画「管理后台」，有权限时显示</td></tr>
+              <tr><td>跨页字段一致性</td><td class="ok">✅ "会议室名+位置" 一行展示、状态徽标颜色规范在 EDGE</td></tr>
+              <tr><td>抽屉 / 弹窗触发源</td><td class="ok">✅ sidebar [+新建预约] / 详情页 [次CTA·编辑] / 时间轴拖选</td></tr>
+              <tr><td>角色变体</td><td class="ok">✅ 仅员工，无差异</td></tr>
+            </tbody>
+          </table>
+
+          <h3 class="subsection-title">待澄清问题</h3>
+          <table class="simple">
+            <thead><tr><th style="width:5%">#</th><th style="width:30%">问题</th><th style="width:35%">备选</th><th>答复</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">1</td><td>列表默认排序</td><td class="muted">时间倒序 / 正序 / 状态分组</td><td class="warn">装配阶段定</td></tr>
+              <tr><td class="mono">2</td><td>时间轴默认范围 + 刻度</td><td class="muted">今天 / ±4 小时 + 30 分钟刻度</td><td class="warn">装配阶段定</td></tr>
+              <tr><td class="mono">3</td><td>设备字典图标资源</td><td class="muted">复用 cses-icons / 不足新增</td><td class="warn">装配前 grep 现有</td></tr>
+            </tbody>
+          </table>
+
+          <div class="info-banner">3 条均不阻塞 PROTO 输出，可直接进 PAGES + PROTO。</div>
+        </section>
+
+        <!-- PAGES -->
+        <section class="section-block" id="pages">
+          <div class="section-label accent">PAGES · 最终页面清单</div>
+          <h2 class="section-title">6 行 · 每行后续派一个 single-page 模板</h2>
+
+          <table class="simple">
+            <thead>
+              <tr>
+                <th style="width:5%">#</th>
+                <th style="width:18%">slug</th>
+                <th style="width:14%">中文名</th>
+                <th style="width:22%">形态</th>
+                <th style="width:24%">覆盖 UC</th>
+                <th>备注</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td class="mono">1</td><td class="mono">my-bookings</td><td>我的预约</td><td><strong>独立页 · 默认落地</strong></td><td class="muted">UC5.7</td><td class="muted">sidebar 默认选中</td></tr>
+              <tr><td class="mono">2</td><td class="mono">find-rooms</td><td>找会议室</td><td>独立页（列表 / 时间轴 view 切换）</td><td class="muted">UC3.7、UC5.1、UC5.8</td><td class="muted">顶部 view 切换</td></tr>
+              <tr><td class="mono">3</td><td class="mono">room-detail</td><td>会议室详情</td><td>独立页</td><td class="muted">UC3.8</td><td class="muted">列表/时间轴行点击进入</td></tr>
+              <tr><td class="mono">4</td><td class="mono">booking-detail</td><td>预约详情</td><td>独立页</td><td class="muted">UC5.5~6、UC5.9、UC6.2、UC8.2</td><td class="muted">我的预约/通知/时间轴块进入</td></tr>
+              <tr><td class="mono">5</td><td class="mono">booking-form</td><td>创建/编辑预约</td><td><strong>右侧抽屉（叠加层）</strong></td><td class="muted">UC5.2~4、UC9.1~2、UC6.1</td><td class="muted">sidebar [+] / 详情 [编辑] 触发</td></tr>
+              <tr><td class="mono">6</td><td class="mono">notification-center</td><td>通知中心</td><td>独立页 + 右上铃铛面板</td><td class="muted">UC10</td><td class="muted">铃铛面板「查看全部」进入</td></tr>
+            </tbody>
+          </table>
+
+          <h3 class="subsection-title">导航 + 跳转骨架</h3>
+          <pre class="ascii">┌─ sidebar（二级导航）──────────┐
+│ 会议室                        │
+│ [+ 新建预约]  → 抽屉 booking-form
+│ 📅 我的预约    ●默认           │
+│ 🔍 找会议室                    │
+│ ⚙ 管理后台 (有权限)            │
+└──────────────────────────────┘
+                  顶栏 🔔 → 铃铛面板 →「查看全部」→ notification-center
+
+跳转链路：
+  📅 my-bookings ─→ booking-detail ─→ [编辑] booking-form 抽屉 ─→ 提交后回详情
+                                  └─→ [取消/提前结束] 弹窗确认 ─→ 回 my-bookings
+  🔍 find-rooms(列表) ─→ room-detail ─→ [预订] booking-form 抽屉 ─→ 跳 booking-detail
+  🔍 find-rooms(时间轴) ─→ 拖选空闲段 ─→ booking-form 抽屉
+                          └─→ 点占用块 ─→ booking-detail (按权限)
+  通知面板 ─→ 通知项点击 ─→ booking-detail / room-detail</pre>
+        </section>
+
+        <!-- PROTO-1 -->
+        <section class="section-block" id="proto-1">
+          <div class="section-label accent">PROTO-1 · 二级导航 sidebar</div>
+          <h2 class="section-title">统一框架，所有页共用</h2>
+
+          <div class="warn-banner">PROTO 只是设计沟通参考图，不是实现规格。page-agent 装配时直接引用 fragment/fragment.html 作为页面骨架。</div>
+
+          <pre class="ascii">┌─ 二级导航 sidebar ──────────┐
+│  会议室          [收起 ⇋]   │
+│  &lt;副标题占位&gt;                │
+│                            │
+│  ┌──────────────────────┐  │
+│  │     [+ 新建预约]      │  │  ← 主 CTA，固定 sidebar 顶部
+│  └──────────────────────┘  │
+│                            │
+│  📅  我的预约     ● 默认选中 │
+│  🔍  找会议室               │
+│                            │
+│ ─────────────────────────  │
+│  ⚙   管理后台   (有权限时)  │
+└────────────────────────────┘</pre>
+
+          <ul class="dotted">
+            <li>主 CTA <code>[+ 新建预约]</code> 唯一，固定 sidebar 顶部（不放 content-header）</li>
+            <li>菜单项只 2 个（我的预约 / 找会议室），不需要三级</li>
+            <li>通知不进 sidebar（走顶栏铃铛）</li>
+            <li>「管理后台」仅当登录人有会议室管理权限时显示</li>
+          </ul>
+        </section>
+
+        <!-- PROTO-2 -->
+        <section class="section-block" id="proto-2">
+          <div class="section-label accent">PROTO-2 · 内容区头部 content-header</div>
+          <h2 class="section-title">两种变体</h2>
+
+          <div class="proto-block">
+            <div class="proto-tag"><span class="dot"></span>变体 A · 列表型</div>
+            <div class="proto-title">适用：我的预约 / 找会议室 / 通知中心</div>
+            <pre class="ascii">┌─ content-header ─────────────────────────────────────────────┐
+│  一级标题                                          [搜索 🔍] │
+│  &lt;副标题占位&gt;                                                 │
+└──────────────────────────────────────────────────────────────┘</pre>
+          </div>
+
+          <div class="proto-block">
+            <div class="proto-tag"><span class="dot"></span>变体 B · 详情型</div>
+            <div class="proto-title">适用：会议室详情 / 预约详情</div>
+            <pre class="ascii">┌─ content-header ─────────────────────────────────────────────┐
+│  [← 返回]  一级标题                       · 状态徽标         │
+│            &lt;副标题占位：关键摘要（时间、位置等）&gt;             │
+└──────────────────────────────────────────────────────────────┘</pre>
+          </div>
+
+          <ul class="dotted">
+            <li>右上角<strong>禁止画主 CTA</strong>（已被 sidebar 接住）</li>
+            <li>右上角只允许放：搜索 / 视图切换 / 次要操作（导出 / 批量 / 刷新）</li>
+            <li>详情型统一带 <code>[← 返回]</code>，标题后跟状态徽标</li>
+          </ul>
+        </section>
+
+        <!-- PROTO-3 -->
+        <section class="section-block" id="proto-3">
+          <div class="section-label accent">PROTO-3 · 每个页面完整原型</div>
+          <h2 class="section-title">6 张原型</h2>
+
+          <div class="proto-block">
+            <div class="proto-tag"><span class="dot"></span>3.1 · 我的预约（默认落地）</div>
+            <pre class="ascii">┌─ 二级导航 sidebar ────┬─ 内容区 ─────────────────────────────────────────┐
+│  会议室     [收起 ⇋]   │  content-header                                  │
+│  &lt;副标题占位&gt;           │  ── 我的预约                          [搜索 🔍]  │
+│                       │     &lt;副标题占位&gt;                                  │
+│   [+ 新建预约]          │                                                  │
+│                       │  tab-bar                                         │
+│  📅 我的预约     ●默选 │  ── [全部] [我创建的] [我是预约人] [我作为参会人]  │
+│                       │                                                  │
+│  🔍 找会议室            │  filter-bar                                      │
+│                       │  ── [日期范围] [状态] [关键字...]                  │
+│                       │                                                  │
+│                       │  main-area · 预约列表                            │
+│                       │  ┌──────────────────────────────────────────┐    │
+│                       │  │ F1·主题                  F1·状态徽标       │    │
+│                       │  │ F1·时间    F1·会议室+位置                  │    │
+│                       │  │ F2·参会人摘要（折叠）                       │    │
+│                       │  │             [次CTA·详情] [次CTA·快取消]     │    │
+│                       │  └──────────────────────────────────────────┘    │
+│  ⚙ 管理后台            │  ...（今天 / 本周 / 更早 分组）                   │
+└───────────────────────┴──────────────────────────────────────────────────┘</pre>
+          </div>
+
+          <div class="proto-block">
+            <div class="proto-tag"><span class="dot"></span>3.2 · 找会议室（列表 ↔ 时间轴）</div>
+            <pre class="ascii">┌─ 二级导航 sidebar ────┬─ 内容区 ─────────────────────────────────────────┐
+│  会议室     [收起 ⇋]   │  content-header                                  │
+│  &lt;副标题占位&gt;           │  ── 找会议室                          [搜索 🔍]  │
+│                       │                                                  │
+│   [+ 新建预约]          │  view 切换 + filter-bar                          │
+│                       │  ── [列表][时间轴]  [日期][时段][容量][位置][设备]│
+│  📅 我的预约           │                                                  │
+│                       │  main-area · 视图区                              │
+│  🔍 找会议室    ●默选  │  ┌── 列表视图 ─────────────────────────────┐    │
+│                       │  │ F1·名称  F1·位置  F1·容量  F1·设备×N      │    │
+│                       │  │ F1·是否空闲  F1·可不可预订+原因             │    │
+│                       │  │                          [次CTA·预订]      │    │
+│                       │  └──────────────────────────────────────────┘    │
+│                       │  ┌── 时间轴视图（toggle 后）────────────────┐    │
+│                       │  │ 会议室    08 09 10 11 12 13 14 15 ...     │    │
+│                       │  │ 室 A      ░░░▓▓▓░░░░░░░░▓▓░░             │    │
+│  ⚙ 管理后台            │  │ 室 B      ░░░░░░░▓▓▓▓▓▓░░░               │    │
+│                       │  └──────────────────────────────────────────┘    │
+└───────────────────────┴──────────────────────────────────────────────────┘</pre>
+          </div>
+
+          <div class="proto-block">
+            <div class="proto-tag"><span class="dot"></span>3.3 · 会议室详情</div>
+            <pre class="ascii">┌─ 二级导航 sidebar ────┬─ 内容区 ─────────────────────────────────────────┐
+│  会议室     [收起 ⇋]   │  content-header                                  │
+│  &lt;副标题占位&gt;           │  ── [← 返回] 会议室名 · 完整位置  · 状态徽标      │
+│                       │                                                  │
+│   [+ 新建预约]          │  main-area                                       │
+│                       │  ┌── 信息卡 ──────────┐ ┌── 操作区 ───────────┐  │
+│  📅 我的预约           │  │ [图片 16:9]         │ │ [次CTA·预订]         │  │
+│                       │  │ F1·容量  F1·设备×N  │ │ [次CTA·收藏]         │  │
+│  🔍 找会议室    ●     │  │ F2·备注             │ │ F2·不可预订原因      │  │
+│                       │  └─────────────────────┘ └──────────────────────┘  │
+│                       │  ┌── 近期占用时间轴 (mini) ──────────────────┐    │
+│                       │  │ 今天  08 09 10 11 12 13 14 15 ...         │    │
+│                       │  │      ░░░▓▓▓░░░░░░░░░░▓▓░░                 │    │
+│                       │  │ 明天  ...                                  │    │
+│                       │  └────────────────────────────────────────────┘    │
+│                       │  ┌── 我相关的预约（仅预约人/参会人可见）──────┐   │
+│  ⚙ 管理后台            │  │ 列表行 ×N                                  │   │
+│                       │  └────────────────────────────────────────────┘    │
+└───────────────────────┴──────────────────────────────────────────────────┘</pre>
+          </div>
+
+          <div class="proto-block">
+            <div class="proto-tag"><span class="dot"></span>3.4 · 预约详情</div>
+            <pre class="ascii">┌─ 二级导航 sidebar ────┬─ 内容区 ─────────────────────────────────────────┐
+│  会议室     [收起 ⇋]   │  content-header                                  │
+│  &lt;副标题占位&gt;           │  ── [← 返回] F1·主题             · F1·状态徽标   │
+│                       │     &lt;副标题占位：F1·时间 · F1·会议室+位置&gt;         │
+│   [+ 新建预约]          │                                                  │
+│                       │  main-area                                       │
+│  📅 我的预约    ●     │  ┌── 信息区 ─────────────────┐ ┌── 动作区 ────┐ │
+│                       │  │ F1·时间   F1·会议室+位置   │ │ [次CTA·编辑]  │ │
+│  🔍 找会议室           │  │ F1·预约人  F1·创建人       │ │ [次CTA·取消]  │ │
+│                       │  │ F1·参会人列表              │ │ [次CTA·提前结束]│ │
+│                       │  │ F1·描述                    │ │ [次CTA·开线上]│ │
+│                       │  │ F2·附件                    │ │  按状态显隐    │ │
+│                       │  │ F2·混合会议入会信息         │ │               │ │
+│                       │  └────────────────────────────┘ └────────────────┘ │
+│                       │  ┌── 状态时间线（简版）─────────────────────────┐ │
+│                       │  │ ● 创建于 ...   by ...                       │ │
+│  ⚙ 管理后台            │  │ ● 修改时间于 ...                             │ │
+│                       │  │ ● 已确认 / 进行中 / 已结束                   │ │
+│                       │  └──────────────────────────────────────────────┘ │
+└───────────────────────┴──────────────────────────────────────────────────┘</pre>
+          </div>
+
+          <div class="proto-block">
+            <div class="proto-tag"><span class="dot"></span>3.5 · 创建/编辑预约（右侧抽屉 · 叠加层）</div>
+            <pre class="ascii">┌─ 二级导航 sidebar ────┬─ 内容区（保持原页）─┬─ 抽屉（覆盖右侧）──────────┐
+│  会议室     [收起 ⇋]   │                    │ 新建预约 / 编辑预约    [×]  │
+│  &lt;副标题占位&gt;           │  当前内容           │ ──────────────────────────  │
+│                       │  在抽屉下保留        │ F1·主题                     │
+│   [+ 新建预约]          │  可见但禁用          │ F1·参会人选择器              │
+│                       │                    │ F1·开始时间 ─ F1·结束时间    │
+│  📅 我的预约           │                    │ F1·会议室                    │
+│                       │                    │ ────────────                │
+│  🔍 找会议室           │                    │ ◯ 重复 (toggle 展开规则)    │
+│                       │                    │ ◯ 开启线上会议 (toggle)      │
+│                       │                    │ ────────────                │
+│                       │                    │ F2·描述 / 附件（折叠）        │
+│                       │                    │ ────────────                │
+│                       │                    │ ⚠ 冲突提示区（如有）         │
+│  ⚙ 管理后台            │                    │                            │
+│                       │                    │ [次CTA·取消]  [次CTA·提交]   │
+└───────────────────────┴────────────────────┴─────────────────────────────┘</pre>
+          </div>
+
+          <div class="proto-block">
+            <div class="proto-tag"><span class="dot"></span>3.6a · 通知中心 · 铃铛下拉面板（任何页之上）</div>
+            <pre class="ascii">┌─ 二级导航 sidebar ────┬─ 内容区（保持原页）─────────┬─ 铃铛面板（右上浮）──┐
+│  会议室     [收起 ⇋]   │                            │ 通知(n)  [全标已读] │
+│  &lt;副标题占位&gt;           │   当前页面在面板下保留        │ ─────────────────── │
+│                       │                            │ ● 通知 1 · 时间      │
+│   [+ 新建预约]          │                            │ ● 通知 2 · 时间      │
+│                       │                            │ ○ 通知 3 · 时间      │
+│  📅 我的预约           │                            │ ...（最多 20 条）    │
+│                       │                            │ ─────────────────── │
+│  🔍 找会议室           │                            │    [查看全部 →]     │
+│                       │                            └─────────────────────┘
+│  ⚙ 管理后台            │                                                    │
+└───────────────────────┴────────────────────────────────────────────────────┘</pre>
+          </div>
+
+          <div class="proto-block">
+            <div class="proto-tag"><span class="dot"></span>3.6b · 通知中心 · 独立页（面板「查看全部」跳转）</div>
+            <pre class="ascii">┌─ 二级导航 sidebar ────┬─ 内容区 ─────────────────────────────────────────┐
+│  会议室     [收起 ⇋]   │  content-header                                  │
+│  &lt;副标题占位&gt;           │  ── 通知中心                                      │
+│                       │                                                  │
+│   [+ 新建预约]          │  tab-bar                                         │
+│                       │  ── [全部] [预约相关] [会议室变化] [强制取消] [系统] │
+│  📅 我的预约           │                                                  │
+│                       │  filter-bar                                      │
+│  🔍 找会议室           │  ── [未读/已读] [日期]            [全部标已读]    │
+│                       │                                                  │
+│                       │  main-area · 通知列表                            │
+│                       │  ● F1·通知标题                       F1·时间      │
+│                       │    F1·摘要 ...                                   │
+│                       │  ───────────────                                  │
+│                       │  ○ F1·通知标题                       F1·时间      │
+│  ⚙ 管理后台            │    F1·摘要 ...                                   │
+└───────────────────────┴──────────────────────────────────────────────────┘</pre>
+          </div>
+        </section>
+
+        <!-- EDGE -->
+        <section class="section-block" id="edge">
+          <div class="section-label accent">EDGE · 项目级约束</div>
+          <h2 class="section-title">统一规范 · 字段约定 · 空态文案</h2>
+
+          <div class="edge-row">
+            <div class="edge-row-label">越权按钮</div>
+            <div class="edge-row-body">主动操作 → 灰 + tooltip 显示原因；身份无关 → hidden；路由级 → 跳无权页</div>
+          </div>
+          <div class="edge-row">
+            <div class="edge-row-label">危险操作</div>
+            <div class="edge-row-body">弹窗二次确认（取消预约 / 提前结束会议）</div>
+          </div>
+          <div class="edge-row">
+            <div class="edge-row-label">成功反馈</div>
+            <div class="edge-row-body">toast 右上；失败反馈：表单 / 列表行内 inline</div>
+          </div>
+          <div class="edge-row">
+            <div class="edge-row-label">通知触达</div>
+            <div class="edge-row-body">仅站内通知中心（推送 / 邮件由后端决定，UI 不画渠道开关）</div>
+          </div>
+          <div class="edge-row">
+            <div class="edge-row-label">审计</div>
+            <div class="edge-row-body">预约详情展示简版状态时间线（创建 / 修改 / 取消 / 提前结束 / 释放），其他日志走管理端 UC13</div>
+          </div>
+          <div class="edge-row">
+            <div class="edge-row-label">预约状态徽标</div>
+            <div class="edge-row-body">
+              <span class="badge confirmed">CONFIRMED 已确认</span>
+              <span class="badge progress">IN_PROGRESS 进行中</span>
+              <span class="badge completed">COMPLETED 已结束</span>
+              <span class="badge cancelled">CANCELLED 已取消</span>
+              <span class="badge released">RELEASED 已释放</span>
+            </div>
+          </div>
+          <div class="edge-row">
+            <div class="edge-row-label">会议室状态</div>
+            <div class="edge-row-body">ENABLED / DISABLED（临时禁用 / 永久禁用 二级状态）</div>
+          </div>
+          <div class="edge-row">
+            <div class="edge-row-label">时间显示</div>
+            <div class="edge-row-body">企业时区，统一 <code>YYYY-MM-DD HH:mm</code> 或相对时间（"今天 14:00"）</div>
+          </div>
+          <div class="edge-row">
+            <div class="edge-row-label">通知未读</div>
+            <div class="edge-row-body">左侧蓝点</div>
+          </div>
+          <div class="edge-row">
+            <div class="edge-row-label">设备字典</div>
+            <div class="edge-row-body">7 类预设（投影 / 电视大屏、白板、视频会议终端、麦克风 / 扬声器、摄像头、电话、HDMI / 转接器），筛选用 chip，卡片用图标</div>
+          </div>
+          <div class="edge-row">
+            <div class="edge-row-label">私有 CSS 前缀</div>
+            <div class="edge-row-body"><code>--meeting-room-*</code></div>
+          </div>
+          <div class="edge-row">
+            <div class="edge-row-label">视口</div>
+            <div class="edge-row-body">仅桌面 1440+</div>
+          </div>
+          <div class="edge-row">
+            <div class="edge-row-label">空态文案</div>
+            <div class="edge-row-body">
+              <ul>
+                <li>我的预约空：插画 + "你还没有任何会议" + <code>[+ 新建预约]</code> CTA</li>
+                <li>找会议室无匹配：插画 + "没找到匹配的会议室" + <code>[清空筛选]</code></li>
+                <li>通知中心空：插画 + "暂无通知"</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="warn-banner">本节<strong>禁止列具体 cs- 组件清单</strong>。组件选型在单页 brief 和 page-agent 装配阶段处理。</div>
+        </section>
+
+        <!-- 派单 -->
+        <section class="section-block" id="dispatch">
+          <div class="section-label accent">派单准备</div>
+          <h2 class="section-title">3 阶段链路</h2>
+
+          <div class="dispatch-grid">
+            <div class="dispatch-card">
+              <div class="dispatch-card-tag">STAGE 0 · 单页 brief</div>
+              <div class="dispatch-card-title">每行 PAGES 派一次单页 SOP</div>
+              <div class="dispatch-card-target">template/single-page.md</div>
+              <p class="dispatch-card-desc">文件落到 <code>requirements/meeting-room-2026-06-26/&lt;page-slug&gt;-req.md</code>。抽屉/面板形态的"页"也独立产出 brief（如 booking-form），PROTO 阶段标注承载形式 = 抽屉。</p>
+            </div>
+
+            <div class="dispatch-card">
+              <div class="dispatch-card-tag">STAGE 1 · 框架</div>
+              <div class="dispatch-card-title">先派 page-agent 装统一框架</div>
+              <div class="dispatch-card-target">pages/meeting-room/shell.html</div>
+              <p class="dispatch-card-desc">tabbar + sidebar + navbar + content-header 占位骨架，main-area 留空。完成后必须暂停，等用户 confirm。</p>
+            </div>
+
+            <div class="dispatch-card">
+              <div class="dispatch-card-tag">STAGE 2 · 各页并行</div>
+              <div class="dispatch-card-title">每页克隆 shell + 填 main-area</div>
+              <div class="dispatch-card-target">pages/meeting-room/&lt;page-slug&gt;.html</div>
+              <p class="dispatch-card-desc">完整 HTML（不是片段），浏览器可独立打开。sidebar href 接兄弟页、抽屉 inline overlay + 最小 JS。禁止 read 兄弟页面 HTML。</p>
+            </div>
+
+            <div class="dispatch-card">
+              <div class="dispatch-card-tag">STAGE 3 · 整合</div>
+              <div class="dispatch-card-title">检查 href + 写入口页</div>
+              <div class="dispatch-card-target">pages/meeting-room/index.html</div>
+              <p class="dispatch-card-desc">检查跨页 href 接通；入口页可简单 redirect 到默认落地页，或复刻 my-bookings 内容。</p>
+            </div>
+          </div>
+
+          <div class="warn-banner"><strong>跨页禁止参考</strong> —— 每个 single-page brief 独立产出，避免污染。多页 brief 可以并行采集，但 PAGES 表必须先 confirm，避免页数变动后白做。</div>
+        </section>
+
+      </div>
+    </main>
+
+  </div>
+
+</body>
+</html>

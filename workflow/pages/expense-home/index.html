@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>报销中心 — CSES</title>
+
+  <!-- 基础 -->
+  <link rel="stylesheet" href="../../design/css/base.css">
+  <link rel="stylesheet" href="../../design/css/token.css">
+  <link rel="stylesheet" href="../../design/css/variable.css">
+  <link rel="stylesheet" href="../../design/css/page-shell.css">
+  <link rel="stylesheet" href="../../design/fonts/cses-icons.css?v=101">
+  <link rel="stylesheet" href="../../design/fragment/fragment.css">
+
+  <!-- 组件 -->
+  <link rel="stylesheet" href="../../design/components/window-control/window-control.css?v=2">
+  <link rel="stylesheet" href="../../design/components/search-input/search-input.css">
+  <link rel="stylesheet" href="../../design/components/tab/tab.css?v=2">
+  <link rel="stylesheet" href="../../design/components/avatar/avatar.css">
+  <link rel="stylesheet" href="../../design/components/badge/badge.css">
+  <link rel="stylesheet" href="../../design/components/button/button.css">
+  <link rel="stylesheet" href="../../design/components/nav-item/nav-item.css">
+  <link rel="stylesheet" href="../../design/components/nav-action-btn/nav-action-btn.css">
+  <link rel="stylesheet" href="../../design/components/nav-group/nav-group.css">
+  <link rel="stylesheet" href="../../design/components/search-trigger/search-trigger.css">
+  <link rel="stylesheet" href="../../design/components/status-badge/status-badge.css">
+  <link rel="stylesheet" href="../../design/components/tab-nav/tab-nav.css">
+  <link rel="stylesheet" href="../../design/components/tag/tag.css">
+  <link rel="stylesheet" href="../../design/components/checkbox/checkbox.css">
+
+  <!-- 页面私有 -->
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+<cs-layout>
+
+  <!-- 标签栏 -->
+  <div class="tabbar">
+    <div class="tabbar-left">
+      <cs-window-control class="tabbar-window-control">
+        <span class="ctrl-close"></span>
+        <span class="ctrl-minimize"></span>
+        <span class="ctrl-maximize"></span>
+      </cs-window-control>
+      <cs-search-input class="tabbar-search" data-variant="gray" data-size="sm" style="border-radius:var(--radius-lg);">
+        <i class="search-icon cses-stratis-search-01"></i>
+        <input class="search-field" type="text" placeholder="搜索">
+      </cs-search-input>
+      <cs-tab data-active>
+        <span class="tab-label">报销中心</span>
+        <i class="tab-close cses-stratis-x-01"></i>
+      </cs-tab>
+      <cs-tab>
+        <span class="tab-label">差旅单</span>
+        <i class="tab-close cses-stratis-x-01"></i>
+      </cs-tab>
+    </div>
+    <div class="tabbar-right">
+      <span class="tabbar-notice">
+        <i class="cses-stratis-bell-01 notice-icon"></i>
+        <span class="notice-badge">5</span>
+      </span>
+      <cs-avatar data-size="xs" data-shape="circle" data-color="orange">林</cs-avatar>
+    </div>
+  </div>
+
+  <!-- 主体 -->
+  <div class="body">
+
+    <!-- 一级导航 -->
+    <cs-sidebar>
+      <span class="logo">
+        <img src="../../design/assets/logo.png" alt="CSES">
+      </span>
+      <nav class="nav">
+        <div class="nav-group">
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-home-01"></i></span>
+            <span class="nav-label">工作台</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-compass"></i></span>
+            <span class="nav-label">导向</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-message-circle"></i></span>
+            <span class="nav-label">消息</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-check-square-broken"></i></span>
+            <span class="nav-label">任务</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-video-on"></i></span>
+            <span class="nav-label">会议</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-book-01"></i></span>
+            <span class="nav-label">文档</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-file-edit-01"></i></span>
+            <span class="nav-label">表单</span>
+          </a>
+          <!-- 报销中心挂在"财务"一级下，data-active -->
+          <a class="nav-item" data-active>
+            <span class="nav-icon"><i class="cses-stratis-wallet-01"></i></span>
+            <span class="nav-label">财务</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-file-check-01"></i></span>
+            <span class="nav-label">审批</span>
+          </a>
+        </div>
+      </nav>
+    </cs-sidebar>
+
+    <div class="content-wrapper">
+
+      <!-- 二级导航 -->
+      <cs-navbar>
+        <div class="inner">
+          <!-- 标题区 -->
+          <div class="slot-header" style="display:flex;flex-direction:column;gap:4px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:16px;font-weight:600;color:var(--cs-color-text);font-family:var(--font-family-cn);">报销中心</span>
+              <i class="cses-stratis-layout-left" style="font-size:16px;color:var(--cs-color-text-light2);cursor:pointer;"></i>
+            </div>
+            <span class="page-subtitle" style="font-size:12px;font-weight:400;color:var(--cs-color-text-light2);font-family:var(--font-family-cn);">报销发起 / 发票 / 预算</span>
+          </div>
+
+          <!-- 主 CTA -->
+          <div class="slot-action">
+            <cs-nav-action-btn data-expense-action="open-create">
+              <i class="nav-action-icon cses-stratis-plus-01"></i>
+              <span class="nav-action-label">发起报销</span>
+            </cs-nav-action-btn>
+          </div>
+
+          <!-- 主菜单 -->
+          <div class="slot-nav" style="display:flex;flex-direction:column;gap:4px;padding-top:8px;border-top:1px solid var(--cs-color-highlight);flex:none;">
+            <cs-nav-item data-active>
+              <i class="nav-icon cses-stratis-home-01"></i>
+              <span class="nav-label">报销首页</span>
+            </cs-nav-item>
+            <cs-nav-item>
+              <i class="nav-icon cses-stratis-file-plus-01"></i>
+              <span class="nav-label">发起报销</span>
+            </cs-nav-item>
+            <cs-nav-item>
+              <i class="nav-icon cses-stratis-receipt"></i>
+              <span class="nav-label">发票库</span>
+              <span class="nav-suffix"><cs-tag data-size="sm" data-color="primary"><span class="tag-label">23</span></cs-tag></span>
+            </cs-nav-item>
+            <cs-nav-item>
+              <i class="nav-icon cses-stratis-file-search-01"></i>
+              <span class="nav-label">我的报销</span>
+            </cs-nav-item>
+            <cs-nav-item>
+              <i class="nav-icon cses-stratis-pie-chart-02"></i>
+              <span class="nav-label">我的预算</span>
+            </cs-nav-item>
+          </div>
+
+          <!-- 副菜单 -->
+          <div class="slot-sub" style="display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--cs-color-highlight);flex:1;min-height:0;overflow-y:auto;padding-top:8px;">
+            <div style="font-size:12px;color:var(--cs-color-text-light2);padding:4px 8px;">常用快捷</div>
+            <cs-nav-item>
+              <i class="nav-icon cses-stratis-train"></i>
+              <span class="nav-label">差旅报销模板</span>
+            </cs-nav-item>
+            <cs-nav-item>
+              <i class="nav-icon cses-stratis-receipt-lines"></i>
+              <span class="nav-label">餐饮日清单</span>
+            </cs-nav-item>
+            <cs-nav-item>
+              <i class="nav-icon cses-stratis-folder-open-01"></i>
+              <span class="nav-label">历史报销归档</span>
+            </cs-nav-item>
+          </div>
+        </div>
+      </cs-navbar>
+
+      <!-- 主内容区 -->
+      <main class="main-content">
+
+        <!-- 内容区头部 -->
+        <cs-content-header>
+          <div class="slot-left">
+            <span class="page-title">报销中心</span>
+            <span class="page-subtitle">把每张发票变成一次顺畅的报销</span>
+          </div>
+          <div class="slot-right">
+            <cs-search-trigger>
+              <span class="trigger-text">搜索发票 / 报销单</span>
+              <i class="trigger-icon cses-stratis-search-01"></i>
+            </cs-search-trigger>
+          </div>
+        </cs-content-header>
+
+        <!-- 业务内容 -->
+        <div class="ex-page">
+
+          <!-- 区块 1：本月资金概览（轻量横条） -->
+          <section class="ex-budget-bar" aria-label="本月资金概览">
+            <div class="ex-budget-bar__head">
+              <span class="ex-budget-bar__title">本月资金概览</span>
+              <span class="ex-budget-bar__cycle">2026-06 周期 · 剩余 5 天</span>
+            </div>
+            <div class="ex-budget-bar__row">
+              <!-- 进度条本体 -->
+              <div class="ex-budget-track" aria-label="个人预算使用进度 62%">
+                <div class="ex-budget-track__fill ex-budget-track__fill--reimbursed" style="width:42%"></div>
+                <div class="ex-budget-track__fill ex-budget-track__fill--pending" style="width:20%"></div>
+              </div>
+              <!-- 横条右侧 legend -->
+              <div class="ex-budget-bar__legend">
+                <span class="ex-budget-legend">
+                  <span class="ex-budget-legend__dot ex-budget-legend__dot--reimbursed"></span>
+                  <span class="ex-budget-legend__label">已报销</span>
+                  <span class="ex-budget-legend__value">¥ 4,200</span>
+                </span>
+                <span class="ex-budget-legend">
+                  <span class="ex-budget-legend__dot ex-budget-legend__dot--pending"></span>
+                  <span class="ex-budget-legend__label">待报销</span>
+                  <span class="ex-budget-legend__value">¥ 2,015</span>
+                </span>
+                <span class="ex-budget-legend">
+                  <span class="ex-budget-legend__dot ex-budget-legend__dot--remaining"></span>
+                  <span class="ex-budget-legend__label">剩余预算</span>
+                  <span class="ex-budget-legend__value">¥ 3,785</span>
+                </span>
+              </div>
+            </div>
+          </section>
+
+          <!-- 区块 2：发起报销类别快捷入口 -->
+          <section class="ex-section ex-categories" aria-label="发起报销">
+            <div class="ex-section__head">
+              <span class="ex-section__title">发起报销</span>
+              <span class="ex-section__hint">选择类别后自动套用对应模板</span>
+            </div>
+            <div class="ex-cat-grid">
+              <button class="ex-cat" type="button" data-expense-action="start-create" data-cat="transport">
+                <span class="ex-cat__icon ex-cat__icon--blue"><i class="cses-stratis-train"></i></span>
+                <span class="ex-cat__name">交通</span>
+                <span class="ex-cat__sub">滴滴 / 高德 / 高铁</span>
+              </button>
+              <button class="ex-cat" type="button" data-expense-action="start-create" data-cat="meal">
+                <span class="ex-cat__icon ex-cat__icon--orange"><i class="cses-stratis-receipt-lines"></i></span>
+                <span class="ex-cat__name">餐饮</span>
+                <span class="ex-cat__sub">工作餐 / 加班餐</span>
+              </button>
+              <button class="ex-cat" type="button" data-expense-action="start-create" data-cat="travel">
+                <span class="ex-cat__icon ex-cat__icon--purple"><i class="cses-stratis-luggage-02"></i></span>
+                <span class="ex-cat__name">差旅</span>
+                <span class="ex-cat__sub">机票 / 酒店 / 出差</span>
+              </button>
+              <button class="ex-cat" type="button" data-expense-action="start-create" data-cat="office">
+                <span class="ex-cat__icon ex-cat__icon--green"><i class="cses-stratis-package-01"></i></span>
+                <span class="ex-cat__name">办公用品</span>
+                <span class="ex-cat__sub">耗材 / 配件</span>
+              </button>
+              <button class="ex-cat" type="button" data-expense-action="start-create" data-cat="training">
+                <span class="ex-cat__icon ex-cat__icon--sky"><i class="cses-stratis-graduation-cap-01"></i></span>
+                <span class="ex-cat__name">培训</span>
+                <span class="ex-cat__sub">课程 / 书籍</span>
+              </button>
+              <button class="ex-cat" type="button" data-expense-action="start-create" data-cat="entertain">
+                <span class="ex-cat__icon ex-cat__icon--pink"><i class="cses-stratis-gift-01"></i></span>
+                <span class="ex-cat__name">招待</span>
+                <span class="ex-cat__sub">客户接待</span>
+              </button>
+              <button class="ex-cat" type="button" data-expense-action="start-create" data-cat="comm">
+                <span class="ex-cat__icon ex-cat__icon--red"><i class="cses-stratis-phone-call-01"></i></span>
+                <span class="ex-cat__name">通讯</span>
+                <span class="ex-cat__sub">话费 / 网费</span>
+              </button>
+              <button class="ex-cat ex-cat--more" type="button" data-expense-action="open-cat-list">
+                <span class="ex-cat__icon ex-cat__icon--ghost"><i class="cses-stratis-dot-horizontal"></i></span>
+                <span class="ex-cat__name">更多类别</span>
+                <span class="ex-cat__sub">查看全部 14 项</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- 区块 3：发票库（OCR 上传条 + 状态分类 tab + 缩略图网格） -->
+          <section class="ex-section ex-invoices" aria-label="发票库">
+
+            <div class="ex-section__head">
+              <span class="ex-section__title">发票库</span>
+              <a class="ex-section__more" href="#" data-expense-action="open-invoice-all">全部发票 →</a>
+            </div>
+
+            <!-- OCR 上传栏（首屏抢眼） -->
+            <div class="ex-ocr">
+              <div class="ex-ocr__left">
+                <span class="ex-ocr__badge"><i class="cses-stratis-scan"></i></span>
+                <div class="ex-ocr__text">
+                  <span class="ex-ocr__title">OCR 智能识别</span>
+                  <span class="ex-ocr__sub">拍照 / 上传 / 邮件转发，自动抽取金额、抬头、税号</span>
+                </div>
+              </div>
+              <div class="ex-ocr__actions">
+                <cs-button data-variant="secondary" data-expense-action="ocr-camera">
+                  <i class="btn-icon cses-stratis-camera-01"></i>
+                  <span class="btn-label">拍照识别</span>
+                </cs-button>
+                <cs-button data-expense-action="ocr-upload">
+                  <i class="btn-icon cses-stratis-upload-01"></i>
+                  <span class="btn-label">上传发票</span>
+                </cs-button>
+              </div>
+            </div>
+
+            <!-- 状态分类 tab + 计数 -->
+            <cs-tab-nav class="ex-invoice-tabs">
+              <span class="tab-item" data-active data-expense-action="filter-invoice" data-filter="all">全部 <span class="tab-badge">128</span></span>
+              <span class="tab-item" data-expense-action="filter-invoice" data-filter="unclaimed">待认领 <span class="tab-badge">7</span></span>
+              <span class="tab-item" data-expense-action="filter-invoice" data-filter="unfiled">未归档 <span class="tab-badge">12</span></span>
+              <span class="tab-item" data-expense-action="filter-invoice" data-filter="duplicate">可能重复 <span class="tab-badge">3</span></span>
+              <span class="tab-item" data-expense-action="filter-invoice" data-filter="filed">已归档</span>
+            </cs-tab-nav>
+
+            <!-- 发票卡片网格 -->
+            <div class="ex-invoice-grid">
+
+              <!-- 发票 1：增值税专票 -->
+              <article class="ex-invoice" data-expense-action="open-invoice-detail" data-invoice-id="inv-2026-0612">
+                <div class="ex-invoice__thumb">
+                  <!-- 微缩发票样式 -->
+                  <div class="ex-invoice-mini">
+                    <div class="ex-invoice-mini__head">
+                      <span class="ex-invoice-mini__title">增值税专用发票</span>
+                      <span class="ex-invoice-mini__code">NO. 12036841</span>
+                    </div>
+                    <div class="ex-invoice-mini__amount">¥ 1,280.00</div>
+                    <div class="ex-invoice-mini__seal" aria-hidden="true">公章</div>
+                  </div>
+                  <cs-checkbox class="ex-invoice__pick" data-expense-action="toggle-pick" data-stop="true">
+                    <span class="checkbox-inner">
+                      <i class="checkbox-icon cses-stratis-check-contained"></i>
+                    </span>
+                  </cs-checkbox>
+                </div>
+                <div class="ex-invoice__meta">
+                  <div class="ex-invoice__row1">
+                    <cs-tag data-color="primary" data-size="sm"><span class="tag-label">专票</span></cs-tag>
+                    <span class="ex-invoice__amt">¥ 1,280.00</span>
+                  </div>
+                  <div class="ex-invoice__row2">
+                    <span class="ex-invoice__vendor">上海星辰科技有限公司</span>
+                    <span class="ex-invoice__date">06-12</span>
+                  </div>
+                </div>
+              </article>
+
+              <!-- 发票 2：电子发票（待认领） -->
+              <article class="ex-invoice" data-expense-action="open-invoice-detail" data-invoice-id="inv-2026-0611">
+                <div class="ex-invoice__thumb ex-invoice__thumb--unclaimed">
+                  <div class="ex-invoice-mini ex-invoice-mini--electronic">
+                    <div class="ex-invoice-mini__head">
+                      <span class="ex-invoice-mini__title">电子普通发票</span>
+                      <span class="ex-invoice-mini__code">e-Fapiao</span>
+                    </div>
+                    <div class="ex-invoice-mini__amount">¥ 326.50</div>
+                  </div>
+                  <span class="ex-invoice__corner ex-invoice__corner--warning">待认领</span>
+                  <cs-checkbox class="ex-invoice__pick">
+                    <span class="checkbox-inner">
+                      <i class="checkbox-icon cses-stratis-check-contained"></i>
+                    </span>
+                  </cs-checkbox>
+                </div>
+                <div class="ex-invoice__meta">
+                  <div class="ex-invoice__row1">
+                    <cs-tag data-color="info" data-size="sm"><span class="tag-label">电子</span></cs-tag>
+                    <span class="ex-invoice__amt">¥ 326.50</span>
+                  </div>
+                  <div class="ex-invoice__row2">
+                    <span class="ex-invoice__vendor">京东商城</span>
+                    <span class="ex-invoice__date">06-11</span>
+                  </div>
+                </div>
+              </article>
+
+              <!-- 发票 3：滴滴行程单 -->
+              <article class="ex-invoice" data-expense-action="open-invoice-detail" data-invoice-id="inv-2026-0610">
+                <div class="ex-invoice__thumb">
+                  <div class="ex-invoice-mini ex-invoice-mini--ride">
+                    <span class="ex-invoice-mini__brand">滴</span>
+                    <div class="ex-invoice-mini__rideinfo">
+                      <span class="ex-invoice-mini__route">公司 → 浦东国际机场</span>
+                      <span class="ex-invoice-mini__amount-sm">¥ 152.80</span>
+                    </div>
+                  </div>
+                  <cs-checkbox class="ex-invoice__pick" data-checked>
+                    <span class="checkbox-inner">
+                      <i class="checkbox-icon cses-stratis-check-contained"></i>
+                    </span>
+                  </cs-checkbox>
+                </div>
+                <div class="ex-invoice__meta">
+                  <div class="ex-invoice__row1">
+                    <cs-tag data-color="warning" data-size="sm"><span class="tag-label">滴滴</span></cs-tag>
+                    <span class="ex-invoice__amt">¥ 152.80</span>
+                  </div>
+                  <div class="ex-invoice__row2">
+                    <span class="ex-invoice__vendor">滴滴出行</span>
+                    <span class="ex-invoice__date">06-10</span>
+                  </div>
+                </div>
+              </article>
+
+              <!-- 发票 4：普通发票（可能重复） -->
+              <article class="ex-invoice" data-expense-action="open-invoice-detail" data-invoice-id="inv-2026-0609">
+                <div class="ex-invoice__thumb ex-invoice__thumb--duplicate">
+                  <div class="ex-invoice-mini">
+                    <div class="ex-invoice-mini__head">
+                      <span class="ex-invoice-mini__title">增值税普通发票</span>
+                      <span class="ex-invoice-mini__code">NO. 09872433</span>
+                    </div>
+                    <div class="ex-invoice-mini__amount">¥ 188.00</div>
+                  </div>
+                  <span class="ex-invoice__corner ex-invoice__corner--danger">可能重复</span>
+                  <cs-checkbox class="ex-invoice__pick">
+                    <span class="checkbox-inner">
+                      <i class="checkbox-icon cses-stratis-check-contained"></i>
+                    </span>
+                  </cs-checkbox>
+                </div>
+                <div class="ex-invoice__meta">
+                  <div class="ex-invoice__row1">
+                    <cs-tag data-color="default" data-size="sm"><span class="tag-label">普票</span></cs-tag>
+                    <span class="ex-invoice__amt">¥ 188.00</span>
+                  </div>
+                  <div class="ex-invoice__row2">
+                    <span class="ex-invoice__vendor">汉庭酒店（虹桥店）</span>
+                    <span class="ex-invoice__date">06-09</span>
+                  </div>
+                </div>
+              </article>
+
+              <!-- 发票 5：高德打车 -->
+              <article class="ex-invoice" data-expense-action="open-invoice-detail" data-invoice-id="inv-2026-0608">
+                <div class="ex-invoice__thumb">
+                  <div class="ex-invoice-mini ex-invoice-mini--ride ex-invoice-mini--ride-amap">
+                    <span class="ex-invoice-mini__brand ex-invoice-mini__brand--amap">高</span>
+                    <div class="ex-invoice-mini__rideinfo">
+                      <span class="ex-invoice-mini__route">家 → 公司</span>
+                      <span class="ex-invoice-mini__amount-sm">¥ 38.00</span>
+                    </div>
+                  </div>
+                  <cs-checkbox class="ex-invoice__pick">
+                    <span class="checkbox-inner">
+                      <i class="checkbox-icon cses-stratis-check-contained"></i>
+                    </span>
+                  </cs-checkbox>
+                </div>
+                <div class="ex-invoice__meta">
+                  <div class="ex-invoice__row1">
+                    <cs-tag data-color="success" data-size="sm"><span class="tag-label">高德</span></cs-tag>
+                    <span class="ex-invoice__amt">¥ 38.00</span>
+                  </div>
+                  <div class="ex-invoice__row2">
+                    <span class="ex-invoice__vendor">高德打车</span>
+                    <span class="ex-invoice__date">06-08</span>
+                  </div>
+                </div>
+              </article>
+
+              <!-- 发票 6：电子发票（未归档） -->
+              <article class="ex-invoice" data-expense-action="open-invoice-detail" data-invoice-id="inv-2026-0607">
+                <div class="ex-invoice__thumb ex-invoice__thumb--unfiled">
+                  <div class="ex-invoice-mini ex-invoice-mini--electronic">
+                    <div class="ex-invoice-mini__head">
+                      <span class="ex-invoice-mini__title">电子普通发票</span>
+                      <span class="ex-invoice-mini__code">e-Fapiao</span>
+                    </div>
+                    <div class="ex-invoice-mini__amount">¥ 998.00</div>
+                  </div>
+                  <span class="ex-invoice__corner ex-invoice__corner--info">未归档</span>
+                  <cs-checkbox class="ex-invoice__pick">
+                    <span class="checkbox-inner">
+                      <i class="checkbox-icon cses-stratis-check-contained"></i>
+                    </span>
+                  </cs-checkbox>
+                </div>
+                <div class="ex-invoice__meta">
+                  <div class="ex-invoice__row1">
+                    <cs-tag data-color="info" data-size="sm"><span class="tag-label">电子</span></cs-tag>
+                    <span class="ex-invoice__amt">¥ 998.00</span>
+                  </div>
+                  <div class="ex-invoice__row2">
+                    <span class="ex-invoice__vendor">极客时间</span>
+                    <span class="ex-invoice__date">06-07</span>
+                  </div>
+                </div>
+              </article>
+
+            </div>
+
+            <!-- 批量操作条（勾选后出现） -->
+            <div class="ex-invoice-bulk">
+              <div class="ex-invoice-bulk__info">
+                <i class="cses-stratis-check-contained"></i>
+                <span>已勾选 <strong>1</strong> 张，合计 <strong>¥ 152.80</strong></span>
+              </div>
+              <div class="ex-invoice-bulk__actions">
+                <cs-button data-variant="secondary" data-expense-action="bulk-archive">
+                  <i class="btn-icon cses-stratis-folder-plus-01"></i>
+                  <span class="btn-label">归档</span>
+                </cs-button>
+                <cs-button data-expense-action="bulk-reimburse">
+                  <i class="btn-icon cses-stratis-arrow-right"></i>
+                  <span class="btn-label">加入报销</span>
+                </cs-button>
+              </div>
+            </div>
+
+          </section>
+
+          <!-- 区块 4：待处理报销简表 -->
+          <section class="ex-section ex-pending" aria-label="我提交的报销单">
+            <div class="ex-section__head">
+              <span class="ex-section__title">我的报销单</span>
+              <a class="ex-section__more" href="#" data-expense-action="open-my-list">查看全部 →</a>
+            </div>
+
+            <div class="ex-pending-list">
+
+              <!-- 报销单 1 -->
+              <article class="ex-pending-row" data-expense-action="open-expense-detail" data-expense-id="EX-2026-0612-01">
+                <div class="ex-pending-row__lead">
+                  <span class="ex-pending-row__icon ex-pending-row__icon--purple"><i class="cses-stratis-luggage-02"></i></span>
+                  <div class="ex-pending-row__title-wrap">
+                    <span class="ex-pending-row__title">2026 Q2 杭州出差</span>
+                    <span class="ex-pending-row__meta">EX-2026-0612-01 · 5 张发票</span>
+                  </div>
+                </div>
+                <div class="ex-pending-row__amt">¥ 3,420.00</div>
+                <div class="ex-pending-row__status">
+                  <cs-status-badge data-status="in-progress">
+                    <span class="status-dot"></span>
+                    <span class="status-text">审批中</span>
+                  </cs-status-badge>
+                  <span class="ex-pending-row__step">当前：直属主管 王经理</span>
+                </div>
+                <div class="ex-pending-row__action">
+                  <cs-button data-variant="text" data-expense-action="open-expense-detail" data-expense-id="EX-2026-0612-01">
+                    <span class="btn-label">查看进度</span>
+                  </cs-button>
+                </div>
+              </article>
+
+              <!-- 报销单 2 -->
+              <article class="ex-pending-row" data-expense-action="open-expense-detail" data-expense-id="EX-2026-0608-02">
+                <div class="ex-pending-row__lead">
+                  <span class="ex-pending-row__icon ex-pending-row__icon--orange"><i class="cses-stratis-receipt-lines"></i></span>
+                  <div class="ex-pending-row__title-wrap">
+                    <span class="ex-pending-row__title">5 月加班餐汇总</span>
+                    <span class="ex-pending-row__meta">EX-2026-0608-02 · 8 张发票</span>
+                  </div>
+                </div>
+                <div class="ex-pending-row__amt">¥ 642.00</div>
+                <div class="ex-pending-row__status">
+                  <cs-status-badge data-status="overdue">
+                    <span class="status-dot"></span>
+                    <span class="status-text">需补充材料</span>
+                  </cs-status-badge>
+                  <span class="ex-pending-row__step">财务退回：缺少招待事由</span>
+                </div>
+                <div class="ex-pending-row__action">
+                  <cs-button data-expense-action="fix-expense" data-expense-id="EX-2026-0608-02">
+                    <i class="btn-icon cses-stratis-edit-01"></i>
+                    <span class="btn-label">补充并重交</span>
+                  </cs-button>
+                </div>
+              </article>
+
+              <!-- 报销单 3 -->
+              <article class="ex-pending-row" data-expense-action="open-expense-detail" data-expense-id="EX-2026-0530-03">
+                <div class="ex-pending-row__lead">
+                  <span class="ex-pending-row__icon ex-pending-row__icon--blue"><i class="cses-stratis-train"></i></span>
+                  <div class="ex-pending-row__title-wrap">
+                    <span class="ex-pending-row__title">5 月交通月清单</span>
+                    <span class="ex-pending-row__meta">EX-2026-0530-03 · 12 张发票</span>
+                  </div>
+                </div>
+                <div class="ex-pending-row__amt">¥ 1,180.50</div>
+                <div class="ex-pending-row__status">
+                  <cs-status-badge data-status="completed">
+                    <span class="status-dot"></span>
+                    <span class="status-text">已打款</span>
+                  </cs-status-badge>
+                  <span class="ex-pending-row__step">06-05 已到账 · 招商 6328</span>
+                </div>
+                <div class="ex-pending-row__action">
+                  <cs-button data-variant="text" data-expense-action="download-voucher" data-expense-id="EX-2026-0530-03">
+                    <i class="btn-icon cses-stratis-download-01"></i>
+                    <span class="btn-label">凭证</span>
+                  </cs-button>
+                </div>
+              </article>
+
+              <!-- 报销单 4 -->
+              <article class="ex-pending-row" data-expense-action="open-expense-detail" data-expense-id="EX-2026-0528-04">
+                <div class="ex-pending-row__lead">
+                  <span class="ex-pending-row__icon ex-pending-row__icon--sky"><i class="cses-stratis-graduation-cap-01"></i></span>
+                  <div class="ex-pending-row__title-wrap">
+                    <span class="ex-pending-row__title">前端技术大会培训费</span>
+                    <span class="ex-pending-row__meta">EX-2026-0528-04 · 2 张发票</span>
+                  </div>
+                </div>
+                <div class="ex-pending-row__amt">¥ 2,180.00</div>
+                <div class="ex-pending-row__status">
+                  <cs-status-badge data-status="not-started">
+                    <span class="status-dot"></span>
+                    <span class="status-text">草稿</span>
+                  </cs-status-badge>
+                  <span class="ex-pending-row__step">尚未提交，自动保存 2 小时前</span>
+                </div>
+                <div class="ex-pending-row__action">
+                  <cs-button data-variant="secondary" data-expense-action="continue-draft" data-expense-id="EX-2026-0528-04">
+                    <span class="btn-label">继续编辑</span>
+                  </cs-button>
+                </div>
+              </article>
+
+            </div>
+          </section>
+
+        </div>
+
+      </main>
+    </div>
+
+  </div>
+
+</cs-layout>
+
+</body>
+</html>

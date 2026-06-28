@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>员工设备申请 · SOP 5 轮问答记录</title>
+  <meta http-equiv="Cache-Control" content="no-cache">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    /* Editorial / Linear-Swiss palette */
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #FFFFFF;
+      font-family: "Inter", "PingFang SC", -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #0A0A0A;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== 顶部栏 ===== */
+    .doc-topbar {
+      position: sticky; top: 0; z-index: 10;
+      height: 52px;
+      background: #FFFFFF;
+      border-bottom: 0.5px solid #ECECEC;
+      display: flex; align-items: center;
+      padding: 0 28px;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+    .doc-topbar-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 14px; font-weight: 500; color: #0A0A0A;
+      letter-spacing: -0.2px; text-decoration: none;
+    }
+    .doc-topbar-logo-dot {
+      width: 20px; height: 20px; border-radius: 5px;
+      background: #0A0A0A;
+      display: flex; align-items: center; justify-content: center;
+      color: #FFFFFF; font-size: 10px; font-weight: 500;
+    }
+    .doc-topbar-divider { width: 1px; height: 14px; background: #ECECEC; }
+    .doc-topbar-subtitle { font-size: 12px; color: #666666; }
+    .doc-topbar-count {
+      margin-left: auto;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #999999;
+      letter-spacing: 0.8px; text-transform: uppercase;
+    }
+    .doc-topbar-link {
+      font-size: 11px; color: #666666; text-decoration: none;
+      padding: 5px 10px; border: 0.5px solid #E5E5E5; border-radius: 4px;
+      letter-spacing: 0.3px; text-transform: uppercase;
+      transition: all .15s;
+    }
+    .doc-topbar-link:hover { border-color: #0A0A0A; color: #0A0A0A; }
+
+    /* ===== 主体 ===== */
+    .doc-layout { flex: 1; display: flex; min-height: 0; }
+
+    /* 侧栏 */
+    .doc-sidebar {
+      width: 260px; flex-shrink: 0;
+      background: #FFFFFF;
+      border-right: 0.5px solid #ECECEC;
+      position: sticky; top: 52px;
+      align-self: flex-start;
+      height: calc(100vh - 52px);
+      overflow-y: auto;
+    }
+    .doc-sidebar::-webkit-scrollbar { width: 4px; }
+    .doc-sidebar::-webkit-scrollbar-thumb { background: #ECECEC; }
+
+    .doc-nav-scroll { padding: 6px 0 24px; }
+    .doc-nav-group { padding: 16px 0 4px; }
+    .doc-nav-group:first-child { padding-top: 12px; }
+    .doc-nav-group-label {
+      padding: 4px 22px 10px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px; font-weight: 400; color: #999999;
+      letter-spacing: 1.2px; text-transform: uppercase;
+    }
+    .doc-nav-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 7px 22px;
+      font-size: 12.5px; color: #666666;
+      cursor: pointer; transition: color .12s;
+      text-decoration: none;
+    }
+    .doc-nav-item .nav-tag {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px; color: #BBBBBB;
+      letter-spacing: 0.6px;
+    }
+    .doc-nav-item:hover { color: #0A0A0A; }
+    .doc-nav-item.active { color: #0A0A0A; font-weight: 500; }
+    .doc-nav-item.active .nav-tag { color: #4857E2; }
+
+    /* 内容 */
+    .doc-content {
+      flex: 1; min-width: 0;
+      background: #FFFFFF;
+    }
+    .page { padding: 44px 56px; max-width: 920px; }
+
+    /* 章节 */
+    .section-block { padding-top: 56px; margin-top: 56px; border-top: 0.5px solid #ECECEC; }
+    .section-block:first-of-type { padding-top: 0; margin-top: 0; border-top: none; }
+
+    .page-title {
+      font-size: 32px; font-weight: 500; color: #0A0A0A;
+      display: flex; align-items: baseline; gap: 14px;
+      margin: 0 0 10px;
+      letter-spacing: -0.8px; line-height: 1.1;
+    }
+    .page-title-tag {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #999999;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      font-weight: 400;
+    }
+    .page-subtitle {
+      font-size: 13px; color: #666666;
+      line-height: 1.7; max-width: 620px;
+      margin: 0 0 28px;
+    }
+
+    .section-label {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #999999;
+      letter-spacing: 1.4px; text-transform: uppercase;
+      margin-bottom: 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-label .label-dot { width: 5px; height: 5px; border-radius: 50%; background: #999; }
+    .section-label.accent { color: #4857E2; }
+    .section-label.accent .label-dot { background: #4857E2; }
+    .section-label.warn { color: #B58B1E; }
+    .section-label.warn .label-dot { background: #B58B1E; }
+
+    h2.section-title {
+      font-size: 22px; font-weight: 500; color: #0A0A0A;
+      margin: 0 0 8px;
+      letter-spacing: -0.4px; line-height: 1.25;
+    }
+    .section-hint {
+      font-size: 12.5px; color: #666; line-height: 1.6;
+      margin: 0 0 20px;
+    }
+
+    /* ===== 概览 stats ===== */
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 0;
+      margin: 28px 0 12px;
+    }
+    .stat-card {
+      border-left: 0.5px solid #ECECEC;
+      padding: 4px 22px;
+    }
+    .stat-card:first-child { border-left: none; padding-left: 0; }
+    .stat-card-label {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px; color: #999999;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .stat-card-value {
+      font-size: 38px; font-weight: 500; color: #0A0A0A;
+      line-height: 1; letter-spacing: -1.4px;
+    }
+    .stat-card-unit { font-size: 14px; color: #999999; margin-left: 4px; }
+    .stat-card-hint {
+      margin-top: 10px;
+      font-size: 10px; color: #999999;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      letter-spacing: 0.4px;
+    }
+
+    /* ===== 题卡 ===== */
+    .q-card {
+      border-top: 0.5px solid #ECECEC;
+      padding: 28px 0 24px;
+    }
+    .q-card:first-of-type { border-top: 0.5px solid #0A0A0A; }
+    .q-card.dispatch {
+      background: #FFF9F0;
+      border-top: 0.5px solid #F0DCB0;
+      border-bottom: 0.5px solid #F0DCB0;
+      padding: 24px 24px 22px;
+      margin-top: -0.5px;
+    }
+    .q-card-head {
+      display: flex; align-items: baseline; gap: 16px;
+      margin-bottom: 4px;
+    }
+    .q-card-num {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 11px; color: #4857E2;
+      letter-spacing: 1.4px; text-transform: uppercase;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+    .q-card-title {
+      font-size: 17px; font-weight: 500; color: #0A0A0A;
+      margin: 0;
+      letter-spacing: -0.2px;
+    }
+    .q-card-decides {
+      font-size: 12px; color: #666;
+      line-height: 1.6; margin: 0 0 16px;
+      padding-left: 0;
+    }
+    .q-card-decides::before {
+      content: '决定';
+      font-family: "JetBrains Mono", monospace;
+      font-size: 9px; color: #999;
+      letter-spacing: 1px;
+      margin-right: 8px;
+      text-transform: uppercase;
+    }
+
+    /* 选项行 */
+    .opt-list {
+      margin: 12px 0 16px;
+      border: 0.5px solid #ECECEC;
+    }
+    .opt-row {
+      display: grid;
+      grid-template-columns: 56px 1fr 80px;
+      align-items: center;
+      padding: 12px 16px;
+      border-bottom: 0.5px solid #ECECEC;
+      transition: background .12s;
+      font-size: 13px;
+      color: #0A0A0A;
+    }
+    .opt-row:last-child { border-bottom: none; }
+    .opt-row:hover { background: #FAFAFA; }
+    .opt-row .opt-label {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 11px; color: #999;
+      letter-spacing: 1.2px;
+    }
+    .opt-row .opt-text { color: #0A0A0A; line-height: 1.5; }
+    .opt-row .opt-mark {
+      justify-self: end;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 9px; color: transparent;
+      letter-spacing: 1px;
+    }
+    .opt-row.chosen { background: #F5F6FD; }
+    .opt-row.chosen .opt-label { color: #4857E2; font-weight: 500; }
+    .opt-row.chosen .opt-text { font-weight: 500; }
+    .opt-row.chosen .opt-mark { color: #4857E2; }
+    .opt-row.chosen .opt-mark::before { content: '◀ 用户选'; }
+
+    /* multiSelect 标记 */
+    .opt-list.multi .opt-row.chosen .opt-mark::before { content: '✓ 用户勾'; }
+
+    /* 题卡底部注释 */
+    .q-note {
+      font-size: 12px; color: #B58B1E;
+      line-height: 1.6;
+      padding: 10px 14px;
+      background: #FFF9F0;
+      border: 0.5px solid #F0DCB0;
+      margin-top: 4px;
+    }
+    .q-note.info {
+      color: #4857E2;
+      background: #F5F6FD;
+      border-color: #C3C9F1;
+    }
+
+    /* ===== 表格 ===== */
+    table.simple {
+      width: 100%; border-collapse: collapse;
+      margin: 12px 0 0;
+    }
+    table.simple th, table.simple td {
+      text-align: left;
+      padding: 11px 14px;
+      border-bottom: 0.5px solid #ECECEC;
+      font-size: 12.5px;
+      vertical-align: top;
+      color: #0A0A0A;
+    }
+    table.simple th {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px; color: #999;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      font-weight: 400;
+      border-bottom: 0.5px solid #E5E5E5;
+    }
+    table.simple td.tick { color: #1E7A2E; font-weight: 500; }
+    table.simple td.mono {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 11px; color: #4857E2;
+    }
+    table.simple td.muted { color: #666; }
+
+    /* badge */
+    .badge {
+      display: inline-block;
+      padding: 2px 7px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px; letter-spacing: 0.8px; text-transform: uppercase;
+      border: 0.5px solid #E5E5E5;
+      color: #666;
+      vertical-align: middle;
+    }
+    .badge.accent { color: #4857E2; border-color: #C3C9F1; }
+    .badge.ok { color: #1E7A2E; border-color: #BFE2C4; }
+    .badge.warn { color: #B58B1E; border-color: #F0DCB0; }
+
+    code {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 11.5px;
+      background: #F5F5F5; padding: 1px 5px; border-radius: 2px;
+      color: #4857E2;
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部栏 -->
+  <header class="doc-topbar">
+    <a class="doc-topbar-logo" href="index.html">
+      <span class="doc-topbar-logo-dot">Q</span>
+      员工设备申请
+    </a>
+    <span class="doc-topbar-divider"></span>
+    <span class="doc-topbar-subtitle">SOP 5 轮问答记录 · 2026-06-26</span>
+    <span class="doc-topbar-count">14 题 · 10 主流程 + 3 裁决 + 1 文案</span>
+    <a class="doc-topbar-link" href="sop-questions.md">SOURCE.MD</a>
+    <a class="doc-topbar-link" href="index.html" style="margin-left:8px;">REQ</a>
+  </header>
+
+  <div class="doc-layout">
+    <!-- 侧栏 -->
+    <aside class="doc-sidebar">
+      <nav class="doc-nav-scroll">
+        <div class="doc-nav-group">
+          <div class="doc-nav-group-label">概览</div>
+          <a class="doc-nav-item active" href="#overview"><span>概览</span><span class="nav-tag">0 题</span></a>
+        </div>
+        <div class="doc-nav-group">
+          <div class="doc-nav-group-label">5 轮主流程</div>
+          <a class="doc-nav-item" href="#r1"><span>轮 1 · WHY + WHO</span><span class="nav-tag">2 题</span></a>
+          <a class="doc-nav-item" href="#r2"><span>轮 2 · DO</span><span class="nav-tag">2 题</span></a>
+          <a class="doc-nav-item" href="#r3"><span>轮 3 · SHOW</span><span class="nav-tag">3 题</span></a>
+          <a class="doc-nav-item" href="#r4"><span>轮 4 · PROTO</span><span class="nav-tag">2 题</span></a>
+          <a class="doc-nav-item" href="#r5"><span>轮 5 · EDGE</span><span class="nav-tag">2 题</span></a>
+        </div>
+        <div class="doc-nav-group">
+          <div class="doc-nav-group-label">临时裁决</div>
+          <a class="doc-nav-item" href="#r3-5"><span>3.5 · 冲突裁决</span><span class="nav-tag">1 题</span></a>
+          <a class="doc-nav-item" href="#r4-5"><span>4.5 · 结构差异</span><span class="nav-tag">1 题</span></a>
+          <a class="doc-nav-item" href="#r4-6"><span>4.6 · 文案规则</span><span class="nav-tag">1 题</span></a>
+          <a class="doc-nav-item" href="#r4-7"><span>4.7 · filter-bar 自洽</span><span class="nav-tag">1 题</span></a>
+        </div>
+        <div class="doc-nav-group">
+          <div class="doc-nav-group-label">总结</div>
+          <a class="doc-nav-item" href="#verified"><span>验证的 SOP 能力</span><span class="nav-tag">8 项</span></a>
+          <a class="doc-nav-item" href="#improvements"><span>触发的 SOP 改进点</span><span class="nav-tag">6 项</span></a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- 内容 -->
+    <main class="doc-content">
+      <div class="page">
+
+        <!-- 概览 -->
+        <section class="section-block" id="overview">
+          <h1 class="page-title">SOP 5 轮问答记录 <span class="page-title-tag">14 Q · 2026-06-26</span></h1>
+          <p class="page-subtitle">主会话在 6 段 SOP 5 轮对话中向用户抛出的全部问题、选项、用户最终选择。含正常 5 轮 + 临时分叉裁决题。本文档作为 SOP 实战范例存档。</p>
+
+          <div class="overview-grid">
+            <div class="stat-card">
+              <div class="stat-card-label">主流程</div>
+              <div class="stat-card-value">10</div>
+              <div class="stat-card-hint">5 ROUNDS</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">冲突裁决</div>
+              <div class="stat-card-value">3</div>
+              <div class="stat-card-hint">FORKED</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">文案裁决</div>
+              <div class="stat-card-value">1</div>
+              <div class="stat-card-hint">COPY-RULE</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">总题数</div>
+              <div class="stat-card-value">14</div>
+              <div class="stat-card-hint">Q TOTAL</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">用户质疑</div>
+              <div class="stat-card-value">2</div>
+              <div class="stat-card-hint">CHALLENGES</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 轮 1 -->
+        <section class="section-block" id="r1">
+          <div class="section-label accent"><span class="label-dot"></span>ROUND 01 · WHY + WHO</div>
+          <h2 class="section-title">采集页面价值 + 主用户角色</h2>
+
+          <!-- Q1 -->
+          <div class="q-card">
+            <div class="q-card-head">
+              <span class="q-card-num">Q1.1</span>
+              <h3 class="q-card-title">核心场景</h3>
+            </div>
+            <p class="q-card-decides">WHY · 价值与上下游</p>
+            <div class="opt-list">
+              <div class="opt-row chosen"><span class="opt-label">A</span><span class="opt-text">新员工入职配齐设备</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">B</span><span class="opt-text">在职员工换 / 补设备</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">C</span><span class="opt-text">临时借用（出差 / 活动）</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">D</span><span class="opt-text">故障报修 / 更换</span><span class="opt-mark"></span></div>
+            </div>
+          </div>
+
+          <!-- Q2 -->
+          <div class="q-card">
+            <div class="q-card-head">
+              <span class="q-card-num">Q1.2</span>
+              <h3 class="q-card-title">主用户角色</h3>
+            </div>
+            <p class="q-card-decides">WHO · 唯一主角色与心智状态</p>
+            <div class="opt-list">
+              <div class="opt-row chosen"><span class="opt-label">A</span><span class="opt-text">普通员工 · 低频赶时间</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">B</span><span class="opt-text">新入职员工 · 一次性陌生</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">C</span><span class="opt-text">IT 管理员 · 高频处理</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">D</span><span class="opt-text">部门长 · 中频审批</span><span class="opt-mark"></span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 轮 2 -->
+        <section class="section-block" id="r2">
+          <div class="section-label accent"><span class="label-dot"></span>ROUND 02 · DO</div>
+          <h2 class="section-title">采集主任务 + 交互形态</h2>
+
+          <div class="q-card">
+            <div class="q-card-head">
+              <span class="q-card-num">Q2.1</span>
+              <h3 class="q-card-title">唯一主任务</h3>
+            </div>
+            <p class="q-card-decides">DO · 主任务 + 最短步骤</p>
+            <div class="opt-list">
+              <div class="opt-row chosen"><span class="opt-label">A</span><span class="opt-text">从入职套餐快选设备</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">B</span><span class="opt-text">逐项选设备提交申请</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">C</span><span class="opt-text">领取预配设备 + 确认领取</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">D</span><span class="opt-text">填完整设备需求表</span><span class="opt-mark"></span></div>
+            </div>
+          </div>
+
+          <div class="q-card">
+            <div class="q-card-head">
+              <span class="q-card-num">Q2.2</span>
+              <h3 class="q-card-title">主 CTA 点击后的交互形态</h3>
+            </div>
+            <p class="q-card-decides">DO · 交互形态 + 主 CTA 文案（赶时间用户优先少点击）</p>
+            <div class="opt-list">
+              <div class="opt-row chosen"><span class="opt-label">A</span><span class="opt-text">右侧抽屉填表</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">B</span><span class="opt-text">中央弹窗确认</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">C</span><span class="opt-text">跳新页向导</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">D</span><span class="opt-text">列表内快卡 / 一键提交</span><span class="opt-mark"></span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 轮 3 -->
+        <section class="section-block" id="r3">
+          <div class="section-label accent"><span class="label-dot"></span>ROUND 03 · SHOW</div>
+          <h2 class="section-title">采集布局 + F1 字段 + 菜单</h2>
+          <p class="section-hint">一次抛 3 题，覆盖 SHOW 段 3 个核心字段。</p>
+
+          <div class="q-card">
+            <div class="q-card-head">
+              <span class="q-card-num">Q3.1</span>
+              <h3 class="q-card-title">布局骨架</h3>
+            </div>
+            <p class="q-card-decides">SHOW · 布局骨架</p>
+            <div class="opt-list">
+              <div class="opt-row"><span class="opt-label">A</span><span class="opt-text">套餐卡片墙 + 右抽屉</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">B</span><span class="opt-text">工作台（3 卡块）+ 右抽屉</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">C</span><span class="opt-text">列表 + 右抽屉</span><span class="opt-mark"></span></div>
+              <div class="opt-row chosen"><span class="opt-label">D</span><span class="opt-text">向导页（3 步）</span><span class="opt-mark"></span></div>
+            </div>
+            <div class="q-note">⚠️ 与轮 2 DO "右侧抽屉填表" 冲突——主会话识别后抛出冲突裁决题（见 3.5）</div>
+          </div>
+
+          <div class="q-card">
+            <div class="q-card-head">
+              <span class="q-card-num">Q3.2</span>
+              <h3 class="q-card-title">F1 必看字段 <span class="badge accent">MULTI</span></h3>
+            </div>
+            <p class="q-card-decides">SHOW · F1 字段与信息优先级（4-7 个，勾 3-4 组即可）</p>
+            <div class="opt-list multi">
+              <div class="opt-row chosen"><span class="opt-label">A</span><span class="opt-text">套餐识别（名称 + 适用岗位）</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">B</span><span class="opt-text">设备清单 + 库存状态</span><span class="opt-mark"></span></div>
+              <div class="opt-row chosen"><span class="opt-label">C</span><span class="opt-text">预估总价 + 期望到货日</span><span class="opt-mark"></span></div>
+              <div class="opt-row chosen"><span class="opt-label">D</span><span class="opt-text">申请状态徽标 + 审批进度</span><span class="opt-mark"></span></div>
+            </div>
+            <div class="q-note info">用户勾 A + C + D（3 组 ≈ 5 个字段，含跨字段组合）</div>
+          </div>
+
+          <div class="q-card">
+            <div class="q-card-head">
+              <span class="q-card-num">Q3.3</span>
+              <h3 class="q-card-title">菜单结构 + 分组维度</h3>
+            </div>
+            <p class="q-card-decides">SHOW · 菜单结构 + 分组维度</p>
+            <div class="opt-list">
+              <div class="opt-row chosen"><span class="opt-label">A</span><span class="opt-text">套餐选择 / 我的申请 / 设备目录 / 草稿箱</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">B</span><span class="opt-text">快选套餐 / 进行中 / 已完成 / 草稿箱</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">C</span><span class="opt-text">首页 / 套餐库 / 我的申请 / 发货跟踪 / 帮助</span><span class="opt-mark"></span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 轮 3.5 -->
+        <section class="section-block" id="r3-5">
+          <div class="section-label warn"><span class="label-dot"></span>FORK 3.5 · 冲突裁决</div>
+          <h2 class="section-title">DO 抽屉 vs SHOW 向导</h2>
+          <p class="section-hint">主会话主动识别答案冲突后抛出裁决题。</p>
+
+          <div class="q-card dispatch">
+            <div class="q-card-head">
+              <span class="q-card-num">FORK 3.5</span>
+              <h3 class="q-card-title">两个互斥答案保留哪个？</h3>
+            </div>
+            <div class="opt-list">
+              <div class="opt-row"><span class="opt-label">A</span><span class="opt-text">以向导页为准：DO 改为"跳新页向导"</span><span class="opt-mark"></span></div>
+              <div class="opt-row chosen"><span class="opt-label">B</span><span class="opt-text">以抽屉为准：SHOW 改为"套餐卡片墙 + 右抽屉"</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">C</span><span class="opt-text">以抽屉为准：SHOW 改为"列表 + 右抽屉"</span><span class="opt-mark"></span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 轮 4 -->
+        <section class="section-block" id="r4">
+          <div class="section-label accent"><span class="label-dot"></span>ROUND 04 · PROTO</div>
+          <h2 class="section-title">采集原型方案数量 + 载体</h2>
+
+          <div class="q-card">
+            <div class="q-card-head">
+              <span class="q-card-num">Q4.1</span>
+              <h3 class="q-card-title">方案数量</h3>
+            </div>
+            <p class="q-card-decides">PROTO · 多选 N 会并行派 N 个 page-agent（结构差异硬约束）</p>
+            <div class="opt-list">
+              <div class="opt-row"><span class="opt-label">A</span><span class="opt-text">单选 · 1 个最终方案</span><span class="opt-mark"></span></div>
+              <div class="opt-row chosen"><span class="opt-label">B</span><span class="opt-text">多选 · 2 个并行</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">C</span><span class="opt-text">多选 · 3 个并行</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">D</span><span class="opt-text">多选 · 4 个并行</span><span class="opt-mark"></span></div>
+            </div>
+          </div>
+
+          <div class="q-card">
+            <div class="q-card-head">
+              <span class="q-card-num">Q4.2</span>
+              <h3 class="q-card-title">原型表达载体</h3>
+            </div>
+            <p class="q-card-decides">PROTO · 表达载体</p>
+            <div class="opt-list">
+              <div class="opt-row chosen"><span class="opt-label">A</span><span class="opt-text">ASCII 框图（默认）</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">B</span><span class="opt-text">Mermaid flowchart</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">C</span><span class="opt-text">主会话描述 + 你自己画</span><span class="opt-mark"></span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 轮 4.5 -->
+        <section class="section-block" id="r4-5">
+          <div class="section-label warn"><span class="label-dot"></span>FORK 4.5 · 结构差异裁决</div>
+          <h2 class="section-title">option-2 选哪个结构跟 option-1 拉开差异</h2>
+          <p class="section-hint">主会话发现 A/B 都是卡片墙、只换分类维度 → 违反"结构差异"硬约束，主动拦截重选。</p>
+
+          <div class="q-card dispatch">
+            <div class="q-card-head">
+              <span class="q-card-num">FORK 4.5</span>
+              <h3 class="q-card-title">option-2 结构方向</h3>
+            </div>
+            <div class="opt-list">
+              <div class="opt-row chosen"><span class="opt-label">A</span><span class="opt-text">工作台 3 卡块</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">B</span><span class="opt-text">表格对比页</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">C</span><span class="opt-text">向导页 3 步（限定在 option-2）</span><span class="opt-mark"></span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 轮 4.6 -->
+        <section class="section-block" id="r4-6">
+          <div class="section-label warn"><span class="label-dot"></span>FORK 4.6 · 文案规则裁决</div>
+          <h2 class="section-title">PROTO 副标题处理</h2>
+          <p class="section-hint">用户截图质疑："副标题：推荐 / 进行中 / 物流总览是什么意思"。主会话承认是把卡块名拼成副标题、无业务含义。</p>
+
+          <div class="q-card dispatch">
+            <div class="q-card-head">
+              <span class="q-card-num">FORK 4.6</span>
+              <h3 class="q-card-title">副标题文案怎么处理</h3>
+            </div>
+            <div class="opt-list">
+              <div class="opt-row"><span class="opt-label">A</span><span class="opt-text">副标题写真正给员工看的功能说明</span><span class="opt-mark"></span></div>
+              <div class="opt-row chosen"><span class="opt-label">B</span><span class="opt-text">PROTO 阶段不 hardcode 文案，留 placeholder</span><span class="opt-mark"></span></div>
+            </div>
+            <div class="q-note info">👉 此裁决直接驱动 <code>template/single-page.md</code> PROTO 段新增"不 hardcode 业务文案"约束</div>
+          </div>
+        </section>
+
+        <!-- 轮 4.7 -->
+        <section class="section-block" id="r4-7">
+          <div class="section-label warn"><span class="label-dot"></span>FORK 4.7 · filter-bar 自洽</div>
+          <h2 class="section-title">option-2 无 filter-bar 是不是问题</h2>
+          <p class="section-hint">用户质疑："option-2 没有 filter-bar"——主会话确认这正是有意为之的结构差异。</p>
+
+          <div class="q-card dispatch">
+            <div class="q-card-head">
+              <span class="q-card-num">FORK 4.7</span>
+              <h3 class="q-card-title">保持还是补齐 filter-bar</h3>
+            </div>
+            <div class="opt-list">
+              <div class="opt-row chosen"><span class="opt-label">A</span><span class="opt-text">保持差异（option-1 有 / option-2 没有）— 这就是结构差异</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">B</span><span class="opt-text">option-2 补 filter-bar</span><span class="opt-mark"></span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 轮 5 -->
+        <section class="section-block" id="r5">
+          <div class="section-label accent"><span class="label-dot"></span>ROUND 05 · EDGE</div>
+          <h2 class="section-title">采集状态边界 + 视口 + 成功指标</h2>
+
+          <div class="q-card">
+            <div class="q-card-head">
+              <span class="q-card-num">Q5.1</span>
+              <h3 class="q-card-title">5 种状态</h3>
+            </div>
+            <p class="q-card-decides">主看空态 + 错误 + 成功；加载 / 无权限取常规默认</p>
+            <div class="opt-list">
+              <div class="opt-row chosen"><span class="opt-label">A</span><span class="opt-text">空 = 插画 + 主 CTA；成功 = toast 留页 + 高亮新项</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">B</span><span class="opt-text">空 = 表单预填直接走；成功 = 跳详情页</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">C</span><span class="opt-text">空 = 插画但没 CTA；错误 = 静默重试</span><span class="opt-mark"></span></div>
+            </div>
+          </div>
+
+          <div class="q-card">
+            <div class="q-card-head">
+              <span class="q-card-num">Q5.2</span>
+              <h3 class="q-card-title">视口 + 成功指标</h3>
+            </div>
+            <p class="q-card-decides">EDGE · 视口 + 验收指标</p>
+            <div class="opt-list">
+              <div class="opt-row chosen"><span class="opt-label">A</span><span class="opt-text">仅桌面 1440+（6 列卷轴）；80% 入职 3 天内提交</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">B</span><span class="opt-text">仅桌面 1440+；点击一键领取到 toast 扣 90 秒</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">C</span><span class="opt-text">自适应（1024+）；不设硬指标</span><span class="opt-mark"></span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 验证 -->
+        <section class="section-block" id="verified">
+          <div class="section-label"><span class="label-dot"></span>VERIFIED</div>
+          <h2 class="section-title">本轮跑通的 SOP 能力</h2>
+
+          <table class="simple">
+            <thead>
+              <tr><th>维度</th><th>结果</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>5 轮 AskUserQuestion 对话</td><td class="tick">✓ 全部跑通</td></tr>
+              <tr><td>主会话识别答案冲突（DO 抽屉 vs SHOW 向导）</td><td class="tick">✓ 主动抛裁决题（FORK 3.5）</td></tr>
+              <tr><td>PROTO 结构差异硬约束</td><td class="tick">✓ 拦截两个同质卡片墙方案（FORK 4.5）</td></tr>
+              <tr><td>content-header 禁画主 CTA</td><td class="tick">✓ 用户质疑后两个 page-agent 都遵守</td></tr>
+              <tr><td>不 hardcode 业务文案</td><td class="tick">✓ 用户质疑后约束写入 template（FORK 4.6）</td></tr>
+              <tr><td>单文件落盘（PROTO 内嵌）</td><td class="tick">✓ 用户反馈后改完 SOP 走通</td></tr>
+              <tr><td>并行 page-agent 派单</td><td class="tick">✓ 后台并行无冲突</td></tr>
+              <tr><td>结构差异验收</td><td class="tick">✓ filter-bar vs 工作台真的不同</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- 改进 -->
+        <section class="section-block" id="improvements">
+          <div class="section-label accent"><span class="label-dot"></span>IMPROVEMENTS</div>
+          <h2 class="section-title">触发的 SOP 改进点</h2>
+
+          <table class="simple">
+            <thead>
+              <tr><th>#</th><th>改进</th><th>触发</th><th>落地</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="muted">1</td>
+                <td>PROTO content-header 禁画主 CTA</td>
+                <td class="muted">用户截图反馈</td>
+                <td class="mono">single-page.md L42<br>requirement-agent.md 反模式表</td>
+              </tr>
+              <tr>
+                <td class="muted">2</td>
+                <td>PROTO 不 hardcode 业务文案</td>
+                <td class="muted">FORK 4.6</td>
+                <td class="mono">single-page.md L43</td>
+              </tr>
+              <tr>
+                <td class="muted">3</td>
+                <td>PROTO 多选必须结构差异</td>
+                <td class="muted">FORK 4.5 主动拦截</td>
+                <td class="mono">既有约束被验证</td>
+              </tr>
+              <tr>
+                <td class="muted">4</td>
+                <td>PROTO 原型从分文件改成内嵌 REQ 文件</td>
+                <td class="muted">用户反馈后</td>
+                <td class="mono">single-page.md PROTO 段<br>requirement-agent.md 流程图</td>
+              </tr>
+              <tr>
+                <td class="muted">5</td>
+                <td>多方案产出同目录共享 + <code>&lt;slug&gt;-option-&lt;N&gt;</code> 命名</td>
+                <td class="muted">用户反馈后</td>
+                <td class="mono">page-agent.md 输出规则段<br>page-agent.md 禁止复用段</td>
+              </tr>
+              <tr>
+                <td class="muted">6</td>
+                <td>单页 / 多页模板拆分</td>
+                <td class="muted">用户提出</td>
+                <td class="mono">template/single-page.md<br>template/multi-page.md</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const items = Array.from(document.querySelectorAll('.doc-nav-item'));
+    const sections = items.map(a => document.querySelector(a.getAttribute('href')));
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const id = '#' + e.target.id;
+          items.forEach(a => a.classList.toggle('active', a.getAttribute('href') === id));
+        }
+      });
+    }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
+    sections.forEach(s => s && observer.observe(s));
+  </script>
+</body>
+</html>

@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>会议室预订 · 4-题 Q-Bank 问答记录</title>
+  <meta http-equiv="Cache-Control" content="no-cache">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #FFFFFF;
+      font-family: "Inter", "PingFang SC", -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #0A0A0A;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== 顶部栏 ===== */
+    .doc-topbar {
+      position: sticky; top: 0; z-index: 10;
+      height: 52px;
+      background: #FFFFFF;
+      border-bottom: 0.5px solid #ECECEC;
+      display: flex; align-items: center;
+      padding: 0 28px;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+    .doc-topbar-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 14px; font-weight: 500; color: #0A0A0A;
+      letter-spacing: -0.2px; text-decoration: none;
+    }
+    .doc-topbar-logo-dot {
+      width: 20px; height: 20px; border-radius: 5px;
+      background: #0A0A0A;
+      display: flex; align-items: center; justify-content: center;
+      color: #FFFFFF; font-size: 10px; font-weight: 500;
+    }
+    .doc-topbar-divider { width: 1px; height: 14px; background: #ECECEC; }
+    .doc-topbar-subtitle { font-size: 12px; color: #666666; }
+    .doc-topbar-count {
+      margin-left: auto;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #999999;
+      letter-spacing: 0.8px; text-transform: uppercase;
+    }
+    .doc-topbar-link {
+      font-size: 11px; color: #666666; text-decoration: none;
+      padding: 5px 10px; border: 0.5px solid #E5E5E5; border-radius: 4px;
+      letter-spacing: 0.3px; text-transform: uppercase;
+      transition: all .15s;
+    }
+    .doc-topbar-link:hover { border-color: #0A0A0A; color: #0A0A0A; }
+
+    /* ===== 主体 ===== */
+    .doc-layout { flex: 1; display: flex; min-height: 0; }
+
+    .doc-sidebar {
+      width: 260px; flex-shrink: 0;
+      background: #FFFFFF;
+      border-right: 0.5px solid #ECECEC;
+      position: sticky; top: 52px;
+      align-self: flex-start;
+      height: calc(100vh - 52px);
+      overflow-y: auto;
+    }
+    .doc-sidebar::-webkit-scrollbar { width: 4px; }
+    .doc-sidebar::-webkit-scrollbar-thumb { background: #ECECEC; }
+
+    .doc-nav-scroll { padding: 6px 0 24px; }
+    .doc-nav-group { padding: 16px 0 4px; }
+    .doc-nav-group:first-child { padding-top: 12px; }
+    .doc-nav-group-label {
+      padding: 4px 22px 10px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px; font-weight: 400; color: #999999;
+      letter-spacing: 1.2px; text-transform: uppercase;
+    }
+    .doc-nav-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 7px 22px;
+      font-size: 12.5px; color: #666666;
+      cursor: pointer; transition: color .12s;
+      text-decoration: none;
+    }
+    .doc-nav-item .nav-tag {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px; color: #BBBBBB;
+      letter-spacing: 0.6px;
+    }
+    .doc-nav-item:hover { color: #0A0A0A; }
+    .doc-nav-item.active { color: #0A0A0A; font-weight: 500; }
+    .doc-nav-item.active .nav-tag { color: #4857E2; }
+
+    .doc-content {
+      flex: 1; min-width: 0;
+      background: #FFFFFF;
+    }
+    .page { padding: 44px 56px; max-width: 920px; }
+
+    /* 章节 */
+    .section-block { padding-top: 56px; margin-top: 56px; border-top: 0.5px solid #ECECEC; }
+    .section-block:first-of-type { padding-top: 0; margin-top: 0; border-top: none; }
+
+    .page-title {
+      font-size: 32px; font-weight: 500; color: #0A0A0A;
+      display: flex; align-items: baseline; gap: 14px;
+      margin: 0 0 10px;
+      letter-spacing: -0.8px; line-height: 1.1;
+    }
+    .page-title-tag {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #999999;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      font-weight: 400;
+    }
+    .page-subtitle {
+      font-size: 13px; color: #666666;
+      line-height: 1.7; max-width: 620px;
+      margin: 0 0 28px;
+    }
+
+    .section-label {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px; color: #999999;
+      letter-spacing: 1.4px; text-transform: uppercase;
+      margin-bottom: 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-label .label-dot { width: 5px; height: 5px; border-radius: 50%; background: #999; }
+    .section-label.accent { color: #4857E2; }
+    .section-label.accent .label-dot { background: #4857E2; }
+    .section-label.muted { color: #B58B1E; }
+    .section-label.muted .label-dot { background: #B58B1E; }
+
+    h2.section-title {
+      font-size: 22px; font-weight: 500; color: #0A0A0A;
+      margin: 0 0 8px;
+      letter-spacing: -0.4px; line-height: 1.25;
+    }
+    .section-hint {
+      font-size: 12.5px; color: #666; line-height: 1.6;
+      margin: 0 0 20px;
+    }
+
+    /* ===== 概览 stats ===== */
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 0;
+      margin: 28px 0 12px;
+    }
+    .stat-card {
+      border-left: 0.5px solid #ECECEC;
+      padding: 4px 22px;
+    }
+    .stat-card:first-child { border-left: none; padding-left: 0; }
+    .stat-card-label {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px; color: #999999;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .stat-card-value {
+      font-size: 38px; font-weight: 500; color: #0A0A0A;
+      line-height: 1; letter-spacing: -1.4px;
+    }
+    .stat-card-hint {
+      margin-top: 10px;
+      font-size: 10px; color: #999999;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      letter-spacing: 0.4px;
+    }
+
+    /* ===== 题卡 ===== */
+    .q-card {
+      border-top: 0.5px solid #ECECEC;
+      padding: 28px 0 24px;
+    }
+    .q-card:first-of-type { border-top: 0.5px solid #0A0A0A; }
+    .q-card-head {
+      display: flex; align-items: baseline; gap: 16px;
+      margin-bottom: 4px;
+    }
+    .q-card-num {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 11px; color: #4857E2;
+      letter-spacing: 1.4px; text-transform: uppercase;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+    .q-card-title {
+      font-size: 17px; font-weight: 500; color: #0A0A0A;
+      margin: 0;
+      letter-spacing: -0.2px;
+    }
+    .q-card-decides {
+      font-size: 12px; color: #666;
+      line-height: 1.6; margin: 0 0 16px;
+    }
+    .q-card-decides::before {
+      content: '决定';
+      font-family: "JetBrains Mono", monospace;
+      font-size: 9px; color: #999;
+      letter-spacing: 1px;
+      margin-right: 8px;
+      text-transform: uppercase;
+    }
+
+    /* 选项行 */
+    .opt-list {
+      margin: 12px 0 16px;
+      border: 0.5px solid #ECECEC;
+    }
+    .opt-row {
+      display: grid;
+      grid-template-columns: 56px 1fr 80px;
+      align-items: center;
+      padding: 12px 16px;
+      border-bottom: 0.5px solid #ECECEC;
+      transition: background .12s;
+      font-size: 13px;
+      color: #0A0A0A;
+    }
+    .opt-row:last-child { border-bottom: none; }
+    .opt-row:hover { background: #FAFAFA; }
+    .opt-row .opt-label {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 11px; color: #999;
+      letter-spacing: 1.2px;
+    }
+    .opt-row .opt-text { color: #0A0A0A; line-height: 1.5; }
+    .opt-row .opt-mark {
+      justify-self: end;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 9px; color: transparent;
+      letter-spacing: 1px;
+    }
+    .opt-row.chosen { background: #F5F6FD; }
+    .opt-row.chosen .opt-label { color: #4857E2; font-weight: 500; }
+    .opt-row.chosen .opt-text { font-weight: 500; }
+    .opt-row.chosen .opt-mark { color: #4857E2; }
+    .opt-row.chosen .opt-mark::before { content: '◀ 用户选'; }
+
+    .opt-list.multi .opt-row.chosen .opt-mark::before { content: '✓ 用户勾'; }
+
+    /* 题卡底部注释 */
+    .q-note {
+      font-size: 12px; color: #B58B1E;
+      line-height: 1.6;
+      padding: 10px 14px;
+      background: #FFF9F0;
+      border: 0.5px solid #F0DCB0;
+      margin-top: 4px;
+    }
+    .q-note.info {
+      color: #4857E2;
+      background: #F5F6FD;
+      border-color: #C3C9F1;
+    }
+    .q-note.ok {
+      color: #1E7A2E;
+      background: #F2FBF4;
+      border-color: #BFE2C4;
+    }
+
+    /* 映射表 */
+    table.simple {
+      width: 100%; border-collapse: collapse;
+      margin: 12px 0 0;
+    }
+    table.simple th, table.simple td {
+      text-align: left;
+      padding: 11px 14px;
+      border-bottom: 0.5px solid #ECECEC;
+      font-size: 12.5px;
+      vertical-align: top;
+      color: #0A0A0A;
+    }
+    table.simple th {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px; color: #999;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      font-weight: 400;
+      border-bottom: 0.5px solid #E5E5E5;
+    }
+    table.simple td.mono {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 11px; color: #4857E2;
+    }
+    table.simple td.muted { color: #666; }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 7px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px; letter-spacing: 0.8px; text-transform: uppercase;
+      border: 0.5px solid #E5E5E5;
+      color: #666;
+      vertical-align: middle;
+    }
+    .badge.accent { color: #4857E2; border-color: #C3C9F1; }
+    .badge.muted { color: #B58B1E; border-color: #F0DCB0; }
+
+    code {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 11.5px;
+      background: #F5F5F5; padding: 1px 5px; border-radius: 2px;
+      color: #4857E2;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="doc-topbar">
+    <a class="doc-topbar-logo" href="meeting-room-multi-req.md">
+      <span class="doc-topbar-logo-dot">Q</span>
+      会议室预订
+    </a>
+    <span class="doc-topbar-divider"></span>
+    <span class="doc-topbar-subtitle">4-题 Q-Bank 多页面问答记录 · 2026-06-26</span>
+    <span class="doc-topbar-count">11 子题 · 4 Q-Bank + 3 装配补</span>
+    <a class="doc-topbar-link" href="meeting-room-multi-req.md">SOURCE.MD</a>
+  </header>
+
+  <div class="doc-layout">
+
+    <aside class="doc-sidebar">
+      <nav class="doc-nav-scroll">
+        <div class="doc-nav-group">
+          <div class="doc-nav-group-label">概览</div>
+          <a class="doc-nav-item active" href="#overview"><span>概览</span><span class="nav-tag">0 题</span></a>
+        </div>
+        <div class="doc-nav-group">
+          <div class="doc-nav-group-label">Q-Bank 4 主流程</div>
+          <a class="doc-nav-item" href="#bank-q1"><span>Q1 · 角色 + 场景</span><span class="nav-tag">2 题</span></a>
+          <a class="doc-nav-item" href="#bank-q2"><span>Q2 · 合页 / 主+衍生</span><span class="nav-tag">2 题</span></a>
+          <a class="doc-nav-item" href="#bank-q3"><span>Q3 · 导航 + 落地</span><span class="nav-tag">1 题</span></a>
+          <a class="doc-nav-item" href="#bank-q4"><span>Q4 · 承载形态</span><span class="nav-tag">3 题</span></a>
+        </div>
+        <div class="doc-nav-group">
+          <div class="doc-nav-group-label">装配阶段补</div>
+          <a class="doc-nav-item" href="#ext-data"><span>Q5 · 数据字典</span><span class="nav-tag">2 题</span></a>
+          <a class="doc-nav-item" href="#ext-edge"><span>Q6 · 通用规范</span><span class="nav-tag">1 题</span></a>
+        </div>
+        <div class="doc-nav-group">
+          <div class="doc-nav-group-label">总结</div>
+          <a class="doc-nav-item" href="#summary"><span>Q-Bank 映射</span><span class="nav-tag">11→4</span></a>
+        </div>
+      </nav>
+    </aside>
+
+    <main class="doc-content">
+      <div class="page">
+
+        <!-- 概览 -->
+        <section class="section-block" id="overview">
+          <h1 class="page-title">4-题 Q-Bank 问答记录 <span class="page-title-tag">11 Q · 2026-06-26</span></h1>
+          <p class="page-subtitle">多页面装配前，主会话按 4-题 Q-Bank 跟用户对话产出 PAGES 表和 PROTO 三段。本文档存档全部问题、选项和用户选择，作为多页面 SOP 实战范例。</p>
+
+          <div class="overview-grid">
+            <div class="stat-card">
+              <div class="stat-card-label">Q-Bank 主流程</div>
+              <div class="stat-card-value">8</div>
+              <div class="stat-card-hint">4 BANK QS</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">装配阶段补</div>
+              <div class="stat-card-value">3</div>
+              <div class="stat-card-hint">DATA + EDGE</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">总子题</div>
+              <div class="stat-card-value">11</div>
+              <div class="stat-card-hint">Q TOTAL</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">用户拍板</div>
+              <div class="stat-card-value">10</div>
+              <div class="stat-card-hint">USER PICKED</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">主会话代决</div>
+              <div class="stat-card-value">1</div>
+              <div class="stat-card-hint">NO PREF → A</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Bank Q1 · 角色 + 场景 -->
+        <section class="section-block" id="bank-q1">
+          <div class="section-label accent"><span class="label-dot"></span>BANK Q1 · 角色 + 场景</div>
+          <h2 class="section-title">决定默认落地页、首屏重心、是否要"角色变体"区块</h2>
+
+          <div class="q-card">
+            <div class="q-card-head">
+              <span class="q-card-num">Q1.1</span>
+              <h3 class="q-card-title">用户角色覆盖</h3>
+            </div>
+            <p class="q-card-decides">用户端服务哪些角色 → 决定有无角色变体区块</p>
+            <div class="opt-list">
+              <div class="opt-row chosen"><span class="opt-label">A</span><span class="opt-text">仅员工</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">B</span><span class="opt-text">员工 + 预订管理员（同套页面按差异展示）</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">C</span><span class="opt-text">员工 + 预订管理员 + 部分管理员视角</span><span class="opt-mark"></span></div>
+            </div>
+            <div class="q-note info">含代他人预约能力（PDF UC5.2 明确说代订只需操作者的普通预订权限，不需要预订管理员）</div>
+          </div>
+
+          <div class="q-card">
+            <div class="q-card-head">
+              <span class="q-card-num">Q1.2</span>
+              <h3 class="q-card-title">高频使用场景 <span class="badge accent">multiSelect</span></h3>
+            </div>
+            <p class="q-card-decides">最高频 2~3 个场景 → 决定默认落地页 + 首屏重心</p>
+            <div class="opt-list multi">
+              <div class="opt-row"><span class="opt-label">A</span><span class="opt-text">当下救急订房（会前 5~10 分钟）</span><span class="opt-mark"></span></div>
+              <div class="opt-row chosen"><span class="opt-label">B</span><span class="opt-text">提前排会（周会、季度会、外部会谈）</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">C</span><span class="opt-text">临时变更（改时间/换房/取消/提前结束）</span><span class="opt-mark"></span></div>
+              <div class="opt-row chosen"><span class="opt-label">D</span><span class="opt-text">查自己的会（今天/本周去哪间、几点）</span><span class="opt-mark"></span></div>
+            </div>
+            <div class="q-note ok">推导：高频是"查自己" → 默认落地页 = 我的预约</div>
+          </div>
+        </section>
+
+        <!-- Bank Q2 · 合页 / 主+衍生 -->
+        <section class="section-block" id="bank-q2">
+          <div class="section-label accent"><span class="label-dot"></span>BANK Q2 · 合页 / 主+衍生</div>
+          <h2 class="section-title">决定页数减法</h2>
+
+          <div class="q-card">
+            <div class="q-card-head">
+              <span class="q-card-num">Q2.1</span>
+              <h3 class="q-card-title">列表 vs 时间轴</h3>
+            </div>
+            <p class="q-card-decides">「找会议室列表」UC3.7 + 「占用时间轴」UC5.8 怎么组织</p>
+            <div class="opt-list">
+              <div class="opt-row chosen"><span class="opt-label">A</span><span class="opt-text">同一页面、顶部 view 切换</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">B</span><span class="opt-text">两个独立页面、导航并列</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">C</span><span class="opt-text">只做列表，时间轴后续再补</span><span class="opt-mark"></span></div>
+            </div>
+            <div class="q-note ok">推导：页数 7 → 6（找会议室 + 占用时间轴 合一页）</div>
+          </div>
+
+          <div class="q-card">
+            <div class="q-card-head">
+              <span class="q-card-num">Q2.2</span>
+              <h3 class="q-card-title">周期预约 vs 单次预约</h3>
+            </div>
+            <p class="q-card-decides">主+衍生：周期预约表单怎么放</p>
+            <div class="opt-list">
+              <div class="opt-row chosen"><span class="opt-label">A</span><span class="opt-text">同一个表单 + 「重复」开关展开额外字段</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">B</span><span class="opt-text">独立周期预约抽屉</span><span class="opt-mark"></span></div>
+            </div>
+            <div class="q-note ok">同抽屉：创建/编辑共用，单次/周期共用，按状态切</div>
+          </div>
+        </section>
+
+        <!-- Bank Q3 · 导航 + 落地 -->
+        <section class="section-block" id="bank-q3">
+          <div class="section-label accent"><span class="label-dot"></span>BANK Q3 · 导航 + 落地</div>
+          <h2 class="section-title">决定页面骨架</h2>
+
+          <div class="q-card">
+            <div class="q-card-head">
+              <span class="q-card-num">Q3.1</span>
+              <h3 class="q-card-title">一级导航 + 默认落地页</h3>
+            </div>
+            <p class="q-card-decides">sidebar 二级导航填什么 / 默认进哪页</p>
+            <div class="opt-list">
+              <div class="opt-row chosen"><span class="opt-label">A</span><span class="opt-text">「我的预约 / 找会议室」两个入口，默认落地 = 我的预约</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">B</span><span class="opt-text">「找会议室 / 我的预约」两个入口，默认落地 = 找会议室</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">C</span><span class="opt-text">「首页仪表盘 / 找会议室 / 我的预约」三入口，默认落地 = 首页</span><span class="opt-mark"></span></div>
+            </div>
+            <div class="q-note info">通知走顶栏铃铛，管理后台仅有权限时显示 sidebar 底部</div>
+          </div>
+        </section>
+
+        <!-- Bank Q4 · 承载形态 -->
+        <section class="section-block" id="bank-q4">
+          <div class="section-label accent"><span class="label-dot"></span>BANK Q4 · 表单 / 详情 / 轻量功能 承载</div>
+          <h2 class="section-title">决定哪些是独立页面、页数最终定下来</h2>
+
+          <div class="q-card">
+            <div class="q-card-head">
+              <span class="q-card-num">Q4.1</span>
+              <h3 class="q-card-title">通知中心形态</h3>
+            </div>
+            <p class="q-card-decides">轻量常用功能怎么放</p>
+            <div class="opt-list">
+              <div class="opt-row chosen"><span class="opt-label">A</span><span class="opt-text">右上铃铛下拉面板 + 「查看全部」跳独立页</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">B</span><span class="opt-text">右上铃铛直接跳独立页</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">C</span><span class="opt-text">只做下拉面板</span><span class="opt-mark"></span></div>
+            </div>
+            <div class="q-note">用户「无偏好」→ 主会话拍 A（to B 95% 场景在面板里够用）</div>
+          </div>
+
+          <div class="q-card">
+            <div class="q-card-head">
+              <span class="q-card-num">Q4.2</span>
+              <h3 class="q-card-title">创建/编辑表单承载</h3>
+            </div>
+            <p class="q-card-decides">主要创建/编辑表单以什么形式出现</p>
+            <div class="opt-list">
+              <div class="opt-row chosen"><span class="opt-label">A</span><span class="opt-text">右侧抽屉</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">B</span><span class="opt-text">跳独立页面</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">C</span><span class="opt-text">居中弹窗</span><span class="opt-mark"></span></div>
+            </div>
+            <div class="q-note ok">中等复杂度 + 保留上下文（列表/时间轴/详情都在背景层）</div>
+          </div>
+
+          <div class="q-card">
+            <div class="q-card-head">
+              <span class="q-card-num">Q4.3</span>
+              <h3 class="q-card-title">预约详情承载</h3>
+            </div>
+            <p class="q-card-decides">业务对象详情怎么打开</p>
+            <div class="opt-list">
+              <div class="opt-row chosen"><span class="opt-label">A</span><span class="opt-text">跳独立页</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">B</span><span class="opt-text">右侧抽屉（与创建表单一致）</span><span class="opt-mark"></span></div>
+            </div>
+            <div class="q-note ok">动作多（编辑/取消/提前结束/开线上）、内容多、需要分享链接</div>
+          </div>
+        </section>
+
+        <!-- 装配阶段补 · 数据字典 -->
+        <section class="section-block" id="ext-data">
+          <div class="section-label muted"><span class="label-dot"></span>装配阶段补 · 数据字典</div>
+          <h2 class="section-title">超出 4-题 Q-Bank，但装配前必须定</h2>
+
+          <div class="q-card">
+            <div class="q-card-head">
+              <span class="q-card-num">Q5.1</span>
+              <h3 class="q-card-title">会议室设备字典</h3>
+            </div>
+            <p class="q-card-decides">设备字段的具体取值</p>
+            <div class="opt-list">
+              <div class="opt-row chosen"><span class="opt-label">A</span><span class="opt-text">用通用预设（投影/电视、白板、视频会议终端、麦克风、摄像头、电话、HDMI 转接器）</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">B</span><span class="opt-text">用户给定制清单</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">C</span><span class="opt-text">不区分字典，管理员填自由文本</span><span class="opt-mark"></span></div>
+            </div>
+          </div>
+
+          <div class="q-card">
+            <div class="q-card-head">
+              <span class="q-card-num">Q5.2</span>
+              <h3 class="q-card-title">线上会议供应商</h3>
+            </div>
+            <p class="q-card-decides">「开启线上会议」复用哪个供应商</p>
+            <div class="opt-list">
+              <div class="opt-row"><span class="opt-label">A</span><span class="opt-text">飞书会议</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">B</span><span class="opt-text">腾讯会议</span><span class="opt-mark"></span></div>
+              <div class="opt-row chosen"><span class="opt-label">C</span><span class="opt-text">自研 / 钉钉 / Zoom / 其他（抽象提供商，留接入位）</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">D</span><span class="opt-text">不涉及，去掉混合会议</span><span class="opt-mark"></span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 装配阶段补 · 通用规范 -->
+        <section class="section-block" id="ext-edge">
+          <div class="section-label muted"><span class="label-dot"></span>装配阶段补 · 通用规范</div>
+          <h2 class="section-title">详情页面附加区块取舍</h2>
+
+          <div class="q-card">
+            <div class="q-card-head">
+              <span class="q-card-num">Q6.1</span>
+              <h3 class="q-card-title">状态时间线展示</h3>
+            </div>
+            <p class="q-card-decides">「预约详情」的「状态变化记录」怎么处理</p>
+            <div class="opt-list">
+              <div class="opt-row"><span class="opt-label">A</span><span class="opt-text">不展示</span><span class="opt-mark"></span></div>
+              <div class="opt-row chosen"><span class="opt-label">B</span><span class="opt-text">展示简版：创建/修改/取消/释放 几个关键节点</span><span class="opt-mark"></span></div>
+              <div class="opt-row"><span class="opt-label">C</span><span class="opt-text">展示完整时间线（含字段级 diff）</span><span class="opt-mark"></span></div>
+            </div>
+            <div class="q-note info">作为「最近这个会发生了什么」的快速参考，避免你生气问「谁把我的会取消了」</div>
+          </div>
+        </section>
+
+        <!-- 总结 · Q-Bank 映射 -->
+        <section class="section-block" id="summary">
+          <div class="section-label"><span class="label-dot"></span>SUMMARY · Q-BANK 映射</div>
+          <h2 class="section-title">11 子题 ↔ 4 Bank Q + 装配补</h2>
+          <p class="section-hint">证明 4-题 Q-Bank 足以覆盖多页面框架决策；数据字典/通用规范应作为装配阶段补充题。</p>
+
+          <table class="simple">
+            <thead>
+              <tr>
+                <th>Bank 题</th>
+                <th>本次子题</th>
+                <th>用户答</th>
+                <th>产出</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="mono">Q1</td>
+                <td>Q1.1 角色 + Q1.2 场景</td>
+                <td class="muted">仅员工 + 提前排会/查自己的会</td>
+                <td>默认落地 = 我的预约</td>
+              </tr>
+              <tr>
+                <td class="mono">Q2</td>
+                <td>Q2.1 列表+时间轴 合页 + Q2.2 周期 toggle</td>
+                <td class="muted">合一页 + 同抽屉</td>
+                <td>页数 7 → 6</td>
+              </tr>
+              <tr>
+                <td class="mono">Q3</td>
+                <td>Q3.1 导航 + 落地</td>
+                <td class="muted">我的预约 / 找会议室 + 默认我的预约</td>
+                <td>sidebar 2 入口</td>
+              </tr>
+              <tr>
+                <td class="mono">Q4</td>
+                <td>Q4.1 通知 + Q4.2 创建 + Q4.3 详情</td>
+                <td class="muted">铃铛面板 + 抽屉 + 独立页</td>
+                <td>5 routable 页 + 1 抽屉</td>
+              </tr>
+              <tr>
+                <td><span class="badge muted">+EXT</span></td>
+                <td>Q5.1 设备字典 + Q5.2 线上会议</td>
+                <td class="muted">通用预设 + 抽象提供商</td>
+                <td>EDGE 字段约定</td>
+              </tr>
+              <tr>
+                <td><span class="badge muted">+EXT</span></td>
+                <td>Q6.1 状态时间线</td>
+                <td class="muted">简版 4 节点</td>
+                <td>详情页附加区块</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="q-note info" style="margin-top: 24px;">
+            <strong>结论</strong>：4-题 Q-Bank 覆盖了页数、导航、承载这三个最核心的框架决策；数据字典 + 通用规范题应在 PAGES + PROTO 之后单独抛出（Q-Bank Q5 类位置），不污染主流程。
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>会议首页 — CSES Meeting</title>
+
+  <!-- 1. 设计令牌（base = token + variable） -->
+  <link rel="stylesheet" href="../../design/css/base.css">
+  <!-- 2. 图标字体 -->
+  <link rel="stylesheet" href="../../design/fonts/cses-icons.css">
+  <!-- 3. 布局容器 -->
+  <link rel="stylesheet" href="../../design/fragment/fragment.css">
+  <!-- 4. page-shell 桥接（tabbar 内被删组件 + stratis 图标对齐） -->
+  <link rel="stylesheet" href="../../design/css/page-shell.css">
+
+  <!-- 5. 组件库（按需引入） -->
+  <link rel="stylesheet" href="../../design/components/window-control/window-control.css">
+  <link rel="stylesheet" href="../../design/components/search-input/search-input.css">
+  <link rel="stylesheet" href="../../design/components/tab/tab.css">
+  <link rel="stylesheet" href="../../design/components/avatar/avatar.css">
+  <link rel="stylesheet" href="../../design/components/badge/badge.css">
+  <link rel="stylesheet" href="../../design/components/button/button.css">
+  <link rel="stylesheet" href="../../design/components/tag/tag.css">
+  <link rel="stylesheet" href="../../design/components/status-badge/status-badge.css">
+  <link rel="stylesheet" href="../../design/components/search-trigger/search-trigger.css">
+
+  <!-- 6. 本页私有样式 -->
+  <link rel="stylesheet" href="./index.css">
+</head>
+<body>
+
+<!-- ============================================================
+     完整布局 — 直引 fragment.html 标准骨架
+     <cs-layout>
+       <div class="tabbar">  顶部标签栏（一级）
+       <div class="body">
+         <cs-sidebar>          一级导航
+         <div class="content-wrapper">
+           <cs-navbar>         二级导航
+           <main class="main-content">  主内容区
+============================================================ -->
+<cs-layout>
+
+  <!-- ============================================================
+       ① tabbar — 顶部标签栏（macOS 风格 + 全局搜索 + 通知 + 头像）
+       结构沿用 fragment.html baseline
+  ============================================================ -->
+  <div class="tabbar">
+    <div class="tabbar-left">
+      <cs-window-control class="tabbar-window-control">
+        <span class="ctrl-close"></span>
+        <span class="ctrl-minimize"></span>
+        <span class="ctrl-maximize"></span>
+      </cs-window-control>
+      <cs-search-input class="tabbar-search" data-variant="gray" data-size="sm" style="border-radius:var(--radius-lg);">
+        <i class="search-icon cses-stratis-search-01"></i>
+        <input class="search-field" type="text" placeholder="搜索会议、文档、人员">
+      </cs-search-input>
+      <cs-tab data-active>
+        <span class="tab-label">会议</span>
+        <i class="tab-close cses-stratis-x-01"></i>
+      </cs-tab>
+    </div>
+    <div class="tabbar-right">
+      <span class="tabbar-notice">
+        <i class="cses-stratis-bell-01 notice-icon"></i>
+        <span class="notice-badge">3</span>
+      </span>
+      <cs-avatar data-size="xs" data-shape="circle" data-color="blue">
+        <span class="avatar-text">张</span>
+      </cs-avatar>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       ② body — 主体（sidebar + content-wrapper）
+  ============================================================ -->
+  <div class="body">
+
+    <!-- ② -1 sidebar — 一级导航（会议页"会议"项激活） -->
+    <cs-sidebar>
+      <span class="logo">
+        <img src="../../design/assets/logo.png" alt="CSES">
+      </span>
+      <nav class="nav">
+        <div class="nav-group">
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-home-01"></i></span>
+            <span class="nav-label">工作台</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-message-circle"></i></span>
+            <span class="nav-label">消息</span>
+          </a>
+          <a class="nav-item" data-active>
+            <span class="nav-icon"><i class="cses-stratis-video-on"></i></span>
+            <span class="nav-label">会议</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-book-01"></i></span>
+            <span class="nav-label">文档</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-icon"><i class="cses-stratis-file-check-01"></i></span>
+            <span class="nav-label">审批</span>
+          </a>
+        </div>
+      </nav>
+    </cs-sidebar>
+
+    <div class="content-wrapper">
+
+      <!-- ② -2 navbar — 二级导航（会议模块功能列表） -->
+      <cs-navbar>
+        <div class="inner">
+          <!-- ① 标题区 -->
+          <div class="slot-header" style="display:flex;flex-direction:column;gap:var(--space-3xs);">
+            <span style="font: var(--typo-cn-16-medium); color: var(--cs-color-text);">会议</span>
+            <span style="font: var(--typo-cn-12-regular); color: var(--cs-color-text-light2);">高效协作，从这里开始</span>
+          </div>
+
+          <!-- ② 主操作按钮 -->
+          <div class="slot-action">
+            <cs-button data-variant="primary" style="width:100%;">
+              <i class="btn-icon cses-stratis-plus-01"></i>
+              <span class="btn-label">发起会议</span>
+            </cs-button>
+          </div>
+
+          <!-- ③ 主菜单（会议中心） -->
+          <div class="slot-nav" style="display:flex;flex-direction:column;gap:var(--space-2xs);padding-top:var(--space-xs);border-top:var(--line-width) solid var(--cs-color-border);">
+            <a class="mh-nav-link is-active">
+              <i class="cses-stratis-home-01 mh-nav-link__icon"></i>
+              <span class="mh-nav-link__label">会议首页</span>
+            </a>
+            <a class="mh-nav-link">
+              <i class="cses-stratis-calendar-01 mh-nav-link__icon"></i>
+              <span class="mh-nav-link__label">我的日程</span>
+              <cs-badge data-variant="count" data-color="danger">5</cs-badge>
+            </a>
+            <a class="mh-nav-link">
+              <i class="cses-stratis-clock-backward mh-nav-link__icon"></i>
+              <span class="mh-nav-link__label">历史会议</span>
+            </a>
+            <a class="mh-nav-link">
+              <i class="cses-stratis-video-on mh-nav-link__icon"></i>
+              <span class="mh-nav-link__label">录制回放</span>
+            </a>
+          </div>
+
+          <!-- ④ 副菜单（个人空间） -->
+          <div class="slot-sub" style="border-top:var(--line-width) solid var(--cs-color-border);padding-top:var(--space-xs);">
+            <div class="mh-nav-group-title">个人空间</div>
+            <a class="mh-nav-link">
+              <i class="cses-stratis-users-profiles-01 mh-nav-link__icon"></i>
+              <span class="mh-nav-link__label">我发起的</span>
+            </a>
+            <a class="mh-nav-link">
+              <i class="cses-stratis-calendar-check mh-nav-link__icon"></i>
+              <span class="mh-nav-link__label">我参与的</span>
+            </a>
+            <a class="mh-nav-link">
+              <i class="cses-stratis-marker-01 mh-nav-link__icon"></i>
+              <span class="mh-nav-link__label">会议室预订</span>
+            </a>
+            <a class="mh-nav-link">
+              <i class="cses-stratis-share mh-nav-link__icon"></i>
+              <span class="mh-nav-link__label">共享给我</span>
+            </a>
+          </div>
+
+          <!-- ⑤ 底部 -->
+          <div class="slot-admin" style="display:flex;align-items:center;gap:var(--space-2xs);padding:var(--space-xs);cursor:pointer;">
+            <i class="cses-stratis-settings" style="font-size:var(--cs-sem-size-icon-sm);color:var(--cs-color-text);"></i>
+            <span style="font: var(--typo-cn-14-regular); color: var(--cs-color-text);">会议设置</span>
+          </div>
+        </div>
+      </cs-navbar>
+
+      <!-- ② -3 main-content — 主内容区 -->
+      <main class="main-content">
+
+        <!-- 内容区头部 -->
+        <div class="mh-content-header">
+          <div class="mh-content-header__left">
+            <div class="mh-content-header__title">会议首页</div>
+            <div class="mh-content-header__subtitle">2026 年 6 月 25 日 星期四</div>
+          </div>
+          <cs-search-trigger>
+            <span class="trigger-text">搜索会议</span>
+            <i class="trigger-icon cses-stratis-search-01"></i>
+          </cs-search-trigger>
+        </div>
+
+        <!-- 滚动内容区 -->
+        <div class="mh-scroll">
+
+          <!-- ====================================================
+               主操作区：加入 / 发起 / 预约 / 共享屏幕
+          ==================================================== -->
+          <section class="mh-section">
+            <div class="mh-quick-actions">
+              <a class="mh-action-card mh-action-card--primary">
+                <span class="mh-action-card__icon-wrap">
+                  <i class="mh-action-card__icon cses-stratis-plus-01"></i>
+                </span>
+                <span class="mh-action-card__title">加入会议</span>
+                <span class="mh-action-card__desc">输入会议号或链接</span>
+              </a>
+              <a class="mh-action-card">
+                <span class="mh-action-card__icon-wrap" data-tone="success">
+                  <i class="mh-action-card__icon cses-stratis-video-on"></i>
+                </span>
+                <span class="mh-action-card__title">发起会议</span>
+                <span class="mh-action-card__desc">立即创建并开始</span>
+              </a>
+              <a class="mh-action-card">
+                <span class="mh-action-card__icon-wrap" data-tone="warning">
+                  <i class="mh-action-card__icon cses-stratis-calendar-plus"></i>
+                </span>
+                <span class="mh-action-card__title">预约会议</span>
+                <span class="mh-action-card__desc">安排未来时段</span>
+              </a>
+              <a class="mh-action-card">
+                <span class="mh-action-card__icon-wrap" data-tone="info">
+                  <i class="mh-action-card__icon cses-stratis-share"></i>
+                </span>
+                <span class="mh-action-card__title">共享屏幕</span>
+                <span class="mh-action-card__desc">无需会议号</span>
+              </a>
+            </div>
+          </section>
+
+          <!-- ====================================================
+               今日会议
+          ==================================================== -->
+          <section class="mh-section">
+            <div class="mh-section__head">
+              <div class="mh-section__title">今日会议</div>
+              <a class="mh-section__more">
+                查看全部
+                <i class="cses-stratis-chevron-right"></i>
+              </a>
+            </div>
+
+            <div class="mh-meeting-list">
+
+              <!-- 进行中 -->
+              <div class="mh-meeting-card mh-meeting-card--live">
+                <div class="mh-meeting-card__time-col">
+                  <div class="mh-meeting-card__time">09:30</div>
+                  <div class="mh-meeting-card__duration">60min</div>
+                </div>
+                <div class="mh-meeting-card__divider"></div>
+                <div class="mh-meeting-card__body">
+                  <div class="mh-meeting-card__title-row">
+                    <span class="mh-meeting-card__title">产品需求评审 · Q3 路线图</span>
+                    <cs-status-badge data-status="in-progress">
+                      <span class="status-dot"></span>
+                      <span class="status-text">进行中</span>
+                    </cs-status-badge>
+                  </div>
+                  <div class="mh-meeting-card__meta">
+                    <span class="mh-meeting-card__meta-item">
+                      <i class="cses-stratis-users-profiles-01"></i>
+                      8 人参会
+                    </span>
+                    <span class="mh-meeting-card__meta-item">
+                      <i class="cses-stratis-marker-01"></i>
+                      线上 · 主会议室
+                    </span>
+                    <span class="mh-meeting-card__meta-item">
+                      <i class="cses-stratis-user-profile-01"></i>
+                      张三 主持
+                    </span>
+                  </div>
+                  <div class="mh-meeting-card__participants">
+                    <cs-avatar data-size="xs" data-color="blue"><span class="avatar-text">张</span></cs-avatar>
+                    <cs-avatar data-size="xs" data-color="green"><span class="avatar-text">李</span></cs-avatar>
+                    <cs-avatar data-size="xs" data-color="orange"><span class="avatar-text">王</span></cs-avatar>
+                    <cs-avatar data-size="xs" data-color="purple"><span class="avatar-text">+5</span></cs-avatar>
+                  </div>
+                </div>
+                <div class="mh-meeting-card__actions">
+                  <cs-button data-variant="primary" data-size="sm">
+                    <i class="btn-icon cses-stratis-video-on"></i>
+                    <span class="btn-label">加入</span>
+                  </cs-button>
+                  <cs-button data-variant="text" data-icon data-size="sm">
+                    <i class="btn-icon cses-stratis-link"></i>
+                  </cs-button>
+                </div>
+              </div>
+
+              <!-- 即将开始 -->
+              <div class="mh-meeting-card">
+                <div class="mh-meeting-card__time-col">
+                  <div class="mh-meeting-card__time">14:00</div>
+                  <div class="mh-meeting-card__duration">30min</div>
+                </div>
+                <div class="mh-meeting-card__divider"></div>
+                <div class="mh-meeting-card__body">
+                  <div class="mh-meeting-card__title-row">
+                    <span class="mh-meeting-card__title">前端周会 · 迭代回顾</span>
+                    <cs-tag data-color="warning" data-size="sm">
+                      <span class="tag-label">即将开始</span>
+                    </cs-tag>
+                  </div>
+                  <div class="mh-meeting-card__meta">
+                    <span class="mh-meeting-card__meta-item">
+                      <i class="cses-stratis-users-profiles-01"></i>
+                      6 人参会
+                    </span>
+                    <span class="mh-meeting-card__meta-item">
+                      <i class="cses-stratis-marker-01"></i>
+                      会议室 A
+                    </span>
+                    <span class="mh-meeting-card__meta-item">
+                      <i class="cses-stratis-user-profile-01"></i>
+                      李四 主持
+                    </span>
+                  </div>
+                  <div class="mh-meeting-card__participants">
+                    <cs-avatar data-size="xs" data-color="green"><span class="avatar-text">李</span></cs-avatar>
+                    <cs-avatar data-size="xs" data-color="sky"><span class="avatar-text">陈</span></cs-avatar>
+                    <cs-avatar data-size="xs" data-color="pink"><span class="avatar-text">+4</span></cs-avatar>
+                  </div>
+                </div>
+                <div class="mh-meeting-card__actions">
+                  <cs-button data-variant="secondary" data-size="sm">
+                    <span class="btn-label">查看详情</span>
+                  </cs-button>
+                </div>
+              </div>
+
+              <!-- 待开始 -->
+              <div class="mh-meeting-card">
+                <div class="mh-meeting-card__time-col">
+                  <div class="mh-meeting-card__time">16:30</div>
+                  <div class="mh-meeting-card__duration">45min</div>
+                </div>
+                <div class="mh-meeting-card__divider"></div>
+                <div class="mh-meeting-card__body">
+                  <div class="mh-meeting-card__title-row">
+                    <span class="mh-meeting-card__title">设计评审 · 移动端 V2.1</span>
+                    <cs-status-badge data-status="not-started">
+                      <span class="status-dot"></span>
+                      <span class="status-text">未开始</span>
+                    </cs-status-badge>
+                  </div>
+                  <div class="mh-meeting-card__meta">
+                    <span class="mh-meeting-card__meta-item">
+                      <i class="cses-stratis-users-profiles-01"></i>
+                      4 人参会
+                    </span>
+                    <span class="mh-meeting-card__meta-item">
+                      <i class="cses-stratis-marker-01"></i>
+                      线上
+                    </span>
+                    <span class="mh-meeting-card__meta-item">
+                      <i class="cses-stratis-user-profile-01"></i>
+                      王五 主持
+                    </span>
+                  </div>
+                  <div class="mh-meeting-card__participants">
+                    <cs-avatar data-size="xs" data-color="orange"><span class="avatar-text">王</span></cs-avatar>
+                    <cs-avatar data-size="xs" data-color="red"><span class="avatar-text">赵</span></cs-avatar>
+                    <cs-avatar data-size="xs" data-color="blue"><span class="avatar-text">+2</span></cs-avatar>
+                  </div>
+                </div>
+                <div class="mh-meeting-card__actions">
+                  <cs-button data-variant="secondary" data-size="sm">
+                    <span class="btn-label">查看详情</span>
+                  </cs-button>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          <!-- ====================================================
+               两栏：历史会议/录制 + 快捷功能
+          ==================================================== -->
+          <section class="mh-section mh-section--cols">
+
+            <!-- 左：历史会议 / 录制 -->
+            <div class="mh-col">
+              <div class="mh-section__head">
+                <div class="mh-section__title">历史与录制</div>
+                <a class="mh-section__more">
+                  全部录制
+                  <i class="cses-stratis-chevron-right"></i>
+                </a>
+              </div>
+              <div class="mh-history-list">
+                <a class="mh-history-item">
+                  <span class="mh-history-item__thumb">
+                    <i class="cses-stratis-video-on"></i>
+                  </span>
+                  <div class="mh-history-item__body">
+                    <div class="mh-history-item__title">Q2 OKR 总结复盘</div>
+                    <div class="mh-history-item__meta">
+                      <span>昨天 15:00</span>
+                      <span class="mh-history-item__dot"></span>
+                      <span>时长 1h 25min</span>
+                    </div>
+                  </div>
+                  <cs-tag data-variant="text" data-color="primary" data-size="sm">
+                    <span class="tag-label">有录制</span>
+                  </cs-tag>
+                </a>
+                <a class="mh-history-item">
+                  <span class="mh-history-item__thumb">
+                    <i class="cses-stratis-video-on"></i>
+                  </span>
+                  <div class="mh-history-item__body">
+                    <div class="mh-history-item__title">设计系统 V3 启动会</div>
+                    <div class="mh-history-item__meta">
+                      <span>06-23 10:00</span>
+                      <span class="mh-history-item__dot"></span>
+                      <span>时长 50min</span>
+                    </div>
+                  </div>
+                  <cs-tag data-variant="text" data-color="primary" data-size="sm">
+                    <span class="tag-label">有录制</span>
+                  </cs-tag>
+                </a>
+                <a class="mh-history-item">
+                  <span class="mh-history-item__thumb" data-tone="muted">
+                    <i class="cses-stratis-phone-call-01"></i>
+                  </span>
+                  <div class="mh-history-item__body">
+                    <div class="mh-history-item__title">客户沟通 · A 公司</div>
+                    <div class="mh-history-item__meta">
+                      <span>06-22 16:30</span>
+                      <span class="mh-history-item__dot"></span>
+                      <span>时长 35min</span>
+                    </div>
+                  </div>
+                  <cs-tag data-variant="text" data-color="default" data-size="sm">
+                    <span class="tag-label">仅记录</span>
+                  </cs-tag>
+                </a>
+              </div>
+            </div>
+
+            <!-- 右：快捷功能 -->
+            <div class="mh-col">
+              <div class="mh-section__head">
+                <div class="mh-section__title">快捷功能</div>
+              </div>
+              <div class="mh-shortcut-grid">
+                <a class="mh-shortcut">
+                  <i class="cses-stratis-users-profiles-01 mh-shortcut__icon"></i>
+                  <span class="mh-shortcut__label">通讯录</span>
+                </a>
+                <a class="mh-shortcut">
+                  <i class="cses-stratis-marker-01 mh-shortcut__icon"></i>
+                  <span class="mh-shortcut__label">会议室预订</span>
+                </a>
+                <a class="mh-shortcut">
+                  <i class="cses-stratis-calendar-01 mh-shortcut__icon"></i>
+                  <span class="mh-shortcut__label">日历集成</span>
+                </a>
+                <a class="mh-shortcut">
+                  <i class="cses-stratis-microphone-01 mh-shortcut__icon"></i>
+                  <span class="mh-shortcut__label">设备调试</span>
+                </a>
+                <a class="mh-shortcut">
+                  <i class="cses-stratis-clock-backward mh-shortcut__icon"></i>
+                  <span class="mh-shortcut__label">出席统计</span>
+                </a>
+                <a class="mh-shortcut">
+                  <i class="cses-stratis-settings mh-shortcut__icon"></i>
+                  <span class="mh-shortcut__label">会议设置</span>
+                </a>
+              </div>
+            </div>
+
+          </section>
+
+        </div>
+
+      </main>
+    </div>
+
+  </div>
+</cs-layout>
+
+</body>
+</html>

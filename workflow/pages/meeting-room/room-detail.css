@@ -1,0 +1,600 @@
+/* ============================================================
+ * meeting-room · room-detail.css
+ * 会议室详情页（PROTO-3.3）
+ *
+ *   - 前缀 --meeting-room-room-detail-*
+ *   - 仅给本页私有 class（.rd-*）设几何
+ *   - 不覆盖 fragment / page-shell 官方 class
+ *   - 视口：仅桌面 1440+
+ *
+ * 区块：
+ *   .rd-header-left / .rd-back / .rd-status         — content-header 详情型左槽
+ *   .rd-main                                         — 主区根容器（外边距 + 分区间距）
+ *   .rd-top  / .rd-info-card / .rd-action-card       — 上排：信息卡 + 操作区
+ *   .rd-axis-section / .rd-axis / .rd-axis-block     — 中排：mini 时间轴
+ *   .rd-related-section / .rd-related-item           — 下排：我相关的预约
+ *   .rd-drawer-* / .rd-form-*                        — 内联 booking-form 抽屉
+ * ============================================================ */
+
+
+/* ─────────────────────────────────────────────────
+ * 页面级私有令牌
+ * ───────────────────────────────────────────────── */
+:root {
+  --meeting-room-room-detail-card-bg:        var(--cs-color-white);
+  --meeting-room-room-detail-card-border:    var(--cs-color-border);
+  --meeting-room-room-detail-card-radius:    var(--radius-lg, 8px);
+  --meeting-room-room-detail-card-shadow:    0 1px 2px rgba(0, 0, 0, 0.04);
+
+  --meeting-room-room-detail-section-gap:    20px;   /* 上 / 中 / 下排间距 */
+  --meeting-room-room-detail-card-pad:       20px;   /* 卡内 padding */
+  --meeting-room-room-detail-row-gap:        16px;   /* 信息卡行间距 */
+
+  /* mini 时间轴 */
+  --meeting-room-room-detail-axis-row-h:     36px;
+  --meeting-room-room-detail-axis-label-w:   56px;
+  --meeting-room-room-detail-axis-block-bg:  var(--meeting-room-axis-busy);
+  --meeting-room-room-detail-axis-block-fg:  var(--meeting-room-axis-busy-text);
+
+  /* 抽屉表单 */
+  --meeting-room-room-detail-form-gap:       16px;
+  --meeting-room-room-detail-form-input-h:   36px;
+}
+
+
+/* ─────────────────────────────────────────────────
+ * content-header 详情型 · 左槽（返回 + 标题 + 状态）
+ * ───────────────────────────────────────────────── */
+.rd-header-left {
+  /* slot-left 默认 column；本页要 [返回] 与标题块横向 */
+  flex-direction: row !important;
+  align-items: center;
+  gap: 16px;
+}
+
+.rd-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  margin-left: -10px;             /* 视觉上对齐 content-header 内边距 */
+  border-radius: var(--radius-md, 6px);
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text-light);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.rd-back:hover {
+  background: var(--cs-color-bg-light);
+  color: var(--cs-color-text);
+}
+.rd-back i {
+  font-size: var(--cs-sem-size-icon-sm, 16px);
+  line-height: 1;
+}
+
+.rd-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.rd-title-line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.rd-status {
+  flex-shrink: 0;
+}
+
+
+/* ─────────────────────────────────────────────────
+ * 主区根（替换 shell 占位）
+ * ───────────────────────────────────────────────── */
+.rd-main {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--meeting-room-room-detail-section-gap);
+  padding: var(--meeting-room-room-detail-section-gap);
+  background: var(--cs-color-bg-app-light, #f5f7fa);
+}
+
+
+/* ─────────────────────────────────────────────────
+ * 上排：信息卡（60%） + 操作区（40%）
+ * ───────────────────────────────────────────────── */
+.rd-top {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: var(--meeting-room-room-detail-section-gap);
+}
+
+
+/* 信息卡 */
+.rd-info-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--meeting-room-room-detail-card-bg);
+  border: 1px solid var(--meeting-room-room-detail-card-border);
+  border-radius: var(--meeting-room-room-detail-card-radius);
+  box-shadow: var(--meeting-room-room-detail-card-shadow);
+  overflow: hidden;
+}
+
+.rd-info-cover {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background:
+    linear-gradient(135deg, #e9eef8 0%, #d6e0f3 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid var(--meeting-room-room-detail-card-border);
+}
+.rd-cover-icon {
+  font-size: 64px;
+  color: var(--cs-color-primary);
+  opacity: 0.45;
+  line-height: 1;
+}
+.rd-cover-tag {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  padding: 4px 8px;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font: var(--typo-cn-12-regular);
+  border-radius: 4px;
+}
+
+.rd-info-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--meeting-room-room-detail-row-gap);
+  padding: var(--meeting-room-room-detail-card-pad);
+}
+
+.rd-info-row {
+  display: grid;
+  grid-template-columns: 20px 60px 1fr;
+  align-items: start;
+  gap: 12px;
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text);
+}
+
+.rd-info-icon {
+  font-size: var(--cs-sem-size-icon-sm, 16px);
+  color: var(--cs-color-text-light2);
+  line-height: 22px;
+}
+
+.rd-info-label {
+  color: var(--cs-color-text-light2);
+  font: var(--typo-cn-14-regular);
+  line-height: 22px;
+}
+
+.rd-info-value {
+  color: var(--cs-color-text);
+  line-height: 22px;
+}
+
+.rd-info-note {
+  color: var(--cs-color-text-light);
+  line-height: 1.6;
+}
+
+/* 设备列表 */
+.rd-equipment-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.rd-equip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: var(--cs-color-bg-light);
+  border-radius: 999px;
+  font: var(--typo-cn-13-regular);
+  color: var(--cs-color-text);
+}
+.rd-equip i {
+  font-size: 14px;
+  color: var(--cs-color-primary);
+  line-height: 1;
+}
+
+
+/* 操作区 */
+.rd-action-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: var(--meeting-room-room-detail-card-pad);
+  background: var(--meeting-room-room-detail-card-bg);
+  border: 1px solid var(--meeting-room-room-detail-card-border);
+  border-radius: var(--meeting-room-room-detail-card-radius);
+  box-shadow: var(--meeting-room-room-detail-card-shadow);
+  align-self: start;             /* 顶对齐，不被信息卡撑高 */
+}
+.rd-action-title {
+  font: var(--typo-cn-14-medium);
+  font-weight: 600;
+  color: var(--cs-color-text);
+  padding-bottom: 4px;
+  border-bottom: 1px dashed var(--cs-color-border);
+}
+.rd-action-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.rd-action-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+
+/* ─────────────────────────────────────────────────
+ * 中排：mini 时间轴
+ * ───────────────────────────────────────────────── */
+.rd-axis-section,
+.rd-related-section {
+  padding: var(--meeting-room-room-detail-card-pad);
+  background: var(--meeting-room-room-detail-card-bg);
+  border: 1px solid var(--meeting-room-room-detail-card-border);
+  border-radius: var(--meeting-room-room-detail-card-radius);
+  box-shadow: var(--meeting-room-room-detail-card-shadow);
+}
+
+.rd-section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.rd-section-title {
+  font: var(--typo-cn-14-medium);
+  font-weight: 600;
+  color: var(--cs-color-text);
+}
+.rd-section-sub {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+
+.rd-axis {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* 顶部刻度尺 */
+.rd-axis-ruler {
+  display: flex;
+  align-items: center;
+  padding-bottom: 4px;
+  border-bottom: 1px dashed var(--cs-color-border);
+}
+.rd-axis-day-label {
+  width: var(--meeting-room-room-detail-axis-label-w);
+  flex-shrink: 0;
+  font: var(--typo-cn-13-regular);
+  color: var(--cs-color-text-light2);
+}
+.rd-axis-ticks {
+  flex: 1;
+  display: grid;
+  /* 08:00 ~ 20:00，13 个整点；按 12 个区段平均分布 */
+  grid-template-columns: repeat(13, 1fr);
+  align-items: center;
+}
+.rd-tick {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+  text-align: left;
+  /* 让数字落在格的左边沿，与轨道刻度对齐 */
+  transform: translateX(-4px);
+}
+.rd-tick:last-child {
+  transform: translateX(-100%);
+}
+
+/* 行：左 day-label + 右 track */
+.rd-axis-row {
+  display: flex;
+  align-items: center;
+  height: var(--meeting-room-room-detail-axis-row-h);
+}
+
+.rd-axis-track {
+  position: relative;
+  flex: 1;
+  height: 100%;
+  background:
+    repeating-linear-gradient(
+      to right,
+      var(--meeting-room-axis-free) 0,
+      var(--meeting-room-axis-free) calc(100% / 12 - 1px),
+      var(--cs-color-border) calc(100% / 12 - 1px),
+      var(--cs-color-border) calc(100% / 12)
+    );
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.rd-axis-block {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  background: var(--meeting-room-room-detail-axis-block-bg);
+  border-left: 3px solid var(--meeting-room-room-detail-axis-block-fg);
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+.rd-axis-block:hover {
+  filter: brightness(0.95);
+}
+.rd-block-text {
+  font: var(--typo-cn-12-regular);
+  color: var(--meeting-room-room-detail-axis-block-fg);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* ─────────────────────────────────────────────────
+ * 下排：我相关的预约
+ * ───────────────────────────────────────────────── */
+.rd-related-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.rd-related-item {
+  border-bottom: 1px solid var(--cs-color-border);
+}
+.rd-related-item:last-child {
+  border-bottom: none;
+}
+.rd-related-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 4px;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.15s ease;
+}
+.rd-related-link:hover {
+  background: var(--cs-color-bg-light);
+}
+.rd-related-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.rd-related-title-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.rd-related-title {
+  font: var(--typo-cn-14-medium);
+  font-weight: 600;
+  color: var(--cs-color-text);
+}
+.rd-related-meta {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.rd-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font: var(--typo-cn-13-regular);
+  color: var(--cs-color-text-light2);
+}
+.rd-meta-item i {
+  font-size: 14px;
+  color: var(--cs-color-text-light2);
+}
+.rd-related-chev {
+  font-size: 16px;
+  color: var(--cs-color-text-light2);
+  flex-shrink: 0;
+}
+
+
+/* ─────────────────────────────────────────────────
+ * 内联 booking-form 抽屉
+ *   - 容器结构走 cs-drawer / cs-drawer-overlay 官方
+ *   - 槽位内自定义私有类 .rd-drawer-*
+ * ───────────────────────────────────────────────── */
+.rd-drawer-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 20px 24px;
+}
+.rd-drawer-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.rd-drawer-title {
+  font: var(--typo-cn-16-medium);
+  font-weight: 600;
+  color: var(--cs-color-text);
+}
+.rd-drawer-sub {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+.rd-drawer-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--cs-color-text-light);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.rd-drawer-close:hover {
+  background: var(--cs-color-bg-light);
+  color: var(--cs-color-text);
+}
+.rd-drawer-close i {
+  font-size: 18px;
+}
+
+.rd-drawer-body {
+  padding: 20px 24px;
+}
+
+.rd-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--meeting-room-room-detail-form-gap);
+}
+
+.rd-form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.rd-form-row--double {
+  flex-direction: row;
+  gap: 12px;
+}
+.rd-form-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rd-form-label {
+  font: var(--typo-cn-13-regular);
+  color: var(--cs-color-text-light);
+}
+.rd-form-label--required::before {
+  content: "* ";
+  color: #ff4d4f;
+  font-weight: 600;
+}
+
+.rd-form-input,
+.rd-form-textarea {
+  height: var(--meeting-room-room-detail-form-input-h);
+  padding: 8px 12px;
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text);
+  background: var(--cs-color-white);
+  border: 1px solid var(--cs-color-border);
+  border-radius: var(--radius-md, 6px);
+  outline: none;
+  transition: border-color 0.15s ease;
+  font-family: var(--font-family-cn);
+}
+.rd-form-textarea {
+  height: auto;
+  min-height: 80px;
+  resize: vertical;
+  line-height: 1.5;
+}
+.rd-form-input:focus,
+.rd-form-textarea:focus {
+  border-color: var(--cs-color-primary);
+}
+.rd-form-input[readonly] {
+  background: var(--cs-color-bg-light);
+  color: var(--cs-color-text-light);
+  cursor: not-allowed;
+}
+
+.rd-form-divider {
+  height: 1px;
+  border: none;
+  background: var(--cs-color-border);
+  margin: 4px 0;
+}
+
+.rd-form-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.rd-toggle-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.rd-toggle-input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: var(--cs-color-primary);
+}
+.rd-toggle-text {
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text);
+}
+.rd-toggle-hint {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+
+.rd-form-warning {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #fff7e6;
+  border: 1px solid #ffd591;
+  border-radius: var(--radius-md, 6px);
+  color: #d46b08;
+  font: var(--typo-cn-13-regular);
+}
+.rd-form-warning i {
+  font-size: 16px;
+}
+
+.rd-drawer-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  background: var(--cs-color-white);
+}

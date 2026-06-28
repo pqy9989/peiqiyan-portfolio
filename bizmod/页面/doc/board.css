@@ -1,0 +1,722 @@
+/* ============================================================
+   画板（白板编辑器） — 严格还原 Figma 设计稿
+   ============================================================ */
+
+:root {
+  --bd-primary: #4857e2;
+  --bd-primary-a8: rgba(72, 87, 226, 0.08);
+  --bd-line: #e6e6e6;
+  --bd-text-1: #333;
+  --bd-text-3: #999;
+  --bd-bg-canvas: #eee;
+  --bd-bg-active: #f5f5f5;
+}
+
+body {
+  background: var(--bd-bg-canvas) !important;
+  font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* 顶层包裹 */
+.bd-app {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bd-bg-canvas);
+}
+
+/* ===== 顶部栏（左右两张白卡） ===== */
+.bd-topbar {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.bd-tcard {
+  display: flex;
+  align-items: center;
+  height: 57px;
+  padding: 4px 8px;
+  background: #fff;
+  border-radius: 12px;
+  filter: drop-shadow(0 0 2.5px rgba(0, 0, 0, 0.05));
+}
+
+/* 左侧文件名卡（宽 358） */
+.bd-tcard--file { width: 358px; }
+.bd-tcard--file .bd-tc-inner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+.bd-tc-icon {
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bd-text-1);
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.bd-tc-icon:hover {
+  background: var(--bd-primary-a8);
+  color: var(--bd-primary);
+}
+.bd-tc-vline {
+  width: 1px;
+  height: 14px;
+  background: var(--bd-line);
+}
+.bd-tc-name {
+  font-family: "PingFang SC";
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--bd-text-1);
+  white-space: nowrap;
+}
+.bd-tc-cloud {
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #16a34a;
+}
+
+/* 右侧操作卡（宽 320） */
+.bd-tcard--actions {
+  width: 320px;
+  justify-content: center;
+}
+.bd-tcard--actions .bd-tc-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.bd-tc-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bd-tc-tool {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  border-radius: 8px;
+}
+.bd-tc-tool:hover { background: var(--bd-bg-active); }
+.bd-tc-tool i {
+  font-size: 18px;
+  color: var(--bd-text-1);
+  line-height: 1;
+}
+.bd-tc-tool span {
+  font-family: "PingFang SC";
+  font-size: 12px;
+  line-height: 12px;
+  color: var(--bd-text-3);
+}
+
+.bd-share {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px 7px;
+  background: var(--bd-primary);
+  border-radius: 8px;
+  border: 0;
+  color: #fff;
+  cursor: pointer;
+}
+.bd-share i { font-size: 14px; }
+.bd-share span {
+  font-family: "PingFang SC";
+  font-size: 12px;
+  color: #fff;
+}
+.bd-share:hover { filter: brightness(1.08); }
+
+/* ===== 主体区（左工具卡 + 中央画布 + 右设置卡） ===== */
+.bd-body {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  min-height: 0;
+}
+
+/* 左侧工具栏（白卡 68 宽） */
+.bd-left {
+  padding: 0 0 10px 10px;
+  display: flex;
+  align-items: stretch;
+}
+.bd-sidebar {
+  width: 68px;
+  background: #fff;
+  border-radius: 8px;
+  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.1));
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  overflow-y: auto;
+}
+.bd-sidebar::-webkit-scrollbar { width: 0; display: none; }
+
+.bd-ai {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+  flex-shrink: 0;
+}
+
+.bd-sb-line {
+  width: 100%;
+  height: 1px;
+  background: var(--bd-line);
+  flex-shrink: 0;
+}
+
+.bd-sb-item {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.bd-sb-item:hover { background: var(--bd-bg-active); }
+.bd-sb-item[data-active] { background: var(--bd-bg-active); }
+.bd-sb-item__icon {
+  font-size: 22px;
+  color: var(--bd-text-1);
+  line-height: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.bd-sb-item__label {
+  font-family: "PingFang SC";
+  font-size: 12px;
+  color: var(--bd-text-1);
+  text-align: center;
+  line-height: 14px;
+}
+.bd-sb-item__hot {
+  position: absolute;
+  top: 0;
+  left: 39px;
+  font-family: "PingFang SC";
+  font-size: 12px;
+  color: var(--bd-text-3);
+  line-height: 1;
+}
+
+.bd-sb-more {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--bd-text-3);
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.bd-sb-more:hover { background: var(--bd-bg-active); }
+
+
+/* 中央画布区 */
+.bd-center {
+  flex: 1;
+  min-width: 0;
+  padding: 0 10px 10px;
+  display: flex;
+  flex-direction: column;
+}
+.bd-canvas-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 80px;          /* Figma: pl-[80px] 让画布偏左对齐 */
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+.bd-canvas-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4.659px;
+  transform-origin: center center;
+  will-change: transform;
+}
+.bd-canvas-label {
+  font-family: "PingFang SC";
+  font-size: 14px;
+  color: var(--bd-text-3);
+  line-height: 1;
+}
+.bd-canvas {
+  width: 706px;
+  height: 397px;
+  background: #fff;
+}
+
+/* 多画板容器（根据 layout 切换排列方向）*/
+.bd-canvases {
+  display: flex;
+  align-items: flex-start;
+  gap: 18.636px;
+}
+.bd-canvases[data-layout="below"] { flex-direction: column; }
+.bd-canvases[data-layout="right"] { flex-direction: row; }
+
+/* 思维导图画板（蓝边） */
+.bd-canvas--mm {
+  width: 707px;
+  height: 397.491px;
+  background: #fff;
+  border: 1px solid #1064ff;
+  padding: 15.711px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bd-mm-dashed {
+  flex: 1;
+  height: 100%;
+  border: 1px dashed var(--bd-line);
+  border-radius: 6.284px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20.424px;
+}
+.bd-mm-icon {
+  width: 24px;
+  height: 19px;
+  color: var(--bd-text-1);
+}
+.bd-mm-hint {
+  font-family: "PingFang SC";
+  font-size: 9.427px;
+  color: var(--bd-text-3);
+}
+.bd-mm-actions {
+  display: flex;
+  align-items: center;
+  gap: 15.711px;
+}
+.bd-mm-action {
+  border: 0.786px solid var(--bd-line);
+  border-radius: 12.569px;
+  padding: 31px 62px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3.142px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color .15s ease, background .15s ease;
+}
+.bd-mm-action:hover {
+  border-color: var(--bd-primary);
+  background: var(--bd-primary-a8);
+}
+.bd-mm-action__icon {
+  width: 26.709px;
+  height: 26.709px;
+  color: var(--bd-text-1);
+}
+.bd-mm-action__label {
+  font-family: "PingFang SC";
+  font-size: 9.427px;
+  color: var(--bd-text-3);
+}
+
+/* 占位 ghost：选位置时显示在右侧/下方 */
+.bd-ghost {
+  border: 1.5px dashed #b6bdf0;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--bd-text-3);
+  font-size: 32px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .12s ease, border-color .12s ease,
+              background .12s ease, color .12s ease;
+}
+.bd-ghost.is-on {
+  opacity: 1;
+  pointer-events: auto;
+  border-color: var(--bd-primary);
+  background: rgba(72, 87, 226, 0.06);
+  color: var(--bd-primary);
+}
+.bd-ghost__hint {
+  position: absolute;
+  bottom: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "PingFang SC";
+  font-size: 12px;
+  color: var(--bd-primary);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity .12s ease;
+}
+.bd-ghost:hover .bd-ghost__hint { opacity: 1; }
+
+/* 选位置时的蓝色对齐参考线 */
+.bd-guide {
+  position: absolute;
+  background-image: repeating-linear-gradient(
+    to right, var(--bd-primary) 0 4px, transparent 4px 8px
+  );
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity .15s ease;
+}
+.bd-guide.is-on { opacity: 1; }
+.bd-guide--h {
+  height: 1px;
+  left: 0; right: 0;
+}
+.bd-guide--v {
+  width: 1px;
+  top: 0; bottom: 0;
+  background-image: repeating-linear-gradient(
+    to bottom, var(--bd-primary) 0 4px, transparent 4px 8px
+  );
+}
+
+/* 思维导图侧栏图标 SVG 容器 */
+.bd-sb-item__svg {
+  width: 22px;
+  height: 22px;
+  color: var(--bd-text-1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 底部缩放/撤销控件 */
+.bd-bottom {
+  padding: 10px 0;
+  display: flex;
+  justify-content: flex-end;
+}
+.bd-bot-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  background: #fff;
+  border-radius: 8px;
+  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.15));
+}
+.bd-bot-icon {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--bd-text-1);
+  font-size: 16px;
+  padding: 4px;
+}
+.bd-bot-icon:hover { background: var(--bd-bg-active); }
+.bd-bot-icon[data-active] {
+  background: var(--bd-primary-a8);
+  color: var(--bd-primary);
+}
+.bd-bot-zoom {
+  width: 26px;
+  text-align: center;
+  font-family: "PingFang SC";
+  font-size: 10px;
+  color: var(--bd-text-1);
+  user-select: none;
+}
+.bd-bot-vline {
+  width: 1px;
+  height: 17px;
+  background: var(--bd-line);
+  margin: 0 4px;
+}
+
+
+/* 右侧设置面板 */
+.bd-right {
+  padding: 0 10px 10px 0;
+  display: flex;
+  align-items: stretch;
+}
+.bd-rpanel {
+  width: 320px;
+  background: #fff;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.bd-rpanel__scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+.bd-rpanel__scroll::-webkit-scrollbar { width: 6px; }
+.bd-rpanel__scroll::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 3px; }
+
+.bd-rgroup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.bd-rgroup + .bd-rgroup {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--bd-line);
+}
+
+.bd-rsection-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 280px;
+}
+.bd-rsection-title {
+  font-family: "PingFang SC";
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--bd-text-1);
+}
+.bd-rsection-caret {
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bd-text-1);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* 字段行 */
+.bd-rfield {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+.bd-rfield__label {
+  width: 56px;
+  flex-shrink: 0;
+  font-family: "PingFang SC";
+  font-size: 14px;
+  color: #000;
+  line-height: 1.4;
+}
+.bd-rfield__value { flex: 1; min-width: 0; }
+
+.bd-input,
+.bd-select {
+  width: 100%;
+  height: 32px;
+  padding: 6px 10px;
+  border: 1px solid var(--bd-line);
+  border-radius: 8px;
+  background: #fff;
+  font-family: "PingFang SC";
+  font-size: 14px;
+  color: var(--bd-text-1);
+  outline: none;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+}
+.bd-input { padding: 6px 8px; }
+.bd-input::placeholder {
+  color: var(--bd-text-3);
+  text-align: center;
+}
+.bd-input:focus { border-color: var(--bd-primary); }
+
+.bd-select {
+  cursor: pointer;
+  justify-content: space-between;
+}
+.bd-select span { font-size: 14px; color: var(--bd-text-1); }
+.bd-select i {
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--bd-text-1);
+}
+
+/* 单/复选 */
+.bd-checks {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.bd-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  user-select: none;
+}
+.bd-check__box {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 3px;
+  background: #fff;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.bd-check[data-checked] .bd-check__box {
+  background: var(--bd-primary);
+  border-color: var(--bd-primary);
+}
+.bd-check[data-checked] .bd-check__box::after {
+  content: "";
+  width: 4px;
+  height: 7px;
+  border: solid #fff;
+  border-width: 0 1.5px 1.5px 0;
+  transform: rotate(45deg) translate(-1px, -1px);
+}
+.bd-check__label {
+  font-family: "PingFang SC";
+  font-size: 14px;
+  color: var(--bd-text-1);
+}
+
+/* 颜色行（白色 swatch + 100 % 在 select 里）*/
+.bd-color-select {
+  width: 100%;
+  height: 32px;
+  padding: 6px 10px;
+  border: 1px solid var(--bd-line);
+  border-radius: 8px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+.bd-color-swatch {
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  border: 1px solid var(--bd-line);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.bd-color-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.bd-color-vline {
+  width: 1px;
+  height: 14px;
+  background: var(--bd-line);
+}
+.bd-color-num {
+  font-family: "PingFang SC";
+  font-size: 14px;
+  color: var(--bd-text-1);
+}
+.bd-color-pct {
+  font-family: "PingFang SC";
+  font-size: 14px;
+  color: var(--bd-text-3);
+}
+
+/* 仅 + 加号的行（边框 / 阴影）*/
+.bd-row-plus {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 32px;
+}
+.bd-row-plus__label {
+  width: 56px;
+  font-family: "PingFang SC";
+  font-size: 14px;
+  color: #000;
+}
+.bd-row-plus__add {
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--bd-text-1);
+  cursor: pointer;
+}
+
+/* 导出按钮 */
+.bd-export-btn {
+  width: 100%;
+  padding: 6px 10px;
+  background: #fff;
+  border: 1px solid var(--bd-primary);
+  border-radius: 8px;
+  color: var(--bd-primary);
+  font-family: "PingFang SC";
+  font-size: 14px;
+  cursor: pointer;
+}
+.bd-export-btn:hover { background: var(--bd-primary-a8); }

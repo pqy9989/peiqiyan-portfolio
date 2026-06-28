@@ -1,0 +1,111 @@
+/*
+ * 输入框组件 (Input)
+ * 标签：<cs-input>
+ * 数据来源：CSES新组件库 Figma 输入框设计规范
+ *
+ * data 属性：
+ *   data-size="sm"       — 小尺寸 28px
+ *   data-size="md"       — 中尺寸 32px（默认）
+ *   data-size="lg"       — 大尺寸 36px
+ *   data-focus            — 聚焦态
+ *   data-error            — 错误态
+ *   data-disabled         — 禁用态
+ */
+
+/* ========== 基础样式 ========== */
+cs-input {
+  display: inline-flex;
+  align-items: center;
+  height: var(--cs-sem-size-interactive-sm);
+  padding: var(--spacing-6) var(--space-sm);
+  border: var(--line-width) solid var(--cs-color-border);
+  border-radius: var(--radius);
+  background: var(--cs-color-white);
+  box-sizing: border-box;
+  cursor: text;
+  transition: border-color 0.2s ease;
+}
+
+/* ========== 输入框本体 ========== */
+cs-input .input-field {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text);
+  line-height: 1;
+  box-shadow: none;
+}
+
+cs-input .input-field:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+cs-input .input-field::placeholder {
+  color: var(--cs-color-text-light2);
+}
+
+/* ========== 悬浮态 ========== */
+cs-input:hover {
+  border-color: var(--cs-color-primary);
+}
+
+/* ========== 聚焦态 ========== */
+cs-input[data-focus],
+cs-input:focus-within {
+  border-color: var(--cs-color-primary);
+}
+
+cs-input:focus-within:hover {
+  border-color: var(--cs-color-primary);
+}
+
+/* ========== 错误态 ========== */
+cs-input[data-error] {
+  border-color: var(--cs-color-error);
+}
+
+cs-input[data-error]:hover {
+  border-color: var(--cs-color-error);
+}
+
+/* ========== 禁用态 ========== */
+cs-input[data-disabled] {
+  background: var(--cs-color-bg-disabled);
+  border-color: var(--cs-color-border);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+cs-input[data-disabled] .input-field {
+  color: var(--cs-color-border);
+  cursor: not-allowed;
+}
+
+cs-input[data-disabled] .input-field::placeholder {
+  color: var(--cs-color-border);
+}
+
+/* ========== 尺寸 ========== */
+cs-input[data-size="sm"] {
+  height: var(--cs-sem-size-interactive-xs);
+  padding: var(--spacing-6) var(--space-xs);
+}
+
+cs-input[data-size="sm"] .input-field {
+  font: var(--typo-cn-12-regular);
+}
+
+cs-input[data-size="lg"] {
+  height: var(--cs-sem-size-interactive-md);
+  padding: var(--space-xs) var(--space-md);
+}
+
+cs-input[data-size="lg"] .input-field {
+  font: var(--typo-cn-14-regular);
+}

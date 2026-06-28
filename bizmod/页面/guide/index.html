@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>导向 — CSES</title>
+
+  <link rel="stylesheet" href="../../design/css/base.css">
+  <link rel="stylesheet" href="../../design/css/token.css">
+  <link rel="stylesheet" href="../../design/css/variable.css">
+  <link rel="stylesheet" href="../../design/fonts/cses-icons.css?v=101">
+  <link rel="stylesheet" href="../../design/fragment/fragment.css">
+  <link rel="stylesheet" href="../../design/css/page-shell.css?v=2">
+
+  <link rel="stylesheet" href="../../design/components/search-input/search-input.css">
+  <link rel="stylesheet" href="../../design/components/avatar/avatar.css">
+  <link rel="stylesheet" href="../../design/components/button/button.css">
+
+  <link rel="stylesheet" href="./index.css">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: var(--font-family-cn), -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--cs-color-bg-app-dark);
+      color: var(--cs-color-text);
+      height: 100vh;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+</head>
+<body data-module="guide">
+
+<cs-layout>
+
+  <!-- 标签栏 -->
+  <div class="tabbar">
+    <div class="tabbar-left">
+      <span class="win-ctrl tabbar-window-control">
+        <span class="ctrl-dot" data-c="close"></span>
+        <span class="ctrl-dot" data-c="min"></span>
+        <span class="ctrl-dot" data-c="max"></span>
+      </span>
+      <cs-search-input class="tabbar-search ah-top-search" data-variant="gray" data-size="sm">
+        <i class="search-icon cses-stratis-search-01"></i>
+        <input class="search-field" type="text" placeholder="搜索">
+      </cs-search-input>
+      <div class="tabbar-tabs"></div>
+    </div>
+    <div class="tabbar-right">
+      <span class="tabbar-notice">
+        <i class="cses-stratis-bell-01 notice-icon"></i>
+        <span class="notice-badge">2</span>
+      </span>
+      <cs-avatar data-size="xs" data-shape="circle" data-color="blue">张</cs-avatar>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- 一级导航 -->
+    <cs-sidebar>
+      <span class="logo">
+        <img src="../../design/assets/logo.png" alt="CSES">
+      </span>
+      <nav class="nav">
+        <div class="nav-group">
+          <a class="nav-item" data-module="workspace">
+            <span class="nav-icon"><i class="cses-stratis-home-01"></i></span>
+            <span class="nav-label">工作台</span>
+          </a>
+          <a class="nav-item" data-active data-module="guide">
+            <span class="nav-icon"><i class="cses-stratis-compass"></i></span>
+            <span class="nav-label">导向</span>
+          </a>
+          <a class="nav-item" data-module="message">
+            <span class="nav-icon"><i class="cses-stratis-message-circle"></i></span>
+            <span class="nav-label">消息</span>
+          </a>
+          <a class="nav-item" data-module="task-list">
+            <span class="nav-icon"><i class="cses-stratis-check-square-broken"></i></span>
+            <span class="nav-label">任务</span>
+          </a>
+          <a class="nav-item" data-module="meeting">
+            <span class="nav-icon"><i class="cses-stratis-video-on"></i></span>
+            <span class="nav-label">会议</span>
+          </a>
+          <a class="nav-item" data-module="doc">
+            <span class="nav-icon"><i class="cses-stratis-book-01"></i></span>
+            <span class="nav-label">文档</span>
+          </a>
+          <a class="nav-item" data-module="form">
+            <span class="nav-icon"><i class="cses-stratis-file-edit-01"></i></span>
+            <span class="nav-label">表单</span>
+          </a>
+          <a class="nav-item" data-module="approval">
+            <span class="nav-icon"><i class="cses-stratis-file-check-01"></i></span>
+            <span class="nav-label">审批</span>
+          </a>
+        </div>
+      </nav>
+    </cs-sidebar>
+
+    <!-- 内容包裹 -->
+    <div class="content-wrapper" style="position:relative;">
+
+      <!-- 二级导航：导向 (232px) -->
+      <cs-navbar>
+        <div class="inner">
+
+          <!-- 添加成果导向 主 CTA -->
+          <div class="slot-action">
+            <cs-button data-variant="primary" data-size="lg">
+              <i class="btn-icon cses-stratis-plus-01"></i>
+              <span class="btn-label">添加成果导向</span>
+            </cs-button>
+          </div>
+
+          <!-- 主菜单 -->
+          <div class="slot-nav">
+            <div class="gd-side-item" data-active>
+              <span>我填写的</span>
+            </div>
+            <div class="gd-nav-group">
+              <div class="gd-nav-group__title">技术部</div>
+              <div class="gd-team-item">
+                <span class="gd-team-item__name">CSES项目组</span>
+                <span class="gd-team-item__meta">
+                  <span>5/6人</span>
+                  <i class="cses-stratis-chevron-right"></i>
+                </span>
+              </div>
+              <div class="gd-team-item">
+                <span class="gd-team-item__name">XPA项目组</span>
+                <span class="gd-team-item__meta">
+                  <span>5/6人</span>
+                  <i class="cses-stratis-chevron-right"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </cs-navbar>
+
+      <!-- 主内容区 -->
+      <main class="main-content">
+
+        <!-- 内容区头部 -->
+        <cs-content-header>
+          <div class="slot-left">
+            <div class="gd-range-tabs">
+              <span class="gd-range-tab" data-active>日</span>
+              <span class="gd-range-tab">周</span>
+              <span class="gd-range-tab">月</span>
+            </div>
+          </div>
+          <div class="slot-right">
+            <cs-search-input data-variant="gray" data-size="sm">
+              <i class="search-icon cses-stratis-search-01"></i>
+              <input class="search-field" type="text" placeholder="搜索关键词">
+            </cs-search-input>
+          </div>
+        </cs-content-header>
+
+        <div class="gd-layout">
+
+          <!-- 中间主流：日历 + 卡片 -->
+          <div class="gd-main">
+
+            <!-- 月份选择 -->
+            <div class="gd-month-row">
+              <span class="gd-month-picker">
+                <span>2025年3月</span>
+                <i class="cses-stratis-chevron-down"></i>
+              </span>
+            </div>
+
+            <!-- 周日历条 -->
+            <div class="gd-week-bar">
+              <span class="gd-week-bar__nav"><i class="cses-stratis-chevron-left"></i></span>
+              <div class="gd-week-bar__days">
+                <div class="gd-week-day"><span class="gd-week-day__wd">四</span><span class="gd-week-day__dt">15</span></div>
+                <div class="gd-week-day"><span class="gd-week-day__wd">五</span><span class="gd-week-day__dt">16</span></div>
+                <div class="gd-week-day"><span class="gd-week-day__wd">六</span><span class="gd-week-day__dt">17</span></div>
+                <div class="gd-week-day" data-active><span class="gd-week-day__wd">日</span><span class="gd-week-day__dt">18</span><span class="gd-week-day__dots"><span></span><span></span></span></div>
+                <div class="gd-week-day"><span class="gd-week-day__wd">一</span><span class="gd-week-day__dt">19</span></div>
+                <div class="gd-week-day"><span class="gd-week-day__wd">二</span><span class="gd-week-day__dt">20</span></div>
+                <div class="gd-week-day"><span class="gd-week-day__wd">三</span><span class="gd-week-day__dt">21</span></div>
+                <div class="gd-week-day"><span class="gd-week-day__wd">四</span><span class="gd-week-day__dt">22</span></div>
+                <div class="gd-week-day"><span class="gd-week-day__wd">五</span><span class="gd-week-day__dt">23</span></div>
+                <div class="gd-week-day"><span class="gd-week-day__wd">六</span><span class="gd-week-day__dt">24</span></div>
+                <div class="gd-week-day"><span class="gd-week-day__wd">日</span><span class="gd-week-day__dt">25</span></div>
+                <div class="gd-week-day"><span class="gd-week-day__wd">一</span><span class="gd-week-day__dt">26</span></div>
+              </div>
+              <span class="gd-week-bar__nav"><i class="cses-stratis-chevron-right"></i></span>
+            </div>
+
+            <!-- 日内容流 -->
+            <div class="gd-stream">
+
+              <!-- 18 日（当天） -->
+              <div class="gd-day-card">
+                <div class="gd-day-card__date">
+                  <span class="gd-day-card__num">18</span>
+                  <span class="gd-day-card__wd">周日</span>
+                </div>
+                <div class="gd-day-card__body">
+                  <div class="gd-entry">
+                    <span class="gd-entry__tag" data-type="orient">导向</span>
+                    <div class="gd-entry__main">
+                      <div class="gd-entry__line">
+                        <span class="gd-entry__label">工作导向</span>
+                        <span class="gd-entry__text">让每一个细节都为了便于客户使用而去匹配条件，打造丝滑体验。</span>
+                      </div>
+                      <div class="gd-entry__line">
+                        <span class="gd-entry__label">工作计划</span>
+                        <span class="gd-entry__text">①、开发消息系统；②、开发头脑风暴和月度导向模块的设计；③、开发班级商学院模块的功能闭环；④、完成日导向数据看板与统计指标。</span>
+                      </div>
+                      <div class="gd-entry__line">
+                        <span class="gd-entry__label">感悟作业</span>
+                        <span class="gd-entry__text">我所关注的就是当下，专注当下的每个当下，去努力去奋斗去到在打造四海的体验加油加加加，把每一个细节都做到极致，把每一次反馈都当作礼物。</span>
+                      </div>
+                      <span class="gd-entry__link">查看全部</span>
+                    </div>
+                  </div>
+
+                  <div class="gd-entry">
+                    <span class="gd-entry__tag" data-type="result">成果</span>
+                    <div class="gd-entry__main">
+                      <div class="gd-entry__line">
+                        <span class="gd-entry__label">未填写</span>
+                        <span class="gd-entry__text gd-entry__text--placeholder">填写时间：18:00–23:00</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 17 日 -->
+              <div class="gd-day-card">
+                <div class="gd-day-card__date">
+                  <span class="gd-day-card__num">17</span>
+                  <span class="gd-day-card__wd">周六</span>
+                </div>
+                <div class="gd-day-card__body">
+                  <div class="gd-entry">
+                    <span class="gd-entry__tag" data-type="orient">导向</span>
+                    <div class="gd-entry__main">
+                      <div class="gd-entry__line">
+                        <span class="gd-entry__label">要做的事</span>
+                        <span class="gd-entry__text">让每一个细节都为了便于客户使用而去匹配条件，打造丝滑体验。</span>
+                      </div>
+                      <div class="gd-entry__line">
+                        <span class="gd-entry__label">预期效果</span>
+                        <span class="gd-entry__text">①、开发消息系统；②、开发头脑风暴和月度导向模块的设计；③、开发班级商学院模块的功能闭环；④、完成日导向数据看板与统计指标。</span>
+                      </div>
+                      <div class="gd-entry__line">
+                        <span class="gd-entry__label">都来帮</span>
+                        <span class="gd-entry__text">一起讨论数据源和表单的需求 @裴启妍 @王立伟 @黄京旺</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="gd-entry">
+                    <span class="gd-entry__tag" data-type="result">成果</span>
+                    <div class="gd-entry__main">
+                      <div class="gd-entry__line">
+                        <span class="gd-entry__label">工作成果</span>
+                        <span class="gd-entry__text">今天完成了某某模块的 use case 设计、完成了哈哈哈模块的设计重构和视觉方案的推敲，并与团队对齐了下一阶段的关键节点和验收标准。</span>
+                      </div>
+                      <div class="gd-entry__line">
+                        <span class="gd-entry__label">感悟/思考/问题</span>
+                        <span class="gd-entry__text">一念智慧开，好运自然开，协同创建德，利润滚滚来。一念智慧开，好运自然开，每天进步一点点，便是最大的礼物。</span>
+                      </div>
+                      <div class="gd-entry__line">
+                        <span class="gd-entry__label">今日业绩数据</span>
+                        <span class="gd-entry__text">电视机2台、冰箱6台、洗衣机12台，电风扇11台、电视机2台、冰箱6台、洗衣机12...</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 16 日 -->
+              <div class="gd-day-card">
+                <div class="gd-day-card__date">
+                  <span class="gd-day-card__num">16</span>
+                  <span class="gd-day-card__wd">周五</span>
+                </div>
+                <div class="gd-day-card__body">
+                  <div class="gd-entry">
+                    <span class="gd-entry__tag" data-type="orient">导向</span>
+                    <div class="gd-entry__main">
+                      <div class="gd-entry__line">
+                        <span class="gd-entry__label">工作导向</span>
+                        <span class="gd-entry__text">让每一个细节都为了便于客户使用而去匹配条件，打造丝滑体验。</span>
+                      </div>
+                      <div class="gd-entry__line">
+                        <span class="gd-entry__label">工作计划</span>
+                        <span class="gd-entry__text">①、开发消息系统；②、开发头脑风暴和月度导向模块的设计；③、开发班级商学院模块的功能闭环；④、完成日导向数据看板与统计指标。</span>
+                      </div>
+                      <div class="gd-entry__line">
+                        <span class="gd-entry__label">感悟作业</span>
+                        <span class="gd-entry__text">我所关注的就是当下，专注当下的每个当下，去努力去奋斗去到在打造四海的体验加油，把每一次反馈都当作礼物，把每一次失败都当作经验。</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="gd-entry">
+                    <span class="gd-entry__tag" data-type="result">成果</span>
+                    <div class="gd-entry__main">
+                      <div class="gd-entry__line">
+                        <span class="gd-entry__label">工作成果</span>
+                        <span class="gd-entry__text">今天完成了某某模块的 use case 设计、完成了哈哈哈模块的设计重构和视觉方案的推敲，并与团队对齐了下一阶段的关键节点和验收标准。</span>
+                      </div>
+                      <div class="gd-entry__line">
+                        <span class="gd-entry__label">感悟/思考/问题</span>
+                        <span class="gd-entry__text">一念智慧开，好运自然开，协同创建德，利润滚滚来。一念智慧开，好运自然开，每天进步一点点，便是最大的礼物。</span>
+                      </div>
+                      <div class="gd-entry__line">
+                        <span class="gd-entry__label">今日业绩数据</span>
+                        <span class="gd-entry__text">电视机2台、冰箱6台、洗衣机12台，电风扇11台、电视机2台、冰箱6台、洗衣机12...</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+
+    </div>
+
+  </div>
+</cs-layout>
+
+
+<script>
+  // 周日历日期点击切换
+  document.querySelectorAll('.gd-week-day').forEach(function (d) {
+    d.addEventListener('click', function () {
+      document.querySelectorAll('.gd-week-day').forEach(function (x) { x.removeAttribute('data-active'); });
+      d.setAttribute('data-active', '');
+    });
+  });
+  // 日/周/月 tab 切换
+  document.querySelectorAll('.gd-range-tab').forEach(function (t) {
+    t.addEventListener('click', function () {
+      document.querySelectorAll('.gd-range-tab').forEach(function (x) { x.removeAttribute('data-active'); });
+      t.setAttribute('data-active', '');
+    });
+  });
+</script>
+<script src="../shared.js"></script>
+</body>
+</html>

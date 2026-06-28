@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>CSES 字体资源库</title>
+  <meta http-equiv="Cache-Control" content="no-cache">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="cses-icons.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    /* ===== Editorial / Linear-Swiss tokens =====
+       hairline   #ECECEC   分割线
+       medium     #E5E5E5   边框
+       chrome     #FAFAFA   topbar 衬底
+       text-1     #0A0A0A   primary
+       text-2     #666666   secondary
+       text-3     #999999   muted
+       accent     #4857E2   仅 active / link
+    */
+
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #FFFFFF;
+      font-family: "Inter", "PingFang SC", -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #0A0A0A;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== 顶部栏 ===== */
+    .doc-topbar {
+      height: 52px;
+      background: #FFFFFF;
+      border-bottom: 0.5px solid #ECECEC;
+      display: flex;
+      align-items: center;
+      padding: 0 28px;
+      flex-shrink: 0;
+      gap: 14px;
+    }
+    .doc-topbar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #0A0A0A;
+      letter-spacing: -0.2px;
+      text-decoration: none;
+    }
+    .doc-topbar-logo-dot {
+      width: 20px; height: 20px; border-radius: 5px;
+      background: #0A0A0A;
+      display: flex; align-items: center; justify-content: center;
+      color: #FFFFFF; font-size: 10px; font-weight: 500;
+      letter-spacing: 0;
+    }
+    .doc-topbar-divider { width: 1px; height: 14px; background: #ECECEC; }
+    .doc-topbar-subtitle { font-size: 12px; color: #666666; }
+    .doc-topbar-count {
+      margin-left: auto;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px;
+      color: #999999;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      background: transparent;
+      padding: 0;
+      border-radius: 0;
+    }
+    .doc-topbar-link {
+      font-size: 11px;
+      color: #666666;
+      text-decoration: none;
+      padding: 5px 10px;
+      border: 0.5px solid #E5E5E5;
+      border-radius: 4px;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      transition: all .15s;
+    }
+    .doc-topbar-link:hover { border-color: #0A0A0A; color: #0A0A0A; }
+
+    /* ===== 主体布局 ===== */
+    .doc-layout { flex: 1; display: flex; overflow: hidden; }
+
+    /* ===== 左侧导航 ===== */
+    .doc-sidebar {
+      width: 220px;
+      flex-shrink: 0;
+      background: #FFFFFF;
+      border-right: 0.5px solid #ECECEC;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .doc-search-wrap {
+      padding: 14px 20px 12px;
+      border-bottom: 0.5px solid #ECECEC;
+      flex-shrink: 0;
+    }
+    .doc-search-container { position: relative; }
+    .doc-search {
+      width: 100%;
+      height: 28px;
+      border: none;
+      border-bottom: 0.5px solid #E5E5E5;
+      border-radius: 0;
+      background: transparent;
+      padding: 0 0 0 22px;
+      font-size: 12px;
+      color: #0A0A0A;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .doc-search::placeholder { color: #999999; }
+    .doc-search:focus { border-bottom-color: #0A0A0A; }
+    .doc-search-icon {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999999;
+      font-size: 12px;
+      pointer-events: none;
+    }
+
+    .doc-nav-scroll { flex: 1; overflow-y: auto; padding: 6px 0 16px; counter-reset: navnum; }
+    .doc-nav-scroll::-webkit-scrollbar { width: 4px; }
+    .doc-nav-scroll::-webkit-scrollbar-thumb { background: #ECECEC; border-radius: 0; }
+
+    .doc-nav-group { padding: 16px 0 4px; }
+    .doc-nav-group:first-child { padding-top: 12px; }
+    .doc-nav-group-label {
+      padding: 4px 20px 10px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px;
+      font-weight: 400;
+      color: #999999;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+    .doc-nav-item {
+      display: flex;
+      align-items: center;
+      padding: 7px 20px;
+      font-size: 12.5px;
+      color: #666666;
+      cursor: pointer;
+      transition: color .12s;
+      gap: 8px;
+      user-select: none;
+      counter-increment: navnum;
+      position: relative;
+    }
+    .doc-nav-item::before {
+      content: counter(navnum, decimal-leading-zero);
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px;
+      color: #BBBBBB;
+      letter-spacing: 0.4px;
+      margin-right: 2px;
+      flex-shrink: 0;
+    }
+    .doc-nav-item:hover { color: #0A0A0A; }
+    .doc-nav-item.active {
+      background: transparent;
+      color: #0A0A0A;
+      font-weight: 500;
+      letter-spacing: -0.1px;
+    }
+    .doc-nav-item.active::before { color: #4857E2; }
+    .doc-nav-item i { font-size: 13px; opacity: .7; display: none; }
+    .doc-nav-item .nav-count {
+      margin-left: auto;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px;
+      color: #BBBBBB;
+      background: transparent;
+      padding: 0;
+      border-radius: 0;
+      letter-spacing: 0.4px;
+    }
+    .doc-nav-item.active .nav-count { color: #999999; }
+
+    /* ===== 右侧内容 ===== */
+    .doc-content { flex: 1; overflow: auto; display: flex; flex-direction: column; background: #FFFFFF; }
+    .doc-content::-webkit-scrollbar { width: 6px; }
+    .doc-content::-webkit-scrollbar-thumb { background: #ECECEC; border-radius: 0; }
+
+    .page { padding: 36px 40px; width: 100%; }
+    .page-header { margin-bottom: 28px; padding-bottom: 28px; border-bottom: 0.5px solid #ECECEC; }
+    .page-title {
+      font-size: 32px;
+      font-weight: 500;
+      color: #0A0A0A;
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      margin-bottom: 10px;
+      letter-spacing: -0.8px;
+      line-height: 1.1;
+    }
+    .page-title-tag {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px;
+      color: #999999;
+      background: transparent;
+      padding: 0;
+      border-radius: 0;
+      border: none;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      font-weight: 400;
+    }
+    .page-subtitle {
+      font-size: 13px;
+      color: #666666;
+      line-height: 1.7;
+      max-width: 560px;
+    }
+
+    /* ===== 概览数字（无卡片，hairline 分割） ===== */
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 0;
+      margin-bottom: 44px;
+    }
+    .stat-card {
+      background: transparent;
+      border: none;
+      border-left: 0.5px solid #ECECEC;
+      border-radius: 0;
+      padding: 4px 24px 4px;
+      cursor: pointer;
+      transition: opacity .15s;
+    }
+    .stat-card:first-child { border-left: none; padding-left: 0; }
+    .stat-card:hover { opacity: 0.65; transform: none; box-shadow: none; }
+    .stat-card-label {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px;
+      color: #999999;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .stat-card-value {
+      font-size: 42px;
+      font-weight: 500;
+      color: #0A0A0A;
+      line-height: 1;
+      margin-bottom: 0;
+      font-family: "Inter", "SF Pro Display", -apple-system, sans-serif;
+      letter-spacing: -1.6px;
+    }
+    .stat-card-unit { font-size: 12px; color: #999999; margin-left: 6px; letter-spacing: -0.2px; }
+    .stat-card-hint {
+      margin-top: 10px;
+      font-size: 10px;
+      color: #999999;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      letter-spacing: 0.4px;
+    }
+
+    /* ===== Logo 展示 ===== */
+    .logo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 0;
+      border-top: 0.5px solid #ECECEC;
+      border-left: 0.5px solid #ECECEC;
+    }
+    .logo-card {
+      background: #FFFFFF;
+      border-right: 0.5px solid #ECECEC;
+      border-bottom: 0.5px solid #ECECEC;
+      border-radius: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .logo-card-stage {
+      flex: 1;
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+    }
+    .logo-card-stage.dark { background: #0A0A0A; }
+    .logo-card-stage.light { background: #FFFFFF; }
+    .logo-card-meta {
+      padding: 12px 16px;
+      border-top: 0.5px solid #ECECEC;
+      font-size: 11px;
+      color: #999999;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      letter-spacing: 0.2px;
+    }
+    .logo-card-meta code {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      color: #0A0A0A;
+      background: transparent;
+      padding: 0;
+      border-radius: 0;
+      font-size: 10px;
+      letter-spacing: 0.2px;
+    }
+
+    /* ===== 字体文件表 ===== */
+    .file-table-wrap {
+      background: transparent;
+      border-radius: 0;
+      border: none;
+      border-top: 0.5px solid #ECECEC;
+      overflow: hidden;
+    }
+    .file-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .file-table th {
+      background: transparent;
+      padding: 14px 0;
+      text-align: left;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-weight: 400;
+      color: #999999;
+      border-bottom: 0.5px solid #ECECEC;
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .file-table th:first-child { padding-left: 0; }
+    .file-table td {
+      padding: 16px 0;
+      border-bottom: 0.5px solid #ECECEC;
+      color: #0A0A0A;
+      vertical-align: middle;
+    }
+    .file-table tr:last-child td { border-bottom: 0.5px solid #ECECEC; }
+    .file-table tr:hover td { background: transparent; color: #0A0A0A; }
+    .file-name {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 12px;
+      color: #0A0A0A;
+      background: transparent;
+      padding: 0;
+      border-radius: 0;
+      display: inline-block;
+      letter-spacing: -0.2px;
+    }
+    .file-type-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 2px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 9px;
+      background: transparent;
+      color: #666666;
+      border: 0.5px solid #E5E5E5;
+      letter-spacing: 0.6px;
+    }
+
+    /* ===== 图标网格 ===== */
+    .icon-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 0;
+      padding: 14px 0;
+      background: transparent;
+      border: none;
+      border-bottom: 0.5px solid #ECECEC;
+      border-radius: 0;
+    }
+    .icon-toolbar input {
+      flex: 1;
+      min-width: 200px;
+      padding: 6px 0;
+      border: none;
+      border-bottom: 0.5px solid transparent;
+      border-radius: 0;
+      font-size: 13px;
+      color: #0A0A0A;
+      background: transparent;
+      outline: none;
+    }
+    .icon-toolbar input::placeholder { color: #999999; }
+    .icon-toolbar input:focus { border-bottom-color: #0A0A0A; }
+    .icon-toolbar .size-chips { display: flex; gap: 0; border: 0.5px solid #E5E5E5; border-radius: 3px; overflow: hidden; }
+    .size-chip {
+      padding: 4px 10px;
+      font-size: 10px;
+      border: none;
+      border-left: 0.5px solid #E5E5E5;
+      border-radius: 0;
+      background: #FFFFFF;
+      color: #666666;
+      cursor: pointer;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      letter-spacing: 0.4px;
+    }
+    .size-chip:first-child { border-left: none; }
+    .size-chip:hover { color: #0A0A0A; }
+    .size-chip.active {
+      background: #0A0A0A;
+      color: #FFFFFF;
+    }
+    .icon-toolbar .toolbar-count {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 10px;
+      color: #999999;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-left: auto;
+    }
+    .icon-toolbar .toolbar-count strong { color: #0A0A0A; font-weight: 500; }
+
+    .icon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 0;
+      background: transparent;
+      padding: 0;
+      border-radius: 0;
+      border: none;
+      border-left: 0.5px solid #ECECEC;
+      border-top: 0.5px solid #ECECEC;
+    }
+    .icon-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 18px 6px 12px;
+      border-right: 0.5px solid #ECECEC;
+      border-bottom: 0.5px solid #ECECEC;
+      border-radius: 0;
+      cursor: pointer;
+      transition: background .12s;
+      gap: 8px;
+      min-height: 96px;
+      user-select: none;
+    }
+    .icon-cell:hover { background: #FAFAFA; transform: none; }
+    .icon-cell i { font-size: 22px; color: #0A0A0A; line-height: 1; }
+    .icon-cell .cn {
+      font-size: 10px;
+      color: #999999;
+      text-align: center;
+      word-break: break-all;
+      line-height: 1.3;
+      max-width: 100%;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      letter-spacing: 0.2px;
+    }
+    .icon-cell.copied { background: #0A0A0A; }
+    .icon-cell.copied i, .icon-cell.copied .cn { color: #FFFFFF; }
+    .icon-empty {
+      padding: 60px 40px;
+      text-align: center;
+      color: #999999;
+      font-size: 13px;
+      background: transparent;
+      border-radius: 0;
+      border: none;
+      border-top: 0.5px solid #ECECEC;
+    }
+
+    /* ===== 文档页（已废弃保留兜底） ===== */
+    .doc-body {
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      padding: 0;
+      font-size: 14px;
+      line-height: 1.7;
+      color: #0A0A0A;
+    }
+    .doc-body h2 { font-size: 18px; margin: 22px 0 10px; font-weight: 500; }
+    .doc-body h2:first-child { margin-top: 0; }
+    .doc-body h3 { font-size: 15px; margin: 18px 0 8px; font-weight: 500; }
+    .doc-body p { margin: 6px 0 10px; }
+    .doc-body ul, .doc-body ol { padding-left: 22px; margin: 6px 0 10px; }
+    .doc-body li { margin: 3px 0; }
+    .doc-body code {
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 12px;
+      background: transparent;
+      padding: 0;
+      border-radius: 0;
+      color: #0A0A0A;
+    }
+    .doc-body pre {
+      background: #0A0A0A;
+      color: #ECECEC;
+      padding: 14px 18px;
+      border-radius: 0;
+      overflow-x: auto;
+      font-size: 12px;
+      line-height: 1.6;
+      margin: 10px 0;
+    }
+    .doc-body pre code { background: transparent; color: inherit; padding: 0; }
+    .doc-body table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0;
+      font-size: 13px;
+    }
+    .doc-body th, .doc-body td {
+      padding: 8px 12px;
+      border: 1px solid var(--cs-color-border, #e6e8ee);
+      text-align: left;
+    }
+    .doc-body th { background: var(--cs-color-bg-light, #f5f6fa); font-weight: 600; }
+    .doc-body blockquote {
+      border-left: 3px solid var(--cs-color-primary, #4857e2);
+      padding: 6px 14px;
+      background: rgba(72,87,226,0.04);
+      margin: 10px 0;
+      color: var(--cs-color-text-light, #555);
+    }
+    .doc-body hr { border: none; border-top: 1px solid var(--cs-color-border, #e6e8ee); margin: 20px 0; }
+
+    /* ===== Toast ===== */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0A0A0A;
+      color: #FFFFFF;
+      padding: 8px 16px;
+      border-radius: 2px;
+      font-family: "JetBrains Mono", "SF Mono", monospace;
+      font-size: 11px;
+      letter-spacing: 0.4px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s;
+      z-index: 999;
+    }
+    .toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+
+<div class="doc-topbar">
+  <div class="doc-topbar-logo">
+    <div class="doc-topbar-logo-dot">C</div>
+    CSES Design
+  </div>
+  <div class="doc-topbar-divider"></div>
+  <span class="doc-topbar-subtitle">字体资源库</span>
+  <span class="doc-topbar-count" id="topbarCount">— 个图标</span>
+  <a class="doc-topbar-link" href="icons.html" target="_blank">图标管理 →</a>
+</div>
+
+<div class="doc-layout">
+  <aside class="doc-sidebar">
+    <div class="doc-search-wrap">
+      <div class="doc-search-container">
+        <i class="cses-stratis-search-01 doc-search-icon"></i>
+        <input class="doc-search" id="navSearch" type="search" placeholder="筛选导航..." autocomplete="off">
+      </div>
+    </div>
+    <div class="doc-nav-scroll">
+      <div class="doc-nav-group">
+        <div class="doc-nav-group-label">概览</div>
+        <div class="doc-nav-item active" data-view="overview">
+          <i class="cses-stratis-layout-01"></i> 总览
+        </div>
+      </div>
+      <div class="doc-nav-group">
+        <div class="doc-nav-group-label">资源</div>
+        <div class="doc-nav-item" data-view="logo">
+          <i class="cses-stratis-image-01"></i> Logo
+        </div>
+        <div class="doc-nav-item" data-view="files">
+          <i class="cses-stratis-file-02"></i> 字体文件
+          <span class="nav-count">3</span>
+        </div>
+      </div>
+      <div class="doc-nav-group">
+        <div class="doc-nav-group-label">图标</div>
+        <div class="doc-nav-item" data-view="cses">
+          <i class="cses-stratis-grid-01"></i> 面性图标
+          <span class="nav-count" id="navCsesCount">—</span>
+        </div>
+        <div class="doc-nav-item" data-view="stratis">
+          <i class="cses-stratis-bell-01"></i> 线性图标
+          <span class="nav-count" id="navStratisCount">—</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="doc-content" id="docContent">
+    <div class="page"><div class="icon-empty">加载中...</div></div>
+  </main>
+</div>
+
+<div class="toast" id="toast">已复制</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ====== 数据：图标清单（class + 中文名）从 icons.html 同步提取 + cses-folder-team 补充 ======
+     格式 { c: class名, n: 中文/英文名 }。72 面性 + 817 线性 = 889。 */
+  var ICONS = {"face":[{"c":"cses-append","n":"编辑器_添加"},{"c":"cses-biaozhun","n":"标准"},{"c":"cses-blow_up02","n":"客户端_放大"},{"c":"cses-cancelled","n":"已取消"},{"c":"cses-check-circle","n":"check-circle"},{"c":"cses-chuangjianqunliao","n":"创建群聊"},{"c":"cses-close-circle","n":"close-circle"},{"c":"cses-completed03","n":"已完成"},{"c":"cses-crown1","n":"crown"},{"c":"cses-daiban","n":"待办"},{"c":"cses-dianping","n":"点评"},{"c":"cses-dianpingliebiao","n":"点评列表"},{"c":"cses-done","n":"会议中_待办"},{"c":"cses-duoxuanbanxuanzhong","n":"多选半选中"},{"c":"cses-erjidaohang_zhishiku","n":"二级导航_知识库"},{"c":"cses-exclamation-circle","n":"exclamation-circle"},{"c":"cses-fenxiangxinxi","n":"分享信息"},{"c":"cses-fill_in_kr_alert","n":"会议中_右上角功能_填写KR_提醒"},{"c":"cses-folder-team","n":"团队空间"},{"c":"cses-gongge","n":"宫格"},{"c":"cses-gouxuan_xuanzhong","n":"勾选_选中"},{"c":"cses-guanbishipin","n":"关闭视频"},{"c":"cses-hudongkaiqi","n":"互动开启"},{"c":"cses-huiyixinxi","n":"会议信息"},{"c":"cses-info-circle","n":"info-circle"},{"c":"cses-jieshuluzhi","n":"结束录制"},{"c":"cses-jieshutoupiao","n":"结束投票"},{"c":"cses-jinchengzhong","n":"进程中"},{"c":"cses-jixu","n":"继续"},{"c":"cses-jiyao","n":"纪要"},{"c":"cses-kaishitoupiao","n":"开始投票"},{"c":"cses-kehuduan_zuixiaohua1","n":"客户端_最小化"},{"c":"cses-lattice_view","n":"会议中_宫格视图"},{"c":"cses-maximize","n":"客户端_最大化"},{"c":"cses-me","n":"投票列表_我"},{"c":"cses-minimization","n":"客户端_最小化"},{"c":"cses-off03","n":"客户端_关闭"},{"c":"cses-qiehuanshexiangtou","n":"切换摄像头"},{"c":"cses-qingkong","n":"清空"},{"c":"cses-record","n":"会议中_顶部功能_录制"},{"c":"cses-ren","n":"人"},{"c":"cses-right_view","n":"会议中_右视图"},{"c":"cses-screen_sharing","n":"屏幕共享_"},{"c":"cses-settings","n":"会议中_顶部功能_设置"},{"c":"cses-shandian","n":"闪电"},{"c":"cses-shexiangtou","n":"摄像头"},{"c":"cses-shezhi","n":"设置"},{"c":"cses-shibai","n":"失败"},{"c":"cses-shipin","n":"视频"},{"c":"cses-subtitles","n":"会议中_顶部功能_字幕"},{"c":"cses-switch_off","n":"需求文档_开关_关"},{"c":"cses-switch_on","n":"需求文档_开关_开"},{"c":"cses-tasklist_Kanban","n":"看板"},{"c":"cses-tianjia","n":"添加"},{"c":"cses-tianxie","n":"填写"},{"c":"cses-tiwen2","n":"提问"},{"c":"cses-tiwenliebiao","n":"提问列表"},{"c":"cses-top_view","n":"会议中_顶部视图"},{"c":"cses-toupiao","n":"投票"},{"c":"cses-tuichu","n":"退出"},{"c":"cses-under_way03","n":"进行中"},{"c":"cses-video_back","n":"会议弹窗_已完成_视频_后退"},{"c":"cses-video_forward","n":"会议弹窗_已完成_视频_前进"},{"c":"cses-xialunhuiyi","n":"下轮会议"},{"c":"cses-xiaoxi","n":"消息"},{"c":"cses-xiaoxi-dingshifasong","n":"消息-定时发送"},{"c":"cses-xiaoxi-xiaoxijilu","n":"消息-消息记录"},{"c":"cses-xunibeijing","n":"虚拟背景"},{"c":"cses-yanjiangzhe","n":"演讲者"},{"c":"cses-yichuchengyuan","n":"移除成员"},{"c":"cses-yijiaozhuchiren","n":"移交主持人"},{"c":"cses-zhankaigonggaohou","n":"展开公告后"}],"stratis":[{"c":"cses-stratis--","n":""},{"c":"cses-stratis-Component","n":"Component"},{"c":"cses-stratis-Stop-circle-contained","n":"Stop circle contained"},{"c":"cses-stratis-activity","n":"activity"},{"c":"cses-stratis-add-square-01","n":"add square 01"},{"c":"cses-stratis-add-square-02","n":"add square 02"},{"c":"cses-stratis-add-square-03","n":"add square 03"},{"c":"cses-stratis-add-square-04","n":"add square 04"},{"c":"cses-stratis-alarm-01","n":"alarm 01"},{"c":"cses-stratis-alarm-02","n":"alarm 02"},{"c":"cses-stratis-alarm-03","n":"alarm 03"},{"c":"cses-stratis-alarm-04","n":"alarm 04"},{"c":"cses-stratis-alarm-05","n":"alarm 05"},{"c":"cses-stratis-alarm-06","n":"alarm 06"},{"c":"cses-stratis-alarm-check","n":"alarm check"},{"c":"cses-stratis-alarm-minus","n":"alarm minus"},{"c":"cses-stratis-alarm-off","n":"alarm off"},{"c":"cses-stratis-alarm-plus","n":"alarm plus"},{"c":"cses-stratis-alert-circle","n":"alert circle"},{"c":"cses-stratis-alert-square","n":"alert square"},{"c":"cses-stratis-alert-triangle","n":"alert triangle"},{"c":"cses-stratis-align-center","n":"align center"},{"c":"cses-stratis-align-down-01","n":"align down 01"},{"c":"cses-stratis-align-down-02","n":"align down 02"},{"c":"cses-stratis-align-horizontal-center-01","n":"align horizontal center 01"},{"c":"cses-stratis-align-horizontal-center-02","n":"align horizontal center 02"},{"c":"cses-stratis-align-horizontal-center-03","n":"align horizontal center 03"},{"c":"cses-stratis-align-justify","n":"align justify"},{"c":"cses-stratis-align-left","n":"align left"},{"c":"cses-stratis-align-left-01","n":"align left 01"},{"c":"cses-stratis-align-left-02","n":"align left 02"},{"c":"cses-stratis-align-right","n":"align right"},{"c":"cses-stratis-align-right-01","n":"align right 01"},{"c":"cses-stratis-align-right-02","n":"align right 02"},{"c":"cses-stratis-align-up-01","n":"align up 01"},{"c":"cses-stratis-align-up-02","n":"align up 02"},{"c":"cses-stratis-align-vertical-center-01","n":"align vertical center 01"},{"c":"cses-stratis-align-vertical-center-02","n":"align vertical center 02"},{"c":"cses-stratis-align-vertical-center-03","n":"align vertical center 03"},{"c":"cses-stratis-annotation","n":"annotation"},{"c":"cses-stratis-annotation-alert","n":"annotation alert"},{"c":"cses-stratis-annotation-check","n":"annotation check"},{"c":"cses-stratis-annotation-information","n":"annotation information"},{"c":"cses-stratis-annotation-plus","n":"annotation plus"},{"c":"cses-stratis-annotation-typing","n":"annotation typing"},{"c":"cses-stratis-annotation-x","n":"annotation x"},{"c":"cses-stratis-arrow-curve-left-down","n":"arrow curve left down"},{"c":"cses-stratis-arrow-curve-left-right","n":"arrow curve left right"},{"c":"cses-stratis-arrow-curve-left-up","n":"arrow curve left up"},{"c":"cses-stratis-arrow-curve-right-up","n":"arrow curve right up"},{"c":"cses-stratis-arrow-curve-up-left","n":"arrow curve up left"},{"c":"cses-stratis-arrow-curve-up-right","n":"arrow curve up right"},{"c":"cses-stratis-arrow-down-contained-01","n":"arrow down contained 01"},{"c":"cses-stratis-arrow-down-contained-02","n":"arrow down contained 02"},{"c":"cses-stratis-arrow-down-left","n":"arrow down left"},{"c":"cses-stratis-arrow-down-left-contained","n":"arrow down left contained"},{"c":"cses-stratis-arrow-down-left-sm","n":"arrow down left sm"},{"c":"cses-stratis-arrow-down-left-square-contained","n":"arrow down left square contained"},{"c":"cses-stratis-arrow-down-right","n":"arrow down right"},{"c":"cses-stratis-arrow-down-right-contained","n":"arrow down right contained"},{"c":"cses-stratis-arrow-down-right-sm","n":"arrow down right sm"},{"c":"cses-stratis-arrow-down-right-square-contained","n":"arrow down right square contained"},{"c":"cses-stratis-arrow-down-square-contained","n":"arrow down square contained"},{"c":"cses-stratis-arrow-expand-01","n":"arrow expand 01"},{"c":"cses-stratis-arrow-expand-02","n":"arrow expand 02"},{"c":"cses-stratis-arrow-expand-03","n":"arrow expand 03"},{"c":"cses-stratis-arrow-expand-04","n":"arrow expand 04"},{"c":"cses-stratis-arrow-left","n":"arrow left"},{"c":"cses-stratis-arrow-left-contained-01","n":"arrow left contained 01"},{"c":"cses-stratis-arrow-left-contained-02","n":"arrow left contained 02"},{"c":"cses-stratis-arrow-left-sm","n":"arrow left sm"},{"c":"cses-stratis-arrow-left-square-contained","n":"arrow left square contained"},{"c":"cses-stratis-arrow-refresh-01","n":"arrow refresh 01"},{"c":"cses-stratis-arrow-refresh-02","n":"arrow refresh 02"},{"c":"cses-stratis-arrow-refresh-03","n":"arrow refresh 03"},{"c":"cses-stratis-arrow-refresh-04","n":"arrow refresh 04"},{"c":"cses-stratis-arrow-refresh-05","n":"arrow refresh 05"},{"c":"cses-stratis-arrow-refresh-06","n":"arrow refresh 06"},{"c":"cses-stratis-arrow-right","n":"arrow right"},{"c":"cses-stratis-arrow-right-contained-01","n":"arrow right contained 01"},{"c":"cses-stratis-arrow-right-contained-02","n":"arrow right contained 02"},{"c":"cses-stratis-arrow-right-sm","n":"arrow right sm"},{"c":"cses-stratis-arrow-right-square-contained","n":"arrow right square contained"},{"c":"cses-stratis-arrow-rotate-left-01","n":"arrow rotate left 01"},{"c":"cses-stratis-arrow-rotate-left-02","n":"arrow rotate left 02"},{"c":"cses-stratis-arrow-rotate-right-01","n":"arrow rotate right 01"},{"c":"cses-stratis-arrow-rotate-right-02","n":"arrow rotate right 02"},{"c":"cses-stratis-arrow-switch-horizontal","n":"arrow switch horizontal"},{"c":"cses-stratis-arrow-up","n":"arrow up"},{"c":"cses-stratis-arrow-up-contained-01","n":"arrow up contained 01"},{"c":"cses-stratis-arrow-up-contained-02","n":"arrow up contained 02"},{"c":"cses-stratis-arrow-up-left","n":"arrow up left"},{"c":"cses-stratis-arrow-up-left-contained","n":"arrow up left contained"},{"c":"cses-stratis-arrow-up-left-sm","n":"arrow up left sm"},{"c":"cses-stratis-arrow-up-left-square-contained","n":"arrow up left square contained"},{"c":"cses-stratis-arrow-up-right","n":"arrow up right"},{"c":"cses-stratis-arrow-up-right-contained","n":"arrow up right contained"},{"c":"cses-stratis-arrow-up-right-sm","n":"arrow up right sm"},{"c":"cses-stratis-arrow-up-right-square-contained","n":"arrow up right square contained"},{"c":"cses-stratis-arrow-up-sm","n":"arrow up sm"},{"c":"cses-stratis-arrow-up-square-contained","n":"arrow up square contained"},{"c":"cses-stratis-atom","n":"atom"},{"c":"cses-stratis-attatchment-01","n":"attatchment 01"},{"c":"cses-stratis-attatchment-02","n":"attatchment 02"},{"c":"cses-stratis-audio-settings-01","n":"audio settings 01"},{"c":"cses-stratis-audio-settings-02","n":"audio settings 02"},{"c":"cses-stratis-bag-01","n":"bag 01"},{"c":"cses-stratis-bag-02","n":"bag 02"},{"c":"cses-stratis-bag-03","n":"bag 03"},{"c":"cses-stratis-bag-04","n":"bag 04"},{"c":"cses-stratis-bag-05","n":"bag 05"},{"c":"cses-stratis-bank","n":"bank"},{"c":"cses-stratis-bank-note-01","n":"bank note 01"},{"c":"cses-stratis-bank-note-02","n":"bank note 02"},{"c":"cses-stratis-bank-note-03","n":"bank note 03"},{"c":"cses-stratis-bank-note-04","n":"bank note 04"},{"c":"cses-stratis-bank-note-05","n":"bank note 05"},{"c":"cses-stratis-bank-note-06","n":"bank note 06"},{"c":"cses-stratis-bar-chart-01","n":"bar chart 01"},{"c":"cses-stratis-bar-chart-02","n":"bar chart 02"},{"c":"cses-stratis-bar-chart-03","n":"bar chart 03"},{"c":"cses-stratis-bar-chart-04","n":"bar chart 04"},{"c":"cses-stratis-bar-chart-05","n":"bar chart 05"},{"c":"cses-stratis-bar-chart-square-01","n":"bar chart square 01"},{"c":"cses-stratis-bar-chart-square-02","n":"bar chart square 02"},{"c":"cses-stratis-bar-chart-square-03","n":"bar chart square 03"},{"c":"cses-stratis-bar-chart-square-down-01","n":"bar chart square down 01"},{"c":"cses-stratis-bar-chart-square-down-02","n":"bar chart square down 02"},{"c":"cses-stratis-bar-chart-square-up-01","n":"bar chart square up 01"},{"c":"cses-stratis-bar-group-01","n":"bar group 01"},{"c":"cses-stratis-bar-group-02","n":"bar group 02"},{"c":"cses-stratis-bar-group-03","n":"bar group 03"},{"c":"cses-stratis-battery-01","n":"battery 01"},{"c":"cses-stratis-battery-02","n":"battery 02"},{"c":"cses-stratis-battery-03","n":"battery 03"},{"c":"cses-stratis-battery-04","n":"battery 04"},{"c":"cses-stratis-battery-empty","n":"battery empty"},{"c":"cses-stratis-battery-fill-01","n":"battery fill 01"},{"c":"cses-stratis-battery-fill-02","n":"battery fill 02"},{"c":"cses-stratis-battery-fill-04","n":"battery fill 04"},{"c":"cses-stratis-bell-01","n":"bell 01"},{"c":"cses-stratis-bell-02","n":"bell 02"},{"c":"cses-stratis-bell-03","n":"bell 03"},{"c":"cses-stratis-bell-04","n":"bell 04"},{"c":"cses-stratis-bell-off-01","n":"bell off 01"},{"c":"cses-stratis-bell-off-02","n":"bell off 02"},{"c":"cses-stratis-bell-ringing-01","n":"bell ringing 01"},{"c":"cses-stratis-bell-ringing-02","n":"bell ringing 02"},{"c":"cses-stratis-bell-ringing-03","n":"bell ringing 03"},{"c":"cses-stratis-bell-ringing-04","n":"bell ringing 04"},{"c":"cses-stratis-bezier-01","n":"bezier 01"},{"c":"cses-stratis-bezier-02","n":"bezier 02"},{"c":"cses-stratis-bluetooth-01","n":"bluetooth 01"},{"c":"cses-stratis-bluetooth-02","n":"bluetooth 02"},{"c":"cses-stratis-bold-01","n":"bold 01"},{"c":"cses-stratis-bold-02","n":"bold 02"},{"c":"cses-stratis-book-01","n":"book 01"},{"c":"cses-stratis-book-02","n":"book 02"},{"c":"cses-stratis-book-03","n":"book 03"},{"c":"cses-stratis-book-04","n":"book 04"},{"c":"cses-stratis-book-05","n":"book 05"},{"c":"cses-stratis-book-06","n":"book 06"},{"c":"cses-stratis-box","n":"box"},{"c":"cses-stratis-brackets","n":"brackets"},{"c":"cses-stratis-brackets-X","n":"brackets X"},{"c":"cses-stratis-brackets-check","n":"brackets check"},{"c":"cses-stratis-brackets-minus","n":"brackets minus"},{"c":"cses-stratis-brackets-plus","n":"brackets plus"},{"c":"cses-stratis-brackets-slash","n":"brackets slash"},{"c":"cses-stratis-brackets-typing","n":"brackets typing"},{"c":"cses-stratis-browser","n":"browser"},{"c":"cses-stratis-browser-code","n":"browser code"},{"c":"cses-stratis-calculator-01","n":"calculator 01"},{"c":"cses-stratis-calculator-02","n":"calculator 02"},{"c":"cses-stratis-calendar-01","n":"calendar 01"},{"c":"cses-stratis-calendar-02","n":"calendar 02"},{"c":"cses-stratis-calendar-03","n":"calendar 03"},{"c":"cses-stratis-calendar-04","n":"calendar 04"},{"c":"cses-stratis-calendar-check","n":"calendar check"},{"c":"cses-stratis-calendar-minus","n":"calendar minus"},{"c":"cses-stratis-calendar-number","n":"calendar number"},{"c":"cses-stratis-calendar-plus","n":"calendar plus"},{"c":"cses-stratis-camera-01","n":"camera 01"},{"c":"cses-stratis-camera-02","n":"camera 02"},{"c":"cses-stratis-camera-lens","n":"camera lens"},{"c":"cses-stratis-camera-off","n":"camera off"},{"c":"cses-stratis-cancel-left","n":"cancel left"},{"c":"cses-stratis-cancel-right","n":"cancel right"},{"c":"cses-stratis-card-01","n":"card 01"},{"c":"cses-stratis-card-02","n":"card 02"},{"c":"cses-stratis-card-add","n":"card add"},{"c":"cses-stratis-card-check","n":"card check"},{"c":"cses-stratis-card-down","n":"card down"},{"c":"cses-stratis-card-edit","n":"card edit"},{"c":"cses-stratis-card-lock","n":"card lock"},{"c":"cses-stratis-card-minus","n":"card minus"},{"c":"cses-stratis-card-number","n":"card number"},{"c":"cses-stratis-card-shield","n":"card shield"},{"c":"cses-stratis-card-up","n":"card up"},{"c":"cses-stratis-card-x","n":"card x"},{"c":"cses-stratis-cart","n":"cart"},{"c":"cses-stratis-center","n":"center"},{"c":"cses-stratis-chart-breakout-circle","n":"chart breakout circle"},{"c":"cses-stratis-chart-breakout-square","n":"chart breakout square"},{"c":"cses-stratis-check-broken","n":"check broken"},{"c":"cses-stratis-check-contained","n":"check contained"},{"c":"cses-stratis-check-square-broken","n":"check square broken"},{"c":"cses-stratis-check-square-contained","n":"check square contained"},{"c":"cses-stratis-chevron-double-down","n":"chevron double down"},{"c":"cses-stratis-chevron-double-left","n":"chevron double left"},{"c":"cses-stratis-chevron-double-right","n":"chevron double right"},{"c":"cses-stratis-chevron-double-up","n":"chevron double up"},{"c":"cses-stratis-chevron-down","n":"chevron down"},{"c":"cses-stratis-chevron-left","n":"chevron left"},{"c":"cses-stratis-chevron-right","n":"chevron right"},{"c":"cses-stratis-chevron-up","n":"chevron up"},{"c":"cses-stratis-chromecast","n":"chromecast"},{"c":"cses-stratis-circle","n":"circle"},{"c":"cses-stratis-clock-01","n":"clock 01"},{"c":"cses-stratis-clock-backward","n":"clock backward"},{"c":"cses-stratis-clock-check","n":"clock check"},{"c":"cses-stratis-clock-forward","n":"clock forward"},{"c":"cses-stratis-clock-plus","n":"clock plus"},{"c":"cses-stratis-cloud-01","n":"cloud 01"},{"c":"cses-stratis-cloud-02","n":"cloud 02"},{"c":"cses-stratis-cloud-03","n":"cloud 03"},{"c":"cses-stratis-cloud-04","n":"cloud 04"},{"c":"cses-stratis-cloud-lightning","n":"cloud lightning"},{"c":"cses-stratis-cloud-rain","n":"cloud rain"},{"c":"cses-stratis-cloud-snow","n":"cloud snow"},{"c":"cses-stratis-cloud-sun","n":"cloud sun"},{"c":"cses-stratis-code-01","n":"code 01"},{"c":"cses-stratis-code-02","n":"code 02"},{"c":"cses-stratis-code-03","n":"code 03"},{"c":"cses-stratis-code-04","n":"code 04"},{"c":"cses-stratis-coin-broken","n":"coin broken"},{"c":"cses-stratis-coin-hand","n":"coin hand"},{"c":"cses-stratis-coin-number","n":"coin number"},{"c":"cses-stratis-coin-unbroken","n":"coin unbroken"},{"c":"cses-stratis-coins","n":"coins"},{"c":"cses-stratis-coins-rotate","n":"coins rotate"},{"c":"cses-stratis-color-picker","n":"color picker"},{"c":"cses-stratis-color-swatch-01","n":"color swatch 01"},{"c":"cses-stratis-color-swatch-02","n":"color swatch 02"},{"c":"cses-stratis-colors-01","n":"colors 01"},{"c":"cses-stratis-colors-02","n":"colors 02"},{"c":"cses-stratis-column-horizontal-01","n":"column horizontal 01"},{"c":"cses-stratis-column-horizontal-02","n":"column horizontal 02"},{"c":"cses-stratis-column-horizontal-03","n":"column horizontal 03"},{"c":"cses-stratis-column-vertical-01","n":"column vertical 01"},{"c":"cses-stratis-column-vertical-02","n":"column vertical 02"},{"c":"cses-stratis-column-vertical-03","n":"column vertical 03"},{"c":"cses-stratis-compare","n":"compare"},{"c":"cses-stratis-compass","n":"compass"},{"c":"cses-stratis-computer","n":"computer"},{"c":"cses-stratis-contrast","n":"contrast"},{"c":"cses-stratis-crop-01","n":"crop 01"},{"c":"cses-stratis-crop-02","n":"crop 02"},{"c":"cses-stratis-currency-bath","n":"currency bath"},{"c":"cses-stratis-currency-bitcoin","n":"currency bitcoin"},{"c":"cses-stratis-currency-cent","n":"currency cent"},{"c":"cses-stratis-currency-coin-bath","n":"currency coin bath"},{"c":"cses-stratis-currency-coin-bitcoin","n":"currency coin bitcoin"},{"c":"cses-stratis-currency-coin-cent","n":"currency coin cent"},{"c":"cses-stratis-currency-coin-dollar","n":"currency coin dollar"},{"c":"cses-stratis-currency-coin-euro","n":"currency coin euro"},{"c":"cses-stratis-currency-coin-pound","n":"currency coin pound"},{"c":"cses-stratis-currency-coin-rubel","n":"currency coin rubel"},{"c":"cses-stratis-currency-coin-rupee","n":"currency coin rupee"},{"c":"cses-stratis-currency-coin-yen","n":"currency coin yen"},{"c":"cses-stratis-currency-dollar","n":"currency dollar"},{"c":"cses-stratis-currency-euro","n":"currency euro"},{"c":"cses-stratis-currency-pound","n":"currency pound"},{"c":"cses-stratis-currency-rubel","n":"currency rubel"},{"c":"cses-stratis-currency-rupee","n":"currency rupee"},{"c":"cses-stratis-currency-yen","n":"currency yen"},{"c":"cses-stratis-cursor-01","n":"cursor 01"},{"c":"cses-stratis-cursor-02","n":"cursor 02"},{"c":"cses-stratis-cursor-03","n":"cursor 03"},{"c":"cses-stratis-cursor-04","n":"cursor 04"},{"c":"cses-stratis-cursor-05","n":"cursor 05"},{"c":"cses-stratis-cursor-06","n":"cursor 06"},{"c":"cses-stratis-dash","n":"dash"},{"c":"cses-stratis-data-01","n":"data 01"},{"c":"cses-stratis-data-02","n":"data 02"},{"c":"cses-stratis-data-03","n":"data 03"},{"c":"cses-stratis-data-04","n":"data 04"},{"c":"cses-stratis-delete","n":"delete"},{"c":"cses-stratis-delivery","n":"delivery"},{"c":"cses-stratis-diamond","n":"diamond"},{"c":"cses-stratis-disc","n":"disc"},{"c":"cses-stratis-discount-circle","n":"discount circle"},{"c":"cses-stratis-discount-square","n":"discount square"},{"c":"cses-stratis-discount-star-01","n":"discount star 01"},{"c":"cses-stratis-discount-star-02","n":"discount star 02"},{"c":"cses-stratis-discount-star-03","n":"discount star 03"},{"c":"cses-stratis-divider","n":"divider"},{"c":"cses-stratis-dot-horizontal","n":"dot horizontal"},{"c":"cses-stratis-dot-vertical","n":"dot vertical"},{"c":"cses-stratis-down-arrow","n":"down arrow"},{"c":"cses-stratis-down-arrow-sm","n":"down arrow sm"},{"c":"cses-stratis-download","n":"download"},{"c":"cses-stratis-download-01","n":"download 01"},{"c":"cses-stratis-download-02","n":"download 02"},{"c":"cses-stratis-drop","n":"drop"},{"c":"cses-stratis-edit-01","n":"edit 01"},{"c":"cses-stratis-edit-02","n":"edit 02"},{"c":"cses-stratis-edit-03","n":"edit 03"},{"c":"cses-stratis-edit-04","n":"edit 04"},{"c":"cses-stratis-edit-contained","n":"edit contained"},{"c":"cses-stratis-email","n":"email"},{"c":"cses-stratis-embed","n":"embed"},{"c":"cses-stratis-equals","n":"equals"},{"c":"cses-stratis-equals-not","n":"equals not"},{"c":"cses-stratis-eraser-01","n":"eraser 01"},{"c":"cses-stratis-eraser-02","n":"eraser 02"},{"c":"cses-stratis-expand","n":"expand"},{"c":"cses-stratis-expand-02","n":"expand 02"},{"c":"cses-stratis-eye-closed","n":"eye closed"},{"c":"cses-stratis-eye-open","n":"eye open"},{"c":"cses-stratis-face-id-01","n":"face id 01"},{"c":"cses-stratis-face-id-02","n":"face id 02"},{"c":"cses-stratis-fast-backward","n":"fast backward"},{"c":"cses-stratis-fast-forward","n":"fast forward"},{"c":"cses-stratis-favourite","n":"favourite"},{"c":"cses-stratis-feather-01","n":"feather 01"},{"c":"cses-stratis-feather-02","n":"feather 02"},{"c":"cses-stratis-file","n":"file"},{"c":"cses-stratis-file-01","n":"file 01"},{"c":"cses-stratis-file-02","n":"file 02"},{"c":"cses-stratis-file-03","n":"file 03"},{"c":"cses-stratis-file-04","n":"file 04"},{"c":"cses-stratis-file-05","n":"file 05"},{"c":"cses-stratis-file-06","n":"file 06"},{"c":"cses-stratis-file-attach-01","n":"file attach 01"},{"c":"cses-stratis-file-attach-02","n":"file attach 02"},{"c":"cses-stratis-file-attach-03","n":"file attach 03"},{"c":"cses-stratis-file-branch","n":"file branch"},{"c":"cses-stratis-file-check-01","n":"file check 01"},{"c":"cses-stratis-file-check-02","n":"file check 02"},{"c":"cses-stratis-file-code","n":"file code"},{"c":"cses-stratis-file-down-01","n":"file down 01"},{"c":"cses-stratis-file-down-02","n":"file down 02"},{"c":"cses-stratis-file-edit-01","n":"file edit 01"},{"c":"cses-stratis-file-edit-02","n":"file edit 02"},{"c":"cses-stratis-file-eye-01","n":"file eye 01"},{"c":"cses-stratis-file-eye-02","n":"file eye 02"},{"c":"cses-stratis-file-lock-01","n":"file lock 01"},{"c":"cses-stratis-file-lock-02","n":"file lock 02"},{"c":"cses-stratis-file-lock-03","n":"file lock 03"},{"c":"cses-stratis-file-minus-01","n":"file minus 01"},{"c":"cses-stratis-file-minus-02","n":"file minus 02"},{"c":"cses-stratis-file-multiple","n":"file multiple"},{"c":"cses-stratis-file-none","n":"file none"},{"c":"cses-stratis-file-plus-01","n":"file plus 01"},{"c":"cses-stratis-file-plus-02","n":"file plus 02"},{"c":"cses-stratis-file-question-01","n":"file question 01"},{"c":"cses-stratis-file-question-02","n":"file question 02"},{"c":"cses-stratis-file-return-01","n":"file return 01"},{"c":"cses-stratis-file-return-02","n":"file return 02"},{"c":"cses-stratis-file-search-01","n":"file search 01"},{"c":"cses-stratis-file-search-02","n":"file search 02"},{"c":"cses-stratis-file-shield-01","n":"file shield 01"},{"c":"cses-stratis-file-shield-02","n":"file shield 02"},{"c":"cses-stratis-file-shield-03","n":"file shield 03"},{"c":"cses-stratis-file-shred","n":"file shred"},{"c":"cses-stratis-file-up-01","n":"file up 01"},{"c":"cses-stratis-file-up-02","n":"file up 02"},{"c":"cses-stratis-file-x-02","n":"file x 02"},{"c":"cses-stratis-filter","n":"filter"},{"c":"cses-stratis-fingerpint-01","n":"fingerpint 01"},{"c":"cses-stratis-fingerpint-02","n":"fingerpint 02"},{"c":"cses-stratis-flame-01","n":"flame 01"},{"c":"cses-stratis-flash-off","n":"flash off"},{"c":"cses-stratis-flash-on","n":"flash on"},{"c":"cses-stratis-flex-align-bottom-01","n":"flex align bottom 01"},{"c":"cses-stratis-flex-align-center-01","n":"flex align center 01"},{"c":"cses-stratis-flex-align-left-01","n":"flex align left 01"},{"c":"cses-stratis-flex-align-right-01","n":"flex align right 01"},{"c":"cses-stratis-flex-align-spaced-01","n":"flex align spaced 01"},{"c":"cses-stratis-flex-align-top-01","n":"flex align top 01"},{"c":"cses-stratis-flex-columns","n":"flex columns"},{"c":"cses-stratis-flex-rows","n":"flex rows"},{"c":"cses-stratis-flip-01","n":"flip 01"},{"c":"cses-stratis-flip-02","n":"flip 02"},{"c":"cses-stratis-flip-left","n":"flip left"},{"c":"cses-stratis-flip-right","n":"flip right"},{"c":"cses-stratis-folder","n":"folder"},{"c":"cses-stratis-folder-code","n":"folder code"},{"c":"cses-stratis-folder-down-01","n":"folder down 01"},{"c":"cses-stratis-folder-down-02","n":"folder down 02"},{"c":"cses-stratis-folder-minus-01","n":"folder minus 01"},{"c":"cses-stratis-folder-open-01","n":"folder open 01"},{"c":"cses-stratis-folder-open-02","n":"folder open 02"},{"c":"cses-stratis-folder-open-03","n":"folder open 03"},{"c":"cses-stratis-folder-plus-01","n":"folder plus 01"},{"c":"cses-stratis-folder-plus-02","n":"folder plus 02"},{"c":"cses-stratis-folder-search-01","n":"folder search 01"},{"c":"cses-stratis-folder-search-02","n":"folder search 02"},{"c":"cses-stratis-folder-shield","n":"folder shield"},{"c":"cses-stratis-folder-up-01","n":"folder up 01"},{"c":"cses-stratis-folder-up-02","n":"folder up 02"},{"c":"cses-stratis-folder-x-01","n":"folder x 01"},{"c":"cses-stratis-folder-x-02","n":"folder x 02"},{"c":"cses-stratis-gear","n":"gear"},{"c":"cses-stratis-gift-01","n":"gift 01"},{"c":"cses-stratis-gift-02","n":"gift 02"},{"c":"cses-stratis-git-branch-01","n":"git branch 01"},{"c":"cses-stratis-git-branch-02","n":"git branch 02"},{"c":"cses-stratis-git-branch-03","n":"git branch 03"},{"c":"cses-stratis-git-branch-04","n":"git branch 04"},{"c":"cses-stratis-git-branch-05","n":"git branch 05"},{"c":"cses-stratis-glasses-01","n":"glasses 01"},{"c":"cses-stratis-glasses-02","n":"glasses 02"},{"c":"cses-stratis-globe","n":"globe"},{"c":"cses-stratis-globe-01","n":"globe 01"},{"c":"cses-stratis-globe-02","n":"globe 02"},{"c":"cses-stratis-globe-03","n":"globe 03"},{"c":"cses-stratis-globe-04","n":"globe 04"},{"c":"cses-stratis-globe-05","n":"globe 05"},{"c":"cses-stratis-graduation-cap-01","n":"graduation cap 01"},{"c":"cses-stratis-graduation-cap-02","n":"graduation cap 02"},{"c":"cses-stratis-grid-01","n":"grid 01"},{"c":"cses-stratis-grid-02","n":"grid 02"},{"c":"cses-stratis-grid-03","n":"grid 03"},{"c":"cses-stratis-grid-04-filled","n":"grid 04 filled"},{"c":"cses-stratis-hash-01","n":"hash 01"},{"c":"cses-stratis-hash-02","n":"hash 02"},{"c":"cses-stratis-header-01","n":"header 01"},{"c":"cses-stratis-header-02","n":"header 02"},{"c":"cses-stratis-headphones","n":"headphones"},{"c":"cses-stratis-help","n":"help"},{"c":"cses-stratis-help-circle-contained","n":"help circle contained"},{"c":"cses-stratis-help-square-contained","n":"help square contained"},{"c":"cses-stratis-hexagon","n":"hexagon"},{"c":"cses-stratis-home-01","n":"home 01"},{"c":"cses-stratis-home-02","n":"home 02"},{"c":"cses-stratis-home-03","n":"home 03"},{"c":"cses-stratis-home-04","n":"home 04"},{"c":"cses-stratis-home-05","n":"home 05"},{"c":"cses-stratis-horizontal-chart-01","n":"horizontal chart 01"},{"c":"cses-stratis-horizontal-chart-02","n":"horizontal chart 02"},{"c":"cses-stratis-horizontal-chart-03","n":"horizontal chart 03"},{"c":"cses-stratis-hourglass-01","n":"hourglass 01"},{"c":"cses-stratis-hourglass-02","n":"hourglass 02"},{"c":"cses-stratis-hourglass-03","n":"hourglass 03"},{"c":"cses-stratis-image","n":"image"},{"c":"cses-stratis-image-01","n":"image 01"},{"c":"cses-stratis-image-02","n":"image 02"},{"c":"cses-stratis-image-03","n":"image 03"},{"c":"cses-stratis-image-04","n":"image 04"},{"c":"cses-stratis-image-add","n":"image add"},{"c":"cses-stratis-image-avatar","n":"image avatar"},{"c":"cses-stratis-image-check","n":"image check"},{"c":"cses-stratis-image-down","n":"image down"},{"c":"cses-stratis-image-focus","n":"image focus"},{"c":"cses-stratis-image-indent-left","n":"image indent left"},{"c":"cses-stratis-image-indent-right","n":"image indent right"},{"c":"cses-stratis-image-minus","n":"image minus"},{"c":"cses-stratis-image-no-borders","n":"image no borders"},{"c":"cses-stratis-image-question","n":"image question"},{"c":"cses-stratis-image-up","n":"image up"},{"c":"cses-stratis-image-x","n":"image x"},{"c":"cses-stratis-inbox-01","n":"inbox 01"},{"c":"cses-stratis-inbox-02","n":"inbox 02"},{"c":"cses-stratis-indent-decrease","n":"indent decrease"},{"c":"cses-stratis-indent-increase","n":"indent increase"},{"c":"cses-stratis-indent-left","n":"indent left"},{"c":"cses-stratis-indent-right","n":"indent right"},{"c":"cses-stratis-info-square-02-contained-filled","n":"info square 02 contained filled"},{"c":"cses-stratis-information-circle-contained","n":"information circle contained"},{"c":"cses-stratis-intersect","n":"intersect"},{"c":"cses-stratis-iphone-02","n":"iphone 02"},{"c":"cses-stratis-italics-01","n":"italics 01"},{"c":"cses-stratis-italics-02","n":"italics 02"},{"c":"cses-stratis-key-01","n":"key 01"},{"c":"cses-stratis-key-02","n":"key 02"},{"c":"cses-stratis-keyboard","n":"keyboard"},{"c":"cses-stratis-laptop-01","n":"laptop 01"},{"c":"cses-stratis-laptop-02","n":"laptop 02"},{"c":"cses-stratis-layers-01","n":"layers 01"},{"c":"cses-stratis-layers-02","n":"layers 02"},{"c":"cses-stratis-layers-03","n":"layers 03"},{"c":"cses-stratis-layers-04","n":"layers 04"},{"c":"cses-stratis-layers-05","n":"layers 05"},{"c":"cses-stratis-layout-01","n":"layout 01"},{"c":"cses-stratis-layout-02","n":"layout 02"},{"c":"cses-stratis-layout-03","n":"layout 03"},{"c":"cses-stratis-layout-04","n":"layout 04"},{"c":"cses-stratis-layout-bottom","n":"layout bottom"},{"c":"cses-stratis-layout-grid-01","n":"layout grid 01"},{"c":"cses-stratis-layout-left","n":"layout left"},{"c":"cses-stratis-layout-right","n":"layout right"},{"c":"cses-stratis-layout-scale","n":"layout scale"},{"c":"cses-stratis-layout-top","n":"layout top"},{"c":"cses-stratis-letter-spacing-01","n":"letter spacing 01"},{"c":"cses-stratis-letter-spacing-02","n":"letter spacing 02"},{"c":"cses-stratis-letter-spacing-03","n":"letter spacing 03"},{"c":"cses-stratis-lightbulb-01","n":"lightbulb 01"},{"c":"cses-stratis-lightbulb-02","n":"lightbulb 02"},{"c":"cses-stratis-lightbulb-03","n":"lightbulb 03"},{"c":"cses-stratis-lightning-01","n":"lightning 01"},{"c":"cses-stratis-lightning-02","n":"lightning 02"},{"c":"cses-stratis-lightning-circle-contained","n":"lightning circle contained"},{"c":"cses-stratis-lightning-filled","n":"lightning filled"},{"c":"cses-stratis-lightning-square-contained","n":"lightning square contained"},{"c":"cses-stratis-line-chart-down-01","n":"line chart down 01"},{"c":"cses-stratis-line-chart-down-02","n":"line chart down 02"},{"c":"cses-stratis-line-chart-up-01","n":"line chart up 01"},{"c":"cses-stratis-line-chart-up-02","n":"line chart up 02"},{"c":"cses-stratis-line-height","n":"line height"},{"c":"cses-stratis-link","n":"link"},{"c":"cses-stratis-link-angled","n":"link angled"},{"c":"cses-stratis-link-broken","n":"link broken"},{"c":"cses-stratis-link-external","n":"link external"},{"c":"cses-stratis-list","n":"list"},{"c":"cses-stratis-list-numbers","n":"list numbers"},{"c":"cses-stratis-loader-01","n":"loader 01"},{"c":"cses-stratis-loader-02","n":"loader 02"},{"c":"cses-stratis-lock-01","n":"lock 01"},{"c":"cses-stratis-lock-02","n":"lock 02"},{"c":"cses-stratis-lock-03","n":"lock 03"},{"c":"cses-stratis-lock-04","n":"lock 04"},{"c":"cses-stratis-lock-open-01","n":"lock open 01"},{"c":"cses-stratis-lock-open-02","n":"lock open 02"},{"c":"cses-stratis-lock-open-03","n":"lock open 03"},{"c":"cses-stratis-lock-open-04","n":"lock open 04"},{"c":"cses-stratis-logout-01","n":"logout 01"},{"c":"cses-stratis-logout-02","n":"logout 02"},{"c":"cses-stratis-logout-03","n":"logout 03"},{"c":"cses-stratis-logout-04","n":"logout 04"},{"c":"cses-stratis-luggage-01","n":"luggage 01"},{"c":"cses-stratis-luggage-02","n":"luggage 02"},{"c":"cses-stratis-luggage-03","n":"luggage 03"},{"c":"cses-stratis-luggage-04","n":"luggage 04"},{"c":"cses-stratis-mail-01","n":"mail 01"},{"c":"cses-stratis-mail-02","n":"mail 02"},{"c":"cses-stratis-mail-03","n":"mail 03"},{"c":"cses-stratis-mail-04","n":"mail 04"},{"c":"cses-stratis-mail-05","n":"mail 05"},{"c":"cses-stratis-map-01","n":"map 01"},{"c":"cses-stratis-map-02","n":"map 02"},{"c":"cses-stratis-map-03","n":"map 03"},{"c":"cses-stratis-map-04","n":"map 04"},{"c":"cses-stratis-marker-01","n":"marker 01"},{"c":"cses-stratis-marker-02","n":"marker 02"},{"c":"cses-stratis-marker-03","n":"marker 03"},{"c":"cses-stratis-marker-04","n":"marker 04"},{"c":"cses-stratis-marker-05","n":"marker 05"},{"c":"cses-stratis-marker-06","n":"marker 06"},{"c":"cses-stratis-maximise-01","n":"maximise 01"},{"c":"cses-stratis-maximise-02","n":"maximise 02"},{"c":"cses-stratis-media-strip-01","n":"media strip 01"},{"c":"cses-stratis-media-strip-02","n":"media strip 02"},{"c":"cses-stratis-menu-01","n":"menu 01"},{"c":"cses-stratis-menu-02","n":"menu 02"},{"c":"cses-stratis-menu-03","n":"menu 03"},{"c":"cses-stratis-menu-04","n":"menu 04"},{"c":"cses-stratis-menu-05","n":"menu 05"},{"c":"cses-stratis-message-alert-circle","n":"message alert circle"},{"c":"cses-stratis-message-alert-plus","n":"message alert plus"},{"c":"cses-stratis-message-chat-01","n":"message chat 01"},{"c":"cses-stratis-message-circle","n":"message circle"},{"c":"cses-stratis-message-notify-circle","n":"message notify circle"},{"c":"cses-stratis-message-notify-square","n":"message notify square"},{"c":"cses-stratis-message-square","n":"message square"},{"c":"cses-stratis-message-square--alert","n":"message square  alert"},{"c":"cses-stratis-message-square-information","n":"message square information"},{"c":"cses-stratis-message-square-plus","n":"message square plus"},{"c":"cses-stratis-message-square-typing","n":"message square typing"},{"c":"cses-stratis-message-square-x","n":"message square x"},{"c":"cses-stratis-message-text-01","n":"message text 01"},{"c":"cses-stratis-message-text-02","n":"message text 02"},{"c":"cses-stratis-message-typing","n":"message typing"},{"c":"cses-stratis-message-x","n":"message x"},{"c":"cses-stratis-microphone-01","n":"microphone 01"},{"c":"cses-stratis-microphone-02","n":"microphone 02"},{"c":"cses-stratis-microphone-off-01","n":"microphone off 01"},{"c":"cses-stratis-microphone-off-02","n":"microphone off 02"},{"c":"cses-stratis-minimise-01","n":"minimise 01"},{"c":"cses-stratis-minimise-02","n":"minimise 02"},{"c":"cses-stratis-minus-circle-contained","n":"minus circle contained"},{"c":"cses-stratis-minus-square-contained","n":"minus square contained"},{"c":"cses-stratis-moon-01","n":"moon 01"},{"c":"cses-stratis-moon-02","n":"moon 02"},{"c":"cses-stratis-mouse","n":"mouse"},{"c":"cses-stratis-move","n":"move"},{"c":"cses-stratis-note-01","n":"note 01"},{"c":"cses-stratis-note-02","n":"note 02"},{"c":"cses-stratis-notification-box","n":"notification box"},{"c":"cses-stratis-notification-bubble","n":"notification bubble"},{"c":"cses-stratis-notification-square-01","n":"notification square 01"},{"c":"cses-stratis-notification-square-02","n":"notification square 02"},{"c":"cses-stratis-octagon","n":"octagon"},{"c":"cses-stratis-overlap","n":"overlap"},{"c":"cses-stratis-package-01","n":"package 01"},{"c":"cses-stratis-package-02","n":"package 02"},{"c":"cses-stratis-package-check","n":"package check"},{"c":"cses-stratis-package-minus","n":"package minus"},{"c":"cses-stratis-package-plus","n":"package plus"},{"c":"cses-stratis-package-x","n":"package x"},{"c":"cses-stratis-paint-bucket-01","n":"paint bucket 01"},{"c":"cses-stratis-paint-bucket-02","n":"paint bucket 02"},{"c":"cses-stratis-palette","n":"palette"},{"c":"cses-stratis-paperclip","n":"paperclip"},{"c":"cses-stratis-paperclip-01","n":"paperclip 01"},{"c":"cses-stratis-paperclip-02","n":"paperclip 02"},{"c":"cses-stratis-passport","n":"passport"},{"c":"cses-stratis-password-01","n":"password 01"},{"c":"cses-stratis-password-02","n":"password 02"},{"c":"cses-stratis-pause-01","n":"pause 01"},{"c":"cses-stratis-pause-02","n":"pause 02"},{"c":"cses-stratis-pause-03","n":"pause 03"},{"c":"cses-stratis-pen-tool-01","n":"pen tool 01"},{"c":"cses-stratis-pen-tool-02","n":"pen tool 02"},{"c":"cses-stratis-pen-tool-03","n":"pen tool 03"},{"c":"cses-stratis-pen-tool-04","n":"pen tool 04"},{"c":"cses-stratis-pencil-01","n":"pencil 01"},{"c":"cses-stratis-pencil-02","n":"pencil 02"},{"c":"cses-stratis-pencil-03","n":"pencil 03"},{"c":"cses-stratis-pentagon","n":"pentagon"},{"c":"cses-stratis-percent-01","n":"percent 01"},{"c":"cses-stratis-percent-02","n":"percent 02"},{"c":"cses-stratis-percent-03","n":"percent 03"},{"c":"cses-stratis-perspective","n":"perspective"},{"c":"cses-stratis-phone","n":"phone"},{"c":"cses-stratis-phone-call-01","n":"phone call 01"},{"c":"cses-stratis-phone-call-02","n":"phone call 02"},{"c":"cses-stratis-phone-down","n":"phone down"},{"c":"cses-stratis-phone-incoming-01","n":"phone incoming 01"},{"c":"cses-stratis-phone-incoming-02","n":"phone incoming 02"},{"c":"cses-stratis-phone-off","n":"phone off"},{"c":"cses-stratis-phone-outgoing-01","n":"phone outgoing 01"},{"c":"cses-stratis-phone-outgoing-02","n":"phone outgoing 02"},{"c":"cses-stratis-phone-up","n":"phone up"},{"c":"cses-stratis-phone-x","n":"phone x"},{"c":"cses-stratis-pie-chart-01","n":"pie chart 01"},{"c":"cses-stratis-pie-chart-02","n":"pie chart 02"},{"c":"cses-stratis-pie-chart-03","n":"pie chart 03"},{"c":"cses-stratis-plane","n":"plane"},{"c":"cses-stratis-play-01","n":"play 01"},{"c":"cses-stratis-play-02","n":"play 02"},{"c":"cses-stratis-play-03","n":"play 03"},{"c":"cses-stratis-plus-01","n":"plus 01"},{"c":"cses-stratis-plus-02","n":"plus 02"},{"c":"cses-stratis-plus-03","n":"plus 03"},{"c":"cses-stratis-pointer-01","n":"pointer 01"},{"c":"cses-stratis-pointer-02","n":"pointer 02"},{"c":"cses-stratis-power","n":"power"},{"c":"cses-stratis-presentation-01","n":"presentation 01"},{"c":"cses-stratis-presentation-02","n":"presentation 02"},{"c":"cses-stratis-presentation-03","n":"presentation 03"},{"c":"cses-stratis-progress","n":"progress"},{"c":"cses-stratis-quote","n":"quote"},{"c":"cses-stratis-receipt","n":"receipt"},{"c":"cses-stratis-receipt-lines","n":"receipt lines"},{"c":"cses-stratis-refresh-01","n":"refresh 01"},{"c":"cses-stratis-rss","n":"rss"},{"c":"cses-stratis-ruler","n":"ruler"},{"c":"cses-stratis-save-01","n":"save 01"},{"c":"cses-stratis-save-02","n":"save 02"},{"c":"cses-stratis-scale-01","n":"scale 01"},{"c":"cses-stratis-scale-02","n":"scale 02"},{"c":"cses-stratis-scale-03","n":"scale 03"},{"c":"cses-stratis-scan","n":"scan"},{"c":"cses-stratis-search-01","n":"search 01"},{"c":"cses-stratis-search-02","n":"search 02"},{"c":"cses-stratis-send-01","n":"send 01"},{"c":"cses-stratis-send-02","n":"send 02"},{"c":"cses-stratis-send-03","n":"send 03"},{"c":"cses-stratis-server-01","n":"server 01"},{"c":"cses-stratis-server-02","n":"server 02"},{"c":"cses-stratis-server-03","n":"server 03"},{"c":"cses-stratis-server-04","n":"server 04"},{"c":"cses-stratis-server-05","n":"server 05"},{"c":"cses-stratis-server-06","n":"server 06"},{"c":"cses-stratis-server-down","n":"server down"},{"c":"cses-stratis-server-up","n":"server up"},{"c":"cses-stratis-settings","n":"settings"},{"c":"cses-stratis-share","n":"share"},{"c":"cses-stratis-shield-01","n":"shield 01"},{"c":"cses-stratis-shield-02","n":"shield 02"},{"c":"cses-stratis-shield-check","n":"shield check"},{"c":"cses-stratis-shield-plus","n":"shield plus"},{"c":"cses-stratis-shuffle","n":"shuffle"},{"c":"cses-stratis-signal","n":"signal"},{"c":"cses-stratis-skew","n":"skew"},{"c":"cses-stratis-skip-back","n":"skip back"},{"c":"cses-stratis-skip-forward","n":"skip forward"},{"c":"cses-stratis-smiley-happy","n":"smiley happy"},{"c":"cses-stratis-smiley-happy-plus","n":"smiley happy plus"},{"c":"cses-stratis-smiley-neutral","n":"smiley neutral"},{"c":"cses-stratis-smiley-sad","n":"smiley sad"},{"c":"cses-stratis-smiley-wink","n":"smiley wink"},{"c":"cses-stratis-snowflake","n":"snowflake"},{"c":"cses-stratis-sort-horizontal","n":"sort horizontal"},{"c":"cses-stratis-sort-vertical-01","n":"sort vertical 01"},{"c":"cses-stratis-sort-vertical-02","n":"sort vertical 02"},{"c":"cses-stratis-space-height","n":"space height"},{"c":"cses-stratis-space-horizontal","n":"space horizontal"},{"c":"cses-stratis-space-vertical","n":"space vertical"},{"c":"cses-stratis-space-width","n":"space width"},{"c":"cses-stratis-speaker","n":"speaker"},{"c":"cses-stratis-square","n":"square"},{"c":"cses-stratis-star-01","n":"star 01"},{"c":"cses-stratis-star-02","n":"star 02"},{"c":"cses-stratis-stars","n":"stars"},{"c":"cses-stratis-stop-01","n":"stop 01"},{"c":"cses-stratis-stop-02","n":"stop 02"},{"c":"cses-stratis-stopwatch-01","n":"stopwatch 01"},{"c":"cses-stratis-stopwatch-02","n":"stopwatch 02"},{"c":"cses-stratis-stopwatch-03","n":"stopwatch 03"},{"c":"cses-stratis-stopwatch-04","n":"stopwatch 04"},{"c":"cses-stratis-stopwatch-snooze","n":"stopwatch snooze"},{"c":"cses-stratis-sun-02","n":"sun 02"},{"c":"cses-stratis-sun-03","n":"sun 03"},{"c":"cses-stratis-sun-down","n":"sun down"},{"c":"cses-stratis-sun-up","n":"sun up"},{"c":"cses-stratis-superscript","n":"superscript"},{"c":"cses-stratis-table","n":"table"},{"c":"cses-stratis-tag","n":"tag"},{"c":"cses-stratis-target-01","n":"target 01"},{"c":"cses-stratis-target-02","n":"target 02"},{"c":"cses-stratis-target-03","n":"target 03"},{"c":"cses-stratis-target-04","n":"target 04"},{"c":"cses-stratis-temperature-01","n":"temperature 01"},{"c":"cses-stratis-temperature-02","n":"temperature 02"},{"c":"cses-stratis-temperature-03","n":"temperature 03"},{"c":"cses-stratis-temperature-04","n":"temperature 04"},{"c":"cses-stratis-terminal","n":"terminal"},{"c":"cses-stratis-text-input-01","n":"text input 01"},{"c":"cses-stratis-text-input-02","n":"text input 02"},{"c":"cses-stratis-ticket-01","n":"ticket 01"},{"c":"cses-stratis-ticket-02","n":"ticket 02"},{"c":"cses-stratis-toggle-right","n":"toggle right"},{"c":"cses-stratis-toogle-left","n":"toogle left"},{"c":"cses-stratis-train","n":"train"},{"c":"cses-stratis-transform","n":"transform"},{"c":"cses-stratis-trash-01","n":"trash 01"},{"c":"cses-stratis-trash-02","n":"trash 02"},{"c":"cses-stratis-trash-03","n":"trash 03"},{"c":"cses-stratis-trash-04","n":"trash 04"},{"c":"cses-stratis-trend-down-01","n":"trend down 01"},{"c":"cses-stratis-trend-down-02","n":"trend down 02"},{"c":"cses-stratis-trend-up-01","n":"trend up 01"},{"c":"cses-stratis-trend-up-02","n":"trend up 02"},{"c":"cses-stratis-triangle","n":"triangle"},{"c":"cses-stratis-truck","n":"truck"},{"c":"cses-stratis-tv","n":"tv"},{"c":"cses-stratis-type-01","n":"type 01"},{"c":"cses-stratis-type-02","n":"type 02"},{"c":"cses-stratis-type-03","n":"type 03"},{"c":"cses-stratis-type-strike-01","n":"type strike 01"},{"c":"cses-stratis-type-strike-02","n":"type strike 02"},{"c":"cses-stratis-umbrella","n":"umbrella"},{"c":"cses-stratis-umbrella-01","n":"umbrella 01"},{"c":"cses-stratis-umbrella-02","n":"umbrella 02"},{"c":"cses-stratis-underline-01","n":"underline 01"},{"c":"cses-stratis-underline-02","n":"underline 02"},{"c":"cses-stratis-union","n":"union"},{"c":"cses-stratis-upload-01","n":"upload 01"},{"c":"cses-stratis-upload-02","n":"upload 02"},{"c":"cses-stratis-upload-03","n":"upload 03"},{"c":"cses-stratis-upload-04","n":"upload 04"},{"c":"cses-stratis-user-profile-01","n":"user profile 01"},{"c":"cses-stratis-user-profile-02","n":"user profile 02"},{"c":"cses-stratis-user-profile-03","n":"user profile 03"},{"c":"cses-stratis-user-profile-check","n":"user profile check"},{"c":"cses-stratis-user-profile-circle","n":"user profile circle"},{"c":"cses-stratis-user-profile-down","n":"user profile down"},{"c":"cses-stratis-user-profile-left","n":"user profile left"},{"c":"cses-stratis-user-profile-minus","n":"user profile minus"},{"c":"cses-stratis-user-profile-right","n":"user profile right"},{"c":"cses-stratis-user-profile-square","n":"user profile square"},{"c":"cses-stratis-user-profile-up","n":"user profile up"},{"c":"cses-stratis-user-profile-x","n":"user profile x"},{"c":"cses-stratis-users-profiles-01","n":"users profiles 01"},{"c":"cses-stratis-users-profiles-02","n":"users profiles 02"},{"c":"cses-stratis-users-profiles-03","n":"users profiles 03"},{"c":"cses-stratis-users-profiles-check","n":"users profiles check"},{"c":"cses-stratis-users-profiles-down","n":"users profiles down"},{"c":"cses-stratis-users-profiles-left","n":"users profiles left"},{"c":"cses-stratis-users-profiles-minus","n":"users profiles minus"},{"c":"cses-stratis-users-profiles-plus","n":"users profiles plus"},{"c":"cses-stratis-users-profiles-right","n":"users profiles right"},{"c":"cses-stratis-users-profiles-up","n":"users profiles up"},{"c":"cses-stratis-users-profiles-x","n":"users profiles x"},{"c":"cses-stratis-variant","n":"variant"},{"c":"cses-stratis-video-off","n":"video off"},{"c":"cses-stratis-video-on","n":"video on"},{"c":"cses-stratis-volume-01","n":"volume 01"},{"c":"cses-stratis-volume-02","n":"volume 02"},{"c":"cses-stratis-volume-03","n":"volume 03"},{"c":"cses-stratis-volume-04","n":"volume 04"},{"c":"cses-stratis-volume-05","n":"volume 05"},{"c":"cses-stratis-volume-06","n":"volume 06"},{"c":"cses-stratis-wallert-04","n":"wallert 04"},{"c":"cses-stratis-wallet-01","n":"wallet 01"},{"c":"cses-stratis-wallet-02","n":"wallet 02"},{"c":"cses-stratis-wallet-03","n":"wallet 03"},{"c":"cses-stratis-watch-01","n":"watch 01"},{"c":"cses-stratis-watch-02","n":"watch 02"},{"c":"cses-stratis-waveform","n":"waveform"},{"c":"cses-stratis-webcam","n":"webcam"},{"c":"cses-stratis-wifi-off","n":"wifi off"},{"c":"cses-stratis-wifi-on","n":"wifi on"},{"c":"cses-stratis-wind-01","n":"wind 01"},{"c":"cses-stratis-wind-02","n":"wind 02"},{"c":"cses-stratis-wind-03","n":"wind 03"},{"c":"cses-stratis-x-01","n":"x 01"},{"c":"cses-stratis-x-02","n":"x 02"},{"c":"cses-stratis-x-03","n":"x 03"},{"c":"cses-stratis-x-circle-contained","n":"x circle contained"},{"c":"cses-stratis-x-square-contained","n":"x square contained"},{"c":"cses-stratis-youtube","n":"youtube"},{"c":"cses-stratis-zoom-in","n":"zoom in"},{"c":"cses-stratis-zoom-out","n":"zoom out"}]};
+
+  /* ====== DOM ====== */
+  var docContent = document.getElementById('docContent');
+  var navItems = document.querySelectorAll('.doc-nav-item');
+  var navSearch = document.getElementById('navSearch');
+  var toast = document.getElementById('toast');
+
+  var toastTimer = null;
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 1400);
+  }
+
+  function copyText(t) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(t);
+    }
+    var ta = document.createElement('textarea');
+    ta.value = t; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+
+  /* ====== 视图：总览 ====== */
+  function renderOverview() {
+    var total = ICONS.face.length + ICONS.stratis.length;
+    docContent.innerHTML =
+      '<div class="page">' +
+        '<div class="page-header">' +
+          '<div class="page-title">字体资源总览 <span class="page-title-tag">design/fonts</span></div>' +
+          '<div class="page-subtitle">CSES 业务面性图标（webfont）+ Stratis 线性图标（mask-image dataURI），统一 cses- 前缀。</div>' +
+        '</div>' +
+        '<div class="overview-grid">' +
+          card('面性图标', ICONS.face.length, '个', 'cses-*', 'cses', '#4857e2') +
+          card('线性图标', ICONS.stratis.length, '个', 'cses-stratis-*', 'stratis', '#16a34a') +
+          card('图标总数', total, '个', 'cses-icons.css', 'cses', '#f59e0b') +
+          card('字体文件', 3, '个', 'woff2 / woff / ttf', 'files', '#e11d48') +
+        '</div>' +
+        '<div class="page-header"><div class="page-title" style="font-size:16px;">快速预览</div></div>' +
+        '<div class="logo-grid">' +
+          previewBlock('面性 · 业务', ICONS.face.slice(0, 12)) +
+          previewBlock('线性 · 通用', ICONS.stratis.slice(0, 12)) +
+          previewBlock('面性 · 状态', ICONS.face.filter(function(e){ return ['cses-completed03', 'cses-cancelled', 'cses-jinchengzhong', 'cses-daiban', 'cses-done', 'cses-jieshuluzhi'].indexOf(e.c) >= 0; })) +
+          previewBlock('线性 · 导航', ICONS.stratis.filter(function(e){ return e.c.indexOf('arrow') >= 0 || e.c.indexOf('chevron') >= 0; }).slice(0, 12)) +
+        '</div>' +
+      '</div>';
+    bindStatCards();
+  }
+
+  function card(label, value, unit, hint, view, color) {
+    return '<div class="stat-card" data-view="' + view + '">' +
+      '<div class="stat-card-label">' +
+        '<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:' + color + ';"></span>' + label +
+      '</div>' +
+      '<div class="stat-card-value">' + value + '<span class="stat-card-unit">' + unit + '</span></div>' +
+      '<div class="stat-card-hint">' + hint + '</div>' +
+    '</div>';
+  }
+
+  function previewBlock(title, list) {
+    var icons = list.map(function (e) { return '<i class="' + e.c + '" style="font-size:22px;color:#0A0A0A;margin:6px;" title="' + e.c + '"></i>'; }).join('');
+    return '<div class="logo-card">' +
+      '<div class="logo-card-stage light" style="flex-wrap:wrap;min-height:140px;padding:18px;">' + (icons || '<span style="color:#999;font-size:12px;">无</span>') + '</div>' +
+      '<div class="logo-card-meta"><span>' + title + '</span><code>' + list.length + ' 个</code></div>' +
+    '</div>';
+  }
+
+  function bindStatCards() {
+    document.querySelectorAll('.stat-card').forEach(function (c) {
+      c.addEventListener('click', function () { switchView(this.getAttribute('data-view')); });
+    });
+  }
+
+  /* ====== 视图：Logo ====== */
+  function renderLogo() {
+    docContent.innerHTML =
+      '<div class="page">' +
+        '<div class="page-header">' +
+          '<div class="page-title">Logo <span class="page-title-tag">cses-folder-team</span></div>' +
+          '<div class="page-subtitle">来自 Figma node 292:80946，团队空间云形面性图标，从 logo.html 同步。</div>' +
+        '</div>' +
+        '<div class="logo-grid">' +
+          logoCard('24px / 绿（原色）', 'cses-folder-team', 24, '#167D3C', 'light') +
+          logoCard('24px / 白', 'cses-folder-team', 24, '#fff', 'dark') +
+          logoCard('48px / 蓝', 'cses-folder-team', 48, '#1664ff', 'light') +
+          logoCard('64px / 白', 'cses-folder-team', 64, '#fff', 'dark') +
+        '</div>' +
+      '</div>';
+  }
+
+  function logoCard(label, cls, size, color, bg) {
+    return '<div class="logo-card">' +
+      '<div class="logo-card-stage ' + bg + '"><i class="' + cls + '" style="font-size:' + size + 'px;color:' + color + ';"></i></div>' +
+      '<div class="logo-card-meta"><span>' + label + '</span><code>.' + cls + '</code></div>' +
+    '</div>';
+  }
+
+  /* ====== 视图：字体文件 ====== */
+  function renderFiles() {
+    var files = [
+      { name: 'cses-icons.woff2', type: 'WOFF2', desc: '现代浏览器首选格式（最小）', usage: '@font-face src 第一项' },
+      { name: 'cses-icons.woff',  type: 'WOFF',  desc: '旧版浏览器回退',         usage: '@font-face src 第二项' },
+      { name: 'cses-icons.ttf',   type: 'TTF',   desc: '兜底格式（最兼容）',       usage: '@font-face src 第三项' }
+    ];
+    var rows = files.map(function (f) {
+      return '<tr><td><span class="file-name">' + f.name + '</span></td>' +
+        '<td><span class="file-type-badge">' + f.type + '</span></td>' +
+        '<td>' + f.desc + '</td>' +
+        '<td style="color:#8a8e99;font-size:12px;">' + f.usage + '</td></tr>';
+    }).join('');
+    docContent.innerHTML =
+      '<div class="page">' +
+        '<div class="page-header">' +
+          '<div class="page-title">字体文件</div>' +
+          '<div class="page-subtitle">CSES 图标字体三件套（webfont）。同源 @font-face 声明在 cses-icons.css 顶部。</div>' +
+        '</div>' +
+        '<div class="file-table-wrap">' +
+          '<table class="file-table"><thead><tr>' +
+            '<th style="width:200px;">文件名</th><th style="width:80px;">类型</th><th>说明</th><th style="width:240px;">用途</th>' +
+          '</tr></thead><tbody>' + rows + '</tbody></table>' +
+        '</div>' +
+      '</div>';
+  }
+
+  /* ====== 视图：图标网格 ====== */
+  var iconState = { size: 22, query: '' };
+
+  function renderIcons(kind) {
+    var list = kind === 'face' ? ICONS.face : ICONS.stratis;
+    var title = kind === 'face' ? 'CSES 面性图标' : 'Stratis 线性图标';
+    var subtitle = kind === 'face'
+      ? '业务对象图标（webfont 渲染，已冻结，不可扩）。点击复制 class 名。'
+      : '通用图标（CSS mask-image + base64 dataURI，可扩）。点击复制 class 名。';
+    var prefix = kind === 'face' ? 'cses-*' : 'cses-stratis-*';
+
+    docContent.innerHTML =
+      '<div class="page">' +
+        '<div class="page-header">' +
+          '<div class="page-title">' + title + ' <span class="page-title-tag">' + prefix + '</span></div>' +
+          '<div class="page-subtitle">' + subtitle + '</div>' +
+        '</div>' +
+        '<div class="icon-toolbar">' +
+          '<input id="iconSearch" placeholder="搜索图标 class 或中文名..." autocomplete="off">' +
+          '<div class="size-chips">' +
+            sizeChip(16) + sizeChip(22) + sizeChip(32) + sizeChip(48) +
+          '</div>' +
+          '<span class="toolbar-count">共 <strong id="iconCount">' + list.length + '</strong> 个</span>' +
+        '</div>' +
+        '<div class="icon-grid" id="iconGrid"></div>' +
+      '</div>';
+
+    renderIconGrid(list);
+
+    var inp = document.getElementById('iconSearch');
+    inp.addEventListener('input', function () {
+      iconState.query = this.value.trim().toLowerCase();
+      var filtered = list.filter(function (e) {
+        if (!iconState.query) return true;
+        return e.c.toLowerCase().indexOf(iconState.query) >= 0 || (e.n || '').toLowerCase().indexOf(iconState.query) >= 0;
+      });
+      document.getElementById('iconCount').textContent = filtered.length;
+      renderIconGrid(filtered);
+    });
+
+    document.querySelectorAll('.size-chip').forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        iconState.size = parseInt(this.getAttribute('data-size'), 10);
+        document.querySelectorAll('.size-chip').forEach(function (c) { c.classList.toggle('active', c === chip); });
+        document.querySelectorAll('.icon-cell i').forEach(function (i) { i.style.fontSize = iconState.size + 'px'; });
+      });
+    });
+  }
+
+  function sizeChip(n) {
+    return '<button class="size-chip ' + (n === iconState.size ? 'active' : '') + '" data-size="' + n + '">' + n + 'px</button>';
+  }
+
+  function renderIconGrid(list) {
+    var grid = document.getElementById('iconGrid');
+    if (!grid) return;
+    if (!list.length) {
+      grid.outerHTML = '<div class="icon-empty">没有匹配的图标</div>';
+      return;
+    }
+    // 大列表（817）—— 分批渲染避免长帧
+    var BATCH = 200;
+    grid.innerHTML = '';
+    var i = 0;
+    function next() {
+      var frag = document.createDocumentFragment();
+      var end = Math.min(i + BATCH, list.length);
+      for (; i < end; i++) {
+        var entry = list[i];
+        var cls = entry.c;
+        var label = entry.n || cls.replace(/^cses-(stratis-)?/, '');
+        var cell = document.createElement('div');
+        cell.className = 'icon-cell';
+        cell.setAttribute('data-cls', cls);
+        cell.title = cls + (entry.n ? ' · ' + entry.n : '');
+        cell.innerHTML = '<i class="' + cls + '" style="font-size:' + iconState.size + 'px;"></i><span class="cn">' + label + '</span>';
+        cell.addEventListener('click', function () {
+          var c = this.getAttribute('data-cls');
+          var self = this;
+          copyText(c).then(function () {
+            self.classList.add('copied');
+            showToast('已复制：' + c);
+            setTimeout(function () { self.classList.remove('copied'); }, 800);
+          });
+        });
+        frag.appendChild(cell);
+      }
+      grid.appendChild(frag);
+      if (i < list.length) requestAnimationFrame(next);
+    }
+    next();
+  }
+
+  /* ====== 路由 ====== */
+  function switchView(view) {
+    navItems.forEach(function (item) { item.classList.toggle('active', item.getAttribute('data-view') === view); });
+    location.hash = view;
+    if (view === 'overview') renderOverview();
+    else if (view === 'logo') renderLogo();
+    else if (view === 'files') renderFiles();
+    else if (view === 'cses') renderIcons('face');
+    else if (view === 'stratis') renderIcons('stratis');
+  }
+
+  navItems.forEach(function (item) {
+    item.addEventListener('click', function () { switchView(this.getAttribute('data-view')); });
+  });
+
+  navSearch.addEventListener('input', function () {
+    var q = this.value.trim().toLowerCase();
+    navItems.forEach(function (item) {
+      var txt = item.textContent.toLowerCase();
+      item.style.display = (!q || txt.indexOf(q) >= 0) ? '' : 'none';
+    });
+  });
+
+  /* ====== 启动：直接渲染（数据已 inline，无 fetch 依赖） ====== */
+  document.getElementById('navCsesCount').textContent = ICONS.face.length;
+  document.getElementById('navStratisCount').textContent = ICONS.stratis.length;
+  document.getElementById('topbarCount').textContent = (ICONS.face.length + ICONS.stratis.length) + ' 个图标';
+  var initView = (location.hash || '#overview').slice(1);
+  if (!['overview', 'logo', 'files', 'cses', 'stratis'].includes(initView)) initView = 'overview';
+  switchView(initView);
+})();
+</script>
+</body>
+</html>

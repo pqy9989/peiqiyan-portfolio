@@ -1,0 +1,655 @@
+/* ============================================================
+ * employee-device-apply-option-1 · 套餐卡片墙 + filter-bar + 右抽屉
+ * 私有前缀：--eda-* / .eda-*
+ * 视口：仅桌面 1440+
+ * ============================================================ */
+
+:root {
+  /* ---- 私有令牌 ---- */
+  --eda-card-radius: 12px;
+  --eda-card-bg: var(--cs-color-white);
+  --eda-card-border: var(--cs-color-border);
+  --eda-card-pad: var(--spacing-20);
+  --eda-card-gap: var(--space-md);
+  --eda-grid-gap: var(--space-md);
+  --eda-section-gap: var(--spacing-24);
+  --eda-text-tabular: "PingFang SC", -apple-system, sans-serif;
+
+  --eda-icon-blue-bg: rgba(72, 87, 226, 0.10);
+  --eda-icon-blue-fg: var(--cs-color-primary);
+  --eda-icon-purple-bg: rgba(149, 73, 226, 0.10);
+  --eda-icon-purple-fg: #9549e2;
+  --eda-icon-green-bg: rgba(0, 180, 42, 0.10);
+  --eda-icon-green-fg: var(--cs-color-success);
+  --eda-icon-orange-bg: rgba(255, 125, 0, 0.10);
+  --eda-icon-orange-fg: var(--cs-color-warning);
+
+  --eda-new-highlight: rgba(72, 87, 226, 0.06);
+}
+
+/* ============================================================
+ * navbar 内辅助
+ * ============================================================ */
+.eda-nav-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 var(--space-2xs);
+  margin-left: auto;
+  border-radius: 999px;
+  background: var(--cs-color-primary);
+  color: var(--cs-color-text-inverse);
+  font: var(--typo-cn-12-regular);
+  font-size: 11px;
+  line-height: 1;
+}
+.eda-nav-badge--muted {
+  background: var(--cs-color-bg-light);
+  color: var(--cs-color-text-light2);
+}
+
+.eda-tips {
+  margin: 0 var(--space-2xs);
+  padding: var(--space-sm);
+  background: var(--cs-color-bg-secondary);
+  border: 1px solid var(--cs-color-border);
+  border-radius: var(--radius-lg);
+}
+.eda-tips__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  font: var(--typo-cn-12-regular);
+  font-weight: var(--font-weight-medium);
+  color: var(--cs-color-text);
+  margin-bottom: var(--space-2xs);
+}
+.eda-tips__title i {
+  font-size: 14px;
+  color: var(--cs-color-primary);
+}
+.eda-tips__text {
+  margin: 0;
+  font: var(--typo-cn-12-regular);
+  line-height: 1.6;
+  color: var(--cs-color-text-light);
+}
+
+/* ============================================================
+ * filter-bar 上的次级计数标记
+ * ============================================================ */
+.eda-tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 16px;
+  margin-left: var(--space-2xs);
+  padding: 0 var(--space-2xs);
+  border-radius: 999px;
+  background: var(--cs-color-bg-light);
+  color: var(--cs-color-text-light2);
+  font-size: 11px;
+  line-height: 1;
+}
+cs-filter-bar[data-variant="tabs"] .filter-tab[data-active] .eda-tab-count {
+  background: var(--cs-color-primary-a2);
+  color: var(--cs-color-primary);
+}
+
+/* ============================================================
+ * 滚动主体
+ * ============================================================ */
+.eda-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-md) var(--space-md) var(--spacing-24);
+  display: flex;
+  flex-direction: column;
+  gap: var(--eda-section-gap);
+}
+.eda-scroll::-webkit-scrollbar { width: 6px; }
+.eda-scroll::-webkit-scrollbar-thumb { background: #d8d8d8; border-radius: 3px; }
+
+/* ============================================================
+ * Section
+ * ============================================================ */
+.eda-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+.eda-section__head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+}
+.eda-section__title {
+  margin: 0;
+  font: var(--typo-cn-16-medium);
+  font-weight: var(--font-weight-semibold);
+  color: var(--cs-color-text);
+}
+.eda-section__sub {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+
+/* ============================================================
+ * 套餐卡片墙
+ * 1440+ 视口下 4 列；窄一点 3 列保险
+ * ============================================================ */
+.eda-package-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--eda-grid-gap);
+}
+@media (max-width: 1280px) {
+  .eda-package-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+.eda-pkg {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--eda-card-pad);
+  background: var(--eda-card-bg);
+  border: 1px solid var(--eda-card-border);
+  border-radius: var(--eda-card-radius);
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+  min-height: 280px;
+}
+.eda-pkg:hover {
+  border-color: var(--cs-color-primary);
+  box-shadow: var(--cs-shadow);
+  transform: translateY(-1px);
+}
+
+/* 头部：图标 + 标题 + 库存 */
+.eda-pkg__head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+}
+.eda-pkg__icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+.eda-pkg__icon--blue   { background: var(--eda-icon-blue-bg);   color: var(--eda-icon-blue-fg); }
+.eda-pkg__icon--purple { background: var(--eda-icon-purple-bg); color: var(--eda-icon-purple-fg); }
+.eda-pkg__icon--green  { background: var(--eda-icon-green-bg);  color: var(--eda-icon-green-fg); }
+.eda-pkg__icon--orange { background: var(--eda-icon-orange-bg); color: var(--eda-icon-orange-fg); }
+
+.eda-pkg__heading {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+}
+.eda-pkg__title {
+  margin: 0;
+  font: var(--typo-cn-14-medium);
+  font-weight: var(--font-weight-semibold);
+  font-size: 15px;
+  color: var(--cs-color-text);
+  line-height: 1.4;
+}
+.eda-pkg__suit {
+  margin: 0;
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+.eda-pkg__stock {
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+
+/* 设备清单 */
+.eda-pkg__items {
+  list-style: none;
+  margin: 0;
+  padding: var(--space-sm) 0;
+  border-top: 1px dashed var(--cs-color-border);
+  border-bottom: 1px dashed var(--cs-color-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  flex: 1;
+}
+.eda-pkg__items li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text);
+  line-height: 1.6;
+}
+.eda-pkg__items li i {
+  font-size: 14px;
+  color: var(--cs-color-text-light2);
+  flex-shrink: 0;
+}
+
+/* 底部：价格 + CTA */
+.eda-pkg__foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+.eda-pkg__price {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  min-width: 0;
+}
+.eda-pkg__price-num {
+  font-family: var(--eda-text-tabular);
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+  font-size: 18px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--cs-color-text);
+  line-height: 1.2;
+}
+.eda-pkg__eta {
+  font-family: var(--eda-text-tabular);
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+.eda-pkg__cta {
+  flex-shrink: 0;
+}
+
+/* ============================================================
+ * 折叠"我的申请"
+ * ============================================================ */
+.eda-my {
+  background: var(--cs-color-bg-secondary);
+  border: 1px solid var(--cs-color-border);
+  border-radius: var(--eda-card-radius);
+  padding: var(--space-md);
+}
+.eda-my__head {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-2xs) 0;
+  width: 100%;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+}
+.eda-my__caret {
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--cs-color-text-light);
+  transition: transform 0.2s ease;
+}
+.eda-my[aria-collapsed="true"] .eda-my__caret,
+.eda-my__head[aria-expanded="false"] .eda-my__caret {
+  transform: rotate(-90deg);
+}
+.eda-my__title {
+  font: var(--typo-cn-16-medium);
+  font-weight: var(--font-weight-semibold);
+  color: var(--cs-color-text);
+}
+.eda-my__count {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+  margin-left: var(--space-xs);
+}
+
+.eda-my__body {
+  margin-top: var(--space-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+.eda-my__head[aria-expanded="false"] + .eda-my__body { display: none; }
+
+/* 单条申请 */
+.eda-apply {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: var(--cs-color-white);
+  border: 1px solid var(--cs-color-border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.eda-apply:hover {
+  border-color: var(--cs-color-primary);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+}
+.eda-apply__main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+.eda-apply__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+.eda-apply__name {
+  font: var(--typo-cn-14-medium);
+  font-weight: var(--font-weight-semibold);
+  color: var(--cs-color-text);
+}
+.eda-apply__items {
+  margin: 0;
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light);
+  line-height: 1.5;
+}
+.eda-apply__hint {
+  margin: 0;
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-warning);
+}
+
+/* 审批进度条 */
+.eda-apply__progress {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  margin-top: var(--space-2xs);
+  font: var(--typo-cn-12-regular);
+}
+.eda-apply__step {
+  color: var(--cs-color-text-light2);
+  white-space: nowrap;
+}
+.eda-apply__step--done {
+  color: var(--cs-color-text-light);
+}
+.eda-apply__step--active {
+  color: var(--cs-color-primary);
+  font-weight: var(--font-weight-medium);
+}
+.eda-apply__dot {
+  display: inline-block;
+  width: 24px;
+  height: 1px;
+  background: var(--cs-color-border);
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+.eda-apply__dot--done   { background: var(--cs-color-success); }
+.eda-apply__dot--active { background: var(--cs-color-primary); }
+
+.eda-apply__side {
+  flex-shrink: 0;
+  width: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-2xs);
+}
+.eda-apply__price {
+  font-family: var(--eda-text-tabular);
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+  font-size: 16px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--cs-color-text);
+  line-height: 1.2;
+}
+.eda-apply__eta {
+  font-family: var(--eda-text-tabular);
+  font-feature-settings: "tnum";
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+.eda-apply__act {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3xs);
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-primary);
+  cursor: pointer;
+}
+.eda-apply__act i { font-size: 14px; }
+.eda-apply__act:hover { color: var(--cs-color-primary-hover); }
+.eda-apply__act--danger { color: var(--cs-color-error); }
+.eda-apply__act--danger:hover { color: var(--cs-color-error-hover); }
+
+/* 高亮新项（成功态用） */
+.eda-apply.is-new {
+  background: var(--eda-new-highlight);
+  border-color: var(--cs-color-primary);
+}
+
+/* ============================================================
+ * 底部提示条
+ * ============================================================ */
+.eda-bottom-tip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--cs-color-bg-secondary);
+  border-radius: var(--radius-lg);
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light);
+}
+.eda-bottom-tip i {
+  font-size: 14px;
+  color: var(--cs-color-primary);
+}
+
+/* ============================================================
+ * 抽屉
+ * ============================================================ */
+.eda-drw__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--spacing-20);
+  background: var(--cs-color-white);
+}
+.eda-drw__head-left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  min-width: 0;
+}
+.eda-drw__title {
+  font: var(--typo-cn-16-medium);
+  font-weight: var(--font-weight-semibold);
+  color: var(--cs-color-text);
+}
+.eda-drw__sub {
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+.eda-drw__close {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  background: transparent;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cs-color-text-light);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.eda-drw__close i { font-size: 16px; }
+.eda-drw__close:hover { background: var(--cs-color-bg-light); }
+
+.eda-drw__body {
+  padding: var(--spacing-20);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-20);
+}
+
+/* drawer · 套餐预览 */
+.eda-drw__pkg {
+  padding: var(--space-md);
+  background: var(--cs-color-bg-secondary);
+  border: 1px solid var(--cs-color-border);
+  border-radius: var(--eda-card-radius);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+.eda-drw__pkg-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+.eda-drw__pkg-heading {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+}
+.eda-drw__pkg-name {
+  margin: 0;
+  font: var(--typo-cn-14-medium);
+  font-weight: var(--font-weight-semibold);
+  color: var(--cs-color-text);
+}
+.eda-drw__pkg-suit {
+  margin: 0;
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text-light2);
+}
+.eda-drw__pkg-price {
+  font-family: var(--eda-text-tabular);
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+  font-size: 16px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--cs-color-primary);
+}
+.eda-drw__pkg-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2xs) var(--space-md);
+}
+.eda-drw__pkg-items li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text);
+}
+.eda-drw__pkg-items li i {
+  font-size: 14px;
+  color: var(--cs-color-text-light2);
+}
+.eda-drw__pkg-swap {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  background: transparent;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3xs);
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-primary);
+  cursor: pointer;
+  padding: 0;
+}
+.eda-drw__pkg-swap i { font-size: 14px; }
+.eda-drw__pkg-swap:hover { color: var(--cs-color-primary-hover); }
+
+/* drawer · 表单 */
+.eda-drw__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-20);
+}
+
+.eda-drw__more {
+  border-top: 1px solid var(--cs-color-border);
+  padding-top: var(--space-sm);
+}
+.eda-drw__more summary {
+  list-style: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text-light);
+  user-select: none;
+}
+.eda-drw__more summary::-webkit-details-marker { display: none; }
+.eda-drw__more summary i {
+  font-size: 14px;
+  transition: transform 0.2s ease;
+}
+.eda-drw__more[open] summary i { transform: rotate(0deg); }
+.eda-drw__more:not([open]) summary i { transform: rotate(-90deg); }
+.eda-drw__more-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-top: var(--space-sm);
+}
+
+/* drawer · 底部 */
+.eda-drw__foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--spacing-20);
+}
+.eda-drw__btn {
+  appearance: none;
+  -webkit-appearance: none;
+  height: var(--cs-sem-size-interactive-sm);
+  padding: 0 var(--space-md);
+  border: 1px solid var(--cs-color-border);
+  background: var(--cs-color-white);
+  border-radius: var(--radius-lg);
+  font: var(--typo-cn-12-regular);
+  color: var(--cs-color-text);
+  cursor: pointer;
+  font-family: var(--font-family-cn);
+}
+.eda-drw__btn:hover {
+  background: var(--cs-color-bg-light);
+}
