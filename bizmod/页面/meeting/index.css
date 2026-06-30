@@ -311,6 +311,72 @@
   background: var(--cs-color-border);
 }
 
+/* ===== 卡片悬浮"操作"按钮 + 下拉菜单 ===== */
+.mt-card__actions {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease;
+}
+.mt-card:hover .mt-card__actions,
+.mt-card__actions.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.mt-card__action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--cs-color-border);
+  background: var(--cs-color-white);
+  border-radius: 6px;
+  color: var(--cs-color-text);
+  font: var(--typo-cn-14-regular);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.mt-card__action-btn:hover {
+  border-color: var(--cs-color-primary);
+  color: var(--cs-color-primary);
+}
+.mt-card__action-btn i {
+  font-size: 12px;
+  color: var(--cs-color-text-light2);
+  transition: transform 0.2s ease, color 0.15s ease;
+}
+.mt-card__action-btn:hover i { color: var(--cs-color-primary); }
+.mt-card__actions.is-open .mt-card__action-btn i { transform: rotate(180deg); }
+.mt-card__action-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 130px;
+  background: var(--cs-color-white);
+  border: 1px solid var(--cs-color-border);
+  border-radius: 8px;
+  padding: 4px 0;
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.02);
+  display: none;
+  z-index: 10;
+}
+.mt-card__actions.is-open .mt-card__action-menu { display: block; }
+.mt-card__action-item {
+  padding: 8px 14px;
+  font: var(--typo-cn-14-regular);
+  color: var(--cs-color-text);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.mt-card__action-item:hover {
+  background: var(--cs-color-primary-a2);
+  color: var(--cs-color-primary);
+}
+
 /* 主持人头像（16x16 圆形） */
 .mt-card__host-avatar {
   display: inline-flex;
@@ -971,6 +1037,7 @@
   color: #ef4444;
 }
 .mt-conf__tool[data-color="rec"] i { color: #ef4444; }
+.mt-conf__rec-icon { width: 18px; height: 18px; display: block; color: currentColor; }
 .mt-conf__tool-sep {
   width: 1px;
   height: 28px;
@@ -1086,10 +1153,21 @@
 /* 成员列表 */
 .mt-conf__members { flex: 1; overflow-y: auto; padding: 0 0 12px; }
 .mt-conf__member {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 10px 20px;
+}
+/* 分割线不打通：避开拖拽手柄 + 头像区域，从姓名起点开始 */
+.mt-conf__member:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 70px;
+  right: 20px;
+  bottom: 0;
+  height: 1px;
+  background: var(--cs-color-border-light, #f0f0f0);
 }
 .mt-conf__member:hover { background: var(--cs-color-bg-light); }
 
@@ -1121,27 +1199,25 @@
   font-size: 12px;
   font-weight: var(--font-weight-medium);
 }
-.mt-conf__member-avatar[data-color="blue"]   > span { background: #e6f0ff; color: #2563eb; }
-.mt-conf__member-avatar[data-color="orange"] > span { background: #ffe2cf; color: #ea580c; }
-.mt-conf__member-avatar[data-color="green"]  > span { background: #d6f5e2; color: #16a34a; }
-.mt-conf__member-avatar[data-color="purple"] > span { background: #ece7ff; color: #6c5ce7; }
-.mt-conf__member-avatar[data-color="pink"]   > span { background: #fde8f0; color: #db2777; }
-.mt-conf__member-avatar[data-color="teal"]   > span { background: #cffbf1; color: #0d9488; }
-.mt-conf__member-avatar[data-color="amber"]  > span { background: #fff0c2; color: #d97706; }
-.mt-conf__member-avatar[data-color="sky"]    > span { background: #d4ecff; color: #0284c7; }
+.mt-conf__member-avatar[data-color="blue"]   > span { background: #e6f0ff; color: #4a6da8; }
+.mt-conf__member-avatar[data-color="orange"] > span { background: #ffe2cf; color: #b56a3a; }
+.mt-conf__member-avatar[data-color="green"]  > span { background: #d6f5e2; color: #4b8a5c; }
+.mt-conf__member-avatar[data-color="purple"] > span { background: #ece7ff; color: #6a5fa5; }
+.mt-conf__member-avatar[data-color="pink"]   > span { background: #fde8f0; color: #ad5e84; }
+.mt-conf__member-avatar[data-color="teal"]   > span { background: #cffbf1; color: #4a857c; }
+.mt-conf__member-avatar[data-color="amber"]  > span { background: #fff0c2; color: #a87c41; }
+.mt-conf__member-avatar[data-color="sky"]    > span { background: #d4ecff; color: #4682a8; }
 .mt-conf__member-info { min-width: 0; display: flex; flex-direction: column; gap: 1px; }
 .mt-conf__member-name { font: var(--typo-cn-14-regular); color: var(--cs-color-text); }
 .mt-conf__member-dept { font: var(--typo-cn-12-regular); color: var(--cs-color-text-light2); font-size: 12px; }
 
-/* 状态文字：未分享(灰) / 未填写(红) / 已分享(绿)；紧跟姓名靠左 */
+/* 状态文字：统一灰色（不再区分未分享/已分享/未填写），紧跟姓名靠左 */
 .mt-conf__member-status {
   flex-shrink: 0;
   margin-left: 12px;
   font: var(--typo-cn-14-regular);
   color: var(--cs-color-text-light);
 }
-.mt-conf__member-status[data-state="alert"] { color: var(--cs-color-error); }
-.mt-conf__member-status[data-state="ok"]    { color: var(--cs-color-success); }
 
 /* 行 hover 时右侧出现的两个按钮；用 visibility 而不是 display:none 占住位置防抖 */
 .mt-conf__member-actions {

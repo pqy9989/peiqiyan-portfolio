@@ -21,7 +21,6 @@
   const STORE_ACTIVE = 'cses_active_tab';
 
   const MODULES = {
-    'workspace': { title: '工作台', url: '../workspace/index.html'  },
     'guide':     { title: '导向',   url: '../guide/index.html'      },
     'message':   { title: '消息',   url: '../message/index.html'    },
     'task-list': { title: '任务',   url: '../task-list/index.html'  },
@@ -103,9 +102,9 @@
         if (next) {
           window.location.href = MODULES[next].url;
         } else {
-          // 没有 tab 了，回到工作台（默认入口）
-          openTab('workspace');
-          window.location.href = MODULES['workspace'].url;
+          // 没有 tab 了，回到默认入口（导向）
+          openTab('guide');
+          window.location.href = MODULES['guide'].url;
         }
         return;
       }

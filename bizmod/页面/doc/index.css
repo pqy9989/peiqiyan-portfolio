@@ -168,7 +168,7 @@
   padding: 6px 14px;
   border: 1px solid var(--cs-color-border);
   background: var(--cs-color-white);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   font: var(--typo-cn-14-regular);
   color: var(--cs-color-text);
   cursor: pointer;

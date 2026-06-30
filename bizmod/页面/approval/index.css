@@ -101,12 +101,15 @@ cs-content-header cs-search-input {
 
 
 /* ===== 分类 tab 横条 ===== */
+cs-filter-bar[data-variant="tabs"] {
+  margin-top: var(--spacing-12);
+}
 cs-filter-bar[data-variant="tabs"] .ap-cat-tab {
   display: inline-flex;
   align-items: center;
   padding: 4px 12px;
   height: 28px;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius);
   font: var(--typo-cn-14-regular);
   color: var(--cs-color-text);
   cursor: pointer;
@@ -200,14 +203,14 @@ cs-filter-bar[data-variant="tabs"] .ap-cat-tab[data-active] {
 
 .ap-item__icon {
   flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   color: var(--cs-color-white);
-  font-size: 18px;
+  font-size: 24px;
 }
 /* 浅色背景 + 深色图标 — 半透明效果 */
 .ap-item__icon[data-color="green"]   { background: #d6f5e2; color: #16a34a; }

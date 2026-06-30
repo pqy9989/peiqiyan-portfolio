@@ -5,6 +5,39 @@
 
 /* ===== navbar 私有 ===== */
 
+/* slot-header：计划实施 标题 + 让工作管理更高效 副标题 */
+cs-navbar .slot-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 4px;
+}
+.tl-navbar__title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.tl-navbar__title-text {
+  font-size: 16px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--cs-color-text);
+  font-family: var(--font-family-cn);
+}
+.tl-navbar__title i {
+  font-size: 16px;
+  color: var(--cs-color-text-light2);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background 0.15s ease;
+}
+.tl-navbar__title i:hover { background: var(--cs-color-bg-light); }
+.tl-navbar__subtitle {
+  font-size: 12px;
+  color: var(--cs-color-text-light2);
+  font-family: var(--font-family-cn);
+}
+
 /* slot-action 主 CTA 全宽 */
 cs-navbar .slot-action cs-button {
   width: 100%;
@@ -23,17 +56,15 @@ cs-navbar .slot-action cs-button .btn-icon { font-size: 14px; }
   font: var(--typo-cn-14-regular);
   cursor: pointer;
   user-select: none;
-  transition: background 0.18s ease, color 0.18s ease, padding-left 0.22s ease;
+  transition: background 0.18s ease, color 0.18s ease;
 }
 .tl-nav-item:hover {
   background: var(--cs-color-primary-a2);
   color: var(--cs-color-primary);
-  padding-left: calc(var(--space-sm) + 4px);
 }
 .tl-nav-item[data-active] {
   background: var(--cs-color-primary-a2);
   color: var(--cs-color-primary);
-  font-weight: var(--font-weight-medium);
 }
 .tl-nav-item__label { flex: 1; white-space: nowrap; }
 .tl-nav-item__warn {
@@ -73,7 +104,7 @@ cs-navbar .slot-action cs-button .btn-icon { font-size: 14px; }
   background: var(--cs-color-bg-light);
   color: var(--cs-color-primary);
 }
-.tl-space-head__actions i.cses-stratis-refresh-01:hover { transform: rotate(180deg); }
+.tl-space-head__actions i.cses-stratis-arrow-refresh-04:hover { transform: rotate(180deg); }
 
 
 /* ===== 树形节点 ===== */
@@ -106,7 +137,6 @@ cs-navbar .slot-action cs-button .btn-icon { font-size: 14px; }
 .tl-tree-node[data-active] {
   background: var(--cs-color-primary-a2);
   color: var(--cs-color-primary);
-  font-weight: var(--font-weight-medium);
 }
 
 .tl-tree-node__caret {
@@ -150,15 +180,14 @@ cs-navbar .slot-action cs-button .btn-icon { font-size: 14px; }
 
 .tl-tree-node__actions {
   display: inline-flex;
+  visibility: hidden;
   align-items: center;
   gap: 6px;
   color: var(--cs-color-text-light2);
   font-size: 14px;
   flex-shrink: 0;
-  opacity: 0;
-  transition: opacity 0.15s ease;
 }
-.tl-tree-node:hover .tl-tree-node__actions { opacity: 1; }
+.tl-tree-node:hover .tl-tree-node__actions { visibility: visible; }
 .tl-tree-node__actions i {
   padding: 2px;
   border-radius: 4px;
@@ -464,4 +493,10 @@ cs-filter-bar[data-variant="filters"] .filter-count[data-warn] .count-num {
   height: 100%;
   background: var(--cs-color-bg-lighter);
   border-radius: 3px;
+}
+
+
+/* 修复 cs-navbar 底部 slot-bottom 被裁的问题：本页 navbar 给底部留 padding */
+cs-navbar .inner {
+  padding-bottom: var(--space-xs);
 }

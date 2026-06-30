@@ -66,10 +66,6 @@
       </span>
       <nav class="nav">
         <div class="nav-group">
-          <a class="nav-item" data-module="workspace">
-            <span class="nav-icon"><i class="cses-stratis-home-01"></i></span>
-            <span class="nav-label">工作台</span>
-          </a>
           <a class="nav-item" data-module="guide">
             <span class="nav-icon"><i class="cses-stratis-compass"></i></span>
             <span class="nav-label">导向</span>
@@ -111,14 +107,14 @@
 
           <div class="slot-action">
             <div class="mt-cta">
-              <button class="mt-cta__btn" data-variant="primary" type="button">
-                <i class="cses-stratis-calendar-plus"></i>
-                <span>预约会议</span>
-              </button>
-              <button class="mt-cta__btn" data-variant="secondary" type="button">
-                <i class="cses-stratis-video-on"></i>
-                <span>快速会议</span>
-              </button>
+              <cs-button data-variant="primary" data-size="lg" style="width:100%;">
+                <i class="btn-icon cses-stratis-calendar-plus"></i>
+                <span class="btn-label">预约会议</span>
+              </cs-button>
+              <cs-button data-variant="secondary" data-size="lg" style="width:100%;">
+                <i class="btn-icon cses-stratis-video-on"></i>
+                <span class="btn-label">快速会议</span>
+              </cs-button>
             </div>
           </div>
 
@@ -549,38 +545,38 @@
       <!-- 参会人缩略图横排 -->
       <div class="mt-conf__self">
         <div class="mt-conf__self-thumb">
-          <cs-avatar class="mt-conf__self-avatar" data-size="xl" data-shape="circle" data-color="blue">裴</cs-avatar>
+          <cs-avatar class="mt-conf__self-avatar" data-size="xl" data-shape="circle" data-color="blue">顾</cs-avatar>
           <span class="mt-conf__self-pill">
             <i class="mt-conf__self-mic mt-conf__self-mic--on cses-stratis-microphone-01"></i>
-            裴启妍（主持人，我）
+            顾承宇（主持人，我）
           </span>
         </div>
         <div class="mt-conf__self-thumb">
-          <cs-avatar class="mt-conf__self-avatar" data-size="xl" data-shape="circle" data-color="green">魏</cs-avatar>
+          <cs-avatar class="mt-conf__self-avatar" data-size="xl" data-shape="circle" data-color="green">林</cs-avatar>
           <span class="mt-conf__self-pill">
             <i class="mt-conf__self-mic mt-conf__self-mic--on cses-stratis-microphone-01"></i>
-            魏婉婷
+            林婉宁
           </span>
         </div>
         <div class="mt-conf__self-thumb">
-          <cs-avatar class="mt-conf__self-avatar" data-size="xl" data-shape="circle" data-color="orange">王</cs-avatar>
+          <cs-avatar class="mt-conf__self-avatar" data-size="xl" data-shape="circle" data-color="orange">谢</cs-avatar>
           <span class="mt-conf__self-pill">
             <i class="mt-conf__self-mic mt-conf__self-mic--off cses-stratis-microphone-off-01"></i>
-            王俊虎
+            谢嘉乐
           </span>
         </div>
         <div class="mt-conf__self-thumb">
-          <cs-avatar class="mt-conf__self-avatar" data-size="xl" data-shape="circle" data-color="purple">李</cs-avatar>
+          <cs-avatar class="mt-conf__self-avatar" data-size="xl" data-shape="circle" data-color="purple">沈</cs-avatar>
           <span class="mt-conf__self-pill">
             <i class="mt-conf__self-mic mt-conf__self-mic--on cses-stratis-microphone-01"></i>
-            李子萱
+            沈知遥
           </span>
         </div>
         <div class="mt-conf__self-thumb">
-          <cs-avatar class="mt-conf__self-avatar" data-size="xl" data-shape="circle" data-color="pink">周</cs-avatar>
+          <cs-avatar class="mt-conf__self-avatar" data-size="xl" data-shape="circle" data-color="pink">唐</cs-avatar>
           <span class="mt-conf__self-pill">
             <i class="mt-conf__self-mic mt-conf__self-mic--off cses-stratis-microphone-off-01"></i>
-            周璐
+            唐若汐
           </span>
         </div>
       </div>
@@ -589,8 +585,8 @@
       <div class="mt-conf__main">
         <!-- 顶部分享人标识 -->
         <div class="mt-conf__sharer-tag">
-          <span class="mt-conf__sharer-tag-avatar">魏</span>
-          <span>魏婉婷</span>
+          <span class="mt-conf__sharer-tag-avatar">林</span>
+          <span>林婉宁</span>
           <span style="color:rgba(255,255,255,0.75);">测试部/测试员</span>
           <span class="sharing-pill">开始分享</span>
         </div>
@@ -609,8 +605,8 @@
         <!-- 演示者条 -->
         <div class="mt-conf__presenter-bar">
           <span class="mt-conf__presenter-label">分享人：</span>
-          <span class="mt-conf__presenter-avatar">魏</span>
-          <span class="mt-conf__presenter-name">魏婉婷</span>
+          <span class="mt-conf__presenter-avatar">林</span>
+          <span class="mt-conf__presenter-name">林婉宁</span>
           <span class="mt-conf__presenter-dept">测试部/测试员</span>
         </div>
 
@@ -629,35 +625,38 @@
             <span>视频关闭</span>
           </button>
           <button class="mt-conf__tool" data-color="red-cross">
-            <i class="cses-stratis-bell-off-01"></i>
+            <i class="cses-stratis-microphone-off-01"></i>
             <span>语音关闭</span>
           </button>
         </div>
         <div class="mt-conf__tool-group">
           <button class="mt-conf__tool">
-            <i class="cses-stratis-user-profile-check"></i>
+            <i class="cses-stratis-users-profiles-check"></i>
             <span>入会审核</span>
           </button>
           <button class="mt-conf__tool" data-color="rec">
-            <i class="cses-stratis-stop-01"></i>
+            <svg class="mt-conf__rec-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
+              <rect x="8" y="8" width="8" height="8" rx="1" fill="#ef4444"/>
+            </svg>
             <span>结束录制</span>
           </button>
           <button class="mt-conf__tool">
-            <i class="cses-stratis-trash-01"></i>
-            <span>清屏</span>
+            <i class="cses-stratis-message-circle"></i>
+            <span>聊天</span>
           </button>
           <button class="mt-conf__tool">
             <i class="cses-stratis-settings"></i>
             <span>设置</span>
           </button>
           <button class="mt-conf__tool">
-            <i class="cses-stratis-menu-04"></i>
+            <i class="cses-stratis-dot-horizontal"></i>
             <span>更多</span>
           </button>
         </div>
         <div class="mt-conf__tool-group">
           <button class="mt-conf__tool mt-conf__tool--exit" data-conf-close type="button">
-            <i class="cses-stratis-arrow-up-right"></i>
+            <i class="cses-stratis-logout-01"></i>
             <span>退出</span>
           </button>
         </div>
@@ -697,9 +696,9 @@
 
         <div class="mt-conf__member">
           <span class="mt-conf__member-drag"></span>
-          <div class="mt-conf__member-avatar" data-color="pink"><span>魏</span></div>
+          <div class="mt-conf__member-avatar" data-color="green"><span>林</span></div>
           <div class="mt-conf__member-info">
-            <span class="mt-conf__member-name">魏婉婷</span>
+            <span class="mt-conf__member-name">林婉宁</span>
           </div>
           <span class="mt-conf__member-status">未分享</span>
           <div class="mt-conf__member-actions">
@@ -713,9 +712,9 @@
 
         <div class="mt-conf__member">
           <span class="mt-conf__member-drag"></span>
-          <div class="mt-conf__member-avatar" data-color="purple"><span>庄</span></div>
+          <div class="mt-conf__member-avatar" data-color="purple"><span>苏</span></div>
           <div class="mt-conf__member-info">
-            <span class="mt-conf__member-name">庄建齐</span>
+            <span class="mt-conf__member-name">苏明轩</span>
           </div>
           <span class="mt-conf__member-status">未分享</span>
           <div class="mt-conf__member-actions">
@@ -727,13 +726,19 @@
           </div>
         </div>
 
+        <!-- 分组头：已分享 -->
+        <div class="mt-conf__group-head">
+          <i class="cses-stratis-chevron-down"></i>
+          <span>已分享(6)</span>
+        </div>
+
         <div class="mt-conf__member">
           <span class="mt-conf__member-drag"></span>
-          <div class="mt-conf__member-avatar" data-color="orange"><span>郝</span></div>
+          <div class="mt-conf__member-avatar" data-color="orange"><span>韩</span></div>
           <div class="mt-conf__member-info">
-            <span class="mt-conf__member-name">郝紫明</span>
+            <span class="mt-conf__member-name">韩慕白</span>
           </div>
-          <span class="mt-conf__member-status" data-state="ok">已分享</span>
+          <span class="mt-conf__member-status" data-state="ok">12:34</span>
           <div class="mt-conf__member-actions">
             <button class="mt-conf__member-act mt-conf__member-act--primary">
               <i class="cses-stratis-play-01"></i>
@@ -745,11 +750,11 @@
 
         <div class="mt-conf__member">
           <span class="mt-conf__member-drag"></span>
-          <div class="mt-conf__member-avatar" data-color="green"><span>郑</span></div>
+          <div class="mt-conf__member-avatar" data-color="sky"><span>高</span></div>
           <div class="mt-conf__member-info">
-            <span class="mt-conf__member-name">郑子哲</span>
+            <span class="mt-conf__member-name">高念慈</span>
           </div>
-          <span class="mt-conf__member-status" data-state="ok">已分享</span>
+          <span class="mt-conf__member-status" data-state="ok">08:21</span>
           <div class="mt-conf__member-actions">
             <button class="mt-conf__member-act mt-conf__member-act--primary">
               <i class="cses-stratis-play-01"></i>
@@ -761,11 +766,11 @@
 
         <div class="mt-conf__member">
           <span class="mt-conf__member-drag"></span>
-          <div class="mt-conf__member-avatar" data-color="sky"><span>王</span></div>
+          <div class="mt-conf__member-avatar" data-color="blue"><span>陆</span></div>
           <div class="mt-conf__member-info">
-            <span class="mt-conf__member-name">王超乐</span>
+            <span class="mt-conf__member-name">陆嘉言</span>
           </div>
-          <span class="mt-conf__member-status" data-state="ok">已分享</span>
+          <span class="mt-conf__member-status" data-state="ok">06:45</span>
           <div class="mt-conf__member-actions">
             <button class="mt-conf__member-act mt-conf__member-act--primary">
               <i class="cses-stratis-play-01"></i>
@@ -777,11 +782,11 @@
 
         <div class="mt-conf__member">
           <span class="mt-conf__member-drag"></span>
-          <div class="mt-conf__member-avatar" data-color="blue"><span>刘</span></div>
+          <div class="mt-conf__member-avatar" data-color="teal"><span>程</span></div>
           <div class="mt-conf__member-info">
-            <span class="mt-conf__member-name">刘浩南</span>
+            <span class="mt-conf__member-name">程一帆</span>
           </div>
-          <span class="mt-conf__member-status" data-state="ok">已分享</span>
+          <span class="mt-conf__member-status" data-state="ok">05:12</span>
           <div class="mt-conf__member-actions">
             <button class="mt-conf__member-act mt-conf__member-act--primary">
               <i class="cses-stratis-play-01"></i>
@@ -793,11 +798,11 @@
 
         <div class="mt-conf__member">
           <span class="mt-conf__member-drag"></span>
-          <div class="mt-conf__member-avatar" data-color="teal"><span>伍</span></div>
+          <div class="mt-conf__member-avatar" data-color="amber"><span>卓</span></div>
           <div class="mt-conf__member-info">
-            <span class="mt-conf__member-name">伍逹胜</span>
+            <span class="mt-conf__member-name">卓清远</span>
           </div>
-          <span class="mt-conf__member-status" data-state="ok">已分享</span>
+          <span class="mt-conf__member-status" data-state="ok">03:48</span>
           <div class="mt-conf__member-actions">
             <button class="mt-conf__member-act mt-conf__member-act--primary">
               <i class="cses-stratis-play-01"></i>
@@ -809,11 +814,11 @@
 
         <div class="mt-conf__member">
           <span class="mt-conf__member-drag"></span>
-          <div class="mt-conf__member-avatar" data-color="amber"><span>王</span></div>
+          <div class="mt-conf__member-avatar" data-color="pink"><span>余</span></div>
           <div class="mt-conf__member-info">
-            <span class="mt-conf__member-name">王利伟</span>
+            <span class="mt-conf__member-name">余青禾</span>
           </div>
-          <span class="mt-conf__member-status" data-state="ok">已分享</span>
+          <span class="mt-conf__member-status" data-state="ok">02:15</span>
           <div class="mt-conf__member-actions">
             <button class="mt-conf__member-act mt-conf__member-act--primary">
               <i class="cses-stratis-play-01"></i>
@@ -829,6 +834,41 @@
 </div>
 
 <script>
+  // === 给每张会议卡注入"操作"按钮 + 下拉菜单 ===
+  (function initCardActions() {
+    document.querySelectorAll('.mt-card').forEach(function (card) {
+      if (card.querySelector('.mt-card__actions')) return;
+      var wrap = document.createElement('div');
+      wrap.className = 'mt-card__actions';
+      wrap.innerHTML =
+        '<button class="mt-card__action-btn" type="button">' +
+          '<span>操作</span>' +
+          '<i class="cses-stratis-chevron-down"></i>' +
+        '</button>' +
+        '<div class="mt-card__action-menu">' +
+          '<div class="mt-card__action-item">进入会议</div>' +
+          '<div class="mt-card__action-item">查看详情</div>' +
+        '</div>';
+      card.appendChild(wrap);
+
+      var btn = wrap.querySelector('.mt-card__action-btn');
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var wasOpen = wrap.classList.contains('is-open');
+        document.querySelectorAll('.mt-card__actions.is-open').forEach(function (x) {
+          x.classList.remove('is-open');
+        });
+        if (!wasOpen) wrap.classList.add('is-open');
+      });
+    });
+    document.addEventListener('click', function () {
+      document.querySelectorAll('.mt-card__actions.is-open').forEach(function (x) {
+        x.classList.remove('is-open');
+      });
+    });
+  })();
+
   function openConfWindow()  {
     var w = document.getElementById('confWindow');
     if (!w) return;

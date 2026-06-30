@@ -44,16 +44,28 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  font-size: 14px;
   color: var(--cs-color-text-light);
   cursor: pointer;
   text-decoration: none;
 }
 .dt-breadcrumb a:hover { color: var(--cs-color-primary); }
 .dt-breadcrumb .dt-bc-current {
+  font-size: 14px;
   color: var(--cs-color-text);
   font-weight: var(--font-weight-medium);
 }
-.dt-breadcrumb .dt-bc-sep { color: var(--cs-color-text-light2); }
+.dt-breadcrumb .dt-bc-sep {
+  font-size: 14px;
+  color: var(--cs-color-text-light2);
+}
+.dt-breadcrumb .dt-bc-vline {
+  width: 1px;
+  height: 14px;
+  background: var(--cs-color-border);
+  margin: 0 4px;
+  flex-shrink: 0;
+}
 .dt-breadcrumb .dt-bc-star {
   font-size: 14px;
   color: var(--cs-color-text-light2);
@@ -65,7 +77,7 @@
   align-items: center;
   gap: 4px;
   color: var(--cs-color-text-light2);
-  font: var(--typo-cn-12-regular);
+  font-size: 14px;
   margin-left: 12px;
 }
 
@@ -400,19 +412,41 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--cs-color-primary);
+  color: var(--cs-color-text-light2);
   cursor: pointer;
   border-radius: 6px;
-  background: var(--cs-color-primary-a2);
+  background: transparent;
   font-size: 14px;
-  transition: opacity 0.15s ease, background 0.15s ease;
+  transition: opacity 0.15s ease, color 0.15s ease;
 }
 .dt-task-list li:hover > i {
   opacity: 1;
 }
 .dt-task-list li > i:hover {
-  background: var(--cs-color-primary);
-  color: var(--cs-color-white);
+  color: var(--cs-color-primary);
+}
+
+/* 鼠标悬浮在图标上时弹出"创建任务"小气泡 */
+.dt-task-list li > i::after {
+  content: "创建任务";
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 10px;
+  background: rgba(31, 41, 55, 0.92);
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.4;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease 0.1s;
+  z-index: 10;
+}
+.dt-task-list li > i:hover::after {
+  opacity: 1;
 }
 
 /* ===== 任务已创建标识（绝对定位到行右上角） ===== */
@@ -604,10 +638,10 @@
 /* 表头 */
 .dt-tl-row {
   display: grid;
-  grid-template-columns: 36px 40px minmax(380px, 1fr) 120px 110px 140px 140px;
+  grid-template-columns: 36px minmax(380px, 1fr) 120px 110px 140px 140px;
   align-items: center;
   border-bottom: 1px solid var(--cs-color-border);
-  min-width: 1080px;   /* 强制最小宽度，超出由 .dt-tl-scroll 横向滚动 */
+  min-width: 1040px;   /* 强制最小宽度，超出由 .dt-tl-scroll 横向滚动 */
 }
 .dt-tl-row--head {
   height: 38px;

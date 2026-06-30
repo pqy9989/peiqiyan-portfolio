@@ -4,26 +4,19 @@
   <meta charset="UTF-8">
   <title>消息 — CSES</title>
 
-  <!-- 设计令牌 / 基础样式 -->
   <link rel="stylesheet" href="../../design/css/base.css">
   <link rel="stylesheet" href="../../design/css/token.css">
   <link rel="stylesheet" href="../../design/css/variable.css">
-
-  <!-- 图标字体 -->
   <link rel="stylesheet" href="../../design/fonts/cses-icons.css?v=101">
-  <link rel="stylesheet" href="../../design/fonts/iconfont/iconfont.css">
-
-  <!-- 布局骨架（任务页同款 fragment 框架）-->
   <link rel="stylesheet" href="../../design/fragment/fragment.css">
   <link rel="stylesheet" href="../../design/css/page-shell.css">
 
-  <!-- 组件 -->
   <link rel="stylesheet" href="../../design/components/search-input/search-input.css">
   <link rel="stylesheet" href="../../design/components/avatar/avatar.css">
   <link rel="stylesheet" href="../../design/components/button/button.css">
-  <link rel="stylesheet" href="../../design/components/status-badge/status-badge.css">
+  <link rel="stylesheet" href="../../design/components/checkbox/checkbox.css">
+  <link rel="stylesheet" href="../../design/components/file-icon/file-icon.css">
 
-  <!-- 消息模块全部样式 + 交互（自 pd/pages/message 完整复刻）-->
   <link rel="stylesheet" href="messages.css">
 
   <style>
@@ -42,7 +35,7 @@
 
 <cs-layout>
 
-  <!-- 标签栏（任务页同款）-->
+  <!-- 标签栏 -->
   <div class="tabbar">
     <div class="tabbar-left">
       <span class="win-ctrl tabbar-window-control">
@@ -65,20 +58,15 @@
     </div>
   </div>
 
-  <!-- 主体 -->
   <div class="body">
 
-    <!-- 一级导航（任务页同款 8 项）-->
+    <!-- 一级导航 -->
     <cs-sidebar>
       <span class="logo">
         <img src="../../design/assets/logo.png" alt="CSES">
       </span>
       <nav class="nav">
         <div class="nav-group">
-          <a class="nav-item" data-module="workspace">
-            <span class="nav-icon"><i class="cses-stratis-home-01"></i></span>
-            <span class="nav-label">工作台</span>
-          </a>
           <a class="nav-item" data-module="guide">
             <span class="nav-icon"><i class="cses-stratis-compass"></i></span>
             <span class="nav-label">导向</span>
@@ -167,7 +155,7 @@
             </div>
           </div>
           <button class="navbar-create-btn">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#666" stroke-width="1.5" stroke-linecap="round">
               <line x1="12" y1="5" x2="12" y2="19"></line>
               <line x1="5" y1="12" x2="19" y2="12"></line>
             </svg>
@@ -255,7 +243,7 @@
                 <div class="navbar-message-preview">关于 App 3.0 的原型设计已完成</div>
               </div>
             </div>
-            <div class="navbar-badge single">5</div>
+            <div class="navbar-badge single urgent" title="加急未读"></div>
           </div>
 
           <div class="navbar-message-item">
@@ -609,19 +597,24 @@
           </button>
         </div>
       </cs-navbar>
+
+      <!-- 调整分隔线 -->
+      <div class="navbar-resizer"></div>
+
+      <!-- 主内容区 -->
       <div class="main-content">
 
         <!-- 内容头部 -->
         <div class="content-header">
           <div class="header-left">
             <div class="header-title">Q4 战略规划会议</div>
-            <div class="header-desc">用于讨论 Q4 季度的战略规划和预算安排</div>
+            <div class="header-desc">导向：讨论 Q4 季度的战略规划和预算安排</div>
           </div>
           <div class="header-right">
-            <button class="header-btn"><i class="CSES" style="font-size: 20px; line-height: 1;">&#xe9b5;</i><div class="header-btn-label">记录</div></button>
-            <button class="header-btn"><i class="CSES" style="font-size: 20px; line-height: 1;">&#xe911;</i><div class="header-btn-label">通话</div></button>
-            <button class="header-btn"><i class="CSES" style="font-size: 20px; line-height: 1;">&#xe90c;</i><div class="header-btn-label">成员</div></button>
-            <button class="header-btn"><i class="CSES" style="font-size: 20px; line-height: 1;">&#xe91d;</i><div class="header-btn-label">更多</div></button>
+            <button class="header-btn"><i class="cses-stratis-message-text-01" style="font-size: 20px; line-height: 1;"></i><div class="header-btn-label">记录</div></button>
+            <button class="header-btn"><i class="cses-stratis-phone-call-01" style="font-size: 20px; line-height: 1;"></i><div class="header-btn-label">通话</div></button>
+            <button class="header-btn"><i class="cses-stratis-users-profiles-plus" style="font-size: 20px; line-height: 1;"></i><div class="header-btn-label">成员</div></button>
+            <button class="header-btn"><i class="cses-stratis-dot-horizontal" style="font-size: 20px; line-height: 1;"></i><div class="header-btn-label">更多</div></button>
           </div>
         </div>
 
@@ -776,6 +769,33 @@
           </div>
         </div>
 
+        <!-- 多选操作栏（选择消息时显示） -->
+        <div class="msg-multi-action-bar" id="messageActionBar">
+          <button class="msg-multi-action-btn" data-action="forward-each" title="逐条转发">
+            <i class="cses-stratis-arrow-curve-up-right"></i>
+            <span>逐条转发</span>
+          </button>
+          <button class="msg-multi-action-btn" data-action="forward-merge" title="合并转发">
+            <i class="cses-stratis-layers-03"></i>
+            <span>合并转发</span>
+          </button>
+          <button class="msg-multi-action-btn" data-action="favorite" title="收藏">
+            <i class="cses-stratis-package-01"></i>
+            <span>收藏</span>
+          </button>
+          <button class="msg-multi-action-btn" data-action="save" title="保存">
+            <i class="cses-stratis-save-01"></i>
+            <span>保存</span>
+          </button>
+          <button class="msg-multi-action-btn" data-action="delete" title="删除">
+            <i class="cses-stratis-trash-01"></i>
+            <span>删除</span>
+          </button>
+          <button class="msg-multi-action-btn close-btn" data-action="close" title="退出多选">
+            <i class="cses-stratis-x-01"></i>
+          </button>
+        </div>
+
         <!-- 输入框 -->
         <div class="input-section">
           <div class="input-box">
@@ -792,13 +812,13 @@
                 <div class="input-placeholder">请输入消息，@沟通将会通过消息通知对方；Enter发送，Ctrl/Cmd+Enter 换行</div>
               </div>
               <div class="input-right">
-                <button class="input-btn" title="表情"><i class="CSES" style="font-size: 20px; line-height: 1;">&#xe91c;</i></button>
-                <button class="input-btn" title="上传文件"><i class="CSES" style="font-size: 20px; line-height: 1;">&#xe917;</i></button>
-                <button class="input-btn" title="截图"><i class="CSES" style="font-size: 20px; line-height: 1;">&#xe905;</i></button>
-                <button class="input-btn" title="更多"><i class="CSES" style="font-size: 20px; line-height: 1;">&#xe90e;</i></button>
-                <button class="input-btn send-btn" title="发送"><i class="CSES" style="font-size: 20px; line-height: 1;">&#xe915;</i></button>
+                <button class="input-btn" title="表情"><i class="cses-stratis-smiley-happy" style="font-size: 20px; line-height: 1;"></i></button>
+                <button class="input-btn" title="上传文件"><i class="cses-stratis-paperclip" style="font-size: 20px; line-height: 1;"></i></button>
+                <button class="input-btn" title="截图"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;display:block;transform:rotate(-90deg);"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg></button>
+                <button class="input-btn" title="更多"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;display:block;"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></button>
+                <button class="input-btn send-btn" title="发送"><i class="cses-stratis-send-01" style="font-size: 20px; line-height: 1;"></i></button>
                 <span class="send-divider"></span>
-                <button class="input-btn send-more-btn" title="发送选项"><i class="CSES">&#xe7fa;</i></button>
+                <button class="input-btn send-more-btn" title="定时消息"><i class="cses-stratis-chevron-down" style="font-size: 20px; line-height: 1;"></i></button>
               </div>
             </div>
           </div>
@@ -806,11 +826,15 @@
 
       </div>
 
-    </div><!-- /.content-wrapper -->
+    </div>
 
-  </div><!-- /.body -->
+  </div>
+
+  </div>
+
 
 </cs-layout>
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -960,14 +984,15 @@ document.addEventListener('DOMContentLoaded', function() {
     'e191f92631f583afac8c438cf76a4e14.jpg': '刘芳',
     '601cebec6389d4701588a15d33cf535f.jpg': '周密',
     '4f7b4ef54e500be104c78ae7f6145dd7.jpg': '孙超',
-    'fefcd487f0d1737443cb5b7be66fa1b2.jpg': '王伟'
+    'fefcd487f0d1737443cb5b7be66fa1b2.jpg': '王伟',
+    'c5bc848e26421b98d15bb56aa0793ff7.jpg': '姜乐乐'
   };
 
   // 消息数据存储
   const conversationsData = {
     '1': { name: '中企云链（北京）', desc: '讨论供应链金融合作方案', messages: [] },
     '2': { name: '爱能智亚（杭州）', desc: '新能源产业链发展机会', messages: [] },
-    '3': { name: 'Q4 战略规划会议', desc: '讨论 Q4 季度的战略规划和预算安排', messages: [] },
+    '3': { name: 'Q4 战略规划会议', desc: '导向：讨论 Q4 季度的战略规划和预算安排', messages: [] },
     '4': { name: '李明', desc: '产品中心', messages: [] },
     '5': { name: '张学斌', desc: '技术部', messages: [] },
     '6': { name: 'UX 设计工作坊', desc: '用户体验设计和评审', messages: [] },
@@ -1096,68 +1121,68 @@ document.addEventListener('DOMContentLoaded', function() {
   // 示例图片：雪山湖景（保存在本地 assets 目录，HTML 用相对路径引用）
   const SAMPLE_IMG_SUNSET = 'assets/landscape.jpg';
 
-  // 初始化消息数据（Q4 战略规划会议 - 4 天对话流）
+  // 初始化消息数据（仅保留默认对话）
   conversationsData['3'].messages = [
-    // ───── 3 天前：Q4 战略规划会议启动 ─────
-    { date: formatRelativeDate(3), items: [] },
-    { sender: '王伟', role: 'CEO', avatar: '#d4e4f7', content: '@所有人 Q4 战略规划会议正式启动，本周内各部门提交目标和预算', time: '09:30', isSelf: false, readStatus: '' },
-    { sender: '王伟', role: 'CEO', avatar: '#d4e4f7', time: '09:32', isSelf: false, readStatus: '',
-      files: [{ name: 'Q4_战略规划议程_v1.docx', size: 89000, ext: 'docx' }] },
-    { sender: '李明', role: '产品中心', avatar: '#ffd4bb', content: '收到，产品线本周三可以给到完整版本', time: '09:35', isSelf: false, readStatus: '' },
-    { sender: '张学斌', role: '技术部', avatar: '#e0c5eb', content: '收到，技术部周三上午前提交', time: '09:38', isSelf: false, readStatus: '' },
-    { sender: '张英', role: '销售部', avatar: '#f5ccc8', content: '销售部明天内部对齐后给你', time: '09:42', isSelf: false, readStatus: '' },
-    { sender: '姜乐乐', role: 'CFO', avatar: '#f0e0d0', content: '财务模型周四前完成，覆盖三种预算情景', time: '09:50', isSelf: true, readStatus: '已读' },
-
-    // ───── 前天：各部门进展同步 ─────
     { date: formatRelativeDate(2), items: [] },
-    { sender: '王伟', role: 'CEO', avatar: '#d4e4f7', content: '请各部门今天先把方向同步一下，明天集中讨论', time: '14:20', isSelf: false, readStatus: '' },
-    { sender: '李明', role: '产品中心', avatar: '#ffd4bb', content: 'App 3.0 原型完成，下周启动用户测试，目标 Q4 末发布 beta', time: '14:25', isSelf: false, readStatus: '' },
-    { sender: '张学斌', role: '技术部', avatar: '#e0c5eb', content: '微服务架构升级进入测试，11 月中旬上线', time: '14:28', isSelf: false, readStatus: '' },
-    { sender: '王伟', role: 'CEO', avatar: '#d4e4f7', content: '技术风险点有哪些？',
-      quote: { sender: '张学斌', content: '微服务架构升级进入测试，11 月中旬上线' },
-      time: '14:30', isSelf: false, readStatus: '' },
-    { sender: '张学斌', role: '技术部', avatar: '#e0c5eb', content: '数据迁移、灰度发布、网络延迟，都有应对方案', time: '14:32', isSelf: false, readStatus: '' },
-    { sender: '张学斌', role: '技术部', avatar: '#e0c5eb', time: '14:35', isSelf: false, readStatus: '',
-      files: [
-        { name: '架构升级方案.pdf', size: 1820000, ext: 'pdf' },
-        { name: '风险评估.docx', size: 56000, ext: 'docx' }
-      ] },
-    { sender: '姜乐乐', role: 'CFO', avatar: '#f0e0d0', content: '我看了一下，数据迁移的回滚预案要再确认下，避免影响 10 月底的财务结账',
-      quote: { sender: '张学斌', content: '数据迁移、灰度发布、网络延迟，都有应对方案' },
-      time: '14:50', isSelf: true, readStatus: '已读' },
-    { sender: '张学斌', role: '技术部', avatar: '#e0c5eb', content: '同意，今天下班前给到回滚 SOP', time: '14:55', isSelf: false, readStatus: '' },
-    { sender: '王伟', role: 'CEO', avatar: '#d4e4f7', content: '商业价值评估呢？', time: '15:10', isSelf: false, readStatus: '' },
-    { sender: '姜乐乐', role: 'CFO', avatar: '#f0e0d0', content: '年度价值 2000-2500 万，含三档敏感性分析', time: '15:20', isSelf: true, readStatus: '已读' },
-    { sender: '姜乐乐', role: 'CFO', avatar: '#f0e0d0', time: '15:22', isSelf: true, readStatus: '已读',
-      files: [{ name: 'Q4_财务模型_v2.xlsx', size: 245000, ext: 'xlsx' }] },
-
-    // ───── 昨天：演示 + 客户拓展 + 准备明日执委会 ─────
+    // 王伟 连续 3 条文本：开场布置任务，演示同发件人连发气泡的折叠样式
+    { sender: '王伟', role: 'CEO', avatar: '#d4e4f7', content: '本周要把 Q4 各业务线 OKR 对齐完', time: '10:08', isSelf: false, readStatus: '' },
+    { sender: '王伟', role: 'CEO', avatar: '#d4e4f7', content: '麻烦各位组长今晚前把草案丢群里', time: '10:08', isSelf: false, readStatus: '' },
+    { sender: '王伟', role: 'CEO', avatar: '#d4e4f7', content: '财务、技术、产品、销售四条线都要覆盖到', time: '10:09', isSelf: false, readStatus: '' },
+    { sender: '李明', role: '产品中心', avatar: '#ffd4bb', content: '产品这边新版会员体系的需求文档刚定稿，先发出来给大家拍砖', time: '10:14', isSelf: false, readStatus: '' },
+    { sender: '张英', role: '销售部', avatar: '#f5ccc8', content: '我先看一下', time: '10:15', isSelf: false, readStatus: '' },
+    { sender: '李明', role: '产品中心', avatar: '#ffd4bb', time: '10:16', isSelf: false, readStatus: '',
+      files: [{ name: '会员体系 V2 需求说明书.pdf', size: 2840000, ext: 'pdf' }] },
+    { sender: '张学斌', role: '技术部', avatar: '#e0c5eb', content: '我看完了，权益模块改动较大', time: '10:22', isSelf: false, readStatus: '' },
+    // 张学斌 连发 3 个文件：演示同发件人连发多文件
+    { sender: '张学斌', role: '技术部', avatar: '#e0c5eb', time: '10:23', isSelf: false, readStatus: '',
+      files: [{ name: 'V2 工时拆分表.xlsx', size: 96000, ext: 'xlsx' }] },
+    { sender: '张学斌', role: '技术部', avatar: '#e0c5eb', time: '10:23', isSelf: false, readStatus: '',
+      files: [{ name: '权益模块技术评估.pdf', size: 460000, ext: 'pdf' }] },
+    { sender: '张学斌', role: '技术部', avatar: '#e0c5eb', time: '10:24', isSelf: false, readStatus: '',
+      files: [{ name: '接口对接清单.xlsx', size: 78000, ext: 'xlsx' }] },
+    { sender: '王伟', role: 'CEO', avatar: '#d4e4f7', content: '整体可控吗？影响 11 月上线节奏不？', time: '10:30', isSelf: false, readStatus: '' },
+    { sender: '张学斌', role: '技术部', avatar: '#e0c5eb', content: '主链路勉强能赶上，但权益结算这块需要拆成两期', time: '10:34', isSelf: false, readStatus: '' },
+    { sender: '张学斌', role: '技术部', avatar: '#e0c5eb', content: '第一期先保留兑换，第二期接入到账记录', time: '10:34', isSelf: false, readStatus: '' },
     { date: formatRelativeDate(1), items: [] },
-    { sender: '李明', role: '产品中心', avatar: '#ffd4bb', content: 'App 3.0 原型已 ready，明天执委会现场过一遍 demo', time: '09:10', isSelf: false, readStatus: '' },
-    { sender: '王伟', role: 'CEO', avatar: '#d4e4f7', content: '好，重点讲清楚核心交互链路就行', time: '09:18', isSelf: false, readStatus: '' },
-    { sender: '李明', role: '产品中心', avatar: '#ffd4bb', content: '收到', time: '09:20', isSelf: false, readStatus: '' },
-    { sender: '张英', role: '销售部', avatar: '#f5ccc8', content: 'B2B 目标客户已锁定，下周启动谈判', time: '09:30', isSelf: false, readStatus: '' },
-    { sender: '张英', role: '销售部', avatar: '#f5ccc8', time: '09:32', isSelf: false, readStatus: '',
-      files: [{ name: 'Q4_重点客户清单.xlsx', size: 124000, ext: 'xlsx' }] },
-    { sender: '王伟', role: 'CEO', avatar: '#d4e4f7', content: '前 10 大客户的合同节奏可以同步给财务，方便测算',
-      quote: { sender: '张英', content: 'B2B 目标客户已锁定，下周启动谈判' },
-      time: '09:40', isSelf: false, readStatus: '' },
-    { sender: '张英', role: '销售部', avatar: '#f5ccc8', content: '好的，下午整理完发到群里', time: '09:42', isSelf: false, readStatus: '' },
-    { sender: '王伟', role: 'CEO', avatar: '#d4e4f7', content: '明天下午 3 点执委会会议，会议室3A，请大家提前 10 分钟到', time: '15:00', isSelf: false, readStatus: '' },
-    { sender: '姜乐乐', role: 'CFO', avatar: '#f0e0d0', content: '收到，准备财务资料', time: '15:05', isSelf: true, readStatus: '1人未读' },
-    { sender: '姜乐乐', role: 'CFO', avatar: '#f0e0d0', time: '15:10', isSelf: true, readStatus: '已读',
-      files: [{ name: '财务汇报.m4a', size: 3200000, ext: 'm4a' }] },
-    { sender: '王伟', role: 'CEO', avatar: '#d4e4f7', time: '16:25', isSelf: false, readStatus: '',
-      audios: [{ name: '执委会议程补充.mp3', size: 8400000, ext: 'mp3', duration: 12, currentTime: 0 }] },
-    { sender: '张英', role: '销售部', avatar: '#f5ccc8', content: '销售团队为 Q4 做的庆祝照，分享一下气氛 🎉', images: [SAMPLE_IMG_SUNSET], time: '17:48', isSelf: false, readStatus: '' },
-
-    // ───── 今天：会议日确认 ─────
-    { date: formatRelativeDate(0), items: [] },
-    { sender: '王伟', role: 'CEO', avatar: '#d4e4f7', content: '@所有人 今天下午 3 点准时开始，请提前到场', time: '09:00', isSelf: false, readStatus: '' },
-    { sender: '李明', role: '产品中心', avatar: '#ffd4bb', content: '收到 ✓', time: '09:02', isSelf: false, readStatus: '' },
-    { sender: '张学斌', role: '技术部', avatar: '#e0c5eb', content: '收到，回滚 SOP 已附在群文件', time: '09:05', isSelf: false, readStatus: '' },
-    { sender: '张英', role: '销售部', avatar: '#f5ccc8', content: '收到', time: '09:08', isSelf: false, readStatus: '' },
-    { sender: '姜乐乐', role: 'CFO', avatar: '#f0e0d0', content: '已就位，财务三档模型 + 现金流预测都打印好了', time: '09:30', isSelf: true, readStatus: '已读' }
+    { sender: '张英', role: '销售部', avatar: '#f5ccc8', content: '昨晚跟江北区域的代理过了下 Q4 返点政策，他们对阶梯返点接受度挺高', time: '08:50', isSelf: false, readStatus: '' },
+    { sender: '王伟', role: 'CEO', avatar: '#d4e4f7', content: '财务侧大概的成本压力测算一下，今天能给出来不？', time: '08:58', isSelf: false, readStatus: '' },
+    // 姜乐乐(我) 连发 2 条短文本：模拟"等等，我先报进度"
+    { sender: '姜乐乐', role: 'CFO', avatar: '#f0e0d0', content: '在跑模型了', time: '09:02', isSelf: true, readStatus: '已读' },
+    { sender: '姜乐乐', role: 'CFO', avatar: '#f0e0d0', content: '午前会把测算结果发出来', time: '09:02', isSelf: true, readStatus: '已读' },
+    { sender: '李明', role: '产品中心', avatar: '#ffd4bb', content: '辛苦', time: '09:05', isSelf: false, readStatus: '' },
+    { sender: '姜乐乐', role: 'CFO', avatar: '#f0e0d0', content: '跑完了，整体成本控制在预算内', time: '11:18', isSelf: true, readStatus: '已读' },
+    { sender: '王伟', role: 'CEO', avatar: '#d4e4f7', content: '附件丢一下', time: '11:18', isSelf: false, readStatus: '' },
+    // 姜乐乐(我) 连发 2 个文件：模拟"分别给详细版和摘要"
+    { sender: '姜乐乐', role: 'CFO', avatar: '#f0e0d0', time: '11:19', isSelf: true, readStatus: '已读',
+      files: [{ name: 'Q4 返点政策成本测算.xlsx', size: 187000, ext: 'xlsx' }] },
+    { sender: '姜乐乐', role: 'CFO', avatar: '#f0e0d0', time: '11:19', isSelf: true, readStatus: '已读',
+      files: [{ name: '测算摘要-1页版.pdf', size: 64000, ext: 'pdf' }] },
+    { sender: '王伟', role: 'CEO', avatar: '#d4e4f7', content: '好，张英下午跟代理那边正式确认一下', time: '11:25', isSelf: false, readStatus: '' },
+    { sender: '王伟', role: 'CEO', avatar: '#d4e4f7', content: '争取本周签掉', time: '11:25', isSelf: false, readStatus: '' },
+    { sender: '李明', role: '产品中心', avatar: '#ffd4bb', content: 'App 3.0 内测视频出来了', time: '14:08', isSelf: false, readStatus: '' },
+    { sender: '李明', role: '产品中心', avatar: '#ffd4bb', content: '大家有时间看一下，反馈意见周三前给我', time: '14:08', isSelf: false, readStatus: '' },
+    { sender: '张英', role: '销售部', avatar: '#f5ccc8', content: '在等', time: '14:08', isSelf: false, readStatus: '' },
+    { sender: '李明', role: '产品中心', avatar: '#ffd4bb', time: '14:09', isSelf: false, readStatus: '',
+      videos: [{ name: 'App3.0_内测演示.mp4', size: 26400000, ext: 'mp4', duration: 142, width: 1280, height: 720 }] },
+    { sender: '王伟', role: 'CEO', avatar: '#d4e4f7', content: '明天下午 3 点开执委会，我会把这些材料一并带上去', time: '17:32', isSelf: false, readStatus: '' },
+    { sender: '张学斌', role: '技术部', avatar: '#e0c5eb', content: '收到', time: '17:33', isSelf: false, readStatus: '' },
+    { sender: '王伟', role: 'CEO', avatar: '#d4e4f7', time: '17:34', isSelf: false, readStatus: '',
+      audios: [{ name: '执委会准备要点.mp3', size: 8400000, ext: 'mp3', duration: 23, currentTime: 0 }] },
+    { sender: '姜乐乐', role: 'CFO', avatar: '#f0e0d0', content: '我这边补一份现金流预测', time: '17:48', isSelf: true, readStatus: '已读' },
+    { sender: '王伟', role: 'CEO', avatar: '#d4e4f7', content: '好', time: '17:48', isSelf: false, readStatus: '' },
+    { sender: '姜乐乐', role: 'CFO', avatar: '#f0e0d0', time: '17:49', isSelf: true, readStatus: '1人未读',
+      files: [{ name: 'Q4 现金流预测.xlsx', size: 3200000, ext: 'xlsx' }] },
+    { sender: '张学斌', role: '技术部', avatar: '#e0c5eb', content: '我把架构升级的最新版本也同步一下', time: '18:04', isSelf: false, readStatus: '' },
+    { sender: '王伟', role: 'CEO', avatar: '#d4e4f7', content: '辛苦', time: '18:04', isSelf: false, readStatus: '' },
+    // 张学斌 连发 2 个文件
+    { sender: '张学斌', role: '技术部', avatar: '#e0c5eb', time: '18:05', isSelf: false, readStatus: '',
+      files: [{ name: '架构升级方案 V3.pdf', size: 1820000, ext: 'pdf' }] },
+    { sender: '张学斌', role: '技术部', avatar: '#e0c5eb', time: '18:05', isSelf: false, readStatus: '',
+      files: [{ name: '风险评估清单.docx', size: 56000, ext: 'docx' }] },
+    { sender: '李明', role: '产品中心', avatar: '#ffd4bb', content: '新版会员中心 UI 我也截图发一下', time: '18:42', isSelf: false, readStatus: '' },
+    { sender: '张英', role: '销售部', avatar: '#f5ccc8', content: '好', time: '18:42', isSelf: false, readStatus: '' },
+    { sender: '李明', role: '产品中心', avatar: '#ffd4bb', time: '18:43', isSelf: false, readStatus: '',
+      images: [SAMPLE_IMG_SUNSET] }
   ];
 
   // 初始化姜乐乐与张英的私聊（两个角色的对话数据一致）
@@ -1182,10 +1207,10 @@ document.addEventListener('DOMContentLoaded', function() {
   function updateMainContent(conversationId) {
     const conv = conversationsData[conversationId];
 
-    // 保存旧会话的草稿（如果切换到了不同会话）
+    // 保存旧会话的草稿（如果切换到了不同会话）—— 用 innerHTML 保留 @mention 标签等 DOM 结构
     const messageInputEl = document.querySelector('.message-input');
     if (lastRenderedConvId && lastRenderedConvId !== conversationId && messageInputEl) {
-      setDraft(lastRenderedConvId, messageInputEl.value);
+      setDraft(lastRenderedConvId, messageInputEl.innerHTML);
       updateMessagePreview(lastRenderedConvId);
     }
 
@@ -1207,10 +1232,10 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="header-desc">${conv.desc}</div>
       </div>
       <div class="header-right">
-        <button class="header-btn"><i class="CSES" style="font-size: 20px; line-height: 1;">&#xe9b5;</i><div class="header-btn-label">记录</div></button>
-        <button class="header-btn"><i class="CSES" style="font-size: 20px; line-height: 1;">&#xe911;</i><div class="header-btn-label">通话</div></button>
-        <button class="header-btn"><i class="CSES" style="font-size: 20px; line-height: 1;">&#xe90c;</i><div class="header-btn-label">成员</div></button>
-        <button class="header-btn"><i class="CSES" style="font-size: 20px; line-height: 1;">&#xe91d;</i><div class="header-btn-label">更多</div></button>
+        <button class="header-btn"><i class="cses-stratis-message-text-01" style="font-size: 20px; line-height: 1;"></i><div class="header-btn-label">记录</div></button>
+        <button class="header-btn"><i class="cses-stratis-phone-call-01" style="font-size: 20px; line-height: 1;"></i><div class="header-btn-label">通话</div></button>
+        <button class="header-btn"><i class="cses-stratis-users-profiles-plus" style="font-size: 20px; line-height: 1;"></i><div class="header-btn-label">成员</div></button>
+        <button class="header-btn"><i class="cses-stratis-dot-horizontal" style="font-size: 20px; line-height: 1;"></i><div class="header-btn-label">更多</div></button>
       </div>
     `;
 
@@ -1220,20 +1245,27 @@ document.addEventListener('DOMContentLoaded', function() {
     // 滚动到底部
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
-    // 加载新会话的草稿到输入框 + 自动聚焦
+    // 加载新会话的草稿到输入框 + 自动聚焦 —— 用 innerHTML 恢复 @mention 标签等 DOM 结构
     const newInputEl = document.querySelector('.message-input');
     if (newInputEl) {
       const draft = getDraft(conversationId);
-      newInputEl.value = draft;
-      currentInputContent = draft;
+      newInputEl.innerHTML = draft;
+      currentInputContent = newInputEl.value;  // 经 .value getter 拿到纯文本
       newInputEl.style.height = '20px';   // 单行高（滚动体无内边距，留白由外层提供）
       newInputEl.style.overflowY = 'hidden';
       if (typeof autoResizeInput === 'function') {
         autoResizeInput();
       }
       newInputEl.focus();
-      // 把光标放在末尾
-      newInputEl.setSelectionRange(draft.length, draft.length);
+      // 光标移到末尾（contenteditable 用 Range/Selection，不能用 setSelectionRange）
+      try {
+        const range = document.createRange();
+        range.selectNodeContents(newInputEl);
+        range.collapse(false);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      } catch (e) {}
       if (typeof updateSendActive === 'function') updateSendActive();
     }
 
@@ -1248,11 +1280,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const messages = conversationsData[conversationId].messages;
     let html = '';
     let msgIndex = 0;
+    let lastSenderName = null;   // 上一条非日期消息的发件人
 
     messages.forEach(msg => {
       if (msg.date) {
         // 日期分割线
         html += `<div class="date-divider">${msg.date}</div>`;
+        lastSenderName = null;  // 日期换行重置
       } else {
         msg.__index = msgIndex++;
         // 根据当前角色判断消息是否为自己发送
@@ -1264,6 +1298,10 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (currentRole === 'jianglelei' && senderName === '姜乐乐') {
           isSelf = true;
         }
+
+        // 连发消息：同发件人的连续消息（任何类型）都合并，隐藏后续条目的头像 + 名字
+        const isConsecutive = senderName === lastSenderName;
+        lastSenderName = msg.recalled ? null : senderName;
 
         // 撤回消息：渲染为居中的系统提示行
         if (msg.recalled) {
@@ -1303,6 +1341,107 @@ document.addEventListener('DOMContentLoaded', function() {
         const isVoice = !!(msg.voice && msg.voice.duration);
         const hasText = !!(msg.content && msg.content.length);
         if (isImg) galleryStore[msg.__index] = msg.images;
+
+        // 通用构建：根据回复列表生成 repliesHtml
+        // forFileIdx === null/undefined：单一气泡场景，使用全部 replies（兜底也包含没有 fileIdx 的回复）
+        // forFileIdx === 数字：多文件 split，按 reply.fileIdx 精确过滤；最后一条文件兜底承接"没有 fileIdx 标记"的旧回复
+        function buildRepliesHtml(replies, forFileIdx, isLastForFallback) {
+          if (!Array.isArray(replies) || replies.length === 0) return '';
+          let scope;
+          if (forFileIdx === null || forFileIdx === undefined) {
+            scope = replies;
+          } else {
+            scope = replies.filter(r => {
+              if (typeof r.fileIdx === 'number') return r.fileIdx === forFileIdx;
+              return isLastForFallback;  // 旧数据无 fileIdx → 兜底挂到最后一个文件
+            });
+          }
+          if (scope.length === 0) return '';
+          const visible = scope.slice(0, 3);
+          const total = scope.length;
+          const footerHtml = total > 3
+            ? '<div class="msg-replies-footer">' +
+                '<span class="reply-arrow"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>' +
+                '<span>全部回复</span><span class="msg-replies-footer-count">(' + total + ')</span>' +
+                '<span class="reply-chev"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>' +
+              '</div>'
+            : '';
+          return '<div class="msg-replies">' +
+            visible.map(r => (
+              '<div class="msg-replies-item">' +
+                '<span class="msg-replies-name">' + escapeHtml(r.name) + '</span>' +
+                '<span class="msg-replies-content">' + escapeHtml(r.content) + '</span>' +
+              '</div>'
+            )).join('') +
+            footerHtml +
+          '</div>';
+        }
+
+        // 单一气泡的回复预览（文本/单文件/图片/语音/视频/音频）
+        const repliesHtmlPrebuild = buildRepliesHtml(msg.replies, null, false);
+
+        // 多文件消息：每个文件渲染成独立的 message-group；第 2 个及以后自动并入"连发"，隐藏头像 + 名字
+        if (isFile && msg.files.length > 1 && !hasText && !msg.quote) {
+          msg.files.forEach((file, fileIdx) => {
+            const fileBody = buildFileCardHtml(file);
+            // 每个 split 文件用独立的 reaction key：${msgIndex}-${fileIdx}
+            const subKey = msg.__index + '-' + fileIdx;
+            const fileReactions = renderReactionsHtml(conversationId, subKey);
+            const isLast = fileIdx === msg.files.length - 1;
+            // 按 fileIdx 精确过滤这条 split 文件对应的回复（旧无 fileIdx 数据兜底挂到最后一条）
+            const fileReplies = buildRepliesHtml(msg.replies, fileIdx, isLast);
+            // 有 reactions 或回复预览时，气泡需要底色包裹，去掉 is-file 透明
+            const fileBubbleExtra = (fileReactions || fileReplies) ? '' : ' is-file';
+            // 第 0 个文件继承本条消息的 isConsecutive；后续文件一定属于连发
+            const fileConsecutive = (fileIdx === 0 ? isConsecutive : true) ? ' is-consecutive' : '';
+            if (isSelf) {
+              html += `
+                <div class="message-group${fileConsecutive}" data-msg-index="${msg.__index}" data-file-idx="${fileIdx}" data-is-self="true">
+                  <div class="message-avatar" style="background: transparent; overflow: hidden;">
+                    <img src="${avatarSrc}" style="width: 100%; height: 100%; object-fit: cover;">
+                  </div>
+                  <div class="message-column">
+                    <div class="message-info">
+                      <span class="message-name">${displayName}</span>
+                      <span class="message-role">${msg.role}</span>
+                    </div>
+                    <div style="display: flex; gap: 4px; align-items: flex-end;">
+                      <div class="message-bubble right${fileBubbleExtra}">
+                        ${fileBody}
+                        ${fileReplies}
+                        ${fileReactions}
+                        ${actionsHtml}
+                      </div>
+                      <span style="font-size: 12px; color: #9db3e0; white-space: nowrap;">${isLast ? msg.readStatus : ''}</span>
+                    </div>
+                  </div>
+                </div>
+              `;
+            } else {
+              html += `
+                <div class="message-group${fileConsecutive}" data-msg-index="${msg.__index}" data-file-idx="${fileIdx}" data-is-self="false">
+                  <div class="message-avatar" style="background: transparent; overflow: hidden;">
+                    <img src="${avatarSrc}" style="width: 100%; height: 100%; object-fit: cover;">
+                  </div>
+                  <div class="message-column">
+                    <div class="message-info">
+                      <span class="message-name">${displayName}</span>
+                      <span class="message-role">${msg.role}</span>
+                    </div>
+                    <div class="message-bubble${fileBubbleExtra}">
+                      ${fileBody}
+                      ${fileReplies}
+                      ${fileReactions}
+                      ${actionsHtml}
+                    </div>
+                  </div>
+                </div>
+              `;
+            }
+          });
+          return;  // 已渲染完该消息，跳过下面常规流程
+        }
+
         let bodyHtml;
         if (isVoice) {
           bodyHtml = buildVoiceHtml(msg.voice, isSelf);
@@ -1325,29 +1464,42 @@ document.addEventListener('DOMContentLoaded', function() {
             + `<div class="message-text" style="margin-top:8px;">${escapeHtml(msg.content)}</div>`;
         } else if (isImg) {
           bodyHtml = buildGalleryHtml(msg.images, msg.__index);
+        } else if (msg.forwardCard) {
+          bodyHtml = buildForwardCardHtml(msg.forwardCard);
         } else {
           bodyHtml = `<div class="message-text">${escapeHtml(msg.content)}</div>`;
         }
         // 引用块（如有）：在气泡顶部显示（↩ + 发送者：内容，无底色无头像）
         let quoteHtml = '';
         if (msg.quote) {
-          quoteHtml = `<div class="message-quote">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
+          const srcIdxAttr = (typeof msg.quote.srcMsgIndex === 'number') ? ` data-src-msg-index="${msg.quote.srcMsgIndex}"` : '';
+          const srcFileAttr = (typeof msg.quote.srcFileIdx === 'number') ? ` data-src-file-idx="${msg.quote.srcFileIdx}"` : '';
+          quoteHtml = `<div class="message-quote"${srcIdxAttr}${srcFileAttr}>
+            <span class="message-quote-arrow">↪</span>
             <span class="message-quote-text"><span class="message-quote-sender">${escapeHtml(msg.quote.sender)}</span>：${escapeHtml(msg.quote.content)}</span>
           </div>`;
         }
         bodyHtml = quoteHtml + bodyHtml;
+
+        // 被回复消息：气泡内嵌一段"回复预览"（已在多文件 split 前预构建为 repliesHtmlPrebuild）
+        const repliesHtml = repliesHtmlPrebuild;
+        bodyHtml = bodyHtml + repliesHtml;
+
         // 纯图片用透明气泡；图文混合用普通气泡（文字需要底色）；带引用的也用普通气泡
+        // 文件/视频/音频/语音/图片在有 reactions 或回复预览时保留普通气泡，
+        // 让回复表情和回复列表有底色包裹（与文本气泡视觉一致）
         let bubbleExtra = '';
-        if ((isFile || isVideo || isAudio) && !hasText && !msg.quote) bubbleExtra = ' is-file';
-        else if (isVoice && !hasText && !msg.quote) bubbleExtra = ' is-voice';
-        else if (isImg && !hasText && !msg.quote) bubbleExtra = ' is-image';
+        if ((isFile || isVideo || isAudio) && !hasText && !msg.quote && !reactionsHtml && !repliesHtml) bubbleExtra = ' is-file';
+        else if (isVoice && !hasText && !msg.quote && !repliesHtml) bubbleExtra = ' is-voice';
+        else if (isImg && !hasText && !msg.quote && !reactionsHtml && !repliesHtml) bubbleExtra = ' is-image';
         else if (isImg && hasText) bubbleExtra = ' has-imgtext';
         else if (msg.quote && isImg) bubbleExtra = ' has-imgtext';
+        else if (msg.forwardCard) bubbleExtra = ' is-forward';
 
+        const consecutiveClass = isConsecutive ? ' is-consecutive' : '';
         if (isSelf) {
           html += `
-            <div class="message-group" data-msg-index="${msg.__index}" data-is-self="true">
+            <div class="message-group${consecutiveClass}" data-msg-index="${msg.__index}" data-is-self="true">
               <div class="message-avatar" style="background: transparent; overflow: hidden;">
                 <img src="${avatarSrc}" style="width: 100%; height: 100%; object-fit: cover;">
               </div>
@@ -1370,7 +1522,7 @@ document.addEventListener('DOMContentLoaded', function() {
           `;
         } else {
           html += `
-            <div class="message-group" data-msg-index="${msg.__index}" data-is-self="false">
+            <div class="message-group${consecutiveClass}" data-msg-index="${msg.__index}" data-is-self="false">
               <div class="message-avatar" style="background: transparent; overflow: hidden;">
                 <img src="${avatarSrc}" style="width: 100%; height: 100%; object-fit: cover;">
               </div>
@@ -1433,10 +1585,13 @@ document.addEventListener('DOMContentLoaded', function() {
       btn.addEventListener('click', function(e) {
         e.stopPropagation();
         const group = btn.closest('.message-group');
-        const msgIndex = group && group.dataset.msgIndex;
+        const msgIndex = reactionMsgIndexFromGroup(group);
         showEmojiPicker(btn, conversationId, msgIndex);
       });
     });
+
+    // 给"添加表情"按钮（reactions 行末尾 / 右键菜单 → 表情）绑定 - 弹出 emoji picker
+
 
     // 给"引用"按钮绑定点击事件 - 在输入框上方显示被引用消息
     messagesContainer.querySelectorAll('.message-quote-btn').forEach(btn => {
@@ -1444,9 +1599,37 @@ document.addEventListener('DOMContentLoaded', function() {
         e.stopPropagation();
         const group = btn.closest('.message-group');
         const msgIndex = group && group.dataset.msgIndex;
-        startQuote(conversationId, msgIndex);
+        const fileIdx = group && group.dataset.fileIdx;
+        startQuote(conversationId, msgIndex, fileIdx);
         // 关闭悬浮工具栏的固定显示
         document.querySelectorAll('.message-group.actions-pinned').forEach(g => g.classList.remove('actions-pinned'));
+      });
+    });
+
+    // 气泡内的引用块（被回复消息预览）→ 点击跳转到原消息
+    messagesContainer.querySelectorAll('.message-quote[data-src-msg-index]').forEach(el => {
+      el.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const srcIdx = parseInt(el.dataset.srcMsgIndex, 10);
+        const srcFileIdx = el.dataset.srcFileIdx;
+        if (Number.isNaN(srcIdx)) return;
+        let targetGroup;
+        if (srcFileIdx !== undefined && srcFileIdx !== '') {
+          targetGroup = messagesContainer.querySelector(
+            '.message-group[data-msg-index="' + srcIdx + '"][data-file-idx="' + srcFileIdx + '"]'
+          );
+        }
+        if (!targetGroup) {
+          targetGroup = messagesContainer.querySelector('.message-group[data-msg-index="' + srcIdx + '"]');
+        }
+        if (!targetGroup) return;
+        targetGroup.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        // 闪烁高亮，结束后移除标记
+        targetGroup.classList.remove('quote-jump-target');
+        // 强制重排，使重新添加的动画能从头播放
+        void targetGroup.offsetWidth;
+        targetGroup.classList.add('quote-jump-target');
+        setTimeout(() => targetGroup.classList.remove('quote-jump-target'), 1700);
       });
     });
 
@@ -1679,6 +1862,14 @@ body{height:100vh;background:#f3f4f4;color:#333;font-family:-apple-system,system
     return `${convId}:${msgIndex}`;
   }
 
+  // 从 message-group DOM 节点读出 reaction storage 用的 msgIndex（多文件 split 时拼接 fileIdx）
+  function reactionMsgIndexFromGroup(group) {
+    if (!group) return null;
+    const baseIdx = group.dataset.msgIndex;
+    if (group.dataset.fileIdx !== undefined) return baseIdx + '-' + group.dataset.fileIdx;
+    return baseIdx;
+  }
+
   function getReactions(convId, msgIndex) {
     return reactionsData[reactionKey(convId, msgIndex)] || [];
   }
@@ -1741,11 +1932,7 @@ body{height:100vh;background:#f3f4f4;color:#333;font-family:-apple-system,system
       </button>`;
     });
     html += `<button class="reaction-add-btn" data-msg-index="${msgIndex}" title="添加表情">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="9"/>
-        <line x1="12" y1="8" x2="12" y2="16"/>
-        <line x1="8" y1="12" x2="16" y2="12"/>
-      </svg>
+      <i class="cses-stratis-smiley-happy-plus" style="font-size:16px;line-height:1;"></i>
     </button>`;
     html += '</div>';
     return html;
@@ -1881,6 +2068,16 @@ body{height:100vh;background:#f3f4f4;color:#333;font-family:-apple-system,system
         } else if (action === 'recall') {
           const msgIndex = group ? group.dataset.msgIndex : null;
           recallMessage(currentConversationId, msgIndex);
+        } else if (action === 'urgent') {
+          const idx = group ? parseInt(group.dataset.msgIndex, 10) : null;
+          if (idx !== null && !isNaN(idx)) {
+            const list = conversationsData[currentConversationId].messages;
+            const target = list.find(m => m && m.__index === idx);
+            if (target) {
+              target.urgent = !target.urgent;
+              renderMessages(currentConversationId);
+            }
+          }
         }
         hideMessageMoreMenu();
       });
@@ -1943,13 +2140,14 @@ body{height:100vh;background:#f3f4f4;color:#333;font-family:-apple-system,system
           copyTextToClipboard(textEl ? textEl.textContent : '');
         } else if (action === 'emoji') {
           const bubble = group ? group.querySelector('.message-bubble') : null;
-          const msgIndex = group ? group.dataset.msgIndex : null;
+          const msgIndex = reactionMsgIndexFromGroup(group);
           hideMessageMoreMenu();
           if (bubble) showEmojiPicker(bubble, currentConversationId, msgIndex);
           return;
         } else if (action === 'quote') {
           const msgIndex = group ? group.dataset.msgIndex : null;
-          startQuote(currentConversationId, msgIndex);
+          const fileIdx = group ? group.dataset.fileIdx : undefined;
+          startQuote(currentConversationId, msgIndex, fileIdx);
         } else if (action === 'recall') {
           const msgIndex = group ? group.dataset.msgIndex : null;
           recallMessage(currentConversationId, msgIndex);
@@ -2048,6 +2246,43 @@ body{height:100vh;background:#f3f4f4;color:#333;font-family:-apple-system,system
       audioPlayIntervals.set(player, id);
     }
   });
+  // 波形拖拽/点击 seek
+  (function() {
+    let seeking = false;
+    let seekPlayer = null;
+
+    function seekToX(player, clientX) {
+      const wave = player.querySelector('.msg-audio-wave');
+      if (!wave) return;
+      const rect = wave.getBoundingClientRect();
+      const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+      const duration = parseFloat(player.dataset.duration) || 30;
+      const newTime = ratio * duration;
+      updateAudioProgress(player, newTime, duration);
+    }
+
+    messagesContainer.addEventListener('mousedown', function(e) {
+      const wave = e.target.closest('.msg-audio-wave');
+      if (!wave) return;
+      const player = wave.closest('.msg-audio-player');
+      if (!player) return;
+      e.preventDefault();
+      seeking = true;
+      seekPlayer = player;
+      seekToX(player, e.clientX);
+    });
+
+    document.addEventListener('mousemove', function(e) {
+      if (!seeking || !seekPlayer) return;
+      seekToX(seekPlayer, e.clientX);
+    });
+
+    document.addEventListener('mouseup', function() {
+      seeking = false;
+      seekPlayer = null;
+    });
+  })();
+
   // 转文字按钮（占位 toast）
   messagesContainer.addEventListener('click', function(e) {
     const btn = e.target.closest('.msg-audio-transcribe');
@@ -2197,13 +2432,13 @@ body{height:100vh;background:#f3f4f4;color:#333;font-family:-apple-system,system
           <div class="msg-input-wrap"><div class="message-input" contenteditable="true" data-placeholder="Enter发送，Ctrl/Cmd+Enter换行" style="border: none; background: transparent; font-family: inherit; font-size: 14px; color: #333; min-height: 20px; max-height: 120px; overflow-y: auto; outline: none; box-sizing: border-box; padding: 0; line-height: 20px; white-space: pre-wrap; word-break: break-word; width: 100%;"></div></div>
         </div>
         <div class="input-right">
-          <button class="input-btn" title="表情"><i class="CSES" style="font-size: 20px; line-height: 1;">&#xe91c;</i></button>
-          <button class="input-btn" title="魔术棒"><i class="CSES" style="font-size: 20px; line-height: 1;">&#xe909;</i></button>
-          <button class="input-btn" id="imgUploadBtn" title="截图"><i class="CSES" style="font-size: 20px; line-height: 1;">&#xe905;</i></button>
-          <button class="input-btn" id="moreBtn" title="更多"><i class="CSES" style="font-size: 20px; line-height: 1;">&#xe90e;</i></button>
-          <button class="input-btn send-btn" title="发送" style="cursor: pointer;"><i class="CSES" style="font-size: 20px; line-height: 1;">&#xe915;</i></button>
+          <button class="input-btn" title="表情"><i class="cses-stratis-smiley-happy" style="font-size: 20px; line-height: 1;"></i></button>
+          <button class="input-btn" title="魔术棒"><i class="cses-stratis-stars" style="font-size: 20px; line-height: 1;"></i></button>
+          <button class="input-btn" id="imgUploadBtn" title="截图"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;display:block;transform:rotate(-90deg);"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg></button>
+          <button class="input-btn" id="moreBtn" title="更多"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;display:block;"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></button>
+          <button class="input-btn send-btn" title="发送" style="cursor: pointer;"><i class="cses-stratis-send-01" style="font-size: 20px; line-height: 1;"></i></button>
           <span class="send-divider"></span>
-          <button class="input-btn send-more-btn" title="发送选项"><i class="CSES">&#xe7fa;</i></button>
+          <button class="input-btn send-more-btn" title="定时消息"><i class="cses-stratis-chevron-down" style="font-size: 20px; line-height: 1;"></i></button>
         </div>
       </div>
     </div>
@@ -2372,10 +2607,11 @@ body{height:100vh;background:#f3f4f4;color:#333;font-family:-apple-system,system
   }
 
   // ========== 引用状态 ==========
-  // pendingQuote = { sender, content, avatar, convId, msgIndex } 或 null
+  // pendingQuote = { sender, content, avatar, convId, msgIndex, fileIdx } 或 null
+  // fileIdx 仅在引用了"多文件 split"消息中的某一个具体文件时存在，回复将精准挂回该文件而非整条消息
   let pendingQuote = null;
 
-  function startQuote(convId, msgIndex) {
+  function startQuote(convId, msgIndex, fileIdx) {
     const conv = conversationsData[convId];
     if (!conv) return;
     const msgs = conv.messages.filter(m => !m.date);
@@ -2395,15 +2631,25 @@ body{height:100vh;background:#f3f4f4;color:#333;font-family:-apple-system,system
       const a = msg.audios[0];
       preview = a.name ? '[音频] ' + a.name : '[音频]';
     } else if (Array.isArray(msg.files) && msg.files.length > 0) {
-      const f = msg.files[0];
-      const more = msg.files.length > 1 ? ` 等${msg.files.length}个文件` : '';
-      preview = '[文件] ' + (f.name || '') + more;
+      // 如果引用的是多文件 split 中的某一个，按该文件名生成预览；否则按"第一个 + 等N个"
+      const fi = (fileIdx !== undefined && fileIdx !== null && fileIdx !== '') ? parseInt(fileIdx, 10) : -1;
+      if (fi >= 0 && msg.files[fi]) {
+        preview = '[文件] ' + (msg.files[fi].name || '');
+      } else {
+        const f = msg.files[0];
+        const more = msg.files.length > 1 ? ` 等${msg.files.length}个文件` : '';
+        preview = '[文件] ' + (f.name || '') + more;
+      }
     } else if (msg.voice && msg.voice.duration) {
       preview = '[语音]';
     } else {
       preview = msg.content || '';
     }
-    pendingQuote = { sender: senderName, content: preview, avatar: avatarSrc, convId: convId, msgIndex: msgIndex };
+    pendingQuote = {
+      sender: senderName, content: preview, avatar: avatarSrc,
+      convId: convId, msgIndex: msgIndex,
+      fileIdx: (fileIdx !== undefined && fileIdx !== null && fileIdx !== '') ? parseInt(fileIdx, 10) : null,
+    };
     renderQuoteBar();
     messageInput.focus();
   }
@@ -2422,7 +2668,7 @@ body{height:100vh;background:#f3f4f4;color:#333;font-family:-apple-system,system
     const av = pendingQuote.avatar
       ? `<div class="quote-avatar"><img src="${pendingQuote.avatar}"></div>` : '';
     quoteBarEl.innerHTML = `
-      <span class="quote-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg></span>
+      <span class="quote-arrow">↪</span>
       <span class="quote-content">
         ${av}
         <span class="quote-text"><span class="quote-sender">${escapeHtml(pendingQuote.sender)}</span>：${escapeHtml(pendingQuote.content)}</span>
@@ -3007,39 +3253,87 @@ body{height:100vh;background:#f3f4f4;color:#333;font-family:-apple-system,system
     }
     return `<div class="msg-video-card" title="${escapeHtml(v.name)}" style="width:${dw}px;height:${dh}px">
       <div class="msg-video-thumb">
-        <svg viewBox="0 0 240 320" preserveAspectRatio="xMidYMid slice" width="100%" height="100%">
+        <svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" width="100%" height="100%">
           <defs>
-            <linearGradient id="vgBg" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#dde2e6"/>
-              <stop offset="60%" stop-color="#c4cbd1"/>
-              <stop offset="100%" stop-color="#b0b8be"/>
+            <linearGradient id="vgBg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#f5f7fb"/>
+              <stop offset="100%" stop-color="#e9eef5"/>
+            </linearGradient>
+            <linearGradient id="vgSidebar" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#f1f3f8"/>
+              <stop offset="100%" stop-color="#e6eaf2"/>
+            </linearGradient>
+            <linearGradient id="vgCard1" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#5e7af7"/>
+              <stop offset="100%" stop-color="#4857e2"/>
+            </linearGradient>
+            <linearGradient id="vgCard2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#2dd4bf"/>
+              <stop offset="100%" stop-color="#14b8a6"/>
             </linearGradient>
           </defs>
-          <rect width="240" height="320" fill="url(#vgBg)"/>
-          <rect x="0" y="200" width="240" height="120" fill="#a8b0b6"/>
-          <rect x="68" y="118" width="170" height="62" rx="5" fill="#222629"/>
-          ${[0,1,2,3,4,5,6,7,8,9].map(i =>
-            [0,1,2].map(j =>
-              `<rect x="${74 + i*16}" y="${124 + j*16}" width="11" height="11" rx="1.5" fill="#3a4046"/>`
-            ).join('')
-          ).join('')}
-          <rect x="10" y="100" width="48" height="180" fill="#3a5d7a"/>
-          <rect x="14" y="112" width="40" height="3" fill="#f0e8c8" opacity="0.9"/>
-          <rect x="14" y="120" width="32" height="3" fill="#f0e8c8" opacity="0.6"/>
-          <rect x="78" y="14" width="22" height="84" rx="5" fill="#a7c8b8"/>
-          <rect x="82" y="20" width="14" height="3" fill="#fff" opacity="0.7"/>
-          <rect x="108" y="8" width="22" height="92" rx="5" fill="#d8c8a0"/>
-          <rect x="112" y="20" width="14" height="14" rx="2" fill="#8a6a3a"/>
-          <rect x="138" y="32" width="20" height="68" rx="5" fill="#e8e8e8"/>
-          <circle cx="148" cy="44" r="6" fill="#c8c8c8"/>
-          <rect x="166" y="20" width="24" height="80" rx="5" fill="#c4d6e6"/>
-          <rect x="170" y="32" width="16" height="3" fill="#fff" opacity="0.6"/>
-          <ellipse cx="208" cy="230" rx="22" ry="10" fill="#c84840"/>
-          <rect x="190" y="212" width="36" height="14" rx="6" fill="#d85a4a"/>
-          <rect x="200" y="206" width="14" height="10" rx="2" fill="#f5d2b8" opacity="0.8"/>
-          <circle cx="196" cy="232" r="3" fill="#1c1c1c"/>
-          <circle cx="220" cy="232" r="3" fill="#1c1c1c"/>
-          <rect x="55" y="180" width="40" height="20" rx="2" fill="#8a8a8a" opacity="0.4"/>
+          <!-- 背景 -->
+          <rect width="320" height="180" fill="url(#vgBg)"/>
+          <!-- 顶部导航栏 -->
+          <rect x="0" y="0" width="320" height="28" fill="#ffffff"/>
+          <circle cx="14" cy="14" r="4" fill="#4857e2"/>
+          <rect x="24" y="11" width="40" height="5" rx="2.5" fill="#1f2435" opacity="0.85"/>
+          <rect x="200" y="10" width="36" height="8" rx="4" fill="#4857e2" opacity="0.9"/>
+          <rect x="244" y="10" width="28" height="8" rx="4" fill="#1f2435" opacity="0.08"/>
+          <circle cx="295" cy="14" r="6" fill="#dfe3ed"/>
+          <rect x="292" y="11" width="6" height="6" rx="3" fill="#8892b0" opacity="0.7"/>
+          <!-- 左侧边栏 -->
+          <rect x="0" y="28" width="56" height="152" fill="url(#vgSidebar)"/>
+          <rect x="8" y="40" width="40" height="5" rx="2.5" fill="#8892b0" opacity="0.5"/>
+          <rect x="8" y="52" width="32" height="5" rx="2.5" fill="#8892b0" opacity="0.32"/>
+          <rect x="8" y="64" width="36" height="5" rx="2.5" fill="#4857e2" opacity="0.9"/>
+          <rect x="0" y="62" width="3" height="9" rx="1.5" fill="#4857e2"/>
+          <rect x="8" y="76" width="28" height="5" rx="2.5" fill="#8892b0" opacity="0.32"/>
+          <rect x="8" y="88" width="34" height="5" rx="2.5" fill="#8892b0" opacity="0.32"/>
+          <rect x="8" y="108" width="40" height="5" rx="2.5" fill="#8892b0" opacity="0.25"/>
+          <rect x="8" y="120" width="30" height="5" rx="2.5" fill="#8892b0" opacity="0.25"/>
+          <rect x="8" y="132" width="36" height="5" rx="2.5" fill="#8892b0" opacity="0.25"/>
+          <!-- 主内容区 -->
+          <!-- 标题行 -->
+          <rect x="68" y="36" width="80" height="7" rx="3.5" fill="#1f2435" opacity="0.85"/>
+          <rect x="68" y="48" width="120" height="4" rx="2" fill="#8892b0" opacity="0.5"/>
+          <!-- 卡片 row -->
+          <rect x="68" y="62" width="74" height="46" rx="6" fill="url(#vgCard1)" opacity="0.95"/>
+          <rect x="74" y="69" width="36" height="4" rx="2" fill="#ffffff" opacity="0.75"/>
+          <rect x="74" y="77" width="20" height="10" rx="2" fill="#ffffff" opacity="0.95"/>
+          <rect x="74" y="91" width="30" height="3" rx="1.5" fill="#ffffff" opacity="0.45"/>
+          <rect x="150" y="62" width="74" height="46" rx="6" fill="#ffffff"/>
+          <rect x="150" y="62" width="74" height="46" rx="6" fill="none" stroke="#dfe3ed" stroke-width="1"/>
+          <rect x="156" y="69" width="36" height="4" rx="2" fill="#8892b0" opacity="0.65"/>
+          <rect x="156" y="77" width="20" height="10" rx="2" fill="#14b8a6" opacity="0.95"/>
+          <rect x="156" y="91" width="30" height="3" rx="1.5" fill="#8892b0" opacity="0.35"/>
+          <rect x="232" y="62" width="74" height="46" rx="6" fill="#ffffff"/>
+          <rect x="232" y="62" width="74" height="46" rx="6" fill="none" stroke="#dfe3ed" stroke-width="1"/>
+          <rect x="238" y="69" width="36" height="4" rx="2" fill="#8892b0" opacity="0.65"/>
+          <rect x="238" y="77" width="20" height="10" rx="2" fill="#ec4899" opacity="0.9"/>
+          <rect x="238" y="91" width="30" height="3" rx="1.5" fill="#8892b0" opacity="0.35"/>
+          <!-- 图表区域 -->
+          <rect x="68" y="116" width="154" height="54" rx="6" fill="#ffffff"/>
+          <rect x="68" y="116" width="154" height="54" rx="6" fill="none" stroke="#dfe3ed" stroke-width="1"/>
+          <!-- 折线图 -->
+          <polyline points="80,156 98,142 116,148 134,132 152,138 170,122 188,128 206,116" fill="none" stroke="#4857e2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline points="80,160 98,154 116,158 134,150 152,155 170,144 188,148 206,138" fill="none" stroke="#14b8a6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+          <!-- 图表横轴刻度 -->
+          <rect x="80" y="163" width="12" height="2" rx="1" fill="#8892b0" opacity="0.25"/>
+          <rect x="100" y="163" width="12" height="2" rx="1" fill="#8892b0" opacity="0.25"/>
+          <rect x="120" y="163" width="12" height="2" rx="1" fill="#8892b0" opacity="0.25"/>
+          <rect x="140" y="163" width="12" height="2" rx="1" fill="#8892b0" opacity="0.25"/>
+          <rect x="160" y="163" width="12" height="2" rx="1" fill="#8892b0" opacity="0.25"/>
+          <rect x="180" y="163" width="12" height="2" rx="1" fill="#8892b0" opacity="0.25"/>
+          <!-- 右侧小面板 -->
+          <rect x="230" y="116" width="76" height="54" rx="6" fill="#ffffff"/>
+          <rect x="230" y="116" width="76" height="54" rx="6" fill="none" stroke="#dfe3ed" stroke-width="1"/>
+          <rect x="238" y="123" width="40" height="4" rx="2" fill="#8892b0" opacity="0.55"/>
+          <rect x="238" y="131" width="20" height="6" rx="2" fill="url(#vgCard1)" opacity="0.9"/>
+          <rect x="238" y="143" width="56" height="2" rx="1" fill="#8892b0" opacity="0.18"/>
+          <rect x="238" y="148" width="30" height="3" rx="1.5" fill="#8892b0" opacity="0.35"/>
+          <rect x="238" y="155" width="44" height="3" rx="1.5" fill="#8892b0" opacity="0.25"/>
+          <rect x="238" y="162" width="36" height="3" rx="1.5" fill="#14b8a6" opacity="0.6"/>
         </svg>
         <div class="msg-video-thumb-overlay"></div>
       </div>
@@ -3159,6 +3453,18 @@ body{height:100vh;background:#f3f4f4;color:#333;font-family:-apple-system,system
         <div class="msg-file-name">${escapeHtml(file.name)}</div>
         <div class="msg-file-size">${sizeText}</div>
       </div>
+    </div>`;
+  }
+
+  function buildForwardCardHtml(card) {
+    const previews = card.previews || [];
+    const lines = previews.map(p =>
+      `<div class="msg-record-line">${escapeHtml(p.name)}：${escapeHtml(p.content)}</div>`
+    ).join('');
+    return `<div class="msg-record-card">
+      <div class="msg-record-title">${escapeHtml(card.title)}</div>
+      ${lines}
+      <div class="msg-record-footer">聊天记录</div>
     </div>`;
   }
 
@@ -3323,11 +3629,25 @@ body{height:100vh;background:#f3f4f4;color:#333;font-family:-apple-system,system
   let mentionMultiSelect = false;
   let recipientMultiSelect = false;
 
-  // 当前对话的群聊成员
+  // 当前对话的群聊成员（来源：navbar 头像识别 + 历史消息发件人，再去重并排除当前自己）
   function getCurrentMembers() {
+    const set = new Set();
     const item = document.querySelector('[data-conversation-id="' + currentConversationId + '"]');
-    if (!item || !item.dataset.members) return [];
-    return item.dataset.members.split(',').map(name => name.trim()).filter(Boolean);
+    if (item && item.dataset.members) {
+      item.dataset.members.split(',').map(n => n.trim()).filter(Boolean).forEach(n => set.add(n));
+    }
+    // 兜底：从会话历史消息里抓取所有发件人，覆盖 navbar 头像数限制导致漏掉的成员
+    const convData = conversationsData[currentConversationId];
+    if (convData && Array.isArray(convData.messages)) {
+      convData.messages.forEach(m => {
+        if (!m || m.date) return;
+        const rawSender = (m.sender || '').replace('（我）', '').trim();
+        if (rawSender) set.add(rawSender);
+      });
+    }
+    const selfName = currentRole === 'zhangying' ? '张英' : '姜乐乐';
+    set.delete(selfName);
+    return Array.from(set);
   }
 
   // 根据名字获取头像 URL
@@ -3652,10 +3972,11 @@ body{height:100vh;background:#f3f4f4;color:#333;font-family:-apple-system,system
     if (mentionDropdown.classList.contains('show')) {
       renderMentionList(mentionLastKeyword);
     }
-    // 实时保存草稿并刷新列表预览（输入即显示/更新 [草稿]）
+    // 实时保存草稿（用于切换回来时恢复内容），但不立即刷新列表预览 ——
+    // 只在用户切走会话时才把 [草稿] 显示到列表里（保存逻辑见 updateMainContent）
+    // 用 innerHTML 而非 .value，保留 @mention 标签等 DOM 结构
     if (currentConversationId) {
-      setDraft(currentConversationId, this.value);
-      updateMessagePreview(currentConversationId);
+      setDraft(currentConversationId, this.innerHTML);
     }
   });
 
@@ -3830,8 +4151,26 @@ body{height:100vh;background:#f3f4f4;color:#333;font-family:-apple-system,system
       msg.quote = {
         sender: pendingQuote.sender,
         content: pendingQuote.content,
-        avatar: pendingQuote.avatar
+        avatar: pendingQuote.avatar,
+        srcMsgIndex: parseInt(pendingQuote.msgIndex, 10),
+        srcFileIdx: (typeof pendingQuote.fileIdx === 'number') ? pendingQuote.fileIdx : null,
       };
+      // 同时把这次回复追加到被引用消息的 replies 列表里，让原始消息能展示"全部回复"预览
+      // 多文件 split：fileIdx 记录回复挂在哪一个具体文件上，渲染时按 fileIdx 过滤
+      const srcConv = conversationsData[pendingQuote.convId];
+      if (srcConv) {
+        const idx = parseInt(pendingQuote.msgIndex, 10);
+        const srcMsg = srcConv.messages.find(m => m && m.__index === idx);
+        if (srcMsg) {
+          if (!Array.isArray(srcMsg.replies)) srcMsg.replies = [];
+          const replyPreview = content
+            ? content
+            : (hasImages ? '[图片]' : '[消息]');
+          const reply = { name: senderName, content: replyPreview };
+          if (typeof pendingQuote.fileIdx === 'number') reply.fileIdx = pendingQuote.fileIdx;
+          srcMsg.replies.push(reply);
+        }
+      }
     }
     // 范围消息：若 To 选了具体接收者（非"所有人"），记录范围，用于"仅范围内可见"标识
     const scopedNames = Array.from(recipientChipsEl.querySelectorAll('.recipient-chip'))
@@ -3901,11 +4240,19 @@ body{height:100vh;background:#f3f4f4;color:#333;font-family:-apple-system,system
     // 更新预览文本
     const previewEl = messageItem.querySelector('.navbar-message-preview');
     if (previewEl) {
-      // 优先显示草稿
+      // 优先显示草稿 —— 草稿存的是 innerHTML（含 @mention chip 标签等），
+      // 先用一个临时容器抽取纯文本，再做 HTML 转义，避免把标签直接展示出来
+      // 注意：仅在该会话"未被当前打开"时才显示 [草稿]——
+      // 用户正在查看的会话，草稿就在输入框里，列表不再重复展示 [草稿]
       const draft = getDraft(conversationId);
-      if (draft && draft.trim()) {
-        previewEl.innerHTML = `<span class="draft-prefix">[草稿]</span>` + escapeHtml(draft);
-        return;
+      if (draft && draft.trim() && conversationId !== currentConversationId) {
+        const tmp = document.createElement('div');
+        tmp.innerHTML = draft;
+        const draftText = (tmp.textContent || '').trim();
+        if (draftText) {
+          previewEl.innerHTML = `<span class="draft-prefix">[草稿]</span>` + escapeHtml(draftText);
+          return;
+        }
       }
 
       // 对于私聊（conversationId='17' 和 '26'），只显示消息内容，不显示发送者
@@ -4167,6 +4514,37 @@ body{height:100vh;background:#f3f4f4;color:#333;font-family:-apple-system,system
 
   // 初始化显示（预览文本会在角色初始化时更新）
   updateMainContent(currentConversationId);
+
+  // 暴露给转发弹窗等外部脚本使用
+  window.__msgBridge = {
+    conversationsData,
+    formatNowTime,
+    getCurrentConversationId: () => currentConversationId,
+    getCurrentRole: () => currentRole,
+    pushToConversation(convId, msg) {
+      const data = conversationsData[convId];
+      if (!data) return false;
+      const list = data.messages;
+      // 与 processOutgoing 同步：若最近 date 分隔线非当前时刻则插入新分隔
+      let lastDate = null;
+      for (let i = list.length - 1; i >= 0; i--) {
+        if (list[i].date) { lastDate = list[i].date; break; }
+      }
+      const nowStr = formatNowTime();
+      if (lastDate !== nowStr) list.push({ date: nowStr, items: [] });
+      list.push(msg);
+      updateMessagePreview(convId);
+      moveItemToTop(convId);
+      return true;
+    },
+    switchToConversation(convId) {
+      const item = document.querySelector('.navbar-message-item[data-conversation-id="' + convId + '"]');
+      if (item) item.click();
+    },
+    renderCurrent() {
+      renderMessages(currentConversationId);
+    },
+  };
 
   // 初始化当前角色的预览文本（在角色标签绑定事件之前）
   if (currentRole === 'zhangying') {
@@ -5410,6 +5788,521 @@ body{height:100vh;background:#f3f4f4;color:#333;font-family:-apple-system,system
   });
 });
 </script>
+
+<!-- 转发弹窗 -->
+<div class="fwd-overlay" id="fwdOverlay">
+  <div class="fwd-modal" role="dialog" aria-labelledby="fwdTitle">
+    <div class="fwd-titlebar">
+      <span class="fwd-title" id="fwdTitle">转发</span>
+    </div>
+    <div class="fwd-body">
+      <div class="fwd-pane">
+        <div class="fwd-search">
+          <i class="cses-stratis-search-01"></i>
+          <input type="text" id="fwdSearch" placeholder="输入群聊名称">
+        </div>
+        <div class="fwd-section-header">
+          <span class="fwd-section-title">最近聊天</span>
+          <span class="fwd-select-all" id="fwdSelectAll">全选</span>
+        </div>
+        <div class="fwd-list" id="fwdList"></div>
+      </div>
+      <div class="fwd-pane">
+        <div class="fwd-selected-header">已选择：<span class="fwd-selected-count" id="fwdSelectedCount">0</span></div>
+        <div class="fwd-list fwd-selected-list" id="fwdSelectedList"></div>
+      </div>
+    </div>
+    <div class="fwd-footer">
+      <button class="fwd-btn" id="fwdCancel">取消</button>
+      <button class="fwd-btn is-primary" id="fwdConfirm" disabled>转发</button>
+    </div>
+  </div>
+</div>
+
+<!-- 定时消息弹窗 -->
+<div class="sched-overlay" id="schedOverlay">
+  <div class="sched-modal" role="dialog" aria-labelledby="schedTitle">
+    <div class="sched-header">
+      <span class="sched-title" id="schedTitle">定时消息</span>
+      <button class="sched-close" id="schedClose" aria-label="关闭">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="sched-fields">
+      <div class="sched-field">
+        <input type="date" id="schedDate">
+        <span class="sched-field-icon">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </span>
+      </div>
+      <div class="sched-field">
+        <input type="time" id="schedTime">
+        <span class="sched-field-icon">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+        </span>
+      </div>
+    </div>
+    <div class="sched-actions">
+      <button class="sched-btn" id="schedCancel">取消</button>
+      <button class="sched-btn is-primary" id="schedConfirm">定时发送</button>
+    </div>
+  </div>
+</div>
+
+<!-- 鼠标左键框选消息 -->
+<script>
+(function () {
+  const messages = document.querySelector('.messages');
+  if (!messages) return;
+
+  const actionBar = document.getElementById('messageActionBar');
+  const inputSection = document.querySelector('.input-section');
+
+  // selection-box 必须动态创建：.messages 在角色切换时会被 innerHTML 重写，静态元素会被抹掉
+  let selectionBox = null;
+  function ensureSelectionBox() {
+    if (!selectionBox || !messages.contains(selectionBox)) {
+      selectionBox = document.createElement('div');
+      selectionBox.className = 'selection-box';
+      messages.appendChild(selectionBox);
+    }
+    return selectionBox;
+  }
+
+  const DRAG_THRESHOLD = 4; // 拖动超过 4px 才视为框选
+  const INTERACTIVE_SEL = '.message-bubble, .msg-file-card, .message-avatar, button, a, input, textarea, [contenteditable]';
+
+  let isMouseDown = false;
+  let isDragging = false;
+  let startX = 0, startY = 0;          // 内容坐标（含 scroll）
+  let startClientX = 0, startClientY = 0; // 视口坐标（判断阈值）
+  let baselineSelection = new Set();   // Shift+拖动时保留的已选项
+
+  function getContentPoint(clientX, clientY) {
+    const rect = messages.getBoundingClientRect();
+    return {
+      x: clientX - rect.left + messages.scrollLeft,
+      y: clientY - rect.top + messages.scrollTop,
+    };
+  }
+
+  function syncActionBar() {
+    const active = messages.classList.contains('has-selection');
+    if (actionBar) actionBar.classList.toggle('show', active);
+    if (inputSection) inputSection.classList.toggle('is-hidden-by-selection', active);
+  }
+
+  function clearSelection() {
+    messages.querySelectorAll('.message-group.is-selected').forEach(el => el.classList.remove('is-selected'));
+    messages.classList.remove('has-selection');
+    syncActionBar();
+  }
+
+  function updateSelectionMode() {
+    if (messages.querySelector('.message-group.is-selected')) {
+      messages.classList.add('has-selection');
+    } else {
+      messages.classList.remove('has-selection');
+    }
+    syncActionBar();
+  }
+
+  // 操作栏按钮：关闭即清空选择；转发动作弹窗；其他动作占位
+  if (actionBar) {
+    actionBar.addEventListener('click', function (e) {
+      const btn = e.target.closest('.msg-multi-action-btn');
+      if (!btn) return;
+      const action = btn.dataset.action;
+      if (action === 'close') {
+        clearSelection();
+      } else if (action === 'forward-each' || action === 'forward-merge') {
+        openForwardModal(action === 'forward-merge' ? '合并转发' : '逐条转发');
+      } else {
+        const count = messages.querySelectorAll('.message-group.is-selected').length;
+        console.log('[message-action]', action, '×', count);
+      }
+    });
+  }
+
+  // ===== 转发弹窗 =====
+  const fwdOverlay = document.getElementById('fwdOverlay');
+  const fwdList = document.getElementById('fwdList');
+  const fwdSelectedList = document.getElementById('fwdSelectedList');
+  const fwdSelectedCount = document.getElementById('fwdSelectedCount');
+  const fwdSearch = document.getElementById('fwdSearch');
+  const fwdSelectAll = document.getElementById('fwdSelectAll');
+  const fwdCancel = document.getElementById('fwdCancel');
+  const fwdConfirm = document.getElementById('fwdConfirm');
+  const fwdTitle = document.getElementById('fwdTitle');
+
+  const fwdSelectedIds = new Set();
+  let fwdItems = []; // { id, name, avatarHtml }
+
+  function collectConversations() {
+    // 从左侧消息列表抓取可转发的会话
+    const navbar = document.querySelector('.navbar-messages');
+    if (!navbar) return [];
+    return Array.from(navbar.querySelectorAll('.navbar-message-item')).map((node, i) => {
+      const titleEl = node.querySelector('.navbar-message-title');
+      const name = titleEl ? titleEl.textContent.trim() : ('会话 ' + (i + 1));
+      const convId = node.dataset.conversationId || String(i + 1);
+      // 头像：直接克隆 navbar 已有的 .avatar-group（群聊，多头像叠加）或 .navbar-avatar（单聊）
+      // 这样群聊显示成组叠加头像，单聊显示单一头像
+      let avatarHtml = '';
+      const avatarNode = node.querySelector('.avatar-group, .navbar-avatar');
+      if (avatarNode) {
+        avatarHtml = avatarNode.outerHTML;
+      } else {
+        const cs = node.querySelector('cs-avatar');
+        avatarHtml = cs ? cs.outerHTML : '<span style="font-size:12px;color:#999;">' + name.slice(0, 1) + '</span>';
+      }
+      return { id: 'fwd-' + i, convId, name, avatarHtml };
+    });
+  }
+
+  function renderFwdList() {
+    const keyword = (fwdSearch.value || '').trim().toLowerCase();
+    const filtered = keyword
+      ? fwdItems.filter(it => it.name.toLowerCase().includes(keyword))
+      : fwdItems;
+    if (!filtered.length) {
+      fwdList.innerHTML = '<div class="fwd-empty-state">没有匹配的会话</div>';
+      return;
+    }
+    fwdList.innerHTML = filtered.map(it => (
+      '<div class="fwd-item' + (fwdSelectedIds.has(it.id) ? ' is-checked' : '') + '" data-id="' + it.id + '">' +
+        '<span class="fwd-checkbox"></span>' +
+        '<span class="fwd-avatar">' + it.avatarHtml + '</span>' +
+        '<span class="fwd-name">' + it.name + '</span>' +
+      '</div>'
+    )).join('');
+  }
+
+  function renderFwdSelected() {
+    const list = fwdItems.filter(it => fwdSelectedIds.has(it.id));
+    fwdSelectedCount.textContent = String(list.length);
+    fwdConfirm.disabled = list.length === 0;
+    if (!list.length) {
+      fwdSelectedList.innerHTML = '<div class="fwd-selected-empty">尚未选择会话</div>';
+      return;
+    }
+    fwdSelectedList.innerHTML = list.map(it => (
+      '<div class="fwd-chip" data-id="' + it.id + '">' +
+        '<span class="fwd-avatar">' + it.avatarHtml + '</span>' +
+        '<span class="fwd-chip-name">' + it.name + '</span>' +
+        '<button class="fwd-chip-remove" type="button" data-remove="1" aria-label="移除"><i class="cses-stratis-x-01"></i></button>' +
+      '</div>'
+    )).join('');
+  }
+
+  function openForwardModal(titleText) {
+    fwdTitle.textContent = titleText || '转发';
+    fwdItems = collectConversations();
+    fwdSelectedIds.clear();
+    fwdSearch.value = '';
+    renderFwdList();
+    renderFwdSelected();
+    fwdOverlay.classList.add('show');
+  }
+  function closeForwardModal() {
+    fwdOverlay.classList.remove('show');
+  }
+
+  fwdList.addEventListener('click', function (e) {
+    const item = e.target.closest('.fwd-item');
+    if (!item) return;
+    const id = item.dataset.id;
+    if (fwdSelectedIds.has(id)) fwdSelectedIds.delete(id);
+    else fwdSelectedIds.add(id);
+    renderFwdList();
+    renderFwdSelected();
+  });
+  fwdSelectedList.addEventListener('click', function (e) {
+    const removeBtn = e.target.closest('.fwd-chip-remove');
+    if (!removeBtn) return;
+    const chip = removeBtn.closest('.fwd-chip');
+    if (!chip) return;
+    fwdSelectedIds.delete(chip.dataset.id);
+    renderFwdList();
+    renderFwdSelected();
+  });
+  fwdSearch.addEventListener('input', renderFwdList);
+  fwdSelectAll.addEventListener('click', function () {
+    const keyword = (fwdSearch.value || '').trim().toLowerCase();
+    const visible = keyword
+      ? fwdItems.filter(it => it.name.toLowerCase().includes(keyword))
+      : fwdItems;
+    const allOn = visible.length > 0 && visible.every(it => fwdSelectedIds.has(it.id));
+    if (allOn) visible.forEach(it => fwdSelectedIds.delete(it.id));
+    else visible.forEach(it => fwdSelectedIds.add(it.id));
+    renderFwdList();
+    renderFwdSelected();
+  });
+  fwdCancel.addEventListener('click', closeForwardModal);
+  fwdConfirm.addEventListener('click', function () {
+    const selectedConvs = fwdItems.filter(it => fwdSelectedIds.has(it.id));
+    if (!selectedConvs.length) return;
+    const isMerge = fwdTitle.textContent.indexOf('合并') !== -1;
+    const selectedGroups = Array.from(messages.querySelectorAll('.message-group.is-selected'));
+    const sourceTitle = (document.querySelector('.header-title')?.textContent || '群聊').trim();
+    const bridge = window.__msgBridge;
+
+    if (!bridge) {
+      console.warn('[forward] msgBridge not ready');
+      closeForwardModal();
+      clearSelection();
+      return;
+    }
+
+    const role = bridge.getCurrentRole();
+    const sender = role === 'jianglelei' ? '姜乐乐' : '张英';
+    const senderRole = role === 'jianglelei' ? 'CFO' : '销售部';
+    const avatar = role === 'jianglelei' ? '#f0e0d0' : '#f5ccc8';
+    const time = bridge.formatNowTime();
+
+    // 从当前会话数据里取原消息（用于逐条转发）
+    const sourceConvId = bridge.getCurrentConversationId();
+    const sourceMessages = (bridge.conversationsData[sourceConvId] || {}).messages || [];
+    const indexToMsg = {};
+    sourceMessages.forEach(m => { if (m && typeof m.__index === 'number') indexToMsg[m.__index] = m; });
+
+    selectedConvs.forEach(conv => {
+      const convId = conv.convId;
+      if (isMerge) {
+        const card = {
+          title: sourceTitle + '的聊天记录',
+          previews: selectedGroups.slice(0, 4).map(extractPreview),
+          totalCount: selectedGroups.length,
+        };
+        bridge.pushToConversation(convId, {
+          sender, role: senderRole, avatar, time,
+          isSelf: true, readStatus: '',
+          forwardCard: card,
+        });
+      } else {
+        selectedGroups.forEach(g => {
+          const idx = parseInt(g.dataset.msgIndex, 10);
+          const src = indexToMsg[idx];
+          if (!src) return;
+          // 拷贝原始消息内容（content/files/images/voice/videos/audios），重写发送者
+          const next = {
+            sender, role: senderRole, avatar, time,
+            isSelf: true, readStatus: '',
+          };
+          ['content', 'files', 'images', 'voice', 'videos', 'audios'].forEach(k => {
+            if (src[k] !== undefined) next[k] = src[k];
+          });
+          bridge.pushToConversation(convId, next);
+        });
+      }
+    });
+
+    closeForwardModal();
+    clearSelection();
+    // 跳转到第一个目标会话，让用户立即看到转发结果
+    bridge.switchToConversation(selectedConvs[0].convId);
+  });
+
+  function extractPreview(group) {
+    const name = (group.querySelector('.message-name')?.textContent || '').replace('（我）', '').trim();
+    let content = '[消息]';
+    const text = group.querySelector('.message-text');
+    const file = group.querySelector('.msg-file-name');
+    const img = group.querySelector('.message-gallery img, .message-bubble img');
+    if (text) content = text.textContent.trim();
+    else if (file) content = '[文件] ' + file.textContent.trim();
+    else if (img) content = '[图片]';
+    return { name, content };
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  fwdOverlay.addEventListener('click', function (e) {
+    if (e.target === fwdOverlay) closeForwardModal(); // 点遮罩关闭
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && fwdOverlay.classList.contains('show')) {
+      closeForwardModal();
+    }
+  });
+
+  // ===== 定时消息弹窗 =====
+  const schedOverlay = document.getElementById('schedOverlay');
+  const schedDate = document.getElementById('schedDate');
+  const schedTime = document.getElementById('schedTime');
+  const schedCancel = document.getElementById('schedCancel');
+  const schedConfirm = document.getElementById('schedConfirm');
+  const schedClose = document.getElementById('schedClose');
+
+  function openSchedModal() {
+    // 默认值：当前日期 + 当前时间 + 1 小时（向上整点对齐到 30 分钟）
+    const now = new Date();
+    const yyyy = now.getFullYear();
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const dd = String(now.getDate()).padStart(2, '0');
+    schedDate.value = yyyy + '-' + mm + '-' + dd;
+    let hh = now.getHours() + 1;
+    let mi = now.getMinutes() < 30 ? 30 : 0;
+    if (mi === 0) hh += 1;
+    if (hh >= 24) { hh = 23; mi = 30; }
+    schedTime.value = String(hh).padStart(2, '0') + ':' + String(mi).padStart(2, '0');
+    schedOverlay.classList.add('show');
+  }
+  function closeSchedModal() {
+    schedOverlay.classList.remove('show');
+  }
+
+  // 事件委托：send-more-btn 会随会话切换被重新渲染，必须在 document 层捕获
+  document.addEventListener('click', function (e) {
+    const btn = e.target.closest('.send-more-btn');
+    if (btn) {
+      e.stopPropagation();
+      openSchedModal();
+    }
+  });
+
+  schedCancel.addEventListener('click', closeSchedModal);
+  schedClose.addEventListener('click', closeSchedModal);
+  schedConfirm.addEventListener('click', function () {
+    const dateVal = schedDate.value;
+    const timeVal = schedTime.value;
+    if (!dateVal || !timeVal) return;
+    console.log('[定时消息]', dateVal + ' ' + timeVal);
+    closeSchedModal();
+  });
+  schedOverlay.addEventListener('click', function (e) {
+    if (e.target === schedOverlay) closeSchedModal();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && schedOverlay.classList.contains('show')) {
+      closeSchedModal();
+    }
+  });
+
+  messages.addEventListener('mousedown', function (e) {
+    if (e.button !== 0) return;
+    const inSelectionMode = messages.classList.contains('has-selection');
+    // 非选择模式下：点在 bubble / 头像 / 按钮上不启动框选，保留原交互
+    // 选择模式下：从任何位置都允许启动（拖动→追加；不拖动→在 mouseup 切换 group）
+    if (!inSelectionMode && e.target.closest(INTERACTIVE_SEL)) return;
+
+    isMouseDown = true;
+    isDragging = false;
+    startClientX = e.clientX;
+    startClientY = e.clientY;
+    const p = getContentPoint(e.clientX, e.clientY);
+    startX = p.x;
+    startY = p.y;
+
+    // 已在选择模式 或 Shift+拖动 → 在现有选择上追加；否则记录空基线
+    baselineSelection = (e.shiftKey || inSelectionMode)
+      ? new Set(messages.querySelectorAll('.message-group.is-selected'))
+      : new Set();
+
+    // 选择模式下阻止文本选中，让拖动体验顺滑
+    if (inSelectionMode) e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', function (e) {
+    if (!isMouseDown) return;
+
+    // 还没到阈值时，不启动框选（保留普通点击/文本选择体验）
+    if (!isDragging) {
+      const dx = e.clientX - startClientX;
+      const dy = e.clientY - startClientY;
+      if (Math.hypot(dx, dy) < DRAG_THRESHOLD) return;
+      isDragging = true;
+
+      // 真正开始框选：清掉旧选中（除非 Shift），显示矩形
+      if (baselineSelection.size === 0) {
+        messages.querySelectorAll('.message-group.is-selected').forEach(el => el.classList.remove('is-selected'));
+      }
+      messages.classList.add('is-box-selecting');
+      const box = ensureSelectionBox();
+      box.style.display = 'block';
+    }
+
+    const cur = getContentPoint(e.clientX, e.clientY);
+    const boxLeft = Math.min(startX, cur.x);
+    const boxTop = Math.min(startY, cur.y);
+    const boxRight = Math.max(startX, cur.x);
+    const boxBottom = Math.max(startY, cur.y);
+
+    const box = ensureSelectionBox();
+    box.style.left = boxLeft + 'px';
+    box.style.top = boxTop + 'px';
+    box.style.width = (boxRight - boxLeft) + 'px';
+    box.style.height = (boxBottom - boxTop) + 'px';
+
+    const mRect = messages.getBoundingClientRect();
+    messages.querySelectorAll('.message-group').forEach(group => {
+      const gRect = group.getBoundingClientRect();
+      const gLeft = gRect.left - mRect.left + messages.scrollLeft;
+      const gTop = gRect.top - mRect.top + messages.scrollTop;
+      const gRight = gLeft + gRect.width;
+      const gBottom = gTop + gRect.height;
+
+      const intersects = !(gRight < boxLeft || gLeft > boxRight || gBottom < boxTop || gTop > boxBottom);
+      if (intersects) {
+        group.classList.add('is-selected');
+      } else if (!baselineSelection.has(group)) {
+        group.classList.remove('is-selected');
+      }
+    });
+    updateSelectionMode();
+  });
+
+  document.addEventListener('mouseup', function (e) {
+    if (!isMouseDown) return;
+    const wasDragging = isDragging;
+    isMouseDown = false;
+    isDragging = false;
+    if (selectionBox) selectionBox.style.display = 'none';
+    messages.classList.remove('is-box-selecting');
+    if (e.button !== 0) return;
+
+    if (wasDragging) {
+      // 拖动结束后浏览器可能补一次 click，挡掉它避免把刚选中的 group 又切回去
+      suppressNextClick = true;
+      return;
+    }
+
+    // 单击：选择模式下，点 group → 切换；点空白 → 清空
+    if (messages.classList.contains('has-selection')) {
+      const group = e.target.closest('.message-group');
+      if (group && messages.contains(group)) {
+        group.classList.toggle('is-selected');
+        updateSelectionMode();
+        suppressNextClick = true; // 避免 bubble 的 click 再触发反应/查看器等
+      } else if (messages.contains(e.target) && !e.target.closest(INTERACTIVE_SEL)) {
+        clearSelection();
+      }
+    }
+  });
+
+  // 选择模式下的 click 拦截：吞掉 group/bubble 上的 click，防止触发反应、图片查看器等
+  let suppressNextClick = false;
+  document.addEventListener('click', function (e) {
+    if (suppressNextClick) {
+      suppressNextClick = false;
+      if (messages.contains(e.target)) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+    }
+  }, true);
+
+  // Esc 清空选中
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && messages.classList.contains('has-selection')) {
+      clearSelection();
+    }
+  });
+})();
+</script>
+
+
 <script src="../shared.js"></script>
 </body>
 </html>

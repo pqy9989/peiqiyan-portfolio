@@ -67,10 +67,6 @@
       </span>
       <nav class="nav">
         <div class="nav-group">
-          <a class="nav-item" data-module="workspace">
-            <span class="nav-icon"><i class="cses-stratis-home-01"></i></span>
-            <span class="nav-label">工作台</span>
-          </a>
           <a class="nav-item" data-module="guide">
             <span class="nav-icon"><i class="cses-stratis-compass"></i></span>
             <span class="nav-label">导向</span>
@@ -121,13 +117,13 @@
 
           <!-- ② 新建任务 -->
           <div class="slot-action">
-            <cs-button data-variant="primary" data-size="lg">
+            <cs-button data-variant="primary" data-size="lg" style="width:100%;">
               <i class="btn-icon cses-stratis-plus-01"></i>
               <span class="btn-label">新建任务</span>
             </cs-button>
           </div>
 
-          <!-- ③ 主菜单 -->
+          <!-- ② 主菜单 -->
           <div class="slot-nav">
             <a class="tl-nav-item" href="../task-list/index.html" style="text-decoration:none;">
               <span class="tl-nav-item__label">我的任务</span>
@@ -141,18 +137,19 @@
             </div>
           </div>
 
-          <!-- ④ 空间副菜单 -->
+          <!-- ③ 空间副菜单 -->
           <div class="slot-sub">
             <div class="tl-space-head">
               <span class="tl-space-head__title">空间</span>
               <span class="tl-space-head__actions">
-                <i class="cses-stratis-refresh-01" title="刷新"></i>
+                <i class="cses-stratis-arrow-refresh-04" title="刷新"></i>
                 <i class="cses-stratis-chevron-down" title="折叠"></i>
               </span>
             </div>
 
             <div class="tl-tree">
 
+              <!-- 个人空间 -->
               <div class="tl-tree-node tl-tree-node--space">
                 <i class="tl-tree-node__caret cses-stratis-chevron-right"></i>
                 <i class="tl-tree-node__icon tl-tree-node__icon--cube cses-stratis-box"></i>
@@ -163,6 +160,7 @@
                 </span>
               </div>
 
+              <!-- 企业空间（展开） -->
               <div class="tl-tree-node tl-tree-node--space tl-tree-node--expanded">
                 <i class="tl-tree-node__caret cses-stratis-chevron-down"></i>
                 <i class="tl-tree-node__icon tl-tree-node__icon--cube cses-stratis-box"></i>
@@ -173,27 +171,29 @@
               </div>
 
               <div class="tl-tree-children">
+                <!-- 任务合集（无 caret） -->
                 <div class="tl-tree-node tl-tree-node--collection" data-active>
-                  <i class="tl-tree-node__icon tl-tree-node__icon--cluster cses-stratis-users-profiles-01"></i>
+                  <i class="tl-tree-node__icon tl-tree-node__icon--cluster cses-stratis-grid-01"></i>
                   <span class="tl-tree-node__label">CSES缺陷</span>
                   <span class="tl-tree-node__count">156</span>
                 </div>
                 <div class="tl-tree-node tl-tree-node--collection">
-                  <i class="tl-tree-node__icon tl-tree-node__icon--cluster cses-stratis-users-profiles-01"></i>
+                  <i class="tl-tree-node__icon tl-tree-node__icon--cluster cses-stratis-grid-01"></i>
                   <span class="tl-tree-node__label">发版机制开发任务</span>
                   <span class="tl-tree-node__count">10</span>
                 </div>
                 <div class="tl-tree-node tl-tree-node--collection">
-                  <i class="tl-tree-node__icon tl-tree-node__icon--cluster cses-stratis-users-profiles-01"></i>
+                  <i class="tl-tree-node__icon tl-tree-node__icon--cluster cses-stratis-grid-01"></i>
                   <span class="tl-tree-node__label">客户反馈内容合集</span>
                   <span class="tl-tree-node__count">15</span>
                 </div>
                 <div class="tl-tree-node tl-tree-node--collection">
-                  <i class="tl-tree-node__icon tl-tree-node__icon--cluster cses-stratis-users-profiles-01"></i>
+                  <i class="tl-tree-node__icon tl-tree-node__icon--cluster cses-stratis-grid-01"></i>
                   <span class="tl-tree-node__label">5月发版任务-发版机制</span>
                   <span class="tl-tree-node__count">27</span>
                 </div>
 
+                <!-- 文件夹（带 caret） -->
                 <div class="tl-tree-node tl-tree-node--folder">
                   <i class="tl-tree-node__caret cses-stratis-chevron-right"></i>
                   <i class="tl-tree-node__icon tl-tree-node__icon--folder cses-stratis-folder"></i>
@@ -267,11 +267,11 @@
               <span>看板</span>
             </span>
             <span class="cd-view-tab">
-              <i class="cses-stratis-bar-chart-square-up"></i>
+              <i class="cses-stratis-horizontal-chart-02"></i>
               <span>甘特图</span>
             </span>
             <span class="cd-view-tab">
-              <i class="cses-stratis-file-01"></i>
+              <i class="cses-stratis-file-04"></i>
               <span>文档</span>
             </span>
             <span class="cd-view-tab">
@@ -316,7 +316,7 @@
             <span class="cd-tool" title="搜索"><i class="cses-stratis-search-01"></i></span>
             <span class="cd-tool" title="设置"><i class="cses-stratis-settings"></i></span>
             <span class="cd-tool" title="排序"><i class="cses-stratis-sort-vertical-01"></i></span>
-            <span class="cd-tool" title="刷新"><i class="cses-stratis-refresh-01"></i></span>
+            <span class="cd-tool" title="刷新"><i class="cses-stratis-arrow-refresh-04"></i></span>
           </div>
         </div>
 
@@ -335,7 +335,7 @@
           <div class="cd-tools">
             <span class="cd-tool" title="筛选"><i class="cses-stratis-filter"></i></span>
             <span class="cd-tool" title="搜索"><i class="cses-stratis-search-01"></i></span>
-            <span class="cd-tool" title="刷新"><i class="cses-stratis-refresh-01"></i></span>
+            <span class="cd-tool" title="刷新"><i class="cses-stratis-arrow-refresh-04"></i></span>
           </div>
         </div>
 
@@ -355,7 +355,7 @@
           <div class="cd-tools">
             <span class="cd-tool" title="筛选"><i class="cses-stratis-filter"></i></span>
             <span class="cd-tool" title="搜索"><i class="cses-stratis-search-01"></i></span>
-            <span class="cd-tool" title="刷新"><i class="cses-stratis-refresh-01"></i></span>
+            <span class="cd-tool" title="刷新"><i class="cses-stratis-arrow-refresh-04"></i></span>
           </div>
         </div>
 
@@ -426,8 +426,7 @@
               <div class="cd-cell cd-cell--num">1</div>
               <div class="cd-cell">
                 <span class="cd-task">
-                  <span class="cd-task__dot" data-state="partial"></span>
-                  <span class="cd-task__name">全屏后的消息通知显示</span>
+                  <span class="cd-task__name">暗色模式下输入框光标颜色不可见</span>
                 </span>
               </div>
               <div class="cd-cell"><span class="cd-status" data-tone="gray">待讨论</span></div>
@@ -439,8 +438,8 @@
               <div class="cd-cell"><span class="cd-time cd-time--empty">-</span></div>
               <div class="cd-cell">
                 <span class="cd-owners">
-                  <span class="cd-owner"><cs-avatar data-color="orange">裴</cs-avatar><span class="cd-owner__name">裴启妍</span></span>
-                  <span class="cd-owner"><cs-avatar data-color="blue">张</cs-avatar><span class="cd-owner__name">张竞元</span></span>
+                  <span class="cd-owner"><cs-avatar data-color="blue">周</cs-avatar><span class="cd-owner__name">周明哲</span></span>
+                  <span class="cd-owner"><cs-avatar data-color="purple">韩</cs-avatar><span class="cd-owner__name">韩晓楠</span></span>
                 </span>
               </div>
               <div class="cd-cell cd-time">06月17日 16:14</div>
@@ -454,8 +453,7 @@
               <div class="cd-cell cd-cell--num">2</div>
               <div class="cd-cell">
                 <span class="cd-task">
-                  <span class="cd-task__dot" data-state="partial"></span>
-                  <span class="cd-task__name">标签页问题</span>
+                  <span class="cd-task__name">多标签页切换偶发空白页</span>
                   <span class="cd-task__tag" data-tone="orange">功能错误</span>
                 </span>
               </div>
@@ -468,8 +466,8 @@
               <div class="cd-cell"><span class="cd-time cd-time--empty">-</span></div>
               <div class="cd-cell">
                 <span class="cd-owners">
-                  <span class="cd-owner"><cs-avatar data-color="orange">程</cs-avatar><span class="cd-owner__name">程旭</span></span>
-                  <span class="cd-owner"><cs-avatar data-color="green">刘</cs-avatar><span class="cd-owner__name">刘俊良</span></span>
+                  <span class="cd-owner"><cs-avatar data-color="purple">陈</cs-avatar><span class="cd-owner__name">陈思雨</span></span>
+                  <span class="cd-owner"><cs-avatar data-color="green">林</cs-avatar><span class="cd-owner__name">林子彦</span></span>
                 </span>
               </div>
               <div class="cd-cell cd-time">06月03日 12:24</div>
@@ -483,8 +481,7 @@
               <div class="cd-cell cd-cell--num">3</div>
               <div class="cd-cell">
                 <span class="cd-task">
-                  <span class="cd-task__dot"></span>
-                  <span class="cd-task__name">顶部logo右键应该有切换账号功能</span>
+                  <span class="cd-task__name">Logo 右键缺少切换账号入口</span>
                   <span class="cd-task__tag" data-tone="blue">使用体验</span>
                 </span>
               </div>
@@ -497,7 +494,7 @@
               <div class="cd-cell"><span class="cd-time cd-time--empty">-</span></div>
               <div class="cd-cell">
                 <span class="cd-owners">
-                  <span class="cd-owner"><cs-avatar data-color="purple">庄</cs-avatar><span class="cd-owner__name">庄建齐</span></span>
+                  <span class="cd-owner"><cs-avatar data-color="orange">黄</cs-avatar><span class="cd-owner__name">黄海宁</span></span>
                 </span>
               </div>
               <div class="cd-cell cd-time">05月20日 11:57</div>
@@ -511,8 +508,7 @@
               <div class="cd-cell cd-cell--num">4</div>
               <div class="cd-cell">
                 <span class="cd-task">
-                  <span class="cd-task__dot" data-state="partial"></span>
-                  <span class="cd-task__name">APP 今日登录 列表接口慢</span>
+                  <span class="cd-task__name">今日登录列表接口响应 >3 秒</span>
                 </span>
               </div>
               <div class="cd-cell"><span class="cd-status" data-tone="gray">待讨论</span></div>
@@ -524,7 +520,7 @@
               <div class="cd-cell"><span class="cd-time" data-tone="danger">05月20日 18:00</span></div>
               <div class="cd-cell">
                 <span class="cd-owners">
-                  <span class="cd-owner"><cs-avatar data-color="pink">乔</cs-avatar><span class="cd-owner__name">乔晖</span></span>
+                  <span class="cd-owner"><cs-avatar data-color="pink">邓</cs-avatar><span class="cd-owner__name">邓子聪</span></span>
                 </span>
               </div>
               <div class="cd-cell cd-time">06月03日 12:23</div>
@@ -538,8 +534,7 @@
               <div class="cd-cell cd-cell--num">5</div>
               <div class="cd-cell">
                 <span class="cd-task">
-                  <span class="cd-task__dot" data-state="partial"></span>
-                  <span class="cd-task__name">B站审核成员通过后，没有同步到消息</span>
+                  <span class="cd-task__name">审核通过事件未同步到消息中心</span>
                   <span class="cd-task__tag" data-tone="orange">功能错误</span>
                 </span>
               </div>
@@ -552,8 +547,8 @@
               <div class="cd-cell"><span class="cd-time cd-time--empty">-</span></div>
               <div class="cd-cell">
                 <span class="cd-owners">
-                  <span class="cd-owner"><cs-avatar data-color="orange">张</cs-avatar><span class="cd-owner__name">张立超</span></span>
-                  <span class="cd-owner"><cs-avatar data-color="pink">乔</cs-avatar><span class="cd-owner__name">乔晖</span></span>
+                  <span class="cd-owner"><cs-avatar data-color="sky">钟</cs-avatar><span class="cd-owner__name">钟雅琪</span></span>
+                  <span class="cd-owner"><cs-avatar data-color="pink">邓</cs-avatar><span class="cd-owner__name">邓子聪</span></span>
                 </span>
               </div>
               <div class="cd-cell cd-time">05月26日 11:21</div>
@@ -567,8 +562,7 @@
               <div class="cd-cell cd-cell--num">6</div>
               <div class="cd-cell">
                 <span class="cd-task">
-                  <span class="cd-task__dot"></span>
-                  <span class="cd-task__name">需求：所有功能模块对键盘支持不友好</span>
+                  <span class="cd-task__name">全局键盘可达性不达标</span>
                 </span>
               </div>
               <div class="cd-cell"><span class="cd-status" data-tone="green">已提交</span></div>
@@ -579,7 +573,7 @@
               </div>
               <div class="cd-cell"><span class="cd-time cd-time--empty">-</span></div>
               <div class="cd-cell">
-                <span class="cd-owners"><span class="cd-owner"><cs-avatar data-color="orange">程</cs-avatar><span class="cd-owner__name">程旭</span></span></span>
+                <span class="cd-owners"><span class="cd-owner"><cs-avatar data-color="purple">陈</cs-avatar><span class="cd-owner__name">陈思雨</span></span></span>
               </div>
               <div class="cd-cell cd-time">06月11日 12:05</div>
               <div class="cd-cell cd-time">05月28日 15:46</div>
@@ -592,15 +586,14 @@
               <div class="cd-cell cd-cell--num">7</div>
               <div class="cd-cell">
                 <span class="cd-task">
-                  <span class="cd-task__dot" data-state="partial"></span>
-                  <span class="cd-task__name">各个模块之间的交互</span>
+                  <span class="cd-task__name">模块间跳转上下文丢失</span>
                 </span>
               </div>
               <div class="cd-cell"><span class="cd-status" data-tone="gray">待讨论</span></div>
               <div class="cd-cell"><span class="cd-time cd-time--empty">-</span></div>
               <div class="cd-cell"><span class="cd-time cd-time--empty">-</span></div>
               <div class="cd-cell">
-                <span class="cd-owners"><span class="cd-owner"><cs-avatar data-color="orange">程</cs-avatar><span class="cd-owner__name">程旭</span></span></span>
+                <span class="cd-owners"><span class="cd-owner"><cs-avatar data-color="red">范</cs-avatar><span class="cd-owner__name">范晨曦</span></span></span>
               </div>
               <div class="cd-cell cd-time">06月11日 12:02</div>
               <div class="cd-cell cd-time">05月28日 15:49</div>
@@ -613,8 +606,7 @@
               <div class="cd-cell cd-cell--num">8</div>
               <div class="cd-cell">
                 <span class="cd-task">
-                  <span class="cd-task__dot" data-state="partial"></span>
-                  <span class="cd-task__name">ppt时间显示问题</span>
+                  <span class="cd-task__name">富文本粘贴 Excel 丢失表格样式</span>
                 </span>
               </div>
               <div class="cd-cell"><span class="cd-status" data-tone="red">无法重现</span></div>
@@ -626,8 +618,8 @@
               <div class="cd-cell"><span class="cd-time cd-time--empty">-</span></div>
               <div class="cd-cell">
                 <span class="cd-owners">
-                  <span class="cd-owner"><cs-avatar data-color="green">刘</cs-avatar><span class="cd-owner__name">刘俊良</span></span>
-                  <span class="cd-owner"><cs-avatar data-color="orange">黄</cs-avatar><span class="cd-owner__name">黄京望</span></span>
+                  <span class="cd-owner"><cs-avatar data-color="green">林</cs-avatar><span class="cd-owner__name">林子彦</span></span>
+                  <span class="cd-owner"><cs-avatar data-color="pink">孙</cs-avatar><span class="cd-owner__name">孙嘉鸣</span></span>
                 </span>
               </div>
               <div class="cd-cell cd-time">06月23日 09:48</div>
@@ -641,15 +633,14 @@
               <div class="cd-cell cd-cell--num">9</div>
               <div class="cd-cell">
                 <span class="cd-task">
-                  <span class="cd-task__dot" data-state="partial"></span>
-                  <span class="cd-task__name">ppt填写问题</span>
+                  <span class="cd-task__name">工时统计含已离职成员数据</span>
                 </span>
               </div>
               <div class="cd-cell"><span class="cd-status" data-tone="red">验证失败</span></div>
               <div class="cd-cell"><span class="cd-time cd-time--empty">-</span></div>
               <div class="cd-cell"><span class="cd-time cd-time--empty">-</span></div>
               <div class="cd-cell">
-                <span class="cd-owners"><span class="cd-owner"><cs-avatar data-color="purple">宋</cs-avatar><span class="cd-owner__name">宋依萍</span></span></span>
+                <span class="cd-owners"><span class="cd-owner"><cs-avatar data-color="sky">吴</cs-avatar><span class="cd-owner__name">吴婉清</span></span></span>
               </div>
               <div class="cd-cell cd-time">06月11日 17:33</div>
               <div class="cd-cell cd-time">06月03日 17:03</div>
@@ -662,8 +653,7 @@
               <div class="cd-cell cd-cell--num">10</div>
               <div class="cd-cell">
                 <span class="cd-task">
-                  <span class="cd-task__dot" data-state="partial"></span>
-                  <span class="cd-task__name">ppt全屏播放 点击抽屉上方 偶现黑屏现象</span>
+                  <span class="cd-task__name">移动端键盘弹起遮挡输入框现象</span>
                 </span>
               </div>
               <div class="cd-cell"><span class="cd-status" data-tone="red">无法重现</span></div>
@@ -674,7 +664,7 @@
               </div>
               <div class="cd-cell"><span class="cd-time cd-time--empty">-</span></div>
               <div class="cd-cell">
-                <span class="cd-owners"><span class="cd-owner"><cs-avatar data-color="purple">宋</cs-avatar><span class="cd-owner__name">宋依萍</span></span></span>
+                <span class="cd-owners"><span class="cd-owner"><cs-avatar data-color="sky">吴</cs-avatar><span class="cd-owner__name">吴婉清</span></span></span>
               </div>
               <div class="cd-cell cd-time">06月11日 17:04</div>
               <div class="cd-cell cd-time">06月08日 15:06</div>
@@ -687,15 +677,14 @@
               <div class="cd-cell cd-cell--num">11</div>
               <div class="cd-cell">
                 <span class="cd-task">
-                  <span class="cd-task__dot" data-state="partial"></span>
-                  <span class="cd-task__name">kr和任务列表层级问题</span>
+                  <span class="cd-task__name">全局搜索关键词高亮区分大小写错误</span>
                 </span>
               </div>
               <div class="cd-cell"><span class="cd-status" data-tone="gray">待讨论</span></div>
               <div class="cd-cell"><span class="cd-time cd-time--empty">-</span></div>
               <div class="cd-cell"><span class="cd-time cd-time--empty">-</span></div>
               <div class="cd-cell">
-                <span class="cd-owners"><span class="cd-owner"><cs-avatar data-color="blue">任</cs-avatar><span class="cd-owner__name">任健腾</span></span></span>
+                <span class="cd-owners"><span class="cd-owner"><cs-avatar data-color="red">赵</cs-avatar><span class="cd-owner__name">赵雨欣</span></span></span>
               </div>
               <div class="cd-cell cd-time">06月23日 10:16</div>
               <div class="cd-cell cd-time">06月22日 17:17</div>
@@ -708,8 +697,7 @@
               <div class="cd-cell cd-cell--num">12</div>
               <div class="cd-cell">
                 <span class="cd-task">
-                  <span class="cd-task__dot" data-state="partial"></span>
-                  <span class="cd-task__name">我的投票和我写的怎么没有名次</span>
+                  <span class="cd-task__name">导出 Excel 文件名时间戳格式不统一</span>
                 </span>
               </div>
               <div class="cd-cell"><span class="cd-status" data-tone="gray">待讨论</span></div>
@@ -717,8 +705,8 @@
               <div class="cd-cell"><span class="cd-time cd-time--empty">-</span></div>
               <div class="cd-cell">
                 <span class="cd-owners">
-                  <span class="cd-owner"><cs-avatar data-color="green">刘</cs-avatar><span class="cd-owner__name">刘俊良</span></span>
-                  <span class="cd-owner"><cs-avatar data-color="blue">任</cs-avatar><span class="cd-owner__name">任健腾</span></span>
+                  <span class="cd-owner"><cs-avatar data-color="green">林</cs-avatar><span class="cd-owner__name">林子彦</span></span>
+                  <span class="cd-owner"><cs-avatar data-color="red">赵</cs-avatar><span class="cd-owner__name">赵雨欣</span></span>
                 </span>
               </div>
               <div class="cd-cell cd-time">06月24日 19:08</div>
@@ -732,8 +720,7 @@
               <div class="cd-cell cd-cell--num">13</div>
               <div class="cd-cell">
                 <span class="cd-task">
-                  <span class="cd-task__dot"></span>
-                  <span class="cd-task__name">提交接口报错</span>
+                  <span class="cd-task__name">异步任务失败后无重试机制</span>
                 </span>
               </div>
               <div class="cd-cell"><span class="cd-status" data-tone="green">已提交</span></div>
@@ -744,7 +731,7 @@
               </div>
               <div class="cd-cell"><span class="cd-time cd-time--empty">-</span></div>
               <div class="cd-cell">
-                <span class="cd-owners"><span class="cd-owner"><cs-avatar data-color="orange">黄</cs-avatar><span class="cd-owner__name">黄京望</span></span></span>
+                <span class="cd-owners"><span class="cd-owner"><cs-avatar data-color="pink">孙</cs-avatar><span class="cd-owner__name">孙嘉鸣</span></span></span>
               </div>
               <div class="cd-cell cd-time">06月25日 18:40</div>
               <div class="cd-cell cd-time">06月25日 17:34</div>
@@ -757,15 +744,14 @@
               <div class="cd-cell cd-cell--num">14</div>
               <div class="cd-cell">
                 <span class="cd-task">
-                  <span class="cd-task__dot"></span>
-                  <span class="cd-task__name">会议虚拟背景 图片跨域</span>
+                  <span class="cd-task__name">WebSocket 重连后消息序号断层</span>
                 </span>
               </div>
               <div class="cd-cell"><span class="cd-status" data-tone="green">已提交</span></div>
               <div class="cd-cell"><span class="cd-time cd-time--empty">-</span></div>
               <div class="cd-cell"><span class="cd-time cd-time--empty">-</span></div>
               <div class="cd-cell">
-                <span class="cd-owners"><span class="cd-owner"><cs-avatar data-color="green">刘</cs-avatar><span class="cd-owner__name">刘俊良</span></span></span>
+                <span class="cd-owners"><span class="cd-owner"><cs-avatar data-color="green">林</cs-avatar><span class="cd-owner__name">林子彦</span></span></span>
               </div>
               <div class="cd-cell cd-time">06月25日 17:50</div>
               <div class="cd-cell cd-time">06月25日 17:50</div>
@@ -811,11 +797,11 @@
             <!-- 滚动主体 -->
             <div class="cd-gantt__body">
 
-              <!-- 1. 全屏后的消息通知显示 — 5/13–5/27 — 待讨论 -->
+              <!-- 1. 暗色模式下输入框光标颜色不可见 — 5/13–5/27 — 待讨论 -->
               <div class="cd-gantt-row">
                 <div class="cd-gantt-row__left">
                   <span class="cd-gantt-row__num">1</span>
-                  <span class="cd-gantt-row__name">全屏后的消息通知显示</span>
+                  <span class="cd-gantt-row__name">暗色模式下输入框光标颜色不可见</span>
                   <span><cs-avatar data-size="xs" data-color="orange">裴</cs-avatar><cs-avatar data-size="xs" data-color="blue">张</cs-avatar></span>
                   <span><span class="cd-status" data-tone="gray">待讨论</span></span>
                 </div>
@@ -828,11 +814,11 @@
                 </div>
               </div>
 
-              <!-- 2. 标签页问题 — 5/06–5/13 — 待讨论 -->
+              <!-- 2. 多标签页切换偶发空白页 — 5/06–5/13 — 待讨论 -->
               <div class="cd-gantt-row">
                 <div class="cd-gantt-row__left">
                   <span class="cd-gantt-row__num">2</span>
-                  <span class="cd-gantt-row__name">标签页问题</span>
+                  <span class="cd-gantt-row__name">多标签页切换偶发空白页</span>
                   <span><cs-avatar data-size="xs" data-color="orange">程</cs-avatar><cs-avatar data-size="xs" data-color="green">刘</cs-avatar></span>
                   <span><span class="cd-status" data-tone="gray">待讨论</span></span>
                 </div>
@@ -849,7 +835,7 @@
               <div class="cd-gantt-row">
                 <div class="cd-gantt-row__left">
                   <span class="cd-gantt-row__num">3</span>
-                  <span class="cd-gantt-row__name">顶部logo右键应该有切换账号功能</span>
+                  <span class="cd-gantt-row__name">Logo 右键缺少切换账号入口</span>
                   <span><cs-avatar data-size="xs" data-color="purple">庄</cs-avatar></span>
                   <span><span class="cd-status" data-tone="green">已提交</span></span>
                 </div>
@@ -866,7 +852,7 @@
               <div class="cd-gantt-row">
                 <div class="cd-gantt-row__left">
                   <span class="cd-gantt-row__num">4</span>
-                  <span class="cd-gantt-row__name">APP 今日登录 列表接口慢</span>
+                  <span class="cd-gantt-row__name">今日登录列表接口响应 >3 秒</span>
                   <span><cs-avatar data-size="xs" data-color="pink">乔</cs-avatar></span>
                   <span><span class="cd-status" data-tone="gray">待讨论</span></span>
                 </div>
@@ -883,7 +869,7 @@
               <div class="cd-gantt-row">
                 <div class="cd-gantt-row__left">
                   <span class="cd-gantt-row__num">5</span>
-                  <span class="cd-gantt-row__name">B站审核成员通过后，没有同步到消息</span>
+                  <span class="cd-gantt-row__name">审核通过事件未同步到消息中心</span>
                   <span><cs-avatar data-size="xs" data-color="orange">张</cs-avatar><cs-avatar data-size="xs" data-color="pink">乔</cs-avatar></span>
                   <span><span class="cd-status" data-tone="red">无法重现</span></span>
                 </div>
@@ -900,7 +886,7 @@
               <div class="cd-gantt-row">
                 <div class="cd-gantt-row__left">
                   <span class="cd-gantt-row__num">6</span>
-                  <span class="cd-gantt-row__name">需求：所有功能模块对键盘支持不友好</span>
+                  <span class="cd-gantt-row__name">全局键盘可达性不达标</span>
                   <span><cs-avatar data-size="xs" data-color="orange">程</cs-avatar></span>
                   <span><span class="cd-status" data-tone="green">已提交</span></span>
                 </div>
@@ -917,7 +903,7 @@
               <div class="cd-gantt-row">
                 <div class="cd-gantt-row__left">
                   <span class="cd-gantt-row__num">7</span>
-                  <span class="cd-gantt-row__name">各个模块之间的交互</span>
+                  <span class="cd-gantt-row__name">模块间跳转上下文丢失</span>
                   <span><cs-avatar data-size="xs" data-color="orange">程</cs-avatar></span>
                   <span><span class="cd-status" data-tone="gray">待讨论</span></span>
                 </div>
@@ -934,7 +920,7 @@
               <div class="cd-gantt-row">
                 <div class="cd-gantt-row__left">
                   <span class="cd-gantt-row__num">8</span>
-                  <span class="cd-gantt-row__name">ppt时间显示问题</span>
+                  <span class="cd-gantt-row__name">富文本粘贴 Excel 丢失表格样式</span>
                   <span><cs-avatar data-size="xs" data-color="green">刘</cs-avatar><cs-avatar data-size="xs" data-color="orange">黄</cs-avatar></span>
                   <span><span class="cd-status" data-tone="red">无法重现</span></span>
                 </div>
@@ -952,7 +938,7 @@
               <div class="cd-gantt-row">
                 <div class="cd-gantt-row__left">
                   <span class="cd-gantt-row__num">9</span>
-                  <span class="cd-gantt-row__name">ppt填写问题</span>
+                  <span class="cd-gantt-row__name">工时统计含已离职成员数据</span>
                   <span><cs-avatar data-size="xs" data-color="purple">宋</cs-avatar></span>
                   <span><span class="cd-status" data-tone="red">验证失败</span></span>
                 </div>
@@ -969,7 +955,7 @@
               <div class="cd-gantt-row">
                 <div class="cd-gantt-row__left">
                   <span class="cd-gantt-row__num">10</span>
-                  <span class="cd-gantt-row__name">ppt全屏播放 点击抽屉上方 偶现黑屏</span>
+                  <span class="cd-gantt-row__name">移动端键盘弹起遮挡输入框</span>
                   <span><cs-avatar data-size="xs" data-color="purple">宋</cs-avatar></span>
                   <span><span class="cd-status" data-tone="red">无法重现</span></span>
                 </div>
@@ -986,7 +972,7 @@
               <div class="cd-gantt-row">
                 <div class="cd-gantt-row__left">
                   <span class="cd-gantt-row__num">11</span>
-                  <span class="cd-gantt-row__name">kr和任务列表层级问题</span>
+                  <span class="cd-gantt-row__name">全局搜索关键词高亮区分大小写错误</span>
                   <span><cs-avatar data-size="xs" data-color="blue">任</cs-avatar></span>
                   <span><span class="cd-status" data-tone="gray">待讨论</span></span>
                 </div>
@@ -1003,7 +989,7 @@
               <div class="cd-gantt-row">
                 <div class="cd-gantt-row__left">
                   <span class="cd-gantt-row__num">12</span>
-                  <span class="cd-gantt-row__name">我的投票和我写的怎么没有名次</span>
+                  <span class="cd-gantt-row__name">导出 Excel 文件名时间戳格式不统一</span>
                   <span><cs-avatar data-size="xs" data-color="green">刘</cs-avatar><cs-avatar data-size="xs" data-color="blue">任</cs-avatar></span>
                   <span><span class="cd-status" data-tone="gray">待讨论</span></span>
                 </div>
@@ -1016,11 +1002,11 @@
                 </div>
               </div>
 
-              <!-- 13. 提交接口报错 — 6/17–7/01 — 已提交 — 紧急 -->
+              <!-- 13. 异步任务失败后无重试机制 — 6/17–7/01 — 已提交 — 紧急 -->
               <div class="cd-gantt-row">
                 <div class="cd-gantt-row__left">
                   <span class="cd-gantt-row__num">13</span>
-                  <span class="cd-gantt-row__name">提交接口报错</span>
+                  <span class="cd-gantt-row__name">异步任务失败后无重试机制</span>
                   <span><cs-avatar data-size="xs" data-color="orange">黄</cs-avatar></span>
                   <span><span class="cd-status" data-tone="green">已提交</span></span>
                 </div>
@@ -1037,7 +1023,7 @@
               <div class="cd-gantt-row">
                 <div class="cd-gantt-row__left">
                   <span class="cd-gantt-row__num">14</span>
-                  <span class="cd-gantt-row__name">会议虚拟背景 图片跨域</span>
+                  <span class="cd-gantt-row__name">WebSocket 重连后消息序号断层</span>
                   <span><cs-avatar data-size="xs" data-color="green">刘</cs-avatar></span>
                   <span><span class="cd-status" data-tone="green">已提交</span></span>
                 </div>
@@ -1070,7 +1056,7 @@
             <div class="cd-column__body">
 
               <div class="cd-kanban-card">
-                <div class="cd-kanban-card__title">顶部logo右键应该有切换账号功能</div>
+                <div class="cd-kanban-card__title">Logo 右键缺少切换账号入口</div>
                 <div class="cd-kanban-card__row">
                   <span class="cd-kanban-card__label cd-kanban-card__label--to">To 负责人:</span>
                   <span class="cd-kanban-card__owners">
@@ -1103,7 +1089,7 @@
               </div>
 
               <div class="cd-kanban-card">
-                <div class="cd-kanban-card__title">需求：所有功能模块对键盘支持不友好</div>
+                <div class="cd-kanban-card__title">全局键盘可达性不达标</div>
                 <div class="cd-kanban-card__row">
                   <span class="cd-kanban-card__label cd-kanban-card__label--to">To 负责人:</span>
                   <span class="cd-kanban-card__owners">
@@ -1154,7 +1140,7 @@
             <div class="cd-column__body">
 
               <div class="cd-kanban-card">
-                <div class="cd-kanban-card__title">标签页问题</div>
+                <div class="cd-kanban-card__title">多标签页切换偶发空白页</div>
                 <div class="cd-kanban-card__row">
                   <span class="cd-kanban-card__label cd-kanban-card__label--to">To 负责人:</span>
                   <span class="cd-kanban-card__owners">
@@ -1193,7 +1179,7 @@
               </div>
 
               <div class="cd-kanban-card">
-                <div class="cd-kanban-card__title">全屏后的消息通知显示</div>
+                <div class="cd-kanban-card__title">暗色模式下输入框光标颜色不可见</div>
                 <div class="cd-kanban-card__row">
                   <span class="cd-kanban-card__label cd-kanban-card__label--to">To 负责人:</span>
                   <span class="cd-kanban-card__owners">
@@ -1244,7 +1230,7 @@
             <div class="cd-column__body">
 
               <div class="cd-kanban-card">
-                <div class="cd-kanban-card__title">B站审核成员通过后，没有同步到消息</div>
+                <div class="cd-kanban-card__title">审核通过事件未同步到消息中心</div>
                 <div class="cd-kanban-card__row">
                   <span class="cd-kanban-card__label cd-kanban-card__label--to">To 负责人:</span>
                   <span class="cd-kanban-card__owners">
@@ -1278,7 +1264,7 @@
               </div>
 
               <div class="cd-kanban-card">
-                <div class="cd-kanban-card__title">ppt时间显示问题</div>
+                <div class="cd-kanban-card__title">富文本粘贴 Excel 丢失表格样式</div>
                 <div class="cd-kanban-card__row">
                   <span class="cd-kanban-card__label cd-kanban-card__label--to">To 负责人:</span>
                   <span class="cd-kanban-card__owners">

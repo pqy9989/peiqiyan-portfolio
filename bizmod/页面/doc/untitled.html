@@ -67,10 +67,6 @@
       </span>
       <nav class="nav">
         <div class="nav-group">
-          <a class="nav-item" data-module="workspace">
-            <span class="nav-icon"><i class="cses-stratis-home-01"></i></span>
-            <span class="nav-label">工作台</span>
-          </a>
           <a class="nav-item" data-module="guide">
             <span class="nav-icon"><i class="cses-stratis-compass"></i></span>
             <span class="nav-label">导向</span>
@@ -112,10 +108,11 @@
         <div class="dt-breadcrumb-bar">
           <div class="dt-breadcrumb">
             <i class="cses-stratis-home-01 dt-bc-home" title="返回文档库首页" onclick="window.location.href='./index.html'"></i>
-            <a><i class="cses-stratis-grid-01" style="color:var(--cs-color-primary);"></i>个人空间</a>
+            <span class="dt-bc-vline"></span>
+            <a><i class="cses-stratis-grid-01"></i>个人空间</a>
             <span class="dt-bc-sep">/</span>
             <span class="dt-bc-current">未命名文档</span>
-            <i class="dt-bc-star cses-stratis-star-01"></i>
+            <i class="dt-bc-star cses-stratis-star-02"></i>
             <span class="dt-bc-sync">
               <i class="cses-stratis-check-broken" style="color:#16a34a;"></i>
               <span>云端已同步</span>
@@ -228,19 +225,19 @@
               <ul class="dt-task-list">
                 <li>
                   <span>重新梳理文档分类体系，设计一级导航（全部文档 / 我的文档 / 团队文档 / 回收站）</span>
-                  <i class="cses-stratis-link" title="创建任务"></i>
+                  <i class="cses-stratis-link"></i>
                 </li>
                 <li>
                   <span>设计侧边栏层级结构，支持展开/收起，清晰展示目录层级关系</span>
-                  <i class="cses-stratis-link" title="创建任务"></i>
+                  <i class="cses-stratis-link"></i>
                 </li>
                 <li>
                   <span>设计面包屑导航，帮助用户随时了解当前位置</span>
-                  <i class="cses-stratis-link" title="创建任务"></i>
+                  <i class="cses-stratis-link"></i>
                 </li>
                 <li>
                   <span>设计最近访问快捷入口，减少重复查找路径</span>
-                  <i class="cses-stratis-link" title="创建任务"></i>
+                  <i class="cses-stratis-link"></i>
                 </li>
               </ul>
 
@@ -248,19 +245,19 @@
               <ul class="dt-task-list">
                 <li>
                   <span>设计全局搜索框（置于顶部导航栏固定位置），支持按标题、正文、标签、作者等多维度检索</span>
-                  <i class="cses-stratis-link" title="创建任务"></i>
+                  <i class="cses-stratis-link"></i>
                 </li>
                 <li>
                   <span>设计筛选面板（按文档类型、创建时间、标签、负责人等多维度筛选）</span>
-                  <i class="cses-stratis-link" title="创建任务"></i>
+                  <i class="cses-stratis-link"></i>
                 </li>
                 <li>
                   <span>设计搜索高亮与结果预览，帮助用户快速判断是否为所需内容</span>
-                  <i class="cses-stratis-link" title="创建任务"></i>
+                  <i class="cses-stratis-link"></i>
                 </li>
                 <li>
                   <span>设计搜索结果排序选项（按相关度、更新时间、创建时间）</span>
-                  <i class="cses-stratis-link" title="创建任务"></i>
+                  <i class="cses-stratis-link"></i>
                 </li>
               </ul>
 
@@ -318,7 +315,6 @@
                 <!-- 表头 -->
                 <div class="dt-tl-row dt-tl-row--head">
                   <div class="dt-tl-cell"></div>
-                  <div class="dt-tl-cell"></div>
                   <div class="dt-tl-cell"><span class="dt-tl-cell-label"><i class="cses-stratis-menu-04"></i>任务名称</span></div>
                   <div class="dt-tl-cell"><span class="dt-tl-cell-label"><i class="cses-stratis-check-square-contained"></i>状态</span></div>
                   <div class="dt-tl-cell"><span class="dt-tl-cell-label"><i class="cses-stratis-grid-01"></i>优先级<span class="dt-tl-sort"><i>▲</i><i>▼</i></span></span></div>
@@ -330,10 +326,9 @@
                 <!-- 1 -->
                 <div class="dt-tl-row dt-tl-row--body">
                   <div class="dt-tl-cell dt-tl-num">1</div>
-                  <div class="dt-tl-cell dt-tl-status-icon" data-state="pass"><i>✓</i></div>
                   <div class="dt-tl-cell">
                     <div class="dt-tl-name">
-                      <span class="dt-tl-name__text">点击主页和 检查更新 ...</span>
+                      <span class="dt-tl-name__text">暗色模式下输入框光标颜色不可见</span>
                       <span class="dt-tl-tag" data-tone="bug">功能错误</span>
                       <span class="dt-tl-tag" data-tone="test">测试5</span>
                       <span class="dt-tl-tag-more">+...</span>
@@ -353,10 +348,9 @@
                 <!-- 2 -->
                 <div class="dt-tl-row dt-tl-row--body">
                   <div class="dt-tl-cell dt-tl-num">2</div>
-                  <div class="dt-tl-cell dt-tl-status-icon" data-state="pass"><i>✓</i></div>
                   <div class="dt-tl-cell">
                     <div class="dt-tl-name">
-                      <span class="dt-tl-name__text">下拉框错...</span>
+                      <span class="dt-tl-name__text">多标签页切换偶发空白页</span>
                       <span class="dt-tl-tag" data-tone="display">显示问题</span>
                     </div>
                   </div>
@@ -374,10 +368,9 @@
                 <!-- 3 -->
                 <div class="dt-tl-row dt-tl-row--body">
                   <div class="dt-tl-cell dt-tl-num">3</div>
-                  <div class="dt-tl-cell dt-tl-status-icon" data-state="pass"><i>✓</i></div>
                   <div class="dt-tl-cell">
                     <div class="dt-tl-name">
-                      <span class="dt-tl-name__text">登陆后 右上角图片加...</span>
+                      <span class="dt-tl-name__text">Logo 右键缺少切换账号入口</span>
                       <span class="dt-tl-tag" data-tone="display">显示问题</span>
                     </div>
                   </div>
@@ -395,10 +388,9 @@
                 <!-- 4 -->
                 <div class="dt-tl-row dt-tl-row--body">
                   <div class="dt-tl-cell dt-tl-num">4</div>
-                  <div class="dt-tl-cell dt-tl-status-icon" data-state="pass"><i>✓</i></div>
                   <div class="dt-tl-cell">
                     <div class="dt-tl-name">
-                      <span class="dt-tl-name__text">任务详情抽屉 失焦无法...</span>
+                      <span class="dt-tl-name__text">今日登录列表接口响应 >3 秒</span>
                       <span class="dt-tl-tag" data-tone="display">显示问题</span>
                       <span class="dt-tl-tag" data-tone="bug">功能错误</span>
                     </div>
@@ -417,10 +409,9 @@
                 <!-- 5 -->
                 <div class="dt-tl-row dt-tl-row--body">
                   <div class="dt-tl-cell dt-tl-num">5</div>
-                  <div class="dt-tl-cell dt-tl-status-icon" data-state="pass"><i>✓</i></div>
                   <div class="dt-tl-cell">
                     <div class="dt-tl-name">
-                      <span class="dt-tl-name__text">文档内直接关联任务，打通工作...</span>
+                      <span class="dt-tl-name__text">审核通过事件未同步到消息中心</span>
                     </div>
                   </div>
                   <div class="dt-tl-cell"><span class="dt-tl-status-pill" data-status="pass">验证通过</span></div>
@@ -437,10 +428,9 @@
                 <!-- 6 -->
                 <div class="dt-tl-row dt-tl-row--body">
                   <div class="dt-tl-cell dt-tl-num">6</div>
-                  <div class="dt-tl-cell dt-tl-status-icon" data-state="pass"><i>✓</i></div>
                   <div class="dt-tl-cell">
                     <div class="dt-tl-name">
-                      <span class="dt-tl-name__text">入库单读取信息 需要能够读到 货位 批次 /d...</span>
+                      <span class="dt-tl-name__text">全局键盘可达性不达标</span>
                     </div>
                   </div>
                   <div class="dt-tl-cell"><span class="dt-tl-status-pill" data-status="pass">验证通过</span></div>
@@ -457,10 +447,9 @@
                 <!-- 7 待讨论 -->
                 <div class="dt-tl-row dt-tl-row--body">
                   <div class="dt-tl-cell dt-tl-num">7</div>
-                  <div class="dt-tl-cell dt-tl-status-icon" data-state="open"><i></i></div>
                   <div class="dt-tl-cell">
                     <div class="dt-tl-name">
-                      <span class="dt-tl-name__text">全屏后的消息通知显...</span>
+                      <span class="dt-tl-name__text">模块间跳转上下文丢失</span>
                     </div>
                   </div>
                   <div class="dt-tl-cell"><span class="dt-tl-status-pill" data-status="discuss">待讨论</span></div>
@@ -477,10 +466,9 @@
                 <!-- 8 -->
                 <div class="dt-tl-row dt-tl-row--body">
                   <div class="dt-tl-cell dt-tl-num">8</div>
-                  <div class="dt-tl-cell dt-tl-status-icon" data-state="pass"><i>✓</i></div>
                   <div class="dt-tl-cell">
                     <div class="dt-tl-name">
-                      <span class="dt-tl-name__text">引用订单，没有商品名称等字...</span>
+                      <span class="dt-tl-name__text">富文本粘贴 Excel 丢失表格样式</span>
                     </div>
                   </div>
                   <div class="dt-tl-cell"><span class="dt-tl-status-pill" data-status="pass">验证通过</span></div>
@@ -497,10 +485,9 @@
                 <!-- 9 已修复 + 重要 -->
                 <div class="dt-tl-row dt-tl-row--body">
                   <div class="dt-tl-cell dt-tl-num">9</div>
-                  <div class="dt-tl-cell dt-tl-status-icon" data-state="closed"><i>✕</i></div>
                   <div class="dt-tl-cell">
                     <div class="dt-tl-name">
-                      <span class="dt-tl-name__text">新创建群聊 客户端无法发送消息 客户端收...</span>
+                      <span class="dt-tl-name__text">工时统计含已离职成员数据</span>
                     </div>
                   </div>
                   <div class="dt-tl-cell"><span class="dt-tl-status-pill" data-status="fixed">已修复</span></div>
@@ -517,10 +504,9 @@
                 <!-- 10 -->
                 <div class="dt-tl-row dt-tl-row--body">
                   <div class="dt-tl-cell dt-tl-num">10</div>
-                  <div class="dt-tl-cell dt-tl-status-icon" data-state="closed"><i>✕</i></div>
                   <div class="dt-tl-cell">
                     <div class="dt-tl-name">
-                      <span class="dt-tl-name__text">订单标签、订单工作状...</span>
+                      <span class="dt-tl-name__text">移动端键盘弹起遮挡输入框</span>
                     </div>
                   </div>
                   <div class="dt-tl-cell"><span class="dt-tl-status-pill" data-status="fixed">已修复</span></div>

@@ -308,14 +308,14 @@ cs-filter-bar[data-variant="filters"] .filter-count:hover {
 .gd-stream::-webkit-scrollbar-thumb { background: var(--cs-color-bg-lighter); border-radius: 3px; }
 
 
-/* 日卡片 */
+/* 日条 — 左边日期，右边一张白底卡片包住导向 + 成果 */
 .gd-day-card {
   display: flex;
   gap: 16px;
   padding: 16px 0;
-  border-bottom: 1px solid var(--cs-color-border);
+  margin-bottom: 12px;
 }
-.gd-day-card:last-child { border-bottom: none; }
+.gd-day-card:last-child { margin-bottom: 0; }
 
 .gd-day-card__date {
   flex-shrink: 0;
@@ -359,15 +359,22 @@ cs-filter-bar[data-variant="filters"] .filter-count:hover {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding: 14px 18px;
+  background: var(--cs-color-white);
+  border: 1px solid var(--cs-color-border);
+  border-radius: 8px;
 }
 
-/* 单条卡片（导向 / 成果 / 感悟） */
+/* 导向 / 成果 / 感悟 行（同一日卡片内，不再单独灰底） */
 .gd-entry {
   display: flex;
   gap: 12px;
-  padding: 12px 14px;
-  background: var(--cs-color-bg-light);
-  border-radius: 8px;
+  padding: 8px 0;
+}
+.gd-entry + .gd-entry {
+  border-top: 1px solid var(--cs-color-border-light, #f0f0f0);
+  padding-top: 14px;
+  margin-top: 4px;
 }
 .gd-entry__tag {
   flex-shrink: 0;

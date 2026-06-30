@@ -2,6 +2,9 @@
    form / 表单管理 — 页面私有样式
    ============================================================ */
 
+/* 把「流程管理」推到 navbar 底部 */
+cs-navbar .slot-bottom { margin-top: auto; }
+
 /* ===== navbar 二级导航 ===== */
 
 cs-navbar .slot-action cs-button {
@@ -357,3 +360,19 @@ cs-navbar .slot-action cs-button {
   border-color: var(--cs-color-primary);
   color: var(--cs-color-primary);
 }
+
+
+/* 底部 流程管理（参考 approval 的 .ac-admin） */
+.ac-admin {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  color: var(--cs-color-text);
+  font: var(--typo-cn-14-regular);
+  cursor: pointer;
+  border-radius: var(--radius-lg);
+  transition: background 0.15s ease;
+}
+.ac-admin:hover { background: var(--cs-color-bg-light); }
+.ac-admin i { font-size: 16px; }

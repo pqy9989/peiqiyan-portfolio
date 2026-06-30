@@ -76,10 +76,6 @@
       </span>
       <nav class="nav">
         <div class="nav-group">
-          <a class="nav-item" data-module="workspace">
-            <span class="nav-icon"><i class="cses-stratis-home-01"></i></span>
-            <span class="nav-label">工作台</span>
-          </a>
           <a class="nav-item" data-module="guide">
             <span class="nav-icon"><i class="cses-stratis-compass"></i></span>
             <span class="nav-label">导向</span>
@@ -119,7 +115,16 @@
       <cs-navbar>
         <div class="inner">
 
-          <!-- ① 新建任务 -->
+          <!-- ① 标题 -->
+          <div class="slot-header">
+            <div class="tl-navbar__title">
+              <span class="tl-navbar__title-text">计划实施</span>
+              <i class="cses-stratis-menu-01" title="更多"></i>
+            </div>
+            <span class="tl-navbar__subtitle">让工作管理更高效</span>
+          </div>
+
+          <!-- ② 新建任务 -->
           <div class="slot-action">
             <cs-button data-variant="primary" data-size="lg" style="width:100%;">
               <i class="btn-icon cses-stratis-plus-01"></i>
@@ -146,7 +151,7 @@
             <div class="tl-space-head">
               <span class="tl-space-head__title">空间</span>
               <span class="tl-space-head__actions">
-                <i class="cses-stratis-refresh-01" title="刷新"></i>
+                <i class="cses-stratis-arrow-refresh-04" title="刷新"></i>
                 <i class="cses-stratis-chevron-down" title="折叠"></i>
               </span>
             </div>
@@ -357,12 +362,12 @@
               <div class="tl-cell">
                 <div class="tl-task">
                   <div class="tl-task__title">
-                    <span class="tl-task__name">任务管理_我创建的改版</span>
+                    <span class="tl-task__name">登录流程优化 · 三方账号合并方案</span>
                     <cs-tag data-color="warning" data-size="sm">即将过期</cs-tag>
                   </div>
                   <div class="tl-task__meta">
-                    <cs-avatar data-size="xs" data-color="orange">王</cs-avatar>
-                    <span class="tl-task__meta-text">王明明修改了截止时间为"12.03 12:09"</span>
+                    <cs-avatar data-size="xs" data-color="blue">周</cs-avatar>
+                    <span class="tl-task__meta-text">周明哲修改了截止时间为"09.30 18:00"</span>
                   </div>
                 </div>
               </div>
@@ -372,16 +377,16 @@
                   <span class="tl-priority__flag"><svg viewBox="0 0 12 14" xmlns="http://www.w3.org/2000/svg"><path d="M1 0h1.5v14H1V0zm1.5 0h7.2L8 3.5l1.7 3.5H2.5V0z"/></svg></span>紧急
                 </span>
               </div>
-              <div class="tl-cell tl-time">09月22日 17:56</div>
-              <div class="tl-cell tl-time">09月30日 17:56</div>
+              <div class="tl-cell tl-time">09月22日 10:30</div>
+              <div class="tl-cell tl-time">09月30日 18:00</div>
               <div class="tl-cell">
                 <span class="tl-space">
                   <i class="cses-stratis-grid-01"></i>
-                  <span class="tl-space__text">XPA的空间</span>
+                  <span class="tl-space__text">增长团队</span>
                   <span class="tl-space__sep">/</span>
                   <span class="tl-space__folder">
                     <i class="cses-stratis-folder"></i>
-                    <span class="tl-space__text">开发工作</span>
+                    <span class="tl-space__text">客户端</span>
                   </span>
                 </span>
               </div>
@@ -393,7 +398,7 @@
               <div class="tl-cell">
                 <div class="tl-task">
                   <div class="tl-task__title">
-                    <span class="tl-task__name">任务管理_我创建的改版</span>
+                    <span class="tl-task__name">支付链路监控接入 v2</span>
                     <cs-tag data-color="warning" data-size="sm">即将过期</cs-tag>
                     <span class="tl-task__actions">
                       <span class="tl-task-action"><i class="cses-stratis-expand-02"></i>详情</span>
@@ -401,8 +406,8 @@
                     </span>
                   </div>
                   <div class="tl-task__meta">
-                    <cs-avatar data-size="xs" data-color="green">王</cs-avatar>
-                    <span class="tl-task__meta-text">王伟变更任务状态为"进行中"</span>
+                    <cs-avatar data-size="xs" data-color="purple">陈</cs-avatar>
+                    <span class="tl-task__meta-text">陈思雨变更任务状态为"进行中"</span>
                   </div>
                 </div>
               </div>
@@ -412,16 +417,16 @@
                   <span class="tl-priority__flag"><svg viewBox="0 0 12 14" xmlns="http://www.w3.org/2000/svg"><path d="M1 0h1.5v14H1V0zm1.5 0h7.2L8 3.5l1.7 3.5H2.5V0z"/></svg></span>重要
                 </span>
               </div>
-              <div class="tl-cell tl-time">09月22日 17:56</div>
-              <div class="tl-cell tl-time">09月28日 17:56</div>
+              <div class="tl-cell tl-time">09月20日 14:00</div>
+              <div class="tl-cell tl-time">09月28日 18:00</div>
               <div class="tl-cell">
                 <span class="tl-space">
                   <i class="cses-stratis-grid-01"></i>
-                  <span class="tl-space__text">XPA的空间</span>
+                  <span class="tl-space__text">增长团队</span>
                   <span class="tl-space__sep">/</span>
                   <span class="tl-space__folder">
                     <i class="cses-stratis-folder"></i>
-                    <span class="tl-space__text">开发工作</span>
+                    <span class="tl-space__text">服务端</span>
                   </span>
                 </span>
               </div>
@@ -433,11 +438,11 @@
               <div class="tl-cell">
                 <div class="tl-task">
                   <div class="tl-task__title">
-                    <span class="tl-task__name">任务管理_我创建的改版</span>
+                    <span class="tl-task__name">数据看板组件库 v1.2 验收</span>
                   </div>
                   <div class="tl-task__meta">
-                    <cs-avatar data-size="xs" data-color="purple">黄</cs-avatar>
-                    <span class="tl-task__meta-text">黄珊通过了检视点</span>
+                    <cs-avatar data-size="xs" data-color="green">林</cs-avatar>
+                    <span class="tl-task__meta-text">林子彦通过了检视点</span>
                   </div>
                 </div>
               </div>
@@ -447,16 +452,16 @@
                   <span class="tl-priority__flag"><svg viewBox="0 0 12 14" xmlns="http://www.w3.org/2000/svg"><path d="M1 0h1.5v14H1V0zm1.5 0h7.2L8 3.5l1.7 3.5H2.5V0z"/></svg></span>一般
                 </span>
               </div>
-              <div class="tl-cell tl-time">09月22日 17:56</div>
-              <div class="tl-cell tl-time">09月27日 17:56</div>
+              <div class="tl-cell tl-time">09月18日 09:00</div>
+              <div class="tl-cell tl-time">09月27日 18:00</div>
               <div class="tl-cell">
                 <span class="tl-space">
                   <i class="cses-stratis-grid-01"></i>
-                  <span class="tl-space__text">XPA的空间</span>
+                  <span class="tl-space__text">数据中台</span>
                   <span class="tl-space__sep">/</span>
                   <span class="tl-space__folder">
                     <i class="cses-stratis-folder"></i>
-                    <span class="tl-space__text">开发工作</span>
+                    <span class="tl-space__text">前端组件</span>
                   </span>
                 </span>
               </div>
@@ -468,12 +473,12 @@
               <div class="tl-cell">
                 <div class="tl-task">
                   <div class="tl-task__title">
-                    <span class="tl-task__name">任务管理_我创建的改版</span>
+                    <span class="tl-task__name">客户反馈分类规则梳理</span>
                     <cs-tag data-color="warning" data-size="sm">即将过期</cs-tag>
                   </div>
                   <div class="tl-task__meta">
-                    <cs-avatar data-size="xs" data-color="sky">王</cs-avatar>
-                    <span class="tl-task__meta-text">王维上传了3个文件</span>
+                    <cs-avatar data-size="xs" data-color="orange">黄</cs-avatar>
+                    <span class="tl-task__meta-text">黄海宁上传了 3 个文件</span>
                   </div>
                 </div>
               </div>
@@ -483,16 +488,16 @@
                   <span class="tl-priority__flag"><svg viewBox="0 0 12 14" xmlns="http://www.w3.org/2000/svg"><path d="M1 0h1.5v14H1V0zm1.5 0h7.2L8 3.5l1.7 3.5H2.5V0z"/></svg></span>较低
                 </span>
               </div>
-              <div class="tl-cell tl-time">09月22日 17:56</div>
-              <div class="tl-cell tl-time">09月26日 17:56</div>
+              <div class="tl-cell tl-time">09月21日 15:20</div>
+              <div class="tl-cell tl-time">09月26日 18:00</div>
               <div class="tl-cell">
                 <span class="tl-space">
                   <i class="cses-stratis-grid-01"></i>
-                  <span class="tl-space__text">XPA的空间</span>
+                  <span class="tl-space__text">CSES</span>
                   <span class="tl-space__sep">/</span>
                   <span class="tl-space__folder">
                     <i class="cses-stratis-folder"></i>
-                    <span class="tl-space__text">开发工作</span>
+                    <span class="tl-space__text">运营平台</span>
                   </span>
                 </span>
               </div>
@@ -504,23 +509,23 @@
               <div class="tl-cell">
                 <div class="tl-task">
                   <div class="tl-task__title">
-                    <span class="tl-task__name">任务管理_我创建的改版</span>
+                    <span class="tl-task__name">设计语言文档更新（按钮 / 表单组）</span>
                     <cs-tag data-color="warning" data-size="sm">即将过期</cs-tag>
                   </div>
                 </div>
               </div>
               <div class="tl-cell"><cs-status-badge data-status="in-progress">进行中</cs-status-badge></div>
-              <div class="tl-cell"><span class="tl-priority" data-level="low">较低</span></div>
-              <div class="tl-cell tl-time">09月22日 17:56</div>
-              <div class="tl-cell tl-time">09月26日 17:56</div>
+              <div class="tl-cell"><span class="tl-priority" data-level="low"><span class="tl-priority__flag"><svg viewBox="0 0 12 14" xmlns="http://www.w3.org/2000/svg"><path d="M1 0h1.5v14H1V0zm1.5 0h7.2L8 3.5l1.7 3.5H2.5V0z"/></svg></span>较低</span></div>
+              <div class="tl-cell tl-time">09月22日 09:30</div>
+              <div class="tl-cell tl-time">09月26日 18:00</div>
               <div class="tl-cell">
                 <span class="tl-space">
                   <i class="cses-stratis-grid-01"></i>
-                  <span class="tl-space__text">XPA的空间</span>
+                  <span class="tl-space__text">设计</span>
                   <span class="tl-space__sep">/</span>
                   <span class="tl-space__folder">
                     <i class="cses-stratis-folder"></i>
-                    <span class="tl-space__text">开发工作</span>
+                    <span class="tl-space__text">规范</span>
                   </span>
                 </span>
               </div>
@@ -532,27 +537,27 @@
               <div class="tl-cell">
                 <div class="tl-task">
                   <div class="tl-task__title">
-                    <span class="tl-task__name">任务管理_我创建的改版</span>
+                    <span class="tl-task__name">首页 SSR 性能优化（FCP &lt; 1.5s）</span>
                     <cs-tag data-color="danger" data-size="sm">已过期</cs-tag>
                   </div>
                   <div class="tl-task__meta">
-                    <cs-avatar data-size="xs" data-color="red">王</cs-avatar>
-                    <span class="tl-task__meta-text">王帅将你的任务设为前置任务</span>
+                    <cs-avatar data-size="xs" data-color="pink">孙</cs-avatar>
+                    <span class="tl-task__meta-text">孙嘉鸣将你的任务设为前置任务</span>
                   </div>
                 </div>
               </div>
               <div class="tl-cell"><cs-status-badge data-status="in-progress">进行中</cs-status-badge></div>
-              <div class="tl-cell"><span class="tl-priority" data-level="low">较低</span></div>
-              <div class="tl-cell tl-time">09月22日 17:56</div>
-              <div class="tl-cell tl-time">09月26日 17:56</div>
+              <div class="tl-cell"><span class="tl-priority" data-level="low"><span class="tl-priority__flag"><svg viewBox="0 0 12 14" xmlns="http://www.w3.org/2000/svg"><path d="M1 0h1.5v14H1V0zm1.5 0h7.2L8 3.5l1.7 3.5H2.5V0z"/></svg></span>较低</span></div>
+              <div class="tl-cell tl-time">09月15日 10:00</div>
+              <div class="tl-cell tl-time">09月26日 18:00</div>
               <div class="tl-cell">
                 <span class="tl-space">
                   <i class="cses-stratis-grid-01"></i>
-                  <span class="tl-space__text">XPA的空间</span>
+                  <span class="tl-space__text">前端</span>
                   <span class="tl-space__sep">/</span>
                   <span class="tl-space__folder">
                     <i class="cses-stratis-folder"></i>
-                    <span class="tl-space__text">开发工作</span>
+                    <span class="tl-space__text">性能</span>
                   </span>
                 </span>
               </div>
@@ -564,27 +569,27 @@
               <div class="tl-cell">
                 <div class="tl-task">
                   <div class="tl-task__title">
-                    <span class="tl-task__name">任务管理_我创建的改版</span>
+                    <span class="tl-task__name">会员权益看板验收</span>
                     <cs-tag data-color="danger" data-size="sm">已过期</cs-tag>
                   </div>
                   <div class="tl-task__meta">
-                    <cs-avatar data-size="xs" data-color="purple">黄</cs-avatar>
-                    <span class="tl-task__meta-text">黄珊检视通过了检视点</span>
+                    <cs-avatar data-size="xs" data-color="sky">吴</cs-avatar>
+                    <span class="tl-task__meta-text">吴婉清检视通过了检视点</span>
                   </div>
                 </div>
               </div>
               <div class="tl-cell"><cs-status-badge data-status="in-progress">进行中</cs-status-badge></div>
-              <div class="tl-cell"><span class="tl-priority" data-level="low">较低</span></div>
-              <div class="tl-cell tl-time">09月22日 17:56</div>
-              <div class="tl-cell tl-time">09月25日 17:56</div>
+              <div class="tl-cell"><span class="tl-priority" data-level="low"><span class="tl-priority__flag"><svg viewBox="0 0 12 14" xmlns="http://www.w3.org/2000/svg"><path d="M1 0h1.5v14H1V0zm1.5 0h7.2L8 3.5l1.7 3.5H2.5V0z"/></svg></span>较低</span></div>
+              <div class="tl-cell tl-time">09月14日 16:00</div>
+              <div class="tl-cell tl-time">09月25日 18:00</div>
               <div class="tl-cell">
                 <span class="tl-space">
                   <i class="cses-stratis-grid-01"></i>
-                  <span class="tl-space__text">XPA的空间</span>
+                  <span class="tl-space__text">会员</span>
                   <span class="tl-space__sep">/</span>
                   <span class="tl-space__folder">
                     <i class="cses-stratis-folder"></i>
-                    <span class="tl-space__text">开发工作</span>
+                    <span class="tl-space__text">产品</span>
                   </span>
                 </span>
               </div>
@@ -596,30 +601,30 @@
               <div class="tl-cell">
                 <div class="tl-task">
                   <div class="tl-task__title">
-                    <span class="tl-task__name">任务管理_我创建的改版</span>
+                    <span class="tl-task__name">签到模块 PRD 评审</span>
                   </div>
                   <div class="tl-task__meta">
                     <span class="tl-avatars">
-                      <cs-avatar data-size="xs" data-color="pink">王</cs-avatar>
-                      <cs-avatar data-size="xs" data-color="orange">李</cs-avatar>
-                      <cs-avatar data-size="xs" data-color="green">陈</cs-avatar>
+                      <cs-avatar data-size="xs" data-color="blue">王</cs-avatar>
+                      <cs-avatar data-size="xs" data-color="green">李</cs-avatar>
+                      <cs-avatar data-size="xs" data-color="orange">陈</cs-avatar>
                     </span>
-                    <span class="tl-task__meta-text">王美等5人的24条讨论未读</span>
+                    <span class="tl-task__meta-text">王利伟等 5 人的 24 条讨论未读</span>
                   </div>
                 </div>
               </div>
               <div class="tl-cell"><cs-status-badge data-status="not-started">未开始</cs-status-badge></div>
-              <div class="tl-cell"><span class="tl-priority" data-level="low">较低</span></div>
-              <div class="tl-cell tl-time">09月22日 17:56</div>
-              <div class="tl-cell tl-time">09月24日 17:56</div>
+              <div class="tl-cell"><span class="tl-priority" data-level="low"><span class="tl-priority__flag"><svg viewBox="0 0 12 14" xmlns="http://www.w3.org/2000/svg"><path d="M1 0h1.5v14H1V0zm1.5 0h7.2L8 3.5l1.7 3.5H2.5V0z"/></svg></span>较低</span></div>
+              <div class="tl-cell tl-time">09月24日 14:00</div>
+              <div class="tl-cell tl-time">09月24日 17:30</div>
               <div class="tl-cell">
                 <span class="tl-space">
                   <i class="cses-stratis-grid-01"></i>
-                  <span class="tl-space__text">XPA的空间</span>
+                  <span class="tl-space__text">产品</span>
                   <span class="tl-space__sep">/</span>
                   <span class="tl-space__folder">
                     <i class="cses-stratis-folder"></i>
-                    <span class="tl-space__text">开发工作</span>
+                    <span class="tl-space__text">PRD 评审</span>
                   </span>
                 </span>
               </div>
@@ -631,26 +636,26 @@
               <div class="tl-cell">
                 <div class="tl-task">
                   <div class="tl-task__title">
-                    <span class="tl-task__name">任务管理_我创建的改版</span>
+                    <span class="tl-task__name">Q3 复盘材料汇总</span>
                   </div>
                   <div class="tl-task__meta">
-                    <cs-avatar data-size="xs" data-color="pink">王</cs-avatar>
-                    <span class="tl-task__meta-text">王美：任务快延期了，大家加快啊</span>
+                    <cs-avatar data-size="xs" data-color="red">赵</cs-avatar>
+                    <span class="tl-task__meta-text">赵雨欣：素材已上传，请大家及时补充</span>
                   </div>
                 </div>
               </div>
               <div class="tl-cell"><cs-status-badge data-status="not-started">未开始</cs-status-badge></div>
-              <div class="tl-cell"><span class="tl-priority" data-level="low">较低</span></div>
-              <div class="tl-cell tl-time">09月22日 17:56</div>
-              <div class="tl-cell tl-time">09月23日 17:56</div>
+              <div class="tl-cell"><span class="tl-priority" data-level="normal"><span class="tl-priority__flag"><svg viewBox="0 0 12 14" xmlns="http://www.w3.org/2000/svg"><path d="M1 0h1.5v14H1V0zm1.5 0h7.2L8 3.5l1.7 3.5H2.5V0z"/></svg></span>一般</span></div>
+              <div class="tl-cell tl-time">09月23日 09:00</div>
+              <div class="tl-cell tl-time">09月23日 18:00</div>
               <div class="tl-cell">
                 <span class="tl-space">
                   <i class="cses-stratis-grid-01"></i>
-                  <span class="tl-space__text">XPA的空间</span>
+                  <span class="tl-space__text">综合</span>
                   <span class="tl-space__sep">/</span>
                   <span class="tl-space__folder">
                     <i class="cses-stratis-folder"></i>
-                    <span class="tl-space__text">开发工作</span>
+                    <span class="tl-space__text">Q3 复盘</span>
                   </span>
                 </span>
               </div>
@@ -662,26 +667,26 @@
               <div class="tl-cell">
                 <div class="tl-task">
                   <div class="tl-task__title">
-                    <span class="tl-task__name">任务管理_我创建的改版</span>
+                    <span class="tl-task__name">服务端日志归档脚本</span>
                   </div>
                   <div class="tl-task__meta">
-                    <cs-avatar data-size="xs" data-color="pink">王</cs-avatar>
-                    <span class="tl-task__meta-text">王美：任务快延期了，大家加快啊</span>
+                    <cs-avatar data-size="xs" data-color="green">李</cs-avatar>
+                    <span class="tl-task__meta-text">李文翰：脚本本周内合并主干</span>
                   </div>
                 </div>
               </div>
               <div class="tl-cell"><cs-status-badge data-status="not-started">未开始</cs-status-badge></div>
-              <div class="tl-cell"><span class="tl-priority" data-level="low">较低</span></div>
-              <div class="tl-cell tl-time">09月22日 17:56</div>
-              <div class="tl-cell tl-time">09月23日 17:56</div>
+              <div class="tl-cell"><span class="tl-priority" data-level="low"><span class="tl-priority__flag"><svg viewBox="0 0 12 14" xmlns="http://www.w3.org/2000/svg"><path d="M1 0h1.5v14H1V0zm1.5 0h7.2L8 3.5l1.7 3.5H2.5V0z"/></svg></span>较低</span></div>
+              <div class="tl-cell tl-time">09月22日 16:00</div>
+              <div class="tl-cell tl-time">09月23日 18:00</div>
               <div class="tl-cell">
                 <span class="tl-space">
                   <i class="cses-stratis-grid-01"></i>
-                  <span class="tl-space__text">XPA的空间</span>
+                  <span class="tl-space__text">后端</span>
                   <span class="tl-space__sep">/</span>
                   <span class="tl-space__folder">
                     <i class="cses-stratis-folder"></i>
-                    <span class="tl-space__text">开发工作</span>
+                    <span class="tl-space__text">基础设施</span>
                   </span>
                 </span>
               </div>
